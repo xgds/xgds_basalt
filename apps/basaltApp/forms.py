@@ -15,3 +15,23 @@
 # __END_LICENSE__
 
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+
+class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    comments = forms.CharField(required=True, label="Introduce yourself", widget=forms.Textarea)
+
+    def __init__(self, *args, **kwargs):
+        super(UserRegistrationForm, self).__init__(*args, **kwargs)
+        # Hack to modify the sequence in which hte fields are rendered
+        self.fields.keyOrder = ['username', 'email', 'password1', 'password2', 'comments']
+
+    def clean_email(self):
+        "Ensure that email addresses are unique for new users."
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("A user with that email address already exists.")
+        return email
+
