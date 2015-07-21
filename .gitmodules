@@ -4,3 +4,6 @@
 [submodule "submodules/xgds_data"]
 	path = submodules/xgds_data
 	url = https://babelfish.arc.nasa.gov/git/xgds_data
+[submodule "submodules/xgds_map_server"]
+	path = submodules/xgds_map_server
+	url = https://babelfish.arc.nasa.gov/git/xgds_map_server
