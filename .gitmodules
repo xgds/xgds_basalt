@@ -1,3 +1,6 @@
 [submodule "submodules/geocamUtil"]
 	path = submodules/geocamUtil
 	url = git://github.com/geocam/geocamUtilWeb.git
+[submodule "submodules/xgds_data"]
+	path = submodules/xgds_data
+	url = https://babelfish.arc.nasa.gov/git/xgds_data
