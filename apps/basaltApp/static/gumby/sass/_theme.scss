@@ -1,12 +1,12 @@
-/* Custom theme.  This matches the default theme but is used here to test pipeline */
+/* Custom theme for BASALT.   */
 
 $color: white;	// background of the whole page
 $light-fg: white;	// font color when on top of dark
 $light-fg-hover: #fff6ce;	// hover color for light fonts
 
-$primary: #005c8e;	// primary color for headers, buttons, etc	
-$secondary: #42A5DA; // seconary color for subnav
-$tertiary: #8b9ba3;	
+$primary: #646466; //#00294d;	// primary color for headers, buttons, etc	
+$secondary: #00294d; // seconary color for subnav
+$tertiary: #f48466; // #8b9ba3;	
 $navbar-color: $primary; //To change the color at the top of the screen, change this
 
 $disabled-bg: #F2F2F2; 
