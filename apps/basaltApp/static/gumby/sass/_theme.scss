@@ -4,10 +4,16 @@ $color: white;	// background of the whole page
 $light-fg: white;	// font color when on top of dark
 $light-fg-hover: #fff6ce;	// hover color for light fonts
 
+
 $primary: #646466; //#00294d;	// primary color for headers, buttons, etc	
-$secondary: #00294d; // seconary color for subnav
+$secondary: #00294d; // secondary color for subnav
 $tertiary: #f48466; // #8b9ba3;	
 $navbar-color: $primary; //To change the color at the top of the screen, change this
+
+$primary-color: #00294d;
+$secondary-color: #0070d5;
+$body-link-color: $secondary !default;
+
 
 $disabled-bg: #F2F2F2; 
 $disabled-fg: #888888;
