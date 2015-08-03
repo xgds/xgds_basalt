@@ -36,10 +36,9 @@ urlpatterns = patterns('',
                        # TODO uncomment as appropriate to include submodule urls
                        (r'^xgds_map_server/', include('xgds_map_server.urls')),
                        (r'^xgds_data/', include('xgds_data.urls')),
-                       (r'^xgds_image/', include('xgds_image.urls')),
-                       #  (r'^notes/', include('xgds_notes.urls')),
+                       (r'^xgds_image/', include('xgds_image.urls'))
+#                        (r'^notes/', include('xgds_notes.urls')),
                        #  (r'^xgds_planner2/', include('xgds_planner2.urls')),
                        #  (r'^xgds_plot/', include('xgds_plot.urls')),
                        #  (r'^xgds_video/', include('xgds_video.urls')),
-                       
                        )

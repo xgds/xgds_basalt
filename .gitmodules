@@ -10,3 +10,12 @@
 [submodule "submodules/submodules/xgds_image"]
 	path = submodules/submodules/xgds_image
 	url = https://babelfish.arc.nasa.gov/git/xgds_image
+[submodule "submodules/xgds_notes"]
+	path = submodules/xgds_notes
+	url = https://babelfish.arc.nasa.gov/git/xgds_notes
+[submodule "geocamTrackWeb"]
+	path = geocamTrackWeb
+	url = git://github.com/geocam/geocamTrackWeb.git
+[submodule "submodules/geocamTrackWeb"]
+	path = submodules/geocamTrackWeb
+	url = git://github.com/geocam/geocamTrackWeb.git

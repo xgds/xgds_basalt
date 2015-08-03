@@ -15,3 +15,7 @@
 # __END_LICENSE__
 
 from django.db import models
+# from xgds_notes.models import NoteBase
+# 
+# class Note(NoteBase):
+#     pass

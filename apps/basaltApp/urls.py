@@ -17,8 +17,8 @@
 from django.conf.urls import patterns, include
 
 from django.views.generic.base import TemplateView
-
+from basaltApp import views
 
 urlpatterns = patterns('',
-                       (r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index'),
+                       (r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index')
                        )
