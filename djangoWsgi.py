@@ -82,5 +82,5 @@ getEnvironmentFromSourceMe(thisDir)
 if os.path.exists(os.path.join(thisDir, 'DOWN_FOR_MAINTENANCE')):
     application = downForMaintenance
 else:
-    from django.core.wsgi import get_wsgi_application
+    #os.environ['DJANGO_SETTINGS_MODULE'] = 'basaltApp.settings'
     application = get_wsgi_application()

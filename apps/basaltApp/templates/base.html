@@ -39,6 +39,12 @@
 			<li {% currentnav map* xgds_map_server* %}>
 				<a href="{% url 'map' %}" title="Map">Map</a>
 			</li>
+			<li>
+				<a href="{% url 'xgds_image_upload' %}" title="image">Image</a>
+			</li>
+<!-- 			<li { % currentnav *note* edit_user_session % }>
+				<a href="{ % url 'review_notes' % }" title="Notes">Notes</a>
+			</li> -->
             <li>
             {% if user.is_authenticated %}
                  <a href="{{ logout_url }}" title="Logout">Logout&nbsp;&nbsp;{{ user.first_name }}</a>
