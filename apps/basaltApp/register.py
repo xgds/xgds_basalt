@@ -26,7 +26,7 @@ from django.contrib.auth.models import User
 
 from django.core import mail
 
-from basaltApp import settings
+from django.conf import settings
 from basaltApp.forms import UserRegistrationForm
 
 

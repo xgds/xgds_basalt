@@ -34,4 +34,3 @@ class UserRegistrationForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("A user with that email address already exists.")
         return email
-
