@@ -1,0 +1,139 @@
+{
+    "xpjson": "0.2",
+    "type": "PlanLibrary",
+
+    "name": "EV Command Library",
+    "notes": "Reusable elements for EV plans",
+    "id": "http://basalt.xgds.org/planner/evPlanLibrary.json",
+    "schemaUrl": "http://basalt.xgds.org/planner/evPlanSchema.json",
+
+
+    "sites": [
+        
+        {
+            "type": "Site",
+            "id": "COM",
+            "name": "Craters of the Moon",
+            "notes": "Idaho",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 4810159.89,
+                    "originEasting": 296256.22,
+                    "projection": "utm",
+                    "zone": 12,
+                    "zoneLetter": "T",
+                    "frame": "CratersSiteFrame",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y",
+                    "coordinateNotes": "X=Northing Y=Easting",
+                    "coordinateMapping": "lat, lon"
+                }
+            },
+            "bbox": [43.322457, -113.621675,
+            		 43.511963, -113.388753]
+        },
+        {
+            "type": "Site",
+            "id": "HIL",
+            "name": "Hawaii Lava Flows",
+            "notes": "Hawaii",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 2148871.83,
+                    "originEasting": 259694.25,
+                    "projection": "utm",
+                    "zone": 5,
+                    "zoneLetter": "Q",
+                    "frame": "HawaiiSiteFrame",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y",
+                    "coordinateNotes": "X=Northing Y=Easting",
+                    "coordinateMapping": "lat, lon"
+                }
+            },
+            "bbox": [19.172642, -155.435329,
+            		 19.430019, -155.190793]
+        }
+    ],
+
+    "platforms": [
+        {
+            "type": "Platform",
+            "id": "1",
+            "name": "EV"
+        }
+    ], 
+    
+    "commands": [
+    	{
+            "type": "PancamPano",
+            "presetName": "PancamPano_MedLow",
+            "duration": 90,
+            "hfov": 120,
+            "widthDegrees": 120,
+            "bottomDegrees": -30,
+            "topDegrees": 30,
+            "focalLengthMm": 7.44,
+            "range": 75,
+            "presetCode": "PML"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_MedMed",
+            "duration": 405,
+            "hfov": 120,
+            "widthDegrees": 120,
+            "bottomDegrees": -30,
+            "topDegrees": 30,
+            "focalLengthMm": 25,
+            "range": 100,
+            "presetCode": "PMM"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_NarrowHi",
+            "duration": 660,
+            "hfov": 40,
+            "widthDegrees": 40,
+            "bottomDegrees": -14,
+            "topDegrees": 14,
+            "focalLengthMm": 44,
+            "range": 150,
+            "presetCode": "PNH"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_WideLow",
+            "duration": 135,
+            "hfov": 180,
+            "widthDegrees": 180,
+            "bottomDegrees": -45,
+            "topDegrees": 31,
+            "focalLengthMm": 7.44,
+            "range": 75,
+            "presetCode": "PWL"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_WideMed",
+            "duration": 600,
+            "hfov": 180,
+            "widthDegrees": 180,
+            "bottomDegrees": -30,
+            "topDegrees": 30,
+            "focalLengthMm": 25,
+            "range": 100,
+            "presetCode": "PWM"
+        },
+        {
+            "type": "Pause",
+            "presetName": "Pause_Standard",
+            "duration": 100,
+            "presetCode": "WAI"
+        }
+     ]
+}

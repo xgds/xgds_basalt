@@ -1,0 +1,123 @@
+[
+    {
+        "_type": "Site",
+        "siteCode": "ET4",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "ET5",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "OT2",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "OT3",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "OT1",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "ARC",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "ERT",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "ORT",
+        "description": "NASA Ames Marscape",
+        "utmZone": 10,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 582670,
+        "siteOriginNorth": 4141480,
+        "siteFrameName": "MarscapeSiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "HMP",
+        "description": "HMP Research Station, Nunavut, Canada, 2007",
+        "utmZone": 16,
+        "utmZoneLetter": "X",
+        "northernHemisphere": true,
+        "siteOriginEast": 419660,
+        "siteOriginNorth": 8373890,
+        "siteFrameName": "HMP2007SiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "MLA",
+        "description": "Moses Lake, WA, 2008",
+        "utmZone": 11,
+        "utmZoneLetter": "T",
+        "northernHemisphere": true,
+        "siteOriginEast": 327000,
+        "siteOriginNorth": 5215600,
+        "siteFrameName": "MosesLake2008SiteFrameZDown"
+    },
+    {
+        "_type": "Site",
+        "siteCode": "BPA",
+        "description": "Black Point Lava Flow, AZ, 2009",
+        "utmZone": 12,
+        "utmZoneLetter": "S",
+        "northernHemisphere": true,
+        "siteOriginEast": 457797,
+        "siteOriginNorth": 3949752,
+        "siteFrameName": "BlackPoint2009SiteFrameZDown"
+    }
+]

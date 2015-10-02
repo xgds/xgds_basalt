@@ -1,0 +1,288 @@
+{
+    "xpjson": "0.1",
+    "type": "PlanLibrary",
+
+    "name": "K10 Command Library",
+    "notes": "Reusable elements for K10 plans",
+    "id": "http://example.com/k10PlanLibrary.json",
+    "schemaUrl": "http://example.com/k10PlanSchema.json",
+
+    "sites": [
+        {
+            "type": "Site",
+            "id": "MLA",
+            "name": "Moses Lake",
+            "notes": "Moses Lake, WA, 2008",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 5215600,
+                    "originEasting": 327000,
+                    "projection": "utm",
+                    "zone": 11,
+                    "zoneLetter": "N",
+                    "frame": "MosesLake2008SiteFrameZDown",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y"
+                }
+            }
+        },
+        {
+            "type": "Site",
+            "id": "BPA",
+            "name": "Black Point",
+            "notes": "Black Point Lava Flow, AZ, 2009",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 3949752,
+                    "originEasting": 457797,
+                    "projection": "utm",
+                    "zone": 12,
+                    "zoneLetter": "N",
+                    "frame": "BlackPoint2009SiteFrameZDown",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y"
+                }
+            }
+        },
+        {
+            "type": "Site",
+            "id": "HMP",
+            "name": "HMP",
+            "notes": "HMP Research Station, Nunavut, Canada, 2007",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 8373890,
+                    "originEasting": 419660,
+                    "projection": "utm",
+                    "zone": 16,
+                    "zoneLetter": "N",
+                    "frame": "HMP2007SiteFrameZDown",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y"
+                }
+            }
+            
+        }
+    ],
+
+    "platforms": [
+        {
+            "type": "Platform",
+            "id": "R",
+            "name": "K10Red"
+        },
+        {
+            "type": "Platform",
+            "id": "B",
+            "name": "K10Black"
+        },
+        {
+            "type": "Platform",
+            "id": "X",
+            "name": "KRex"
+        }
+    ],
+
+    "commands":[
+        {
+            "type": "Gpr",
+            "presetName": "Gpr_Shallow",
+            "duration": 0.01666,
+            "frequencyMHz": 9000.0,
+            "samplesPerTrace": 200,
+            "numStackingRepeats": 16,
+            "traceSpacingMeters": 0.05,
+            "presetCode": "GPR"
+        },
+        {
+            "type": "Gpr",
+            "presetName": "Gpr_Medium",
+            "duration": 0.01666,
+            "frequencyMHz": 6000.0,
+            "samplesPerTrace": 350,
+            "numStackingRepeats": 8,
+            "traceSpacingMeters": 0.01,
+            "presetCode": "GPR"
+        },
+        {
+            "type": "Gpr",
+            "presetName": "Gpr_Deep",
+            "duration": 0.01666,
+            "frequencyMHz": 3000.0,
+            "samplesPerTrace": 512,
+            "numStackingRepeats": 4,
+            "traceSpacingMeters": 0.05,
+            "presetCode": "GPR"
+        },
+        {
+            "type": "XrfScan",
+            "presetName": "XrfScan_Standard",
+            "duration": 1.5,
+            "scanDuration": 60,
+            "presetCode": "XRL"
+        },
+        {
+            "type": "LidarPano",
+            "presetName": "LidarPano_HiRes",
+            "duration": 360,
+            "hfov": 360,
+            "shotSpacing": 15,
+            "widthDegrees": 360,
+            "overlapPercent": 25,
+            "range": 125,
+            "presetCode": "LPH"
+        },
+        {
+            "type": "LidarPano",
+            "presetName": "LidarPano_LowRes",
+            "duration": 24,
+            "hfov": 360,
+            "shotSpacing": 60,
+            "widthDegrees": 360,
+            "overlapPercent": 25,
+            "range": 125,
+            "presetCode": "LPL"
+        },
+        {
+            "type": "LidarPano",
+            "presetName": "LidarPano_MedRes",
+            "duration": 96,
+            "hfov": 360,
+            "shotSpacing": 30,
+            "widthDegrees": 360,
+            "overlapPercent": 25,
+            "range": 125,
+            "presetCode": "LPM"
+        },
+        {
+            "type": "LidarScan",
+            "presetName": "LidarScan_HiRes",
+            "duration": 20,
+            "hfov": 40,
+            "shotSpacing": 15,
+            "range": 125,
+            "presetCode": "LSH"
+        },
+        {
+            "type": "LidarScan",
+            "presetName": "LidarScan_LowRes",
+            "duration": 3.5,
+            "hfov": 40,
+            "shotSpacing": 60,
+            "range": 125,
+            "presetCode": "LSL"
+        },
+        {
+            "type": "LidarScan",
+            "presetName": "LidarScan_MedRes",
+            "duration": 8,
+            "hfov": 40,
+            "shotSpacing": 30,
+            "range": 125,
+            "presetCode": "LSM"
+        },
+        {
+            "type": "MicroImage",
+            "presetName": "MicroImage_Standard",
+            "duration": 0.16667,
+            "focalLengthMm": 22.04,
+            "whiteBalance": "Auto",
+            "useFlash": false,
+            "presetCode": "MIC"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_MedLow",
+            "duration": 1.5,
+            "hfov": 120,
+            "widthDegrees": 120,
+            "bottomDegrees": -30,
+            "topDegrees": 30,
+            "focalLengthMm": 7.44,
+            "overlapPercent": 20,
+            "whiteBalance": "Daylight",
+            "range": 75,
+            "presetCode": "PML"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_MedMed",
+            "duration": 6.75,
+            "hfov": 120,
+            "widthDegrees": 120,
+            "bottomDegrees": -30,
+            "topDegrees": 30,
+            "focalLengthMm": 25,
+            "overlapPercent": 20,
+            "whiteBalance": "Daylight",
+            "range": 100,
+            "presetCode": "PMM"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_NarrowHi",
+            "duration": 11,
+            "hfov": 40,
+            "widthDegrees": 40,
+            "bottomDegrees": -14,
+            "topDegrees": 14,
+            "focalLengthMm": 44,
+            "overlapPercent": 20,
+            "whiteBalance": "Daylight",
+            "range": 150,
+            "presetCode": "PNH"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_WideLow",
+            "duration": 2.25,
+            "hfov": 180,
+            "widthDegrees": 180,
+            "bottomDegrees": -45,
+            "topDegrees": 31,
+            "focalLengthMm": 7.44,
+            "overlapPercent": 20,
+            "whiteBalance": "Daylight",
+            "range": 75,
+            "presetCode": "PWL"
+        },
+        {
+            "type": "PancamPano",
+            "presetName": "PancamPano_WideMed",
+            "duration": 10,
+            "hfov": 180,
+            "widthDegrees": 180,
+            "bottomDegrees": -30,
+            "topDegrees": 30,
+            "focalLengthMm": 25,
+            "overlapPercent": 20,
+            "whiteBalance": "Daylight",
+            "range": 100,
+            "presetCode": "PWM"
+        },
+        {
+            "type": "Pause",
+            "presetName": "Pause_Standard",
+            "duration": 0.01666,
+            "presetCode": "WAI"
+        },
+        {
+            "type": "AdvNav",
+            "presetName": "AdvNav_Start",
+            "presetCode": "ANS",
+            "command": "Start"
+        },
+        {
+            "type": "AdvNav",
+            "presetName": "AdvNav_Stop",
+            "presetCode": "ANX",
+            "command": "Stop"
+        }
+    ]
+}
