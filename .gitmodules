@@ -19,3 +19,6 @@
 [submodule "submodules/geocamTrackWeb"]
 	path = submodules/geocamTrackWeb
 	url = git://github.com/geocam/geocamTrackWeb.git
+[submodule "submodules/xgds_planner2"]
+	path = submodules/xgds_planner2
+	url = https://babelfish.arc.nasa.gov/git/xgds_planner2
