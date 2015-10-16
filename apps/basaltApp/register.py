@@ -86,7 +86,8 @@ def registerUser(request):
                 }),
             )
             return render_to_response("registration/simple_message.html",
-                                      {'message': "You have successfully registered.  You will receive an email notification at %s after a site manager approves your request." % user.email},
+                                      {'message': "You have successfully registered.  Please notify an xGDS developer to activate your account."},  
+                                      #You will receive an email notification at %s after a site manager approves your request." % user.email},
                                       context_instance=RequestContext(request))
 
 
