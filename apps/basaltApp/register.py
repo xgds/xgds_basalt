@@ -72,6 +72,8 @@ def registerUser(request):
             user_data = form.cleaned_data
             assert user_data.get('email')
             user = User.objects.create_user(user_data['username'], user_data['email'], user_data['password1'])
+            user.first_name = user_data['first_name']
+            user.last_name = user_data['last_name']
             user.is_active = False
             user.save()
             mail.mail_managers(
