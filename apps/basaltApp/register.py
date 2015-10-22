@@ -113,20 +113,20 @@ def activateUser(request, user_id):
     user.save()
     mail.send_mail(
         settings.EMAIL_SUBJECT_PREFIX + "Your account has been activated",
-        """
+        string.Template("""
         Hi, $username.
         Your xGDS registration request has been approved.  Click to log in!
         $url
-        """.substitute({'username': user.username,
+        """).substitute({'username': user.username,
                         'url': request.build_absolute_uri(reverse('user-login'))}),
         settings.SERVER_EMAIL,
         [user.email],
     )
     mail.mail_managers(
         settings.EMAIL_SUBJECT_PREFIX + "The user %s was activated." % user.username,
-        """
+        string.Template("""
         The User $username was successfully activated by $adminuser.
-        """.substitute({'username': user.username,
+        """).substitute({'username': user.username,
                         'adminuser': request.user.username}),
     )
     return render_message("The user %s was successfully activated." % user.username)
