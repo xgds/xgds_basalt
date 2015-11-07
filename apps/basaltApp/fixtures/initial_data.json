@@ -1,0 +1,82 @@
+[
+    {
+        "pk": 10,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "SBT",
+            "display_name": "Science Backroom Team"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "IV1",
+            "display_name": "IV1"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "IV2",
+            "display_name": "IV2"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "MCC",
+            "display_name": "MCC Staff"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "SBT_LEAD",
+            "display_name": "Science Backroom Lead"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "SCICOM",
+            "display_name": "SCICOM"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "CAPCOM",
+            "display_name": "CAPCOM"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "xgds_notes2.role",
+        "fields": {
+            "value": "STENO",
+            "display_name": "Steno"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "xgds_notes2.location",
+        "fields": {
+            "value": "MCC",
+            "display_name": "MCC"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "xgds_notes2.location",
+        "fields": {
+            "value": "FIELD",
+            "display_name": "Field"
+        }
+    }
+]
