@@ -28,3 +28,6 @@
 [submodule "submodules/xgds_video"]
 	path = submodules/xgds_video
 	url = https://babelfish.arc.nasa.gov/git/xgds_video
+[submodule "submodules/xgds_plot"]
+	path = submodules/xgds_plot
+	url = https://babelfish.arc.nasa.gov/git/xgds_plot
