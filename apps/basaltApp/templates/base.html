@@ -39,13 +39,13 @@
 			<li {% currentnav map* xgds_map_server* %}>
 				<a href="{% url 'map' %}" title="Map">Map</a>
 			</li>
-			<li>
+			<li {% currentnav planner2* %}>
 				<a href="{% url 'planner2_index' %}" title="plan">Plan</a>
 			</li>
 			<li>
 				<a href="{% url 'xgds_image_upload_page' %}" title="image">Image</a>
 			</li>
- 			<li { % currentnav *note* % }>
+ 			<li {% currentnav *note* %}>
 				<a href="{% url 'xgds_notes_review' %}" title="{{ settings.XGDS_NOTES_MONIKER }}">{{ settings.XGDS_NOTES_MONIKER }}</a>
 			</li>
             <li>

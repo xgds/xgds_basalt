@@ -78,5 +78,21 @@
             "value": "FIELD",
             "display_name": "Field"
         }
+    },
+    {
+        "pk": 1,
+        "model": "xgds_planner2.vehicle",
+        "fields": {
+            "name": "EV1",
+            "type": "EV"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "xgds_planner2.vehicle",
+        "fields": {
+            "name": "EV2",
+            "type": "EV"
+        }
     }
 ]
