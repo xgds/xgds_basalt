@@ -34,7 +34,7 @@ registration_email_template = string.Template(  # noqa
 """
 Greetings, xGDS managers.
 
-You have received a user registration request from xGDS PLRP from the user $username ($email).
+You have received a user registration request from xGDS from the user $username ($email).
 
 $username says:
 "$comments"
