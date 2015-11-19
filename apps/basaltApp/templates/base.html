@@ -41,8 +41,8 @@
 			<li {% currentnav planner2* %}>
 				<a href="{% url 'planner2_index' %}" title="plan">Plan</a>
 			</li>
-			<li>
-				<a href="{% url 'xgds_image_upload_page' %}" title="image">Image</a>
+			<li {% currentnav *xgds_image* %} >
+				<a href="{% url 'xgds_image_search' %}" title="image">Image</a>
 			</li>
  			<li {% currentnav *note* %}>
 				<a href="{% url 'xgds_notes_review' %}" title="{{ settings.XGDS_NOTES_MONIKER }}">{{ settings.XGDS_NOTES_MONIKER }}</a>
