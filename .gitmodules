@@ -31,3 +31,6 @@
 [submodule "submodules/xgds_plot"]
 	path = submodules/xgds_plot
 	url = https://babelfish.arc.nasa.gov/git/xgds_plot
+[submodule "submodules/geocamPycroraptor2"]
+	path = submodules/geocamPycroraptor2
+	url = https://github.com/geocam/geocamPycroraptor2.git
