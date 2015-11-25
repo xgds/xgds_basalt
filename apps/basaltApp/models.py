@@ -20,8 +20,8 @@ from geocamTrack import models as geocamTrackModels
 from xgds_planner2 import models as plannerModels
 
 class BasaltResource(geocamTrackModels.AbstractResource):
-    vehicle = models.ForeignKey(plannerModels.Vehicle)
+    vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
     pass
 
     def __unicode__(self):
-        return self.vehicle.name
+        return self.name

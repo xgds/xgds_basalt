@@ -100,7 +100,8 @@
         "model": "basaltApp.basaltresource",
         "fields": {
             "name": "EV1",
-            "vehicle": 1
+            "vehicle": 1,
+            "primary": true
         }
     },
     {
@@ -108,7 +109,8 @@
         "model": "basaltApp.basaltresource",
         "fields": {
             "name": "EV2",
-            "vehicle": 2
+            "vehicle": 2,
+            "primary": true
         }
     }
 ]
