@@ -94,5 +94,21 @@
             "name": "EV2",
             "type": "EV"
         }
+    },
+    {
+        "pk": 1,
+        "model": "basaltApp.basaltresource",
+        "fields": {
+            "name": "EV1",
+            "vehicle": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "basaltApp.basaltresource",
+        "fields": {
+            "name": "EV2",
+            "vehicle": 2
+        }
     }
 ]

@@ -15,7 +15,13 @@
 # __END_LICENSE__
 
 from django.db import models
-# from xgds_notes.models import NoteBase
-# 
-# class Note(NoteBase):
-#     pass
+
+from geocamTrack import models as geocamTrackModels
+from xgds_planner2 import models as plannerModels
+
+class BasaltResource(geocamTrackModels.AbstractResource):
+    vehicle = models.ForeignKey(plannerModels.Vehicle)
+    pass
+
+    def __unicode__(self):
+        return self.vehicle.name
