@@ -7,9 +7,9 @@
 [submodule "submodules/xgds_map_server"]
 	path = submodules/xgds_map_server
 	url = https://babelfish.arc.nasa.gov/git/xgds_map_server
-[submodule "submodules/submodules/xgds_image"]
+[submodule "submodules/xgds_image"]
 	path = submodules/xgds_image
-	url = https://babelfish.arc.nasa.gov/git/xgds_image
+	url = https://github.com/xgds/xgds_image.git
 [submodule "submodules/xgds_notes"]
 	path = submodules/xgds_notes
 	url = https://babelfish.arc.nasa.gov/git/xgds_notes
@@ -34,5 +34,3 @@
 [submodule "submodules/geocamPycroraptor2"]
 	path = submodules/geocamPycroraptor2
 	url = https://github.com/geocam/geocamPycroraptor2.git
-[submodule "xgds_data"]
-	url = https://github.com/xgds/xgds_data.git
