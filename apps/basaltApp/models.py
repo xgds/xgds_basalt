@@ -25,3 +25,10 @@ class BasaltResource(geocamTrackModels.AbstractResource):
 
     def __unicode__(self):
         return self.name
+    
+class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    pass
+
+
+class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    pass
