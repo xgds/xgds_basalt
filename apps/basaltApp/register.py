@@ -137,16 +137,23 @@ def email_feedback(request):
     if request.POST:
         form = EmailFeedbackForm(request.POST)
         if form.is_valid():
-            msg = mail.EmailMessage(
-                # from_email=settings.SERVER_EMAIL,
-                from_email=form.cleaned_data.get('reply_to', None) or settings.SERVER_EMAIL,
-                to=[a[1] for a in settings.ADMINS],
-                subject="[XGDS] User feedback",
-                body=form.cleaned_data['email_content'],
-            )
+            cc  = []
             if hasattr(request.user, 'email'):
-                msg.cc = [request.user.email]
-            msg.send()
+                cc = [request.user.email]
+            mail.mail_managers(
+                    "XGDS USER FEEDBACK",
+                    form.cleaned_data['email_content'],
+                    form.cleaned_data.get('reply_to', None) or settings.SERVER_EMAIL,
+                    cc)
+#             msg = mail.EmailMessage(
+#                 from_email=form.cleaned_data.get('reply_to', None) or settings.SERVER_EMAIL,
+#                 to=[a[1] for a in settings.ADMINS],
+#                 subject="[XGDS] User feedback",
+#                 body=form.cleaned_data['email_content'],
+#             )
+#             if hasattr(request.user, 'email'):
+#                 msg.cc = [request.user.email]
+#             msg.send()
             mail_sent = True
     else:
         email = None
