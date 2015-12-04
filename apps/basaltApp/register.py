@@ -27,7 +27,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 
 from django.conf import settings
-from basaltApp.forms import UserRegistrationForm
+from basaltApp.forms import UserRegistrationForm, EmailFeedbackForm
 
 
 registration_email_template = string.Template(  # noqa
@@ -132,3 +132,28 @@ def activateUser(request, user_id):
     return render_message("The user %s was successfully activated." % user.username)
 
 
+def email_feedback(request):
+    mail_sent = False
+    if request.POST:
+        form = EmailFeedbackForm(request.POST)
+        if form.is_valid():
+            msg = mail.EmailMessage(
+                # from_email=settings.SERVER_EMAIL,
+                from_email=form.cleaned_data.get('reply_to', None) or settings.SERVER_EMAIL,
+                to=[a[1] for a in settings.ADMINS],
+                subject="[XGDS] User feedback",
+                body=form.cleaned_data['email_content'],
+            )
+            if hasattr(request.user, 'email'):
+                msg.cc = [request.user.email]
+            msg.send()
+            mail_sent = True
+    else:
+        email = None
+        if hasattr(request.user, 'email'):
+            email = request.user.email
+        form = EmailFeedbackForm(initial={'reply_to': email})
+    return render_to_response('registration/email_feedback.html',
+                              {'form': form,
+                               'mail_sent': mail_sent},
+                              context_instance=RequestContext(request))

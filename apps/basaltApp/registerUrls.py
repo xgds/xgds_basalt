@@ -28,4 +28,5 @@ urlpatterns = patterns('',
                        (r'^reset-password-done/$', auth.views.password_reset_done, {'loginRequired': False},'password_reset_done'),
                        (r'^reset-password-confirm/(?P<uidb36>[^/]+)/(?P<token>.+)$', auth.views.password_reset_confirm, {'loginRequired': False}),
                        (r'^reset-password-complete/$', auth.views.password_reset_complete, {'loginRequired': False}),
+                       (r'^feedback/$', register.email_feedback, {'loginRequired': False}, 'email_feedback'),
                        )

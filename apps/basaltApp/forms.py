@@ -38,3 +38,8 @@ class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("username",'first_name', 'last_name', 'email', 'password1', 'password2', 'comments')
+
+
+class EmailFeedbackForm(forms.Form):
+    reply_to = forms.EmailField(required=False, label="Your email address")
+    email_content = forms.CharField(widget=forms.Textarea, label="Message")

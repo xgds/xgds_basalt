@@ -52,6 +52,10 @@
 			<li {% currentnav xgds_data_import %}>
 				<a href="{% url 'xgds_data_import' %}" title="Import">Import</a>
 			</li>
+			<li {% currentnav email_feedback %}>
+            	<a href="{% url 'email_feedback' %}">Feedback</a>
+            </li>
+			
             <li>
             {% if user.is_authenticated %}
                  <a href="{{ logout_url }}" title="Logout">Logout&nbsp;&nbsp;{{ user.first_name }}</a>
