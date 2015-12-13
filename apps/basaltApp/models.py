@@ -21,11 +21,11 @@ from xgds_planner2 import models as plannerModels
 
 class BasaltResource(geocamTrackModels.AbstractResource):
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
-    pass
 
     def __unicode__(self):
         return self.name
     
+
 class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
     pass
 
