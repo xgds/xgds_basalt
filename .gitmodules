@@ -34,3 +34,6 @@
 [submodule "submodules/xgds_image"]
 	path = submodules/xgds_image
 	url = https://github.com/xgds/xgds_image.git
+[submodule "submodules/xgds_core"]
+	path = submodules/xgds_core
+	url = https://github.com/xgds/xgds_core.git
