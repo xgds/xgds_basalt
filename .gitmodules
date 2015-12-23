@@ -37,3 +37,6 @@
 [submodule "submodules/xgds_core"]
 	path = submodules/xgds_core
 	url = https://github.com/xgds/xgds_core.git
+[submodule "submodules/pextant"]
+	path = submodules/pextant
+	url = https://github.com/kezilu/pextant.git
