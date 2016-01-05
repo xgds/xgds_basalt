@@ -14,11 +14,15 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
-from django.conf.urls import patterns, include
+from django.conf.urls import patterns, include, url
 
 from django.views.generic.base import TemplateView
 from basaltApp import views
 
 urlpatterns = patterns('',
-                       (r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index')
+                       (r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index'),
+                       url(r'^editEV/?$', views.editEV, {}, 'edit_ev'),
+                       url(r'^editEV/(?P<pk>[\d]+)$', views.editEV, {}, 're_edit_ev'),
+                       url(r'^saveEV/?$', views.editEV, {}, 'save_ev'),
+                       url(r'^saveEV/(?P<pk>[\d]+)$', views.editEV, {}, 're_save_ev'),
                        )

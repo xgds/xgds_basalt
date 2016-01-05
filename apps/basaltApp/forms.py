@@ -15,8 +15,12 @@
 #__END_LICENSE__
 
 from django import forms
+from django.forms import ModelForm
+
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+
+from models import EV
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -43,3 +47,11 @@ class UserRegistrationForm(UserCreationForm):
 class EmailFeedbackForm(forms.Form):
     reply_to = forms.EmailField(required=False, label="Your email address")
     email_content = forms.CharField(widget=forms.Textarea, label="Message")
+
+
+class EVForm(ModelForm):
+#     pk = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    
+    class Meta:
+        model = EV
+        fields = ['mass', 'user']

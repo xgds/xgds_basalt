@@ -15,6 +15,7 @@
 #__END_LICENSE__
 
 from django.db import models
+from django.contrib.auth.models import User
 
 from geocamTrack import models as geocamTrackModels
 from xgds_planner2 import models as plannerModels
@@ -32,3 +33,11 @@ class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
 
 class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
     pass
+
+class EV(models.Model):
+    '''
+    An EV is a user who can execute a plan.  Information must be provided to Pextant
+    about the user to correctly model the path
+    ''' 
+    mass = models.FloatField()
+    user = models.ForeignKey(User, unique=True)

@@ -14,7 +14,47 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
-from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
+import json
+from django.shortcuts import render_to_response, redirect, render
+from django.core.urlresolvers import reverse
+
+from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
+
+from forms import EVForm
+from models import EV
+
+
+def editEV(request, pk=None):
+    ''' Create or edit an EV definition.  Shows list of all existing EVs.
+    '''
+    if request.method == 'POST':
+        if pk:
+            instance = EV.objects.get(pk=pk)
+            form = EVForm(request.POST, instance=instance)
+        else:
+            form = EVForm(request.POST)
+        if form.is_valid():
+            form.save()
+            form = EVForm()
+            return HttpResponseRedirect(reverse('edit_ev')) 
+    else:
+        if not pk:
+            form = EVForm()
+        else:
+            instance = EV.objects.get(pk=pk)
+            form = EVForm(instance=instance)
+    return render(
+        request,
+        'basaltApp/editEV.html',
+        {
+            'form': form,
+            'evList': EV.objects.all(),
+            'pk': pk
+        },
+    )
+    
+def callPextant(request, plan):
+    print 'Called Pextant post save Python'
+

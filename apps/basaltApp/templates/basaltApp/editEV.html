@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Edit EVs</h2>
+
+<p>
+<strong>Add EV</strong><br/>
+<i>Mass in kg</i>
+<form action="{% if pk %}{% url 're_save_ev' pk %}{% else %}{% url 'save_ev' %}{% endif %}" method="post">
+<table>
+{{ form.as_table }}
+</table>
+<input type='hidden' id="id_pk" value="{{pk}}">
+<input class="mybutton small" type="submit" value="Save">
+</form>
+</p>
+
+{% if evList %}
+<strong>Existing EVs</strong>
+<table>
+<thead>
+<th>User</th>
+<th>Mass (kg)</th>
+</thead>
+{% for ev in evList %}
+<tr>
+<td><a href="{% url 're_edit_ev' ev.id %}">{{ ev.user.first_name }}&nbsp;{{ ev.user.last_name }}</a></td>
+<td style="text-align:right;">{{ ev.mass }}</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+
+
+{% endblock content %}
