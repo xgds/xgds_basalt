@@ -69,66 +69,6 @@
     ], 
     
     "commands": [
-    	{
-            "type": "PancamPano",
-            "presetName": "PancamPano_MedLow",
-            "duration": 90,
-            "hfov": 120,
-            "widthDegrees": 120,
-            "bottomDegrees": -30,
-            "topDegrees": 30,
-            "focalLengthMm": 7.44,
-            "range": 75,
-            "presetCode": "PML"
-        },
-        {
-            "type": "PancamPano",
-            "presetName": "PancamPano_MedMed",
-            "duration": 405,
-            "hfov": 120,
-            "widthDegrees": 120,
-            "bottomDegrees": -30,
-            "topDegrees": 30,
-            "focalLengthMm": 25,
-            "range": 100,
-            "presetCode": "PMM"
-        },
-        {
-            "type": "PancamPano",
-            "presetName": "PancamPano_NarrowHi",
-            "duration": 660,
-            "hfov": 40,
-            "widthDegrees": 40,
-            "bottomDegrees": -14,
-            "topDegrees": 14,
-            "focalLengthMm": 44,
-            "range": 150,
-            "presetCode": "PNH"
-        },
-        {
-            "type": "PancamPano",
-            "presetName": "PancamPano_WideLow",
-            "duration": 135,
-            "hfov": 180,
-            "widthDegrees": 180,
-            "bottomDegrees": -45,
-            "topDegrees": 31,
-            "focalLengthMm": 7.44,
-            "range": 75,
-            "presetCode": "PWL"
-        },
-        {
-            "type": "PancamPano",
-            "presetName": "PancamPano_WideMed",
-            "duration": 600,
-            "hfov": 180,
-            "widthDegrees": 180,
-            "bottomDegrees": -30,
-            "topDegrees": 30,
-            "focalLengthMm": 25,
-            "range": 100,
-            "presetCode": "PWM"
-        },
         {
             "type": "Pause",
             "presetName": "Pause_Standard",

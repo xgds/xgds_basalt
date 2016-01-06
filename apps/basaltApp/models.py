@@ -41,3 +41,9 @@ class EV(models.Model):
     ''' 
     mass = models.FloatField()
     user = models.ForeignKey(User, unique=True)
+    
+    def __unicode__(self):
+        return self.user.first_name + ' ' + self.user.last_name
+    
+class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
+    ev = models.ForeignKey(EV)

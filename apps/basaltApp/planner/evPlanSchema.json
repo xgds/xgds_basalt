@@ -21,45 +21,10 @@
 	    "name": "Default Speed",
 	    "default": 0.89408,
 	    "widget":"number"
-	},
-	{
-	    "type": "ParamSpec",
-	    "id": "scheduledStartTime",
-	    "valueType": "date-time",
-	    "notes": "UTC time plan should start",
-	    "required": false,
-	    "name": "Scheduled Start",
-	    "widget":"datetime"
 	}
     ],
 
     "paramSpecs": [
-        {
-            "type": "ParamSpec",
-            "id": "showWedge",
-            "valueType": "boolean",
-            "default": false,
-            "notes": "Show Wedge",
-            "visible": false
-        },
-        {
-            "type": "ParamSpec",
-            "id": "hfov",
-            "valueType": "number",
-            "required": false,
-            "minimum": 0,
-            "notes": "Horizontal field of view (degrees). Used for field of view wedge display.",
-            "visible": false
-        },
-        {
-            "type": "ParamSpec",
-            "id": "range",
-            "valueType": "number",
-            "required": false,
-            "minimum": 0,
-            "notes": "Range (m) at which resolution of the data product gets 'unacceptably low'. Used for field of view wedge display.",
-            "visible": false
-        },
         {
             "type": "ParamSpec",
             "id": "instrument",
@@ -98,62 +63,12 @@
         },
         {
             "type": "ParamSpec",
-            "id": "tolerance",
-            "default": 0.6,
-            "valueType": "number",
-            "required": false
-        },
-        {
-            "type": "ParamSpec",
             "id": "duration",
            	"widget":"h:m:s",
             "valueType": "number",
             "minimum": 0,
             "default": 0,
             "notes": "(Hours:)Minutes:Seconds"
-        },
-        {
-            "type": "ParamSpec",
-            "id": "pancamPanoWidthDegrees",
-            "valueType": "number",
-            "minimum": 0,
-            "maximum": 318,
-            "notes": "Width of the panorama in degrees.  At a directional station with heading YAW and @widthDegrees W, the left and right edges of the pano will be YAW - W/2 and YAW + W/2.  The max value comes from the Directed Perception PTU limit at +/- 159 degrees pan."
-        },
-        {
-            "type": "ParamSpec",
-            "id": "pancamTiltDegrees",
-            "valueType": "number",
-            "minimum":-47,
-            "maximum": 31,
-            "notes": "Pancam PTU tilt in degrees.  Zero is level, increasing tilt tilts back.  The min and max values come from the Directed Perception PTU tilt limits."
-        },
-         {
-            "type": "ParamSpec",
-            "id": "pancamFocalLengthMm",
-            "valueType": "number",
-            "minimum": 7.4,
-            "maximum": 44,
-            "notes": "Zoom expressed as focal length in mm.  This is actual, not 35 mm equivalent, focal length.  The horizontal field of view ranges from 77.85 degrees (7.4 mm) to 15.47 degrees (44 mm)."
-        },
-        {
-            "type": "ParamSpec",
-            "id": "pancamPanoOverlapPercent",
-            "valueType": "number",
-            "minimum": 20,
-            "maximum": 100,
-            "notes": "Percent overlap between adjacent frames of the panorama.  The GigaPan stitcher needs >= 20% overlap."
-        },
-        {
-            "type": "ParamSpec",
-            "id": "panoWhiteBalance",
-            "choices": [["Auto", "Auto"],
-                        ["Daylight", "Daylight"],
-                        ["Cloudy", "Cloudy"],
-                        ["Tungsten", "Tungsten"],
-                        ["Fluorescent", "Fluorescent"]],
-            "valueType": "string",
-            "notes": "Camera white balance setting.  For a panorama, setting white balance to 'Auto' can cause stitching artifacts if the camera changes white balance between frames.  Therefore we suggest using 'Daylight' or 'Cloudy' depending on the weather."
         }
     ],
 
@@ -216,88 +131,28 @@
                 },
                 {
                     "type": "ParamSpec",
-                    "id": "showWedge",
-                    "parent": "showWedge"
-                },
-                {
-                    "type": "ParamSpec",
-                    "id": "hfov",
-                    "parent": "hfov"
-                },
-                {
-                    "type": "ParamSpec",
-                    "id": "range",
-                    "parent": "range"
-                },
-                {
-                    "type": "ParamSpec",
                     "id": "instrument",
                     "parent": "instrument"
                 }
             ]
         },
-     		{
+        {
             "type": "CommandSpec",
-            "id": "PancamPano",
+            "id": "Pause",
             "parent": "EVCommand",
-            "color": "#00ff00",
+            "color": "#999999",
             "params": [
                 {
                     "type": "ParamSpec",
                     "parent": "instrument",
                     "id": "instrument",
-                    "default": "Pancam"
-                },
-                {
-                    "type": "ParamSpec",
-                    "parent": "showWedge",
-                    "id": "showWedge",
-                    "default": true
-                },
-                {
-                    "type": "ParamSpec",
-                    "parent": "pancamPanoWidthDegrees",
-                    "id": "widthDegrees",
-                    "notes": "Panorama Width (degrees)"
-                },
-                {
-                    "type": "ParamSpec",
-                    "parent": "pancamTiltDegrees",
-                    "id": "bottomDegrees",
-                    "notes": "Tilt Bottom (degrees)"
-                },
-                {
-                    "type": "ParamSpec",
-                    "parent": "pancamTiltDegrees",
-                    "id": "topDegrees",
-                    "notes": "Tilt Top (degrees)"
-                },
-                {
-                    "type": "ParamSpec",
-                    "parent": "pancamFocalLengthMm",
-                    "id": "focalLengthMm",
-                    "notes": "Focal Length (mm)"
-                },
-                {
-                    "type": "ParamSpec",
-                    "parent": "pancamPanoOverlapPercent",
-                    "id": "overlapPercent",
-                    "notes": "Overlap (%)",
-                    "default": 20
-                },
-                {
-                    "type": "ParamSpec",
-                    "parent": "panoWhiteBalance",
-                    "id": "whiteBalance",
-                    "notes": "White Balance",
-                    "default": "Daylight"
+                    "default": "Pause"
                 }
             ]
         }
      ],
 
     "stationSequenceCommands": [
-    	"PancamPano",
     	"Pause"
     ],
 
