@@ -38,7 +38,7 @@ def editEV(request, pk=None):
         if form.is_valid():
             form.save()
             form = EVForm()
-            return HttpResponseRedirect(reverse('edit_ev')) 
+            return HttpResponseRedirect(reverse('planner2_edit_ev')) 
     else:
         if not pk:
             form = EVForm()
@@ -58,3 +58,13 @@ def editEV(request, pk=None):
 def callPextant(request, plan):
     print 'Called Pextant post save Python'
 
+
+def addToPlannerContext(context):
+    ''' Add a list of EVs for the scheduling part of the plan editor
+    '''
+    evList = []
+    for ev in EV.objects.all():
+        evList.append(ev.toSimpleDict())
+        
+    context['extras'] = json.dumps({"evList":evList})
+    return context

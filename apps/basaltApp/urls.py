@@ -21,8 +21,8 @@ from basaltApp import views
 
 urlpatterns = patterns('',
                        (r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index'),
-                       url(r'^editEV/?$', views.editEV, {}, 'edit_ev'),
-                       url(r'^editEV/(?P<pk>[\d]+)$', views.editEV, {}, 're_edit_ev'),
-                       url(r'^saveEV/?$', views.editEV, {}, 'save_ev'),
-                       url(r'^saveEV/(?P<pk>[\d]+)$', views.editEV, {}, 're_save_ev'),
+                       url(r'^editEV/?$', views.editEV, {}, 'planner2_edit_ev'),
+                       url(r'^editEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_edit_ev'),
+                       url(r'^saveEV/?$', views.editEV, {}, 'planner2_save_ev'),
+                       url(r'^saveEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_save_ev'),
                        )

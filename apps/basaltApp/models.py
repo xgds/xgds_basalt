@@ -14,6 +14,8 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
+import json
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -42,8 +44,27 @@ class EV(models.Model):
     mass = models.FloatField()
     user = models.ForeignKey(User, unique=True)
     
+    def toSimpleDict(self):
+        result = {}
+        result['mass'] = self.mass
+        result['name'] = self.user.first_name + ' ' + self.user.last_name
+        result['pk'] = self.pk
+        return result
+    
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
     
-class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
+class BasaltPlanExecution(plannerModels.PlanExecution):
+    ''' 
+    A Plan Execution that also includes an EV
+    '''
     ev = models.ForeignKey(EV)
+    
+    def toSimpleDict(self):
+        result = super(BasaltPlanExecution, self).toSimpleDict()
+        if self.ev:
+            result['ev'] = self.ev.pk
+        else:
+            result['ev'] = None
+        return result
+    
