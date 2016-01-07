@@ -68,3 +68,9 @@ def addToPlannerContext(context):
         
     context['extras'] = json.dumps({"evList":evList})
     return context
+
+def addEVToPlanExecution(request, pe):
+    if 'ev' in request.POST.keys():
+        evPK = request.POST['ev']
+        pe.ev = EV.objects.get(pk=evPK)
+    return pe
