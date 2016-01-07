@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% load url from future %}
+{% load tz_convert %}
+
+{% block cssExtras %}
+{{ block.super }}
+<style type="text/css" title="currentStyle">
+	@import "{{ EXTERNAL_URL }}jquery-ui/themes/base/jquery-ui.css";
+	@import url('{{EXTERNAL_URL}}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.css');
+</style>
+<style type="text/css">
+table.planIndex td.exportFormat a {
+    padding-right: 10px;
+}
+
+</style>
+{% endblock cssExtras %}
+
+{% block siteSection %}Planner Index{% endblock siteSection %}
+
+{% block sitemenu-content-secondary %}
+{% include "xgds_planner2/planner2_subnav.html" %}
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+
+<form name='PlanForm' action="{% url 'planner2_delete' %}" method="post">
+<input type="submit" class="mybutton right" id="deleteButton" value="Delete Selected" ></input>
+<input class="mybutton right" type="button" id="toggle_button" value="Toggle Lock" ></input>
+{% if settings.XGDS_PLANNER2_SCHEDULE_INCLUDED %}
+<input class="mybutton right" type="button" onclick="showScheduleDialog()" id="schedule_button" value="Schedule Selected" ></input>
+{% endif %}
+<a href={% if XGDS_PLANNER2_CREATE_URL %} "{{ XGDS_PLANNER2_CREATE_URL }}" {% else %} "{% url 'planner2_planCreate' %}" {% endif %} class="mybutton" style="float:right; margin-bottom:3px;"> Create Plan</a>
+<table id="dataTable" class="planIndex">
+<thead class="table_header">
+  <tr>
+  	<th><label for="pick_master">All</label><br/><input type="checkbox" id="pick_master" /></th>
+    <th></th>
+    <th>Name</th>
+    <th>Author</th>
+    <th>Last Edit</th>
+    <th>{{settings.XGDS_MAP_SERVER_SITE_MONIKER}}</th>
+    <th>Dist</th>
+    <th>#Stn</th>
+    <th>#Commands</th>
+    {% if settings.XGDS_PLANNER2_SCHEDULE_INCLUDED %}
+    <th>Scheduled</th>
+    <th>EV</th>
+    {% endif %}
+    <th>Export</th>
+  </tr>
+</thead>
+<tbody>
+{% for plan in plans %}
+  <tr id={{ plan.id }}>
+  	<td><input type="checkbox" id="pick_{{plan.id}}" name="picks" value="{{plan.id}}" class="check"/></td>
+  	<td>{% if plan.readOnly %}<img src="{{ STATIC_URL }}xgds_planner2/images/lock.png" alt="Read Only">{% endif %}</td>
+  	<td ><label for="pick_{{plan.id}}"><a href="{% url 'planner2_edit' plan.id %}" id="edit_{{plan.id}}">{{ plan.name }}</a></label></td>
+  	<td>{{ plan.creator }}</td>
+    <td>{{ plan.dateModified|utc_to_django|date:"Y-m-d H:i e" }}</td>
+    <td>{{ plan.jsonPlan.site.name }}</td>
+    <td class="right">{{ plan.lengthMeters|floatformat }}</td>
+    <td class="center">{{ plan.numStations }}</td>
+    <td >{{ plan.numCommands }} &nbsp;&nbsp;{{ plan.getSummaryOfCommandsByType|safe }}</td>
+    {% if settings.XGDS_PLANNER2_SCHEDULE_INCLUDED %}
+    <td style="width:150px;">{% for execution in plan.executions.all %} {{ execution.planned_start_time|utc_to_django|date:"Y-m-d H:i"}}<br/>{% endfor %}</td>
+    <td style="width:150px;">{% for execution in plan.executions.all %} {{ execution.ev }}<br/>{% endfor %}</td>
+    {% endif %}
+    <td class="exportFormat">
+      {% for exporter in plan.getExporters %}
+        <a href="{{ exporter.url }}" style="text-decoration:none">
+          {{ exporter.label }} 
+        </a>
+      {% endfor %}
+    </td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+</form>
+
+{% if settings.XGDS_PLANNER2_SCHEDULE_INCLUDED %}
+<div id="scheduleDialog" style="display:none">
+	<form name='ScheduleForm' id="scheduleForm" action="{% url 'planner2_schedulePlans' %}" method="post">
+		<input type="hidden" name="planIds" id="id_planIds"></input>
+		<p>Schedule selected plans</p>
+		<table>
+		<tr>
+			<td>Plans</td>
+			<td><span class="planlist"></span></td>
+		</tr>
+		<tr>
+			<td><label for="id_flight">{{settings.XDGS_PLANNER2_FLIGHT_MONIKER}}</label></td>
+			<td><select name="flight" id="id_flight"> {% for flight in flight_names %} 
+		        <option value="{{ flight }}">{{ flight }} </option>
+		        {% endfor %}
+		        </select>
+		    </td>
+		 </tr>
+		 <tr>
+			<td><label for="id_schedule_ev">EV</label></td>
+			<td>
+			<select name="ev" id="id_ev">
+  			</select>
+  			</td>
+		</tr>
+		<tr>
+			<td><label for="id_schedule_date">When</label></td>
+			<td><input type="text" name="schedule_date" id="id_schedule_date"></input></td>
+		</tr>
+		</table>
+	</form>
+	</div>
+{% endif %}
+{% endblock content %}
+
+{% block scripts %}
+  {{ block.super }}
+  	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jquery-ui/jquery-ui.min.js"></script>
+  	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}datatables/media/js/jquery.dataTables.min.js"></script>
+	<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}geocamUtil/js/datatable_helpers.js"></script>
+	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
+
+<script type="text/javascript">
+$( "#PlanForm" ).submit(function( event ) {
+	  event.preventDefault();
+	});
+$("#deleteButton").click(function() {
+	var question = []
+	var deathRow = []
+	$('.check').each(function(i, obj) {
+		if($(this).is(":checked")) {
+			deathRow.push($(this).val());
+			var editthingy = $("#edit_" + $(this).val());
+			var ques = editthingy.text();
+			question.push(ques);
+		}
+	});
+	if (deathRow.length > 0){
+		var returnVal = confirm("Are you sure you want to delete these plans ? " + question.toString());
+		if (returnVal) {
+			$("#PlanForm").submit();
+		}
+	}
+});
+
+	defaultOptions['oLanguage'] = {
+	            "sLengthMenu": "Display _MENU_ plans of _LENGTH_"
+	          };
+	defaultOptions['aoColumnDefs'] =[
+	            {
+	                aTargets: ['name'],
+	                sWidth: '285px',
+	            },
+	            {
+	                aTargets: ['Export'],
+	                bSortable: false,
+	            },
+	        ];
+	
+	var initializedEV = false;
+	
+	function showScheduleDialog() {
+	    var planlist = ""
+		var planIds = []
+	    $('.check').each(function(i, obj) {
+			if($(this).is(":checked")) {
+			    planIds.push($(this).val());
+				var editthingy = $("#edit_" + $(this).val());
+				planlist = planlist + editthingy.text() + "<br/>";
+			}
+		});
+	    if (!initializedEV){
+		$.each({{extras|safe}}.evList, function(i, value) {
+	            $('#id_ev').append($('<option>').text(value.name).attr('value', value.pk));
+	        });
+			initializedEV = true;
+	    }
+	    $('.planlist').html(planlist);
+	    $('#scheduleDialog').dialog({
+	        dialogClass: 'no-close',
+	        modal: false,
+	        resizable: true,
+	        closeOnEscape: true,
+	        buttons: {
+	            'Cancel': function() {
+	                $(this).dialog('close');
+	            },
+	            'Schedule': function() {
+	                //var date = $('#id_schedule_date').val();
+	                //var flight = $('#id_flight').val();
+	                $("#id_planIds").val(planIds);
+	                //TODO validate
+	                $( "#scheduleForm" ).submit();
+	            }
+	        },
+	        position: {
+	            my: 'right top',
+	            at: 'right bottom',
+	            of: '#schedule_button'
+	        },
+	        dialogClass: 'saveAs'
+	    });
+	};
+
+	 $(document).ready( function () {
+	     {% if settings.XGDS_PLANNER2_SCHEDULE_INCLUDED %}
+	     $( "#id_schedule_date" ).datetimepicker({'controlType': 'select',
+	            'oneLine': true,
+	            'showTimezone': false,
+	            'timezone': '-0000'
+	           });
+	     {% endif %}
+	   
+		var dataTable = $('#dataTable').dataTable( defaultOptions);
+		$(window).resize(function(){ 
+			$('div.dataTables_scrollBody').css('height',calcDataTableHeight());
+			dataTable.fnAdjustColumnSizing();
+		});
+		
+		// handle the toggle button
+		$('#toggle_button').click(function()
+		        {
+				    var planIds = []
+				    $('.check').each(function(i, obj) {
+						if($(this).is(":checked")) {
+						    planIds.push($(this).val());
+						}
+					});
+		            $.ajax(
+		            {
+		                url: "{% url 'planner2_toggleReadOnly' %}",
+		                type: "POST",
+		                data: {'pids':planIds},
+		                dataType: "html",
+		                success: function(data)
+		                {
+		                    window.location = '{% url 'planner2_index' %}';
+		                }
+		            });
+		        });
+		
+		// handle the master checkbox
+		 $('#pick_master').val($(this).is(':checked'));
+
+        $('#pick_master').change(function() {
+                var masterChecked = $(this).is(":checked");
+                $('.check').each(function(i, obj) {
+		            $(this).prop("checked", masterChecked);
+		        });
+        });
+
+	} );
+ </script>
+{% endblock scripts %}
