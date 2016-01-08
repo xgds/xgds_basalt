@@ -13,6 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
+
 import json
 import os
 from django.conf import settings
@@ -42,7 +43,20 @@ def getMap(site_frame):
             DEMS[site_frame] = dem
             return dem
         return None
-        
+
+def testJsonSegments(plan):
+    prevStation = None
+    
+    for index, entry in enumerate(plan.jsonPlan.sequence):
+        if entry['type'] == 'Station':
+            prevStation = entry['geometry']['coordinates']
+        elif entry['type'] == 'Segment':
+            nextStation = plan.jsonPlan.sequence[index+1]['geometry']['coordinates']
+            allCoords = [prevStation, nextStation]
+            entry['geometry'] = {"coordinates": allCoords,
+                                 "type": "LineString"}
+            prevStation = nextStation
+    return plan
     
 def callPextant(request, plan):
     print 'Called Pextant post save Python'
@@ -68,6 +82,10 @@ def callPextant(request, plan):
 #     pathFinder = Pathfinder(explorer, dem)
 #     result = pathFinder.completeSearchFromJson('Energy', plan.jsonPlan)
 #     print result
+
+    plan = testJsonSegments(plan)
+    print plan.jsonPlan
+    plan.save()
     return plan
 
     
