@@ -55,9 +55,6 @@ def editEV(request, pk=None):
         },
     )
     
-def callPextant(request, plan):
-    print 'Called Pextant post save Python'
-
 
 def addToPlannerContext(context):
     ''' Add a list of EVs for the scheduling part of the plan editor
@@ -74,3 +71,4 @@ def addEVToPlanExecution(request, pe):
         evPK = request.POST['ev']
         pe.ev = EV.objects.get(pk=evPK)
     return pe
+
