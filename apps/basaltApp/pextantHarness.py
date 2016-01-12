@@ -13,7 +13,8 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-
+import pydevd
+import logging
 import json
 import os
 from django.conf import settings
@@ -32,14 +33,17 @@ from apps.pextant.EnvironmentalModel import EnvironmentalModel
 
 DEMS = {}
 
-def getMap(site_frame):
+def getMap(site):
+    site_frame = site['name']
     if DEMS and site_frame in DEMS.keys:
         return DEMS[site_frame]
     else:
         dem_name = site_frame.replace(' ', '_')+'.tif'
         fullPath = os.path.join(settings.STATIC_ROOT, 'basaltApp', 'dem', dem_name)
         if os.path.isfile(fullPath): 
-            dem = loadElevationMap(fullPath)
+            zone=site['alternateCrs']['properties']['zone']
+            zoneLetter=site['alternateCrs']['properties']['zoneLetter']
+            dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter)
             DEMS[site_frame] = dem
             return dem
         return None
@@ -62,28 +66,29 @@ def callPextant(request, plan):
     print 'Called Pextant post save Python'
     executions = plan.executions
     if not executions:
-        raise AssertionError('Plan not scheduled could not call Pextant')
+        logging.warning('Plan %s not scheduled could not call Pextant', plan.name)
         return plan
     
     if not executions[0].ev:
-        raise AssertionError('No EV associated could not call Pextant')
+        logging.warning('No EV associated with plan %s could not call Pextant', plan.name)
         return plan
 
     explorer = BASALTExplorer(executions[0].ev.mass)
     
 #     start_time = executions[0].planned_start_time
-    site_frame = plan.jsonPlan['site']['name']
+    site = plan.jsonPlan['site']
 
 # CANNOT build map due to bugs in pextant
-#     dem = getMap(site_frame)
-#     if not dem:
-#         raise AssertionError('Could not load DEM while calling Pextant for ' + site_frame)
-#     
+    pydevd.settrace('128.102.236.212')
+    dem = getMap(site)
+    if not dem:
+        logging.warning('Could not load DEM while calling Pextant for ' + site['name'])
+#      
 #     pathFinder = Pathfinder(explorer, dem)
 #     result = pathFinder.completeSearchFromJson('Energy', plan.jsonPlan)
 #     print result
 
-    plan = testJsonSegments(plan)
+#     plan = testJsonSegments(plan)
     print plan.jsonPlan
     plan.save()
     return plan
