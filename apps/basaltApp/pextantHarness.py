@@ -13,7 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-import pydevd
+# import pydevd
 import logging
 import json
 import os
@@ -79,18 +79,18 @@ def callPextant(request, plan):
     site = plan.jsonPlan['site']
 
 # CANNOT build map due to bugs in pextant
-    pydevd.settrace('128.102.236.212')
-    dem = getMap(site)
-    if not dem:
-        logging.warning('Could not load DEM while calling Pextant for ' + site['name'])
+#     pydevd.settrace('128.102.236.212')
+#     dem = getMap(site)
+#     if not dem:
+#         logging.warning('Could not load DEM while calling Pextant for ' + site['name'])
 #      
 #     pathFinder = Pathfinder(explorer, dem)
 #     result = pathFinder.completeSearchFromJson('Energy', plan.jsonPlan)
 #     print result
 
 #     plan = testJsonSegments(plan)
-    print plan.jsonPlan
-    plan.save()
+#     print plan.jsonPlan
+#     plan.save()
     return plan
 
     
