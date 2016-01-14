@@ -29,7 +29,7 @@ $(function() {
                 if (!options.stationsVector && !options.model) {
                     throw 'Missing a required option!';
                 }
-
+                this.stationsDecoratorsVector = this.options.stationsDecoratorsVector;
                 var pmOptions = {};
                 var name = '' + this.model._sequenceLabel;
                 if (!_.isUndefined(this.model.get('name'))) {
@@ -52,17 +52,27 @@ $(function() {
                                   }
                               });
                 this.model.on('station:remove', function() {
-                    this.stationsVector.removeFeature(this.feature);
+                    this.stationsVector.removeFeature(this.features[0]);
+                    if (this.features.length > 1){
+                		this.stationsDecoratorsVector.removeFeature(this.features[1]);
+                	}
                 }, this);
                 
-                app.mapView.on('change:resolution', this.redrawTolerance, this);
-                this.listenTo(this.model, 'change:tolerance', this.redrawTolerance);
+                this.listenTo(this.model, 'change', this.redrawTolerance);
 
             },
-            
+            getToleranceGeometry: function() {
+            	if ('tolerance' in this.model.attributes) {
+            		var radius = this.model.get('tolerance');
+            		return new ol.geom.Circle(this.point, radius);
+            	}
+            	return undefined;
+            },
             redrawTolerance: function() {
-            	this.buildToleranceStyle();
-            	this.feature.changed();
+                if (!_.isUndefined(this.toleranceGeometry)) {
+                	this.toleranceGeometry.setCenter(this.point);
+                	this.toleranceGeometry.setRadius(this.model.get('tolerance'));
+                }
             },
             
             redrawPolygons: function() {
@@ -71,7 +81,7 @@ $(function() {
             
             render: function() {
                 this.geometry = new ol.geom.Point(this.point);
-                this.feature = new ol.Feature({geometry: this.geometry,
+                this.features = [new ol.Feature({geometry: this.geometry,
                                                id: this.model.attributes['id'],
                                                name: this.model.attributes['id'],
                                                model: this.model,
@@ -79,21 +89,34 @@ $(function() {
                                                selectedIconStyle: this.selectedIconStyle,
                                                textStyle: this.textStyle,
                                                style: this.getStationStyles
-                                            });
-            	this.feature.setStyle(this.getStationStyles);
-                this.feature.set('selectedIconStyle', this.selectedIconStyle);
-                this.feature.set('iconStyle', this.iconStyle);
-                this.feature.set('textStyle', this.textStyle);
-                this.feature.set('toleranceStyle', this.toleranceStyle);
+                                            })]
+            	this.features[0].setStyle(this.getStationStyles);
+                this.features[0].set('selectedIconStyle', this.selectedIconStyle);
+                this.features[0].set('iconStyle', this.iconStyle);
+                this.features[0].set('textStyle', this.textStyle);
+                
+                // draw the tolerance circle
+                this.toleranceGeometry = this.getToleranceGeometry();
+                if (this.toleranceGeometry != null){
+    	            this.toleranceFeature = new ol.Feature({geometry: this.toleranceGeometry,
+    	                id: this.model.attributes['id'] + '_stn_tolerance',
+    	                name: this.model.attributes['id'] + '_stn_tolerance',
+    	                model: this.model,
+    	                style: olStyles.styles['tolerance']});
+    	            this.toleranceFeature.setStyle(olStyles.styles['tolerance']);
+    	            this.features.push(this.toleranceFeature);
+            		this.stationsDecoratorsVector.addFeature(this.toleranceFeature);
+                }
 
                 this.geometry.on('change', this.geometryChanged, this);
 
-                this.model['feature'] = this.feature;
-                this.stationsVector.addFeature(this.feature);
+                this.model['feature'] = this.features[0];
+                this.stationsVector.addFeature(this.features[0]);
             },
             
             geometryChanged: function(event) {
-            	 var coords = inverseTransform(this.geometry.getCoordinates());
+            	this.point = this.geometry.getCoordinates();
+            	 var coords = inverseTransform(this.point);
             	 var oldCoords = this.model.getPoint();
 //            	 if (oldCoords[0] != coords[0] && oldCoords[1] != coords[1]){
             		 this.model.setPoint({
@@ -101,7 +124,7 @@ $(function() {
                          lat: coords[1]
                      });
 //            	 }
-                 
+                 this.redrawTolerance();
             },
             
             redraw: function() {
@@ -111,13 +134,12 @@ $(function() {
                 // redraw code. To be invoked when relevant model attributes change.
                 app.Actions.disable();
 
-                var coords = transform(this.model.get('geometry').coordinates);
+                this.point = transform(this.model.get('geometry').coordinates);
                 var existingCoords = this.geometry.getCoordinates();
-                if ((coords[0] != existingCoords[0]) || 
-                    (coords[1] != existingCoords[1])) {
-                    this.geometry.setCoordinates(coords);
+                if ((this.point[0] != existingCoords[0]) || 
+                    (this.point[1] != existingCoords[1])) {
+                    this.geometry.setCoordinates(this.point);
                 }
-                this.buildToleranceStyle();
                 var newLabel = this.getLabel()
                 if (!_.isEqual(newLabel, this.textStyle.getText().getText())){
                 	this.textStyle.getText().setText(newLabel);
@@ -134,7 +156,8 @@ $(function() {
                         commandView.update();
                     });
                 }
-                this.feature.changed();
+                this.redrawTolerance();
+                this.features[0].changed();
                 app.Actions.enable();
             },
 
@@ -151,24 +174,6 @@ $(function() {
                 return heading;
             },
             
-            getToleranceRadius: function() {
-            	var tolerance = this.model.get('tolerance');
-            	var resolution = app.mapView.getResolution();
-            	
-            	var center = transform(this.model.get('geometry').coordinates);
-            	var edgeCoordinate = [center[0] + tolerance, center[1]];
-            	var wgs84Sphere = new ol.Sphere(app.options.BODY_RADIUS_METERS);
-            	var accurateTolerance = wgs84Sphere.haversineDistance(
-            			inverseTransform(center),
-            			inverseTransform(edgeCoordinate)
-            	);
-            	
-            	var result = tolerance/resolution;
-//            	console.log('TOLERANCE ' + tolerance + ' RADIUS ' + result +  ' FOR ' + this.getLabel() + ' AT RESOLUTION ' + resolution);
-            	console.log('TOLERANCE ' + tolerance + ' ATOLERANCE ' + accurateTolerance + ' RADIUS ' + result + ' FOR ' + this.getLabel() + ' AT RESOLUTION ' + resolution);
-            	return  result;
-            },
-            
             initIconStyle: function() {
                 if (this.model.get('isDirectional')) {
                     heading = this.getHeading();
@@ -181,36 +186,6 @@ $(function() {
                 } else {
                     this.iconStyle = olStyles.styles['station'];
                     this.selectedIconStyle = olStyles.styles['selectedStation'];
-                }
-                this.buildToleranceStyle();
-            },
-            
-            buildToleranceStyle: function() {
-            	if (this.toleranceStyle !== undefined) {
-            		delete this.toleranceCircle;
-            		delete this.toleranceStyle;
-            	}
-            	this.toleranceCircle = new ol.style.Circle({
-        	        radius: this.getToleranceRadius(),
-        	        snapToPixel: false,
-//        	        radius: (function() {
-//                        return function(feature, resolution) {
-//                        	return feature.getStyle();
-//                        };
-//                      })(),
-        	        fill: new ol.style.Fill({
-        	          color: [255, 255, 0, 0.3]
-        	        }),
-        	        stroke: new ol.style.Stroke({
-        	          color: 'yellow',
-        	          width: 1.5
-        	        })
-        	      });
-                this.toleranceStyle = new ol.style.Style({
-                		image: this.toleranceCircle 
-                });
-                if (!_.isUndefined(this.feature)){
-                	this.feature.set('toleranceStyle', this.toleranceStyle);
                 }
             },
             
@@ -237,8 +212,8 @@ $(function() {
                 this.textStyle = new ol.style.Style({
                     text: theText
                 });
-                if (!_.isUndefined(this.feature)){
-                	this.feature.set('textStyle', this.textStyle);
+                if (!_.isUndefined(this.features)){
+                	this.features[0].set('textStyle', this.textStyle);
                 }
             },
             
@@ -248,19 +223,17 @@ $(function() {
             	var selectedIconStyle = this.selectedIconStyle;
             	var iconStyle = this.iconStyle;
             	var textStyle = this.textStyle;
-            	var toleranceStyle = this.toleranceStyle; 
             	if (_.isUndefined(model)){
             		// this is the feature
             		model = this.get('model');
             		selectedIconStyle = this.get('selectedIconStyle');
                 	iconStyle = this.get('iconStyle');
                 	textStyle = this.get('textStyle');
-                	toleranceStyle = this.get('toleranceStyle');
             	}
             	if (app.State.stationSelected === model){
-            		return [selectedIconStyle, textStyle, toleranceStyle];
+            		return [selectedIconStyle, textStyle];
             	} else {
-            		return [iconStyle, textStyle, toleranceStyle];
+            		return [iconStyle, textStyle];
             	}
             },
 
