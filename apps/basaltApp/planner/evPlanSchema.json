@@ -10,20 +10,6 @@
     "segmentIdFormat": "{plan.site.id}{plan.platform.id}{plan.planNumber:03d}_{plan.planVersion}_SEG{stationIndex:02d}",
     "commandIdFormat": "{parent.id}_{commandIndex:01d}_{command.presetCode}",
     
-     "planParams": [
-	{
-	    "type": "ParamSpec",
-	    "id": "defaultSpeed",
-	    "valueType": "number",
-        "unit": "meters/sec",
-	    "notes": "The default speed for traverses",
-	    "required": false,
-	    "name": "Default Speed",
-	    "default": 0.89408,
-	    "widget":"number"
-	}
-    ],
-
     "paramSpecs": [
         {
             "type": "ParamSpec",
@@ -69,7 +55,37 @@
             "minimum": 0,
             "default": 0,
             "notes": "(Hours:)Minutes:Seconds"
+        },
+        {
+            "type": "ParamSpec",
+            "id": "optimization",
+            "choices": [["Time", "Time"],
+                        ["Distance", "Distance"],
+                        ["Energy", "Energy"]],
+            "valueType": "string",
+            "notes": "Sextant optimization for path planning."
         }
+    ],
+    
+     "planParams": [
+	{
+	    "type": "ParamSpec",
+	    "id": "defaultSpeed",
+	    "valueType": "number",
+        "unit": "meters/sec",
+	    "notes": "The default speed for traverses",
+	    "required": false,
+	    "name": "Default Speed",
+	    "default": 0.89408,
+	    "widget":"number"
+	},
+	{
+        "type": "ParamSpec",
+        "parent": "optimization",
+        "name": "Optimization",
+        "id": "optimization",
+        "default": "Energy"
+    }
     ],
 
     "stationParams": [

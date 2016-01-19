@@ -43,7 +43,7 @@ def getMap(site):
         if os.path.isfile(fullPath): 
             zone=site['alternateCrs']['properties']['zone']
             zoneLetter=site['alternateCrs']['properties']['zoneLetter']
-            dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter)
+            dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter, desiredRes=0.3)
             DEMS[site_frame] = dem
             return dem
         return None
@@ -79,17 +79,21 @@ def callPextant(request, plan):
     site = plan.jsonPlan['site']
 
 # CANNOT build map due to bugs in pextant
-#     pydevd.settrace('128.102.236.212')
-#     dem = getMap(site)
-#     if not dem:
-#         logging.warning('Could not load DEM while calling Pextant for ' + site['name'])
+    dem = getMap(site)
+    if not dem:
+        logging.warning('Could not load DEM while calling Pextant for ' + site['name'])
 #      
-#     pathFinder = Pathfinder(explorer, dem)
-#     result = pathFinder.completeSearchFromJson('Energy', plan.jsonPlan)
-#     print result
+    pathFinder = Pathfinder(explorer, dem)
+#     pydevd.settrace('192.168.1.64')
+    sequence = plan.jsonPlan.sequence
+    jsonSequence = json.dumps(sequence)
+    print jsonSequence
+    result = pathFinder.completeSearchFromJSON(str(plan.jsonPlan.optimization), jsonSequence)
+    print result
 
 #     plan = testJsonSegments(plan)
-#     print plan.jsonPlan
+    print 'old plan'
+    print plan.jsonPlan
 #     plan.save()
     return plan
 
