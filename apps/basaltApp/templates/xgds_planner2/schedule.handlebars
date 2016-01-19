@@ -1,5 +1,5 @@
 <div class="schedule" id="schedule">
-  <form name='ScheduleForm' id="scheduleForm" action="/xgds_planner2/schedulePlans/" method="post">
+  <form name='ScheduleForm' id="scheduleForm" action="#" method="post">
 		<input type="hidden" name="planIds" id="id_planIds" value="{{planId}}"></input>
 		<input type="hidden" id="id_flight" value="0"></input>
 		<input type="hidden" id="id_test" value="0"></input>
@@ -26,7 +26,9 @@
   			</select>
 		</tr>
 		</table>
-		<input class="mybutton small" type="submit" value="Save">
+		<input class="mybutton small" id="submit_button"  type="submit" value="Save">
 	</form>
 </div>
+<div id="schedule_message" style="color:red;"><br/></div>
+
 
