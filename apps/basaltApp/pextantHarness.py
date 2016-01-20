@@ -31,22 +31,17 @@ from pextant.ExplorationObjective import *
 from pextant.EnvironmentalModel import loadElevationMap
 from apps.pextant.EnvironmentalModel import EnvironmentalModel
 
-DEMS = {}
-
 def getMap(site):
     site_frame = site['name']
-    if DEMS and site_frame in DEMS.keys:
-        return DEMS[site_frame]
-    else:
-        dem_name = site_frame.replace(' ', '_')+'.tif'
-        fullPath = os.path.join(settings.STATIC_ROOT, 'basaltApp', 'dem', dem_name)
-        if os.path.isfile(fullPath): 
-            zone=site['alternateCrs']['properties']['zone']
-            zoneLetter=site['alternateCrs']['properties']['zoneLetter']
-            dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter, desiredRes=0.3)
-            DEMS[site_frame] = dem
-            return dem
-        return None
+    dem_name = site_frame.replace(' ', '_')+'.tif'
+    fullPath = os.path.join(settings.STATIC_ROOT, 'basaltApp', 'dem', dem_name)
+    if os.path.isfile(fullPath): 
+        zone=site['alternateCrs']['properties']['zone']
+        zoneLetter=site['alternateCrs']['properties']['zoneLetter']
+        #TODO limit based on bounds of plan
+        dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter, desiredRes=0.3)
+        return dem
+    return None
 
 def testJsonSegments(plan):
     prevStation = None
@@ -88,8 +83,13 @@ def callPextant(request, plan):
     sequence = plan.jsonPlan.sequence
     jsonSequence = json.dumps(sequence)
     print jsonSequence
-    result = pathFinder.completeSearchFromJSON(str(plan.jsonPlan.optimization), jsonSequence)
-    print result
+    try:
+        result = pathFinder.completeSearchFromJSON(str(plan.jsonPlan.optimization), jsonSequence)
+        print result
+    except:
+        pass
+    
+    #TODO append new sequence into old json
 
 #     plan = testJsonSegments(plan)
     print 'old plan'
