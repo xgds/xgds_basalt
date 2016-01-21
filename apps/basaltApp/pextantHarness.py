@@ -14,6 +14,7 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 # import pydevd
+import traceback
 import logging
 import json
 import os
@@ -26,10 +27,9 @@ from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from pextant.api import Pathfinder
-from pextant.ExplorerModel import *
+from pextant.ExplorerModel import Astronaut
 from pextant.ExplorationObjective import *
-from pextant.EnvironmentalModel import loadElevationMap
-from apps.pextant.EnvironmentalModel import EnvironmentalModel
+from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap
 
 def getMap(site):
     site_frame = site['name']
@@ -39,7 +39,7 @@ def getMap(site):
         zone=site['alternateCrs']['properties']['zone']
         zoneLetter=site['alternateCrs']['properties']['zoneLetter']
         #TODO limit based on bounds of plan
-        dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter, desiredRes=0.3)
+        dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter, desiredRes=1.0)
         return dem
     return None
 
@@ -68,7 +68,9 @@ def callPextant(request, plan):
         logging.warning('No EV associated with plan %s could not call Pextant', plan.name)
         return plan
 
-    explorer = BASALTExplorer(executions[0].ev.mass)
+#    Per Kevin, BASALTExplorer is not the thing.  Astronaut is the thing
+#     explorer = BASALTExplorer(executions[0].ev.mass)
+    explorer = Astronaut(executions[0].ev.mass)
     
 #     start_time = executions[0].planned_start_time
     site = plan.jsonPlan['site']
@@ -79,21 +81,27 @@ def callPextant(request, plan):
         logging.warning('Could not load DEM while calling Pextant for ' + site['name'])
 #      
     pathFinder = Pathfinder(explorer, dem)
-#     pydevd.settrace('192.168.1.64')
+#     pydevd.settrace('128.102.236.197')
     sequence = plan.jsonPlan.sequence
     jsonSequence = json.dumps(sequence)
     print jsonSequence
     try:
+        print 'about to call pathfinder'
         result = pathFinder.completeSearchFromJSON(str(plan.jsonPlan.optimization), jsonSequence)
+        print 'actually came back from pathfinder'
         print result
+        if 'NaN' not in result:
+            plan.jsonPlan.sequence = json.loads(result)
+            plan.save()
     except:
+        traceback.print_exc()
         pass
     
     #TODO append new sequence into old json
 
 #     plan = testJsonSegments(plan)
-    print 'old plan'
-    print plan.jsonPlan
+#     print 'old plan'
+#     print plan.jsonPlan
 #     plan.save()
     return plan
 
