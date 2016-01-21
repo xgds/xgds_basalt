@@ -1,0 +1,86 @@
+{
+    "PORTS": "/home/irg/xgds_basalt/apps/basaltApp/ports.json",
+    "LOG_DIR": "/home/irg/xgds_basalt/data/pyraptord",
+    "LOG_FILE":"pyraptord_${unique}.txt",
+
+    "SERVICES": {
+
+        "VR1_vlc": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSource.py",
+	    "stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_VR1"
+        },
+        "VR1_segmenter": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSink.py",
+	    "stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_VR1"
+        },
+
+        "VR2_vlc": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSource.py",
+	    "stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_VR2"
+        },
+        "VR2_segmenter": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSink.py",
+	    "stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_VR2"
+        },
+
+        "OUT_vlc": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSource.py",
+	    "stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_OUT"
+        },
+        "OUT_segmenter": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSink.py",
+	    "stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_OUT"
+        },
+
+        "SEA_vlc": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSource.py",
+	    "stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SEA"
+        },
+        "SEA_segmenter": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSink.py",
+	    "stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SEA"
+        },
+
+        "LBV_vlc": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSource.py",
+	    "stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_LBV"
+        },
+        "LBV_segmenter": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSink.py",
+	    "stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_LBV"
+        },
+
+        "RD1_vlc": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSource.py",
+	    "stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_RD1"
+        },
+        "RD1_segmenter": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSink.py",
+	    "stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_RD1"
+        },
+
+        "RD2_vlc": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSource.py",
+	    "stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_RD2"
+        },
+        "RD2_segmenter": {
+            "command": "/home/irg/xgds_basalt/apps/geocamPycroraptor2/tests/numberSink.py",
+	    "stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_RD2"
+        },
+
+	"zmqCentral": {
+	    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmq/zmqCentral.py -m none -f"
+        },
+
+	"tracLinkListener": {
+	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/tracLinkListener.py"
+        },
+
+	"tracLinkTelemetryCleanup": {
+	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/tracLinkTelemetryCleanup.py"
+        },
+
+    "GROUPS": {
+        "startup": []
+    }
+}
