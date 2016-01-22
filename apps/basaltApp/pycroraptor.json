@@ -79,6 +79,7 @@
 	"tracLinkTelemetryCleanup": {
 	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/tracLinkTelemetryCleanup.py"
         },
+    },
 
     "GROUPS": {
         "startup": []
