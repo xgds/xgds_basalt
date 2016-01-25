@@ -71,9 +71,113 @@
     "commands": [
         {
             "type": "Pause",
-            "presetName": "Pause_Standard",
-            "duration": 100,
+            "presetName": "Pause",
+            "duration": 300,
             "presetCode": "WAI"
+        },
+        {
+            "type": "Context",
+            "presetName": "Context: Describe",
+            "duration": 300,
+            "presetCode": "CDE"
+        },
+        {
+            "type": "Context",
+            "presetName": "Context: Image",
+            "duration": 300,
+            "presetCode": "CIM"
+        },
+        {
+            "type": "Context",
+            "presetName": "Context: Video",
+            "duration": 300,
+            "presetCode": "CVI"
+        },
+        {
+            "type": "OperateInstrument",
+            "presetName": "Instrument: pXRF: Set up",
+            "color": "#FED1BE",
+            "notes": "Set up pXRF",
+            "duration": 300,
+            "presetCode": "PXS"
+        },
+        {
+            "type": "OperateInstrument",
+            "presetName": "Instrument: pXRF: Scan",
+            "color": "#FED1BE",
+            "notes": "Take scan with pXRF",
+            "duration": 300,
+            "presetCode": "PXO"
+        },
+        {
+            "type": "OperateInstrument",
+            "presetName": "Instrument: ASD: Scan",
+            "color": "#abe1fd",
+            "notes": "Take scan with ASD",
+            "duration": 300,
+            "presetCode": "ASO"
+        },
+        {
+            "type": "OperateInstrument",
+            "presetName": "Instrument: FTIR: Scan",
+            "color": "#ADDDCF",
+            "duration": 300,
+            "notes": "Take scan with FTIR",
+            "presetCode": "FTO"
+        },
+        {
+            "type": "Sample",
+            "presetName": "Sample: Mark Candidate",
+            "notes": "Place candidate sample marker & mark GPS location",
+            "duration": 300,
+            "presetCode": "SMC"
+        },
+        {
+            "type": "Sample",
+            "presetName": "Sample: Bag/Label Setup",
+            "duration": 300,
+            "presetCode": "SMB"
+        },
+        {
+            "type": "Sample",
+            "presetName": "Sample: Break & Describe",
+            "notes": "Break rock for sampling and describe",
+            "duration": 300,
+            "presetCode": "SMX"
+        },
+        {
+            "type": "Sample",
+            "presetName": "Sample: Bio collection",
+            "notes": "Bag, image and stow biological sample",
+            "duration": 300,
+            "presetCode": "SBI"
+        },
+        {
+            "type": "Sample",
+            "presetName": "Sample: Geo collection",
+            "notes": "Bag, image and stow geological sample",
+            "duration": 300,
+            "presetCode": "SGE"
+        },
+        {
+            "type": "Sample",
+            "presetName": "Sample: Describe",
+            "presetCode": "SDE",
+            "duration": 300,
+            "notes": "Describe candidate sample station"
+        },
+        {
+            "type": "Sample",
+            "presetName": "Sample: Image",
+            "presetCode": "SIM",
+            "duration": 300,
+            "notes": "Take images of candidate sample station"
+        },
+        {
+            "type": "Sterilize",
+            "presetName": "Sterilize",
+            "duration": 300,
+            "presetCode": "STE"
         }
      ]
 }
