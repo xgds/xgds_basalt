@@ -35,7 +35,6 @@ _.extend(ev.Simulator.prototype, {
     },
 
     // Control
-
     geoJsonToCoords: function(geoJson) {
         return {
             lng: geoJson.coordinates[0],

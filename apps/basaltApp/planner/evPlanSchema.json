@@ -131,7 +131,7 @@
                     "id": "duration",
                     "valueType": "number",
                     "minimum": 0,
-                    "default": 0
+                    "default": 300
                 },
                 {
                     "type": "ParamSpec",
@@ -156,19 +156,40 @@
             "type": "CommandSpec",
             "id": "Pause",
             "parent": "EVCommand",
-            "color": "#999999",
-            "params": [
-                {
-                    "type": "ParamSpec",
-                    "parent": "instrument",
-                    "id": "instrument",
-                    "default": "Pause"
-                }
-            ]
+            "color": "#AAAAAA"
+        },
+        {
+            "type": "CommandSpec",
+            "id": "Context",
+            "parent": "EVCommand",
+            "color": "#8BACDB"
+        },
+        {
+            "type": "CommandSpec",
+            "id": "OperateInstrument",
+            "parent": "EVCommand",
+            "color": "#abe1fd"
+        },
+        {
+            "type": "CommandSpec",
+            "id": "Sample",
+            "parent": "EVCommand",
+            "color": "#F0E0A2"
+        },
+        {
+            "type": "CommandSpec",
+            "id": "Sterilize",
+            "parent": "EVCommand",
+            "color": "#F1EDE2",
+            "notes": "Perform sterilization procedures"
         }
      ],
 
     "stationSequenceCommands": [
+    	"Context",
+    	"Sample",
+    	"Sterilize",
+    	"OperateInstrument",
     	"Pause"
     ],
 
