@@ -41,7 +41,7 @@
 				<a href="{% url 'map' %}" title="Map">Map</a>
 			</li>
 			<li {% currentnav planner2* %}>
-				<a href="{% url 'planner2_index' %}" title="plan">Plan</a>
+				<a href="{% url 'planner2_index' %}" title="{{ settings.XGDS_PLANNER2_PLAN_MONIKER }}">{{ settings.XGDS_PLANNER2_PLAN_MONIKER }}</a>
 			</li>
 			<li {% currentnav *xgds_image* %} >
 				<a href="{% url 'xgds_image_search' %}" title="image">Image</a>

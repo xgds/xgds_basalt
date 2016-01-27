@@ -2,10 +2,10 @@
     "xpjson": "0.2",
     "type": "PlanSchema",
     "name": "BASALT Foot EV Schema",
-    "notes": "Define BASALT EV plans",
+    "notes": "Define BASALT EV EVAs",
     "id": "http://basalt.xgds.org/planner/basaltEVPlanSchema.json",
 
-    "planIdFormat": "{plan.site.id}{plan.platform.id}{plan.planNumber:03d}_{plan.planVersion}_PLAN",
+    "planIdFormat": "{plan.site.id}{plan.platform.id}{plan.planNumber:03d}_{plan.planVersion}_EVA",
     "stationIdFormat": "{plan.site.id}{plan.platform.id}{plan.planNumber:03d}_{plan.planVersion}_STN{stationIndex:02d}",
     "segmentIdFormat": "{plan.site.id}{plan.platform.id}{plan.planNumber:03d}_{plan.planVersion}_SEG{stationIndex:02d}",
     "commandIdFormat": "{parent.id}_{commandIndex:01d}_{command.presetCode}",
