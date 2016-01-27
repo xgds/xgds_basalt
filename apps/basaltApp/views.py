@@ -86,7 +86,8 @@ def callPextantAjax(request, planId):
         plan = pextantHarness.clearSegmentGeometry(plan)
         response["plan"]= plan.jsonPlan
         optimize = str(request.POST['optimize'])
-        plan = pextantHarness.callPextant(request, plan, optimize)
+        resolution = float(request.POST['resolution'])
+        plan = pextantHarness.callPextant(request, plan, optimize, resolution)
         response["plan"]= plan.jsonPlan
         response["msg"]= "Sextant has calculated a new route."
         response["status"] = True
