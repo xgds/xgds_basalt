@@ -58,6 +58,7 @@ app.views.PlanLinksView = Backbone.View.extend({
         	            error: function(data)
         	            {
         	            	$('#pextantMessage').text(data.responseJSON.msg);
+        	            	app.updatePlan(data.responseJSON.plan);
         	            }
         	        });
         });

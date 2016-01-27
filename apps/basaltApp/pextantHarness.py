@@ -13,7 +13,6 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-# import pydevd
 import traceback
 import logging
 import json
@@ -56,23 +55,41 @@ def testJsonSegments(plan):
                                  "type": "LineString"}
             prevStation = nextStation
     return plan
+
+def clearSegmentGeometry(plan):
+    for elt in plan.jsonPlan.sequence:
+        if elt.type == 'Segment':
+            try:
+                del elt['geometry']
+            except:
+                pass
+            try:
+                derivedInfo = elt['derivedInfo']
+                del derivedInfo['distanceList']
+                del derivedInfo['energyList']
+                del derivedInfo['timeList']
+                del derivedInfo['totalDistance']
+                del derivedInfo['totalEnergy']
+                del derivedInfo['totalTime']
+            except:
+                pass
+    plan.save()
+    return plan
     
-def callPextant(request, plan):
-    print 'Called Pextant post save Python'
+def callPextant(request, plan, optimize=None):
     executions = plan.executions
     if not executions:
-        msg = 'Plan %s not scheduled could not call Pextant' % plan.name
+        msg = 'Plan %s not scheduled; could not call Sextant' % plan.name
         raise Exception(msg)
     
     if not executions[0].ev:
-        msg = 'No EV associated with plan %s could not call Pextant' % plan.name
+        msg = 'No EV associated with plan %s; could not call Sextant' % plan.name
         raise Exception(msg)
 
 #    Per Kevin, BASALTExplorer is not the thing.  Astronaut is the thing
 #     explorer = BASALTExplorer(executions[0].ev.mass)
     explorer = Astronaut(executions[0].ev.mass)
     
-#     start_time = executions[0].planned_start_time
     site = plan.jsonPlan['site']
 
     dem = getMap(site)
@@ -80,30 +97,24 @@ def callPextant(request, plan):
         raise Exception('Could not load DEM while calling Pextant for ' + site['name'])
 #      
     pathFinder = Pathfinder(explorer, dem)
-#     pydevd.settrace('128.102.236.197')
     sequence = plan.jsonPlan.sequence
     jsonSequence = json.dumps(sequence)
-    print jsonSequence
     try:
         print 'about to call pathfinder'
-        result = pathFinder.completeSearchFromJSON(str(plan.jsonPlan.optimization), jsonSequence)
+        if not optimize:
+            optimize = str(plan.jsonPlan.optimization)
+        else:
+            plan.jsonPlan.optimization = optimize
+        result = pathFinder.completeSearchFromJSON(optimize, jsonSequence)
         print 'actually came back from pathfinder'
-        print result
-        if 'NaN' not in result:
+        if 'NaN' not in result and 'Infinity' not in result:
             plan.jsonPlan.sequence = json.loads(result)
             plan.save()
     except Exception, e:
         traceback.print_exc()
         raise e
-        #TODO return exception
         pass
     
-    #TODO append new sequence into old json
-
-#     plan = testJsonSegments(plan)
-#     print 'old plan'
-#     print plan.jsonPlan
-#     plan.save()
     return plan
 
     
