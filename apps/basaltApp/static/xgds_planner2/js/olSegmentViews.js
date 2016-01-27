@@ -28,6 +28,7 @@ $(function() {
                 throw 'Missing a required option!';
             }
             this.segmentsVector = this.options.segmentsVector;
+            this.segmentsDecoratorsVector = this.options.segmentsDecoratorsVector;
             this.planLayerView = this.options.planLayerView;
             this.fromStation = this.options.fromStation;
             this.toStation = this.options.toStation;
@@ -106,12 +107,7 @@ $(function() {
         	if (app.State.segmentSelected === model){
         		result = [olStyles.styles['selectedSegment']];
         	} else {
-        	    if (model.get('geometry') != undefined ){
-        		result = [olStyles.styles['fancySegment']];
-        	    } else {
-        		result = [olStyles.styles['segment']];
-        	    }
-        		
+        	    result = [olStyles.styles['segment']];
         	}
         	if (DEBUG_SEGMENTS){
         		var textStyle = this.textStyle;
@@ -123,21 +119,37 @@ $(function() {
         	return result;
         },
         updateCoords: function() {
-            var stationCoords = _.map([this.fromStation, this.toStation],
+            this.coords = _.map([this.fromStation, this.toStation],
                     function(station) {
                 return transform(station.get('geometry').coordinates);
             });
+        },
+        updatePathCoords: function() {
             var geometry = this.model.get('geometry');
             if (geometry != undefined) {
         	// get the geometry out of the segment, and update its endpoints
         	var coords = transformList(geometry['coordinates'])
         	// make sure first and last match stations
-        	coords.splice(0, 0, stationCoords[0]);
-        	coords.push(stationCoords[1]);
-        	this.coords = coords;
+        	coords.splice(0, 0, this.coords[0]);
+        	coords.push(this.coords[1]);
+        	this.pathCoords = coords;
             } else {
-        	this.coords = stationCoords;
-            }  
+        	this.pathCoords = null;
+            }
+            return this.pathCoords;
+        },
+        getPathGeometry: function() {
+            if (this.updatePathCoords() != null){
+        	return new ol.geom.LineString(this.pathCoords, 'XY');
+            }
+            return undefined;
+        },
+        redrawPath: function() {
+            if (this.updatePathCoords() != null){
+        	if (this.pathGeometry != undefined){
+        	    this.pathGeometry.setCoordinates(this.pathCoords);
+        	}
+            }
         },
         render: function() {
             this.updateCoords();
@@ -149,6 +161,18 @@ $(function() {
                                                  });
             this.feature.setStyle(this.getSegmentStyles);
             this.feature.set('textStyle', this.textStyle);
+            
+         // draw the path from sextant
+            this.pathGeometry = this.getPathGeometry();
+            if (this.pathGeometry != null){
+	            this.pathFeature = new ol.Feature({geometry: this.pathGeometry,
+	                id: this.fromStation.attributes['id'] + '_seg_path',
+	                name: this.fromStation.attributes['id'] + '_seg_path',
+	                model: this.model,
+	                style: olStyles.styles['fancySegment']});
+	            this.pathFeature.setStyle(olStyles.styles['fancySegment']);
+	            this.segmentsDecoratorsVector.addFeature(this.pathFeature);
+            }
             
             this.listenTo(this.model, 'splitSegment', this.handleSplitSegment, this);
             this.model['feature'] = this.feature;
@@ -162,13 +186,13 @@ $(function() {
             
             var geometry = this.feature.getGeometry();
             var newCoordinates = geometry.getCoordinates();
-            var addedStation = false;
-            var geometry = this.model.get('geometry');
+//            var addedStation = false;
+            var addedStation = newCoordinates.length > 2;
+            /*var geometry = this.model.get('geometry');
             if (geometry != undefined) {
         	addedStation = geometry['coordinates'].length < newCoordinates.length;
             } else {
-        	addedStation = newCoordinates.length > 2;
-            }
+            }*/
             if (addedStation) { 
         	this.segmentsVector.removeFeature(this.feature);
                 
