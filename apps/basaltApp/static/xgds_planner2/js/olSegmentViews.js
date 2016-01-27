@@ -132,12 +132,8 @@ $(function() {
         	// get the geometry out of the segment, and update its endpoints
         	var coords = transformList(geometry['coordinates'])
         	// make sure first and last match stations
-        	if (JSON.stringify(coords[0]) !== JSON.stringify(stationCoords[0])) {
-        	    coords[0] = stationCoords[0];
-        	}
-        	if (JSON.stringify(coords[1]) !== JSON.stringify(stationCoords[1])) {
-        	    coords[1] = stationCoords[1];
-        	}
+        	coords.splice(0, 0, stationCoords[0]);
+        	coords.push(stationCoords[1]);
         	this.coords = coords;
             } else {
         	this.coords = stationCoords;
