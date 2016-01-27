@@ -25,4 +25,5 @@ urlpatterns = patterns('',
                        url(r'^editEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_edit_ev'),
                        url(r'^saveEV/?$', views.editEV, {}, 'planner2_save_ev'),
                        url(r'^saveEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_save_ev'),
+                       url(r'^pextant/(?P<planId>[\d]+)$', views.callPextantAjax, {}, 'pextant_ajax'),
                        )

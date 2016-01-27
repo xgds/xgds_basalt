@@ -1,0 +1,34 @@
+<div class="plan-link" id="links-plan">
+  <div class="tool-entry">
+      {{#each planLinks}}
+      	<a href="{{this}}" target="_new">{{@key}}</a><br/>
+	{{/each}}
+	<p>
+	<h6>Call Sextant</h6>
+	Save any changes to this EVA BEFORE calling the Sextant path planner.<br/>
+	This will calculate a path if your EVA is within a Sextant region, and update the EVA with a detailed route.<br/>
+	You can control how it is optimized on the Meta tab.<br/>
+	You <strong>MUST</strong> choose an EV person and schedule the plan before you can call Sextant, use the Schedule tab.
+	Note that running Sextant can take a few minutes.
+	<br/>
+	{{ optimize }}
+	<form name='pextantForm' id="pextantForm" action="#" method="post">
+		<input type="hidden" name="planId" id="id_planId" value="{{planId}}"></input>
+		<table>
+		<tr>
+			<td><label for="id_optimize">Optimize On</label></td>
+			<td><select name="optimize" id="id_optimize"> 
+		        <option value="Energy">Energy</option>
+		        <option value="Distance">Distance</option>
+		        <option value="Time">Time</option>
+		        </select>
+		    </td>
+		</tr>
+		</table>
+		<input class="mybutton small" id="pextantButton"  type="submit" value="Call Sextant">
+	</form>
+	</p>
+	<div id="pextantMessage" style="color:red;"><br/></div>
+	</p>
+  </div>
+</div>

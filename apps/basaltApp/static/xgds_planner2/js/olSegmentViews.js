@@ -106,7 +106,12 @@ $(function() {
         	if (app.State.segmentSelected === model){
         		result = [olStyles.styles['selectedSegment']];
         	} else {
+        	    if (model.get('geometry').type == 'LineString'){
+        		result = [olStyles.styles['fancySegment']];
+        	    } else {
         		result = [olStyles.styles['segment']];
+        	    }
+        		
         	}
         	if (DEBUG_SEGMENTS){
         		var textStyle = this.textStyle;

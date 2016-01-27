@@ -61,12 +61,12 @@ def callPextant(request, plan):
     print 'Called Pextant post save Python'
     executions = plan.executions
     if not executions:
-        logging.warning('Plan %s not scheduled could not call Pextant', plan.name)
-        return plan
+        msg = 'Plan %s not scheduled could not call Pextant' % plan.name
+        raise Exception(msg)
     
     if not executions[0].ev:
-        logging.warning('No EV associated with plan %s could not call Pextant', plan.name)
-        return plan
+        msg = 'No EV associated with plan %s could not call Pextant' % plan.name
+        raise Exception(msg)
 
 #    Per Kevin, BASALTExplorer is not the thing.  Astronaut is the thing
 #     explorer = BASALTExplorer(executions[0].ev.mass)
@@ -75,10 +75,9 @@ def callPextant(request, plan):
 #     start_time = executions[0].planned_start_time
     site = plan.jsonPlan['site']
 
-# CANNOT build map due to bugs in pextant
     dem = getMap(site)
     if not dem:
-        logging.warning('Could not load DEM while calling Pextant for ' + site['name'])
+        raise Exception('Could not load DEM while calling Pextant for ' + site['name'])
 #      
     pathFinder = Pathfinder(explorer, dem)
 #     pydevd.settrace('128.102.236.197')
@@ -93,8 +92,10 @@ def callPextant(request, plan):
         if 'NaN' not in result:
             plan.jsonPlan.sequence = json.loads(result)
             plan.save()
-    except:
+    except Exception, e:
         traceback.print_exc()
+        raise e
+        #TODO return exception
         pass
     
     #TODO append new sequence into old json
