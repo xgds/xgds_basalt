@@ -11,16 +11,16 @@
 	You <strong>MUST</strong> choose an EV person and schedule the plan before you can call Sextant, use the Schedule tab.
 	Note that running Sextant can take a few minutes.
 	<br/>
-	{{ optimize }}
+	{{ optimization }}
 	<form name='pextantForm' id="pextantForm" action="#" method="post">
 		<input type="hidden" name="planId" id="id_planId" value="{{planId}}"></input>
 		<table>
 		<tr>
 			<td><label for="id_optimize">Optimize On</label></td>
 			<td><select name="optimize" id="id_optimize"> 
-		        <option value="Energy">Energy</option>
-		        <option value="Distance">Distance</option>
-		        <option value="Time">Time</option>
+		        <option value="Energy" {{optimizeSelected "Energy" optimization}}>Energy</option>
+		        <option value="Distance" {{optimizeSelected "Distance" optimization}}>Distance</option>
+		        <option value="Time" {{optimizeSelected "Time" optimization}}>Time</option>
 		        </select>
 		    </td>
 		</tr>

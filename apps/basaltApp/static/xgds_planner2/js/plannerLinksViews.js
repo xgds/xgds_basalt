@@ -19,6 +19,9 @@ app.views = app.views || {};
 app.views.PlanLinksView = Backbone.View.extend({
     template: '#template-plan-links',
     initialize: function() {
+	Handlebars.registerHelper('optimizeSelected', function (input, optimize) {
+            return input === optimize ? 'selected' : '';
+        });
         var source = $(this.template).html();
         if (_.isUndefined(source)) {
             this.template = function() {
@@ -33,7 +36,7 @@ app.views.PlanLinksView = Backbone.View.extend({
             planLinks: app.planLinks,
             planUuid: app.currentPlan.get('uuid'),
             planId: app.currentPlan.get('serverId'),
-            optimize: app.currentPlan.get('optimize')
+            optimization: app.currentPlan.get('optimization')
         }));
         var callback = app.options.XGDS_PLANNER2_LINKS_LOADED_CALLBACK;
         if (callback != null) {
