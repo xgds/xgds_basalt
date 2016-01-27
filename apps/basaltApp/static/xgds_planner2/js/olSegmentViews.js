@@ -106,7 +106,7 @@ $(function() {
         	if (app.State.segmentSelected === model){
         		result = [olStyles.styles['selectedSegment']];
         	} else {
-        	    if (model.get('geometry').type == 'LineString'){
+        	    if (model.get('geometry') != undefined ){
         		result = [olStyles.styles['fancySegment']];
         	    } else {
         		result = [olStyles.styles['segment']];
