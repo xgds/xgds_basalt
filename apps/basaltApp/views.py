@@ -13,8 +13,8 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-
 import json
+from django.conf import settings
 from django.shortcuts import render_to_response, redirect, render
 from django.core.urlresolvers import reverse
 
@@ -24,6 +24,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from forms import EVForm
 from models import EV
+import pextantHarness
+from geocamUtil.loader import LazyGetModelByName
 
 
 def editEV(request, pk=None):
@@ -72,3 +74,25 @@ def addEVToPlanExecution(request, pe):
         pe.ev = EV.objects.get(pk=evPK)
     return pe
 
+
+def callPextantAjax(request, planId):
+    """ Call Pextant over Ajax and either return the modified plan with success message,
+    or return error message.
+    """
+    PLAN_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_PLAN_MODEL)
+    plan = PLAN_MODEL.get().objects.get(pk=planId)
+    response = {}
+    try:
+        plan = pextantHarness.callPextant(request, plan)
+        response["plan"]= plan.jsonPlan
+        response["msg"]= "Sextant has calculated a new route."
+        response["status"] = True
+        return HttpResponse(json.dumps(response), content_type='application/json')
+    except Exception, e:
+        response["msg"] = e.args[0]
+        response["status"] = False
+        return HttpResponse(json.dumps(response), content_type='application/json', status=406)
+    
+
+
+        
