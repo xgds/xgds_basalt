@@ -80,18 +80,22 @@ def callPextantAjax(request, planId):
     or return error message.
     """
     PLAN_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_PLAN_MODEL)
-    plan = PLAN_MODEL.get().objects.get(pk=planId)
     response = {}
     try:
-        plan = pextantHarness.callPextant(request, plan)
+        plan = PLAN_MODEL.get().objects.get(pk=planId)
+        plan = pextantHarness.clearSegmentGeometry(plan)
+        response["plan"]= plan.jsonPlan
+        optimize = str(request.POST['optimize'])
+        plan = pextantHarness.callPextant(request, plan, optimize)
         response["plan"]= plan.jsonPlan
         response["msg"]= "Sextant has calculated a new route."
         response["status"] = True
-        return HttpResponse(json.dumps(response), content_type='application/json')
+        status = 200
     except Exception, e:
         response["msg"] = e.args[0]
         response["status"] = False
-        return HttpResponse(json.dumps(response), content_type='application/json', status=406)
+        status = 406
+    return HttpResponse(json.dumps(response), content_type='application/json', status=status)
     
 
 
