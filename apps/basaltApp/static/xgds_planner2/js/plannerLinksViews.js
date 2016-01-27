@@ -43,7 +43,7 @@ app.views.PlanLinksView = Backbone.View.extend({
             event.preventDefault();
             var theForm = $("#pextantForm");
             var postData = theForm.serializeArray();
-            $('#pextantMessage').text('');
+            $('#pextantMessage').text('Sextant is processing, stand by...');
             $.ajax(
         	        {
         	            url: "/basaltApp/pextant/" + app.currentPlan.get('serverId'),
