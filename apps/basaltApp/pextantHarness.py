@@ -30,7 +30,7 @@ from pextant.ExplorerModel import Astronaut
 from pextant.ExplorationObjective import *
 from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap
 
-def getMap(site, desiredRes=0.5):
+def getMap(site, desiredRes=0.5, maxSlope=15):
     site_frame = site['name']
     dem_name = site_frame.replace(' ', '_')+'.tif'
     fullPath = os.path.join(settings.STATIC_ROOT, 'basaltApp', 'dem', dem_name)
@@ -38,7 +38,7 @@ def getMap(site, desiredRes=0.5):
         zone=site['alternateCrs']['properties']['zone']
         zoneLetter=site['alternateCrs']['properties']['zoneLetter']
         #TODO limit based on bounds of plan
-        dem = loadElevationMap(fullPath, zone=zone, zoneLetter=zoneLetter, desiredRes=desiredRes)
+        dem = loadElevationMap(fullPath, maxSlope=maxSlope, zone=zone, zoneLetter=zoneLetter, desiredRes=desiredRes)
         return dem
     return None
 
@@ -76,7 +76,7 @@ def clearSegmentGeometry(plan):
     plan.save()
     return plan
     
-def callPextant(request, plan, optimize=None, desiredRes=0.5):
+def callPextant(request, plan, optimize=None, desiredRes=0.5, maxSlope=15):
     executions = plan.executions
     if not executions:
         msg = 'Plan %s not scheduled; could not call Sextant' % plan.name
@@ -92,7 +92,7 @@ def callPextant(request, plan, optimize=None, desiredRes=0.5):
     
     site = plan.jsonPlan['site']
 
-    dem = getMap(site, desiredRes)
+    dem = getMap(site, desiredRes, maxSlope)
     if not dem:
         raise Exception('Could not load DEM while calling Pextant for ' + site['name'])
 #      
