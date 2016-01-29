@@ -96,7 +96,6 @@
         {
             "type": "OperateInstrument",
             "presetName": "Instrument: pXRF: Set up",
-            "color": "#FED1BE",
             "notes": "Set up pXRF",
             "duration": 300,
             "presetCode": "PXS"
@@ -104,7 +103,6 @@
         {
             "type": "OperateInstrument",
             "presetName": "Instrument: pXRF: Scan",
-            "color": "#FED1BE",
             "notes": "Take scan with pXRF",
             "duration": 300,
             "presetCode": "PXO"
@@ -112,7 +110,6 @@
         {
             "type": "OperateInstrument",
             "presetName": "Instrument: ASD: Scan",
-            "color": "#abe1fd",
             "notes": "Take scan with ASD",
             "duration": 300,
             "presetCode": "ASO"
@@ -120,7 +117,6 @@
         {
             "type": "OperateInstrument",
             "presetName": "Instrument: FTIR: Scan",
-            "color": "#ADDDCF",
             "duration": 300,
             "notes": "Take scan with FTIR",
             "presetCode": "FTO"
