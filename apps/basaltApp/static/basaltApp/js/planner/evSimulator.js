@@ -69,9 +69,14 @@ _.extend(ev.Simulator.prototype, {
         	derivedInfo = {};
         	segment.set('derivedInfo', derivedInfo);
         }
-        derivedInfo['durationSeconds'] = segmentDriveTime;
+        derivedInfo['straightLineDurationSeconds'] = segmentDriveTime;
+        if ('totalTime' in derivedInfo){
+            derivedInfo['durationSeconds'] = derivedInfo['totalTime'];
+        } else {
+            derivedInfo['durationSeconds'] = segmentDriveTime;
+        }
         derivedInfo['distanceMeters'] = norm;
-        this.elapsedTime = this.elapsedTime + segmentDriveTime;
+        this.elapsedTime = this.elapsedTime + derivedInfo['durationSeconds'];
 
         this.coordinates = nextCoords;
     },
