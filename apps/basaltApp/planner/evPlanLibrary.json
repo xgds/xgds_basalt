@@ -18,8 +18,8 @@
             "alternateCrs": {
                 "type": "roversw",
                 "properties": {
-                    "originNorthing": 4810159.89,
-                    "originEasting": 296256.22,
+                    "originNorthing": 4815290.06,
+                    "originEasting": 292808.83,
                     "projection": "utm",
                     "zone": 12,
                     "zoneLetter": "T",
@@ -31,8 +31,8 @@
                     "coordinateMapping": "lat, lon"
                 }
             },
-            "bbox": [43.322457, -113.621675,
-            		 43.511963, -113.388753]
+            "bbox": [43.455575, -113.577912,
+            		 43.474182, -113.547096]
         },
         {
             "type": "Site",
