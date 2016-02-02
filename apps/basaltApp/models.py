@@ -21,6 +21,7 @@ from django.contrib.auth.models import User
 
 from geocamTrack import models as geocamTrackModels
 from xgds_planner2 import models as plannerModels
+from xgds_sample.models import AbstractSample
 
 class BasaltResource(geocamTrackModels.AbstractResource):
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
@@ -67,4 +68,16 @@ class BasaltPlanExecution(plannerModels.PlanExecution):
         else:
             result['ev'] = None
         return result
+    
+class BasaltSample(AbstractSample):
+    number = models.IntegerField()
+    triplicate = models.CharField(max_length = 2) # single character
+    year = models.PositiveSmallIntegerField()
+    
+    def buildName(self, inputName):
+        pass
+        #self.region.
+        #[2-char Region ID]    [2-digit year]    [1-char sample type]    [hyphen]    [3-digit number]    [1-char triplicates]    
+
+    
     
