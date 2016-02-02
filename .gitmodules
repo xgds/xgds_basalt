@@ -40,3 +40,6 @@
 [submodule "submodules/pextant"]
 	path = submodules/pextant
 	url = https://github.com/kezilu/pextant.git
+[submodule "submodules/xgds_sample"]
+	path = submodules/xgds_sample
+	url = https://github.com/xgds/xgds_sample
