@@ -48,11 +48,11 @@ def callPextant(request, plan):
     print 'Called Pextant post save Python'
     executions = plan.executions
     if not executions:
-        raise AssertionError('Plan not scheduled could not call Pextant')
+        # raise AssertionError('Plan not scheduled could not call Pextant')
         return plan
     
     if not executions[0].ev:
-        raise AssertionError('No EV associated could not call Pextant')
+        # raise AssertionError('No EV associated could not call Pextant')
         return plan
 
     explorer = BASALTExplorer(executions[0].ev.mass)

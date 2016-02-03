@@ -72,3 +72,16 @@ def addEVToPlanExecution(request, pe):
         pe.ev = EV.objects.get(pk=evPK)
     return pe
 
+
+def storeFieldData(request):
+    if request.method == 'POST':
+        postData = request.POST
+        fileData = request.FILES
+        headers = request.META
+#        return HttpResponse("Data processed:\n  Instrument: %s\n  Data Type: %s\n" % 
+#                            (postData["instrumentName"], headers["CONTENT_TYPE"]),
+#                            content_type="text/plain")
+        return HttpResponse("Data processed:\n  %s\n" % fileData,
+                            content_type="text/plain")
+    else:
+        return HttpResponse("No data posted\n", content_type="text/plain")

@@ -15,12 +15,16 @@
 #__END_LICENSE__
 
 import json
-
+import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
 from geocamTrack import models as geocamTrackModels
 from xgds_planner2 import models as plannerModels
+
+def getNewDataFileName(instance, filename):
+    return settings.XGDS_IMAGE_DATA_SUBDIRECTORY + filename
+
 
 class BasaltResource(geocamTrackModels.AbstractResource):
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
@@ -35,6 +39,7 @@ class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
 
 class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
     pass
+
 
 class EV(models.Model):
     '''
@@ -53,6 +58,7 @@ class EV(models.Model):
     
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
+
     
 class BasaltPlanExecution(plannerModels.PlanExecution):
     ''' 
@@ -68,3 +74,17 @@ class BasaltPlanExecution(plannerModels.PlanExecution):
             result['ev'] = None
         return result
     
+
+class FieldDataProduct(models.Model):
+    """ 
+    A data product from a field instrument which may be an image or raw data from
+    e.g. a spectrometer
+    """
+    file = models.FileField(upload_to=getNewDataFileName, max_length=255)
+    creation_time = models.DateTimeField(blank=True, default=datetime.datetime.utcnow(),
+                                         editable=False)
+    mimeType = models.CharField(max_length=128, blank=True, null=True)
+    instrumentName = models.CharField(max_length=128, blank=True, null=True)
+
+    def __unicode__(self):
+        return "%s: %s, %s" % (self.creation_time, self.instrumentName, self.mimeType)
