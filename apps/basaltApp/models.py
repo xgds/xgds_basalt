@@ -37,6 +37,7 @@ class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
 class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
     pass
 
+
 class EV(models.Model):
     '''
     An EV is a user who can execute a plan.  Information must be provided to Pextant
@@ -55,6 +56,7 @@ class EV(models.Model):
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
     
+    
 class BasaltPlanExecution(plannerModels.PlanExecution):
     ''' 
     A Plan Execution that also includes an EV
@@ -69,15 +71,12 @@ class BasaltPlanExecution(plannerModels.PlanExecution):
             result['ev'] = None
         return result
     
+    
 class BasaltSample(AbstractSample):
     number = models.IntegerField()
     triplicate = models.CharField(max_length = 2) # single character
     year = models.PositiveSmallIntegerField()
     
     def buildName(self, inputName):
-        pass
-        #self.region.
-        #[2-char Region ID]    [2-digit year]    [1-char sample type]    [hyphen]    [3-digit number]    [1-char triplicates]    
-
-    
-    
+        name = self.region.shortName + self.year + self.type.value + '-' + self.number + self.triplicates
+        return name
