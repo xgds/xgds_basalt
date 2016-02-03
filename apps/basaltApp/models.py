@@ -21,6 +21,7 @@ from django.contrib.auth.models import User
 
 from geocamTrack import models as geocamTrackModels
 from xgds_planner2 import models as plannerModels
+from xgds_sample.models import AbstractSample
 
 class BasaltResource(geocamTrackModels.AbstractResource):
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
@@ -35,6 +36,7 @@ class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
 
 class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
     pass
+
 
 class EV(models.Model):
     '''
@@ -54,6 +56,7 @@ class EV(models.Model):
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
     
+    
 class BasaltPlanExecution(plannerModels.PlanExecution):
     ''' 
     A Plan Execution that also includes an EV
@@ -68,3 +71,12 @@ class BasaltPlanExecution(plannerModels.PlanExecution):
             result['ev'] = None
         return result
     
+    
+class BasaltSample(AbstractSample):
+    number = models.IntegerField()
+    triplicate = models.CharField(max_length = 2) # single character
+    year = models.PositiveSmallIntegerField()
+    
+    def buildName(self, inputName):
+        name = self.region.shortName + self.year + self.type.value + '-' + self.number + self.triplicates
+        return name

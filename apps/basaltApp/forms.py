@@ -55,3 +55,4 @@ class EVForm(ModelForm):
     class Meta:
         model = EV
         fields = ['mass', 'user']
+        
