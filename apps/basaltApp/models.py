@@ -27,6 +27,10 @@ def getNewDataFileName(instance, filename):
     return settings.XGDS_IMAGE_DATA_SUBDIRECTORY + filename
 
 
+def getNewDataFileName(instance, filename):
+    return settings.XGDS_IMAGE_DATA_SUBDIRECTORY + filename
+
+
 class BasaltResource(geocamTrackModels.AbstractResource):
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
 
@@ -60,7 +64,6 @@ class EV(models.Model):
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
 
-    
     
 class BasaltPlanExecution(plannerModels.PlanExecution):
     ''' 
