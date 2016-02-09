@@ -19,6 +19,10 @@ import sys
 import tempfile
 import re
 from django.core.wsgi import get_wsgi_application
+try:
+    from django.contrib.auth.handlers.modwsgi import check_password
+except:
+    print >> sys.stderr, 'djangoWsgi.py: could not import check_password function to enable httpd WSGIAuthUserScript directive'
 
 # avoid crazy error on mac os
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'
