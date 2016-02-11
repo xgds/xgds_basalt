@@ -18,3 +18,4 @@ media/css/*.r*.css
 /build/
 /data/
 /var/
+migrations/
