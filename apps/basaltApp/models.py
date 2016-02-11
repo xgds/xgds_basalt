@@ -18,13 +18,16 @@ import json
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from geocamTrack import models as geocamTrackModels
 from xgds_planner2 import models as plannerModels
-from xgds_sample.models import AbstractSample
+from xgds_sample.models import AbstractSample, Region, SampleType
+from __builtin__ import classmethod
+from geocamUtil.loader import LazyGetModelByName
 
-def getNewDataFileName(instance, filename):
-    return settings.XGDS_IMAGE_DATA_SUBDIRECTORY + filename
+LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
+
 
 
 def getNewDataFileName(instance, filename):
@@ -88,6 +91,49 @@ class BasaltSample(AbstractSample):
     def buildName(self, inputName):
         name = self.region.shortName + self.year + self.type.value + '-' + self.number + self.triplicates
         return name
+    
+    @classmethod
+    def createSampleFromName(cls, name):
+        dataDict = {}
+        dataDict['region'] = name[:2]
+        dataDict['year'] = name[2:4]
+        dataDict['type'] = name[4:5]
+        dataDict['number'] = name[6:9] 
+        dataDict['triplicate'] = name[9:10]
+
+        region = Region.objects.get(shortName = dataDict['region'])
+        sampleType = SampleType.objects.get(value = dataDict['type'])
+        number = ("%03d" % (int(dataDict['number']),))
+        
+        newSample = cls(region=region, 
+                        sampleType=sampleType, 
+                        number=number, 
+                        triplicate=dataDict['triplicate'], 
+                        year=int(dataDict['year']))
+        return newSample.save() 
+    
+    @classmethod
+    def createSamplesFromForm(cls, form):
+        startingNum = int(form['starting_number'])
+        quantity = int(form['quantity'])
+        samplesList = []
+        for sampleNum in range(startingNum, startingNum + quantity):
+            name = form['region'] + \
+                   form['year'] + \
+                   form['type'] + "-" + \
+                   ("%03d" % (sampleNum,)) + \
+                   form['triplicate']
+            region = Region.objects.get(shortName = form['region'])
+            sampleType = SampleType.objects.get(value = form['type'])
+            
+            newSample = cls(name=name,
+                            region=region,
+                            type=sampleType, 
+                            number=sampleNum,
+                            triplicate=form['triplicate'],
+                            year=int(form['year']))
+            samplesList.append(newSample)
+        return samplesList
 
 
 class FieldDataProduct(models.Model):
