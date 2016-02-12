@@ -34,6 +34,8 @@ Other modules can access the value of FOO like this:
 Don't try to get the value of FOO from django.conf.settings.  That
 settings object will not know about the default value!
 """
+import os
 
 basaltApp_BOWER_INSTALLED_APPS = ()
 XGDS_SAMPLE_START_YEAR = 2016
+XGDS_SAMPLE_HANDLEBARS_DIR = [os.path.join('basaltApp', 'templates', 'handlebars')]
