@@ -46,70 +46,13 @@
     	{% endfor %}
 	</div>
 	{% endif %}
+	
+	<input type=hidden name=sampleId value="{{ sample.pk }}">
 
 	<form class="updateSample" id="updateSample" action="{% url 'update_sample' %}" method="post" enctype="multipart/form-data">
 		<table>
-			<tr>
-				<th><label for="id_name">Name:</label></th>
-				<td><input id="id_name" maxlength="512" name="name" type="text" /></td>
-			</tr>
+			{{ form.as_table }}
 		</table>
-		<input type="submit" value="update"/> 
-	</form>
-	<hr>
-	<form class="updateSample" id="updateSample" action="{% url 'update_sample' %}" method="post" enctype="multipart/form-data">
-		<table>
-			<tr>
-				<th><label for="id_label_num">Label Number:</label></th>
-				<td><input id="id_label_num" maxlength="512" name="labelNum" type="text" /></td>
-			</tr>
-			<tr>
-				<th><label for="id_type">Type:</label></th>
-				<td><select id="id_type" name="type">
-						<option value="" selected="selected">---------</option>
-						{% for type in types_list %}
-						<option value="{{ type.value }}">{{ type.display_name }}</option>
-						{% endfor %}
-				</select></td>
-			</tr>
-			<tr>
-				<th><label for="id_region">Region:</label></th>
-				<td><select id="id_region" name="region">
-						<option value="" selected="selected">---------</option>
-						{% for region in regions_list %}
-						<option value="{{ region.shortName }}">{{ region.name }}</option>
-						{% endfor %}
-				</select></td>
-			</tr>
-			<tr>
-				<th><label for="id_starting_number">Starting #:</label></th>
-				<td><input id="id_starting_number" name="starting_number" type="text"/></td>
-			</tr>
-			<tr>
-				<th><label for="id_quantity">Quantity:</label></th>
-				<td><input id="id_quantity" name="quantity" type="text" placeholder="0 to create a single sample"/></td>
-			</tr>
-			<tr>
-				<th><label for="id_triplicate">Triplicate:</label></th>
-				<td><select id="id_triplicate" name="triplicate">
-						<option value="" selected="selected">---------</option>
-						{% for triplicate in triplicate_list %}
-						<option value="{{ triplicate }}">{{ triplicate.display_name }}</option>
-						{% endfor %}
-				</select></td>
-			</tr>
-			<tr>
-				<th><label for="id_year">Year:</label></th>
-				<td><select id="id_year" name="year">
-						<option value="" selected="selected">---------</option>
-						{% for i in 3|get_range %}
-						<option value="{{ settings.XGDS_SAMPLE_START_YEAR|add:i }}"> 
-							{{ settings.XGDS_SAMPLE_START_YEAR|add:i }} 
-						</option>
-   						{% endfor %}
-				</select></td>
-			</tr>
-	</table>
 		{% csrf_token %}
 		<input type="submit" value="update"/> 
 	</form>

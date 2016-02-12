@@ -112,5 +112,67 @@
             "vehicle": 2,
             "primary": true
         }
+    },
+    {
+        "pk": 1,
+        "model": "xgds_sample.Region",
+        "fields": {
+            "name": "Kings Bowl",
+            "shortName": "KB",
+            "siteFrameZone": "",
+            "siteFrameName": "",
+            "siteFrameTimeZone": ""
+        }
+    },
+    {
+        "pk": 2,
+        "model": "xgds_sample.Region",
+        "fields": {
+            "name": "Mauna Ulu",
+            "shortName": "MU",
+            "siteFrameZone": "",
+            "siteFrameName": "",
+            "siteFrameTimeZone": ""
+        }
+    },
+    {
+        "pk": 1,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "B",
+            "display_name": "Biology"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "G",
+            "display_name": "Geology"
+        }
+    },
+    {	
+        "pk": 1,
+        "model": "xgds_sample.Triplicate",
+        "fields": {
+            "value": "A",
+            "display_name": "A"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "xgds_sample.Triplicate",
+        "fields": {
+            "value": "B",
+            "display_name": "B"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "xgds_sample.Triplicate",
+        "fields": {
+            "value": "C",
+            "display_name": "C"
+        }
     }
 ]
