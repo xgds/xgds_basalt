@@ -1,13 +1,31 @@
-{% extends 'xgds_sample/sampleDashboardBase.html' %}
+{% extends 'dashboard_base.html' %}
+
+{% block sitemenu-content-secondary %}
+	{% include "sample_subnav.html" %}
+{% endblock %}
+
+ {% block cssExtras %}
+ {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_sample/css/xgds_sample.css"></link>
+ {% endblock cssExtras %}
+
 
 {% block scripts %}
 {{block.super}}
-	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
-{% endblock scripts %} 
+	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
+		<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
+	
+    <!--  load handlebars -->
+	{% for template_name, template in templates.items %}
+		<script type="text/handlebars" id="template-{{template_name}}">
+			{{template|safe}}
+		</script>
+	{% endfor %}
+{% endblock scripts %}
 
 {% block jsInit %} 
 {{ block.super }}
-	$("#item_image_search").submit(function(event) { doSearch(event); }); 
 {% endblock jsInit %} 
 
 {% block otherJSInit %} 
@@ -16,7 +34,7 @@
 {% load xgds_sample_extras %}
 
 {% block firstPackery %} 
-<div class='item auto lockAspect' id='item_sample_import' data-isStamped="false">
+<div class='item auto lockAspect' id='item_sample_create' tedata-isStamped="false">
 	<div class="error-message upload-error"></div>
 	<i class="icon-lock-open pinDiv"></i><br />
 	<div id="save-status"> {{status}} </div>
@@ -28,24 +46,23 @@
     	{% endfor %}
 	</div>
 	{% endif %}
-	
-	<form class="sampleCreate" id="sampleCreate" action="{% url 'create_new_sample' %}" method="post" enctype="multipart/form-data">
+
+	<form class="updateSample" id="updateSample" action="{% url 'update_sample' %}" method="post" enctype="multipart/form-data">
 		<table>
-			<tr><th><label for="id_name">Name:</label></th><td><input id="id_name" maxlength="512" name="name" type="text" /></td></tr>
+			<tr>
+				<th><label for="id_name">Name:</label></th>
+				<td><input id="id_name" maxlength="512" name="name" type="text" /></td>
+			</tr>
 		</table>
-		{% csrf_token %}
-		<input type="submit" value="create"/> 
+		<input type="submit" value="update"/> 
 	</form>
-
-	<div
-		style="width: 100%; height: 20px; border-bottom: 1.5px solid black; text-align: center; margin-bottom: 20px">
-		<span style="font-size: 15px; padding: 0 10px;">
-			<strong> Or </strong>
-		</span>
-	</div>
-
-	<form class="updateSample" id="updateSample" action="{% url 'xgds_update_sample' %}" method="post" enctype="multipart/form-data">
+	<hr>
+	<form class="updateSample" id="updateSample" action="{% url 'update_sample' %}" method="post" enctype="multipart/form-data">
 		<table>
+			<tr>
+				<th><label for="id_label_num">Label Number:</label></th>
+				<td><input id="id_label_num" maxlength="512" name="labelNum" type="text" /></td>
+			</tr>
 			<tr>
 				<th><label for="id_type">Type:</label></th>
 				<td><select id="id_type" name="type">
@@ -94,7 +111,7 @@
 			</tr>
 	</table>
 		{% csrf_token %}
-		<input type="submit" value="create"/> 
+		<input type="submit" value="update"/> 
 	</form>
 </div>
 {{ block.super }}

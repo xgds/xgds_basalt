@@ -92,48 +92,48 @@ class BasaltSample(AbstractSample):
         name = self.region.shortName + self.year + self.type.value + '-' + self.number + self.triplicates
         return name
     
-#     @classmethod
-#     def createSampleFromName(cls, name):
-#         dataDict = {}
-#         dataDict['region'] = name[:2]
-#         dataDict['year'] = name[2:4]
-#         dataDict['type'] = name[4:5]
-#         dataDict['number'] = name[6:9] 
-#         dataDict['triplicate'] = name[9:10]
-# 
-#         region = Region.objects.get(shortName = dataDict['region'])
-#         sampleType = SampleType.objects.get(value = dataDict['type'])
-#         number = ("%03d" % (int(dataDict['number']),))
-#         
-#         newSample = cls(region=region, 
-#                         sampleType=sampleType, 
-#                         number=number, 
-#                         triplicate=dataDict['triplicate'], 
-#                         year=int(dataDict['year']))
-#         return newSample.save() 
-#     
-#     @classmethod
-#     def createSamplesFromForm(cls, form):
-#         startingNum = int(form['starting_number'])
-#         quantity = int(form['quantity'])
-#         samplesList = []
-#         for sampleNum in range(startingNum, startingNum + quantity):
-#             name = form['region'] + \
-#                    form['year'] + \
-#                    form['type'] + "-" + \
-#                    ("%03d" % (sampleNum,)) + \
-#                    form['triplicate']
-#             region = Region.objects.get(shortName = form['region'])
-#             sampleType = SampleType.objects.get(value = form['type'])
-#             
-#             newSample = cls(name=name,
-#                             region=region,
-#                             type=sampleType, 
-#                             number=sampleNum,
-#                             triplicate=form['triplicate'],
-#                             year=int(form['year']))
-#             samplesList.append(newSample)
-#         return samplesList
+    @classmethod
+    def createSampleFromName(cls, name):
+        dataDict = {}
+        dataDict['region'] = name[:2]
+        dataDict['year'] = name[2:4]
+        dataDict['type'] = name[4:5]
+        dataDict['number'] = name[6:9] 
+        dataDict['triplicate'] = name[9:10]
+ 
+        region = Region.objects.get(shortName = dataDict['region'])
+        sampleType = SampleType.objects.get(value = dataDict['type'])
+        number = ("%03d" % (int(dataDict['number']),))
+         
+        newSample = cls(region=region, 
+                        sampleType=sampleType, 
+                        number=number, 
+                        triplicate=dataDict['triplicate'], 
+                        year=int(dataDict['year']))
+        return newSample.save() 
+     
+    @classmethod
+    def createSamplesFromForm(cls, form):
+        startingNum = int(form['starting_number'])
+        quantity = int(form['quantity'])
+        samplesList = []
+        for sampleNum in range(startingNum, startingNum + quantity):
+            name = form['region'] + \
+                   form['year'] + \
+                   form['type'] + "-" + \
+                   ("%03d" % (sampleNum,)) + \
+                   form['triplicate']
+            region = Region.objects.get(shortName = form['region'])
+            sampleType = SampleType.objects.get(value = form['type'])
+             
+            newSample = cls(name=name,
+                            region=region,
+                            type=sampleType, 
+                            number=sampleNum,
+                            triplicate=form['triplicate'],
+                            year=int(form['year']))
+            samplesList.append(newSample)
+        return samplesList
 
 
 class FieldDataProduct(models.Model):

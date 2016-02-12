@@ -11,12 +11,13 @@
 
 {% block jsInit %} 
 {{ block.super }}
+	$('#map').hide(); 
 {% endblock jsInit %} 
 
 {% block firstPackery %}
 	<div class='item auto lockAspect' id='create_sample_from_label_num' data-isStamped="false">
 		<i class="icon-lock-open pinDiv"></i><br />
-		<form class="label_number_form" id="label_number_form" action="{% url 'create_new_sample' %}" method="post" enctype="multipart/form-data">
+		<form class="label_number_form" id="label_number_form" action="{% url 'create_sample' %}" method="post" enctype="multipart/form-data">
 			<table>
 				<tr>
 					<th><label for="id_label_number">Label Number:</label></th>
