@@ -17,3 +17,5 @@ bower_components/
 sourceme.sh
 build/
 data/
+apps/basaltApp/migrations/
+migrations/
