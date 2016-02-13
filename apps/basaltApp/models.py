@@ -41,21 +41,13 @@ class BasaltResource(geocamTrackModels.AbstractResource):
         return self.name
     
 
-class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
-    pass
-
-
-class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
-    pass
-
-
 class EV(models.Model):
     '''
     An EV is a user who can execute a plan.  Information must be provided to Pextant
     about the user to correctly model the path
     ''' 
     mass = models.FloatField()
-    user = models.ForeignKey(User, unique=True)
+    user = models.OneToOneField(User)
     
     def toSimpleDict(self):
         result = {}
