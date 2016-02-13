@@ -28,7 +28,8 @@
                     "label": "Site Frame",
                     "coordinateLabel": "X, Y",
                     "coordinateNotes": "X=Northing Y=Easting",
-                    "coordinateMapping": "lat, lon"
+                    "coordinateMapping": "lat, lon",
+                    "timezone": "America/Boise"
                 }
             },
             "bbox": [43.455575, -113.577912,
@@ -52,7 +53,8 @@
                     "label": "Site Frame",
                     "coordinateLabel": "X, Y",
                     "coordinateNotes": "X=Northing Y=Easting",
-                    "coordinateMapping": "lat, lon"
+                    "coordinateMapping": "lat, lon",
+                    "timezone": "US/Hawaii"
                 }
             },
             "bbox": [19.172642, -155.435329,

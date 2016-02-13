@@ -1,0 +1,61 @@
+{% extends 'dashboard_base.html' %}
+
+{% block sitemenu-content-secondary %}
+	{% include "sample_subnav.html" %}
+{% endblock %}
+
+ {% block cssExtras %}
+ {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_sample/css/xgds_sample.css"></link>
+ {% endblock cssExtras %}
+
+
+{% block scripts %}
+{{block.super}}
+	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
+		<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
+	
+    <!--  load handlebars -->
+	{% for template_name, template in templates.items %}
+		<script type="text/handlebars" id="template-{{template_name}}">
+			{{template|safe}}
+		</script>
+	{% endfor %}
+{% endblock scripts %}
+
+{% block jsInit %} 
+{{ block.super }}
+{% endblock jsInit %} 
+
+{% block otherJSInit %} 
+{% endblock otherJSInit %} 
+
+{% load xgds_sample_extras %}
+
+{% block firstPackery %} 
+<div class='item auto lockAspect' id='item_sample_create' tedata-isStamped="false">
+	<div class="error-message upload-error"></div>
+	<i class="icon-lock-open pinDiv"></i><br />
+	<div id="save-status"> {{status}} </div>
+	
+	{% if messages %}
+	<div id="messages">
+  		{% for message in messages %}
+    	<p>{{ message }}</p>
+    	{% endfor %}
+	</div>
+	{% endif %}
+	
+	<input type=hidden name=sampleId value="{{ sample.pk }}">
+
+	<form class="updateSample" id="updateSample" action="{% url 'update_sample' %}" method="post" enctype="multipart/form-data">
+		<table>
+			{{ form.as_table }}
+		</table>
+		{% csrf_token %}
+		<input type="submit" value="update"/> 
+	</form>
+</div>
+{{ block.super }}
+{% endblock firstPackery %}

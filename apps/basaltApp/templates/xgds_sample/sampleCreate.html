@@ -1,0 +1,32 @@
+{% extends 'dashboard_base.html' %}
+
+{% block sitemenu-content-secondary %}
+	{% include "sample_subnav.html" %}
+{% endblock %}
+
+ {% block cssExtras %}
+ {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_sample/css/xgds_sample.css"></link>
+ {% endblock cssExtras %}
+
+{% block jsInit %} 
+{{ block.super }}
+	$('#map').hide(); 
+{% endblock jsInit %} 
+
+{% block firstPackery %}
+	<div class='item auto lockAspect' id='create_sample_from_label_num' data-isStamped="false">
+		<i class="icon-lock-open pinDiv"></i><br />
+		<form class="label_number_form" id="label_number_form" action="{% url 'create_sample' %}" method="post" enctype="multipart/form-data">
+			<table>
+				<tr>
+					<th><label for="id_label_number">Label Number:</label></th>
+					<td><input id="id_label_number" maxlength="512" name="labelNumber" type="text" /></td>
+				</tr>
+			</table>
+			{% csrf_token %}
+			<input type="submit" value="Open sample"/> 
+		</form>
+	</div>
+	{{ block.super }}
+{% endblock firstPackery %}

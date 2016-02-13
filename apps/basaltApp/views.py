@@ -97,8 +97,21 @@ def callPextantAjax(request, planId):
         response["msg"] = e.args[0]
         response["status"] = False
         status = 406
-    return HttpResponse(json.dumps(response), content_type='application/json', status=status)
+    return HttpResponse(json.dumps(response), content_type='application/json',
+                        status=status)
     
 
+def storeFieldData(request):
+    if request.method == 'POST':
+        postData = request.POST
+        fileData = request.FILES
+        headers = request.META
+#        return HttpResponse("Data processed:\n  Instrument: %s\n  Data Type: %s\n" % 
+#                            (postData["instrumentName"], headers["CONTENT_TYPE"]),
+#                            content_type="text/plain")
+        return HttpResponse("Data processed:\n  %s\n" % fileData,
+                            content_type="text/plain")
+    else:
+        return HttpResponse("No data posted\n", content_type="text/plain")
 
-        
+

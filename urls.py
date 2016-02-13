@@ -14,7 +14,7 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
-from django.conf.urls import patterns, include
+from django.conf.urls import url, include
 from django.conf import settings
 from django.contrib.auth.views import login
 from django.contrib import auth
@@ -25,22 +25,21 @@ admin.autodiscover()
 
 import basaltApp.views
 
-urlpatterns = patterns('',
-                       (r'^admin/', include(admin.site.urls)),
-                       (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-                       (r'^$', RedirectView.as_view(url=settings.SCRIPT_NAME + 'basaltApp/'), {}),
-                       (r'^accounts/', include('basaltApp.registerUrls')),
-                       (r'^basaltApp/', include('basaltApp.urls')),
-                       (r'^favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'basaltApp/icons/favicon.ico'), {'readOnly': True}),
-
-                       (r'^pycroraptor/', include('geocamPycroraptor2.urls')),
-                       (r'^track/', include('geocamTrack.urls')),
-                       (r'^xgds_map_server/', include('xgds_map_server.urls')),
-                       (r'^xgds_data/', include('xgds_data.urls')),
-                       (r'^xgds_sample/', include('xgds_sample.urls')),
-                       (r'^xgds_image/', include('xgds_image.urls')),
-                       (r'^notes/', include('xgds_notes2.urls')),
-                       (r'^xgds_planner2/', include('xgds_planner2.urls')),
-                       (r'^xgds_plot/', include('xgds_plot.urls')),
-                       (r'^xgds_video/', include('xgds_video.urls')),
-                       )
+urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^$', RedirectView.as_view(url=settings.SCRIPT_NAME + 'basaltApp/'), {}),
+    url(r'^accounts/', include('basaltApp.registerUrls')),
+    url(r'^basaltApp/', include('basaltApp.urls')),
+    url(r'^favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'basaltApp/icons/favicon.ico'), {'readOnly': True}),
+    url(r'^xgds_sample/', include('xgds_sample.urls')),
+    url(r'^pycroraptor/', include('geocamPycroraptor2.urls')),
+    url(r'^track/', include('geocamTrack.urls')),
+    url(r'^xgds_map_server/', include('xgds_map_server.urls')),
+    url(r'^xgds_data/', include('xgds_data.urls')),
+    url(r'^xgds_image/', include('xgds_image.urls')),
+    url(r'^notes/', include('xgds_notes2.urls')),
+    url(r'^xgds_planner2/', include('xgds_planner2.urls')),
+    url(r'^xgds_plot/', include('xgds_plot.urls')),
+    url(r'^xgds_video/', include('xgds_video.urls')),
+]
