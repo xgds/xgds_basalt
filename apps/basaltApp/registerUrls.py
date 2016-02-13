@@ -14,19 +14,18 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
-from django.conf.urls import patterns
+from django.conf.urls import url
 from django.contrib import auth
 
 from basaltApp import register
 
-urlpatterns = patterns('',
-                       (r'^login/$', 'django.contrib.auth.views.login', {'loginRequired': False}, 'user-login'),
-                       (r'^logout/$', 'django.contrib.auth.views.logout', {'loginRequired': False, 'next_page': '/accounts/login/'}),
-                       (r'^register/$', register.registerUser, {'loginRequired': False}, 'user-registration'),
-                       (r'^activate/(.*)$', register.activateUser, {}, 'user-activate'),
-                       (r'^reset-password/$', auth.views.password_reset, {'loginRequired': False}, 'reset-password'),
-                       (r'^reset-password-done/$', auth.views.password_reset_done, {'loginRequired': False},'password_reset_done'),
-                       (r'^reset-password-confirm/(?P<uidb36>[^/]+)/(?P<token>.+)$', auth.views.password_reset_confirm, {'loginRequired': False}),
-                       (r'^reset-password-complete/$', auth.views.password_reset_complete, {'loginRequired': False}),
-                       (r'^feedback/$', register.email_feedback, {'loginRequired': False}, 'email_feedback'),
-                       )
+urlpatterns = [url(r'^login/$', auth.views.login, {'loginRequired': False}, 'user-login'),
+               url(r'^logout/$', auth.views.logout, {'loginRequired': False, 'next_page': '/accounts/login/'}),
+               url(r'^register/$', register.registerUser, {'loginRequired': False}, 'user-registration'),
+               url(r'^activate/(.*)$', register.activateUser, {}, 'user-activate'),
+               url(r'^reset-password/$', auth.views.password_reset, {'loginRequired': False}, 'reset-password'),
+               url(r'^reset-password-done/$', auth.views.password_reset_done, {'loginRequired': False},'password_reset_done'),
+               url(r'^reset-password-confirm/(?P<uidb36>[^/]+)/(?P<token>.+)$', auth.views.password_reset_confirm, {'loginRequired': False}),
+               url(r'^reset-password-complete/$', auth.views.password_reset_complete, {'loginRequired': False}),
+               url(r'^feedback/$', register.email_feedback, {'loginRequired': False}, 'email_feedback')
+           ]

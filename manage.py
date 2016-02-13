@@ -20,6 +20,7 @@ import sys
 
 # pylint: disable=W0104
 
+
 # try to bootstrap before hooking into django management stuff
 if 'bootstrap' in sys.argv:
     extraArgs = sys.argv[2:]
