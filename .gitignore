@@ -1,3 +1,4 @@
+.settings
 .git
 *.pyc
 dev.db
