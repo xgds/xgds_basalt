@@ -21,6 +21,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 from geocamTrack import models as geocamTrackModels
+from geocamUtil.models.AbstractEnum import AbstractEnumModel
 from xgds_planner2 import models as plannerModels
 from xgds_sample.models import AbstractSample, Region, SampleType
 from __builtin__ import classmethod
@@ -35,11 +36,42 @@ def getNewDataFileName(instance, filename):
 
 
 class BasaltResource(geocamTrackModels.AbstractResource):
+    resourceId = models.IntegerField()
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
     
+
+class DataType(models.Model):
+    name = models.CharField(max_length=32)
+    notes = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    serverTimestamp = models.DateTimeField(db_index=True)
+    pass
+
+
+class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    serverTimestamp = models.DateTimeField(db_index=True)
+    pass
+
+
+class BasaltTrack(geocamTrackModels.AbstractTrack):
+    dataType = models.ForeignKey(DataType, null=True, blank=True)
+
+    def toMapDict(self):
+        result = geocamTrackModels.AbstractTrack.toMapDict(self)
+        result['type'] = 'BasaltTrack'
+        return result
+    
+    def __unicode__(self):
+        return '%s %s' % (self.__class__.__name__, self.name)
+
 
 class EV(models.Model):
     '''
@@ -75,45 +107,18 @@ class BasaltPlanExecution(plannerModels.PlanExecution):
         return result
 
 
+class Triplicate(AbstractEnumModel):
+    pass
+
+
 class BasaltSample(AbstractSample):
     number = models.IntegerField(null=True)
-    triplicate = models.CharField(max_length = 2, null=True) 
+    triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True)
     
     def buildName(self, inputName):
         name = self.region.shortName + self.year + self.type.value + '-' + self.number + self.triplicates
         return name
-    
-    def updateSampleFromName(self, name):
-        dataDict = {}
-        dataDict['region'] = name[:2]
-        dataDict['year'] = name[2:4]
-        dataDict['type'] = name[4:5]
-        dataDict['number'] = name[6:9] 
-        dataDict['triplicate'] = name[9:10]
- 
-        self.region = Region.objects.get(shortName = dataDict['region'])
-        self.type = SampleType.objects.get(value = dataDict['type'])
-        self.number = ("%03d" % (int(dataDict['number']),))
-        self.triplicate = dataDict['triplicate']
-        self.year = int(dataDict['year']) 
-        self.save()
-         
-    def updateSampleFromForm(self, form):
-        name = form['region'] + \
-               form['year'] + \
-               form['type'] + "-" + \
-               ("%03d" % (sampleNum,)) + \
-               form['triplicate']
-        
-        self.name = Name
-        self.region = Region.objects.get(shortName = form['region'])
-        self.type = sampleType
-        self.number = form['number']
-        self.triplicate = form['triplicate'] 
-        self.type = SampleType.objects.get(value = form['type'])
-        self.year = int(form['year'])
-        self.save()
         
 
 class FieldDataProduct(models.Model):

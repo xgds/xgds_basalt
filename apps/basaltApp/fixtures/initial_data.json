@@ -174,5 +174,13 @@
             "value": "C",
             "display_name": "C"
         }
+    },
+    {	
+        "pk": 1,
+        "model": "basaltApp.DataType",
+        "fields": {
+            "name": "RawGPSLocation",
+            "notes": "GPS data directly from the GPS device with no post-processing."
+        }
     }
 ]
