@@ -97,18 +97,20 @@
     },
     {
         "pk": 1,
-        "model": "basaltApp.basaltresource",
+        "model": "basaltApp.BasaltResource",
         "fields": {
             "name": "EV1",
+            "resourceId": 1,
             "vehicle": 1,
             "primary": true
         }
     },
     {
         "pk": 2,
-        "model": "basaltApp.basaltresource",
+        "model": "basaltApp.BasaltResource",
         "fields": {
             "name": "EV2",
+            "resourceId": 2,
             "vehicle": 2,
             "primary": true
         }
@@ -153,7 +155,7 @@
     },
     {	
         "pk": 1,
-        "model": "xgds_sample.Triplicate",
+        "model": "basaltApp.Triplicate",
         "fields": {
             "value": "A",
             "display_name": "A"
@@ -161,7 +163,7 @@
     },
     {
         "pk": 2,
-        "model": "xgds_sample.Triplicate",
+        "model": "basaltApp.Triplicate",
         "fields": {
             "value": "B",
             "display_name": "B"
@@ -169,7 +171,7 @@
     },
     {
         "pk": 3,
-        "model": "xgds_sample.Triplicate",
+        "model": "basaltApp.Triplicate",
         "fields": {
             "value": "C",
             "display_name": "C"
