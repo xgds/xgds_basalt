@@ -35,11 +35,42 @@ def getNewDataFileName(instance, filename):
 
 
 class BasaltResource(geocamTrackModels.AbstractResource):
+    resourceId = models.IntegerField()
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
     
+
+class DataType(models.Model):
+    name = models.CharField(max_length=32)
+    notes = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    serverTimestamp = models.DateTimeField(db_index=True)
+    pass
+
+
+class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    serverTimestamp = models.DateTimeField(db_index=True)
+    pass
+
+
+class BasaltTrack(geocamTrackModels.AbstractTrack):
+    dataType = models.ForeignKey(DataType, null=True, blank=True)
+
+    def toMapDict(self):
+        result = geocamTrackModels.AbstractTrack.toMapDict(self)
+        result['type'] = 'BasaltTrack'
+        return result
+    
+    def __unicode__(self):
+        return '%s %s' % (self.__class__.__name__, self.name)
+
 
 class EV(models.Model):
     '''
