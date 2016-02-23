@@ -41,16 +41,21 @@ app.views.ScheduleView = Backbone.View.extend({
             planId: app.planJson.serverId,
             flight_names: app.options.flight_names
         }));
-        this.$el.find("#id_schedule_date").datetimepicker({'controlType': 'select',
+        var scheduleDate = this.$el.find("#id_schedule_date");
+        scheduleDate.datetimepicker({'controlType': 'select',
             'oneLine': true,
             'showTimezone': false,
-            'timezone': '-0000'
+            'timezone': moment.tz(app.getTimeZone()).utcOffset()
            });
         this.$el.find('#submit_button').click(function(event)
 		    {
     	event.preventDefault();
         var theForm = $("#scheduleForm");
     	var postData = theForm.serializeArray();
+    	// update the date to be in utc
+    	var tzified = moment.tz(postData[1].value, app.getTimeZone());
+    	var theUtc = tzified.format('MM/DD/YY hh:mm');
+    	postData[1].value = theUtc;
         $.ajax(
         {
             url: "/xgds_planner2/schedulePlan/",
@@ -59,7 +64,19 @@ app.views.ScheduleView = Backbone.View.extend({
             data: postData,
             success: function(data)
             {
-            	$('#schedule_message').text(data.msg);
+            	var flightName = data['flight'];
+            	if ($("#id_flight option[value='" + flightName + "']").length == 0){
+            		$("#id_flight").append("<option value=" + flightName + " selected>" + flightName +"</option>");
+            	}
+            	$("#id_flight").val(flightName);
+            	var startMoment = moment.utc(data['planned_start_time']).tz(playback.displayTZ);
+            	scheduleDate.val(getLocalTimeString(startMoment, playback.displayTZ));
+            	$("#id_planExecutionId").val(data['pk']);
+            	$('#schedule_message').text("Plan scheduled for " + scheduleDate.val());
+            	app.options.planExecution = data;
+            	playback.updateStartTime(startMoment);
+            	playback.updateEndTime(moment(startMoment).add(app.currentPlan._simInfo.deltaTimeSeconds, 's'));
+            	playback.setCurrentTime(startMoment);
             },
             error: function(data)
             {
