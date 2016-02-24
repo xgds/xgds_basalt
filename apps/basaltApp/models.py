@@ -26,9 +26,9 @@ from xgds_planner2 import models as plannerModels
 from xgds_sample.models import AbstractSample, Region, SampleType
 from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
+from xgds_core.models import Constant
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
-
 
 
 def getNewDataFileName(instance, filename):
@@ -91,6 +91,33 @@ class EV(models.Model):
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
 
+
+class BasaltFlight(plannerModels.AbstractFlight):
+    ''' A Basalt Flight for storing delay and handling start and stop functions '''
+    delaySeconds = models.IntegerField(default=0)
+    track = models.OneToOneField(BasaltTrack, null=True, blank=True)
+    
+    def startFlightExtras(self, request):
+        delayConstant = Constant.objects.get(name="delay")
+        self.delaySeconds = int(delayConstant.value)
+        
+        #Create the track
+        track = BasaltTrack(name=self.name,
+                            resource=BasaltResource.objects.get(vehicle=self.vehicle),
+#                             iconStyle=DEFAULT_ICON_STYLE,
+#                             lineStyle=DEFAULT_LINE_STYLE,
+                            dataType=DataType.objects.get(name="RawGPSLocation"))
+        self.track = track
+        track.save()
+        self.save()
+        
+        #TODO start the eva track listener
+        pass
+
+    def stopFlightExtras(self, request):
+        #TODO stop the eva track listener
+        #TODO remove the current position for that track
+        pass
     
 class BasaltPlanExecution(plannerModels.PlanExecution):
     ''' 
