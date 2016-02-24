@@ -48,14 +48,13 @@
     	{% endfor %}
 	</div>
 	{% endif %}
-	
-	<input type=hidden name=sampleId value="{{ sample.pk }}">
 
 	<form class="updateSample" id="updateSample" action="{% url 'create_sample' %}" method="post" enctype="multipart/form-data">
+		<input type=hidden name=sampleId value="{{ sample.pk }}">
 		<table>
-			<tr> 
-				<th> <label for="id_label">Label number:</label> </th>
-				<td>{{ labelNum }}</td>
+			<tr>
+				<th><label for="id_label_number">Label Number:</label></th>
+				<td><input id="id_label_number" maxlength="512" name="labelNumber" type="text" value="{{labelNum}}" readonly /></td>
 			</tr>
 			<tr class="sample_name_row">
 				<th><label for="id_name">Name:</label></th>
