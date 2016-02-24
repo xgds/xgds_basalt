@@ -64,7 +64,7 @@ table.planIndex td.exportFormat a {
     <td class="center">{{ plan.numStations }}</td>
     <td >{{ plan.numCommands }} &nbsp;&nbsp;{{ plan.getSummaryOfCommandsByType|safe }}</td>
     {% if settings.XGDS_PLANNER2_SCHEDULE_INCLUDED %}
-    <td style="width:150px;">{% for execution in plan.executions.all %} {% timezone TIME_ZONE %} {{ execution.planned_start_time|date:"Y-m-d H:i"}} {% endtimezone %}<br/>{% endfor %}</td>
+    <td style="width:150px;">{% for execution in plan.executions.all %} {% timezone plan.jsonPlan.site.alternateCrs.properties.timezone %} {{ execution.planned_start_time|date:"Y-m-d H:i e"}} {% endtimezone %}<br/>{% endfor %}</td>
     <td style="width:150px;">{% for execution in plan.executions.all %} {{ execution.ev }}<br/>{% endfor %}</td>
     {% endif %}
     <td class="exportFormat">
