@@ -46,6 +46,7 @@
 	<tr {% if not flight.end_time and flight.start_time %} style="background:lightgreen;" {% endif %}>
 		<td >{{settings.XGDS_PLANNER2_FLIGHT_MONIKER}}: {{ flight.name }}</td>
 		<td></td>
+		<td></td>
 		<td>{% if flight.start_time %} {{flight.start_time|utc_to_django|date:"Y-m-d H:i"}} {% else %} <a href="{% url 'planner2_startFlight' flight.uuid %}">Start</a>{% endif %}</td>
 		<td>{% if flight.end_time %} {{flight.end_time|utc_to_django|date:"Y-m-d H:i"}} {% elif flight.start_time %} <a href="{% url 'planner2_stopFlight' flight.uuid %}">Stop</a>{% endif %}</td>
 		<td></td>

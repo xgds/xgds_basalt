@@ -107,8 +107,8 @@ class BasaltFlight(plannerModels.AbstractFlight):
 #                             iconStyle=DEFAULT_ICON_STYLE,
 #                             lineStyle=DEFAULT_LINE_STYLE,
                             dataType=DataType.objects.get(name="RawGPSLocation"))
-        self.track = track
         track.save()
+        self.track = track
         self.save()
         
         #TODO start the eva track listener
