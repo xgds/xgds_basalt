@@ -194,5 +194,7 @@
     		"notes":"Current system-wide time delay",
     		"dataType":"int",
     		"value":"300"
+    	}
+    }
     		
 ]
