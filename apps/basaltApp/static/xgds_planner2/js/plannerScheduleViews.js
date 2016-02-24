@@ -35,7 +35,14 @@ app.views.ScheduleView = Backbone.View.extend({
         }
     },
     render: function() {
+    	
+    	var planned_start_time = "";
+    	if (app.options.planExecution !== null){
+    		moment.tz.setDefault('Etc/UTC');
+    		planned_start_time = moment(app.options.planExecution.planned_start_time).tz(app.getTimeZone()).format('MM/DD/YYYY HH:mm');
+    	}
         this.$el.html(this.template({
+        	planned_start_time: planned_start_time,
             planExecution: app.options.planExecution,
             evList: app.options.evList,
             planId: app.planJson.serverId,
@@ -54,8 +61,8 @@ app.views.ScheduleView = Backbone.View.extend({
     	var postData = theForm.serializeArray();
     	// update the date to be in utc
     	moment.tz.setDefault(app.getTimeZone());
-    	var tzified = moment.tz(postData[1].value, 'MM/DD/YY hh:mm', app.getTimeZone());
-    	var theUtc = tzified.utc().format('MM/DD/YY hh:mm');
+    	var tzified = moment.tz(postData[1].value, 'MM/DD/YYYY HH:mm', app.getTimeZone());
+    	var theUtc = tzified.utc().format('MM/DD/YYYY HH:mm');
     	postData[1].value = theUtc;
         $.ajax(
         {
