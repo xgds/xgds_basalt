@@ -184,5 +184,15 @@
             "name": "RawGPSLocation",
             "notes": "GPS data directly from the GPS device with no post-processing."
         }
-    }
+    },
+    {
+    	"pk": 1,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"delay",
+    		"units":"seconds",
+    		"notes":"Current system-wide time delay",
+    		"dataType":"int",
+    		"value":"300"
+    		
 ]
