@@ -28,6 +28,7 @@ from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
 
+
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
 
 
@@ -144,8 +145,31 @@ class BasaltSample(AbstractSample):
     year = models.PositiveSmallIntegerField(null=True)
     
     def buildName(self):
-        name = self.region.shortName + str(self.year) + self.type.value + '-' + str(self.number) + str(self.triplicate.value)
+        number = ("%03d" % (int(self.number),))
+        name = self.region.shortName + str(self.year) + self.type.value + '-' + str(number) + str(self.triplicate.value)
         return name
+    
+    def updateSampleFromName(self, name):
+        assert name
+        
+        dataDict = {}
+        dataDict['region'] = name[:2]
+        dataDict['year'] = name[2:4]
+        dataDict['type'] = name[4:5]
+        dataDict['number'] = name[6:9] 
+        dataDict['triplicate'] = name[9:10]
+         
+        if not self.region:
+            self.region = Region.objects.get(shortName = dataDict['region'])
+        if not self.type:
+            self.type = SampleType.objects.get(value = dataDict['type'])
+        if not self.number:
+            self.number = ("%03d" % (int(dataDict['number']),))
+        if not self.triplicate:
+            self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
+        if not self.year:
+            self.year = int(dataDict['year']) 
+        self.save()
         
 
 class FieldDataProduct(models.Model):
