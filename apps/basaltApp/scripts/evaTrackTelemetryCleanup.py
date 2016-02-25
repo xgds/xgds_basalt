@@ -21,6 +21,7 @@ import logging
 import atexit
 import datetime
 import traceback
+import pytz
 from uuid import uuid4
 
 from django.core.cache import cache
@@ -34,14 +35,13 @@ from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
 from geocamTrack.models import (IconStyle, LineStyle)
 
+from xgds_planner2.models import ActiveFlight
 from basaltApp.models import (BasaltResource,
                               CurrentPosition,
                               BasaltTrack,
                               PastPosition,
                               DataType)
 
-
-from django.conf import settings
 
 DM_REGEX = re.compile(r'(?P<degrees>\d+)(?P<minutes>\d\d\.\d+)')
 DEFAULT_ICON_STYLE = IconStyle.objects.get(name='default')
@@ -85,20 +85,21 @@ class GpsTelemetryCleanup(object):
     def handle_gpsposition0(self, topic, body):
         # example: 2:$GPMRC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
 
-        serverTimestamp = datetime.datetime.utcnow()
+        serverTimestamp = datetime.datetime.now(pytz.utc)
 
         if body == 'NO DATA':
             logging.info('NO DATA')
             return
 
         # parse record
-        resourceIdStr, content = body.split(":")
+        resourceIdStr, trackName, content = body.split(":")
         resourceId = int(resourceIdStr)
         sentenceType, utcTime, activeVoid, lat, latHemi, lon,\
             lonHemi, speed, heading, date, declination, declinationDir,\
             modeAndChecksum = content.split(",")
         sourceTimestamp = datetime.datetime.strptime('%s %s' % (date, utcTime),
                                                      '%d%m%y %H%M%S.00')
+        sourceTimestamp = sourceTimestamp.replace(tzinfo=pytz.utc)
         lat = parseTracLinkDM(lat, latHemi)
         lon = parseTracLinkDM(lon, lonHemi)
 
@@ -116,14 +117,27 @@ class GpsTelemetryCleanup(object):
                 logging.warning('%s', traceback.format_exc())
                 raise KeyError('Received GPS position for the EV with id %s. Please ensure there is a vehicle with that id in the BasaltResource table.' % resourceId)
 
-            tracks = BasaltTrack.objects.filter(resource=basaltResource)
+            # Check for track name.  We use explicit name if specified, otherwise
+            # we check for an active flight and finally use the resourceId
+            if len(trackName):
+                logging.info("Using track name from listener: %s" % trackName)
+            if len(trackName) == 0:  # I.e. we were not given a name for track already
+                try:
+                    activeFlight = ActiveFlight.objects.get(flight__vehicle__basaltresource=basaltResource)
+                    trackName = activeFlight.flight.name
+                    logging.info("Using track name from ActiveFlight: %s" % trackName)
+                except ObjectDoesNotExist:
+                    trackName = basaltResource.name
+                    logging.info("Using track name from EV arg: %s" % trackName)
+                
+            tracks = BasaltTrack.objects.filter(name=trackName)
             assert len(tracks) in (0, 1)
             if tracks:
                 # we already have a valid track, use that
                 track = tracks[0]
             else:
                 # must start a new track
-                track = BasaltTrack(name=basaltResource.name,
+                track = BasaltTrack(name=trackName,
                               resource=basaltResource,
                               iconStyle=DEFAULT_ICON_STYLE,
                               lineStyle=DEFAULT_LINE_STYLE,
