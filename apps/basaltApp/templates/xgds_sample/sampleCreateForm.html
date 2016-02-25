@@ -66,12 +66,23 @@
 				<th> <label for="id_region">Region:</label></th>
 				<td>
 					<select id="id_region" name="region">
-					<option value="" selected="selected">---------</option>
+					<option value="">---------</option>
 					{% for region in regions_list %}
-					<option value="{{ region.shortName }}">{{ region.name }}</option>
+					<option value="{{ region.shortName }}"{% if region.shortName == currentRegion %}selected="selected"{% endif %}>
+					{{ region.name }}</option>
 					{% endfor %}
 					</select>
 				</td>
+			</tr>
+			<tr>
+				<th><label for="id_type">Type:</label></th>
+				<td><select id="id_type" name="type">
+						<option value="">---------</option>
+						{% for type in types_list %}
+						<option value="{{ type.display_name }}"{% if type.display_name == currentType %}selected="selected"{% endif %}>
+						{{ type.display_name }}</option>
+						{% endfor %}
+				</select></td>
 			</tr>
 			<tr>
 				<th><label for="id_collection_time">Collection Time:</label></th>
