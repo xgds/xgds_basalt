@@ -59,21 +59,9 @@
 			</tr>
 			<tr class="sample_name_row">
 				<th><label for="id_name">Name:</label></th>
-				<td><input id="id_name" maxlength="512" name="name" type="text" placeholder="i.e NC16B001A"/></td>
+				<td><input id="id_name" maxlength="512" name="name" type="text" placeholder="i.e NC16B001A" value="{{ sample.name }}"/></td>
 			</tr>
 			{{ form.as_table }}
-			<tr>
-				<th><label for="id_collection_time">Collection Time:</label></th>
-				<td><input id="id_collection_time" maxlength="512" name="collection_time" type="text" /> </td>
-			</tr>
-			<tr>
-				<th><label for="id_latitude">Latitude:</label></th>
-				<td><input id="id_latitude" maxlength="512" name="latitude" type="text" placeholder="latitude"/></td>
-			</tr>
-			<tr>
-				<th><label for="id_latitude">Longitude:</label></th>
-				<td><input id="id_longitude" maxlength="512" name="longitude" type="text" placeholder="longitude"/></td>
-			</tr>	
 		</table>
 		{% csrf_token %}
 		<input type="submit" value="update"/> 

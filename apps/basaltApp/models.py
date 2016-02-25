@@ -143,8 +143,8 @@ class BasaltSample(AbstractSample):
     triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True)
     
-    def buildName(self, inputName):
-        name = self.region.shortName + self.year + self.type.value + '-' + self.number + self.triplicates
+    def buildName(self):
+        name = self.region.shortName + str(self.year) + self.type.value + '-' + str(self.number) + str(self.triplicate.value)
         return name
         
 
