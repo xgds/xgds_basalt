@@ -51,7 +51,7 @@
 	{% endif %}
 
 	<div> <strong> Edit sample info </strong></div>
-	<form class="updateSample" id="updateSample" action="{% url 'create_sample' %}" method="post" enctype="multipart/form-data">
+	<form class="updateSample" id="updateSample" action="{% url 'xgds_sample_edit' labelNum %}" method="post" enctype="multipart/form-data">
 		<input type=hidden name=sampleId value="{{ sample.pk }}">
 		<table>
 			<tr>
