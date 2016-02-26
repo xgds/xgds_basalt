@@ -12,6 +12,7 @@
 
 {% block scripts %}
 {{block.super}}
+	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
 	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
     <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
 		<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
@@ -49,6 +50,7 @@
 	</div>
 	{% endif %}
 
+	<div> <strong> Edit sample info </strong></div>
 	<form class="updateSample" id="updateSample" action="{% url 'create_sample' %}" method="post" enctype="multipart/form-data">
 		<input type=hidden name=sampleId value="{{ sample.pk }}">
 		<table>
@@ -58,12 +60,12 @@
 			</tr>
 			<tr class="sample_name_row">
 				<th><label for="id_name">Name:</label></th>
-				<td><input id="id_name" maxlength="512" name="name" type="text" placeholder="i.e NC16B001A"/></td>
+				<td><input id="id_name" maxlength="512" name="name" type="text" placeholder="i.e NC16B001A" value="{{ sample.name }}"/></td>
 			</tr>
 			{{ form.as_table }}
 		</table>
 		{% csrf_token %}
-		<input type="submit" value="update"/> 
+		<input type="submit" value="save"/> 
 	</form>
 </div>
 {{ block.super }}

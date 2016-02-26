@@ -54,7 +54,7 @@ def zmqPublish(opts, q):
     p = ZmqPublisher(**ZmqPublisher.getOptionValues(opts))
     p.start()
     for line in q:
-        msg = 'gpsposition:%s:' % opts.evaNumber + line
+        msg = 'gpsposition:%s:%s:' % (opts.evaNumber, opts.trackName) + line
         logging.debug('publishing: %s', msg)
         p.pubStream.send(msg)
 
@@ -87,6 +87,10 @@ def main():
                       default=1,
                       help=\
                       'EVA identifier for multi-EVA ops. e.g. 1,2... [%default]')
+    parser.add_option('-t', '--trackName',
+                      default="",
+                      help=\
+                'Track name to store GPS points. If blank will use active flight then EVA #')
     opts, _args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
