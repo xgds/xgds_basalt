@@ -50,6 +50,7 @@
 	</div>
 	{% endif %}
 
+	<div> <strong> Edit sample info </strong></div>
 	<form class="updateSample" id="updateSample" action="{% url 'create_sample' %}" method="post" enctype="multipart/form-data">
 		<input type=hidden name=sampleId value="{{ sample.pk }}">
 		<table>
@@ -64,7 +65,7 @@
 			{{ form.as_table }}
 		</table>
 		{% csrf_token %}
-		<input type="submit" value="update"/> 
+		<input type="submit" value="save"/> 
 	</form>
 </div>
 {{ block.super }}
