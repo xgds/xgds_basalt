@@ -20,6 +20,7 @@ import re
 import logging
 import atexit
 import datetime
+import pytz
 import traceback
 from uuid import uuid4
 
@@ -95,7 +96,7 @@ class TracLinkTelemetryCleanup(object):
     def handle_traclink0(self, topic, body):
         # example: 13,09/19/2013,05:17:39,  2831.3070, -8038.8460,  2831.3068, -8038.8459,205.2,   0.9
 
-        serverTimestamp = datetime.datetime.utcnow()
+        serverTimestamp = datetime.datetime.now(pytz.utc)
 
         if body == 'NO DATA':
             logging.info('NO DATA')

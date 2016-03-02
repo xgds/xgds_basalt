@@ -27,6 +27,7 @@ for your testing convenience using the options.
 import socket
 import time
 import datetime
+import pytz
 import logging
 import os
 import math
@@ -117,7 +118,7 @@ def tracLinkGenerator(opts):
                 for line in sampleTrackingData.split("\n"):
                     if len(line) != 0:
                         targetId, d, t, lat, lon, shipLat, shipLon, shipHeading, depth = line.split(',')
-                        now = datetime.datetime.utcnow()
+                        now = datetime.datetime.now(pytz.utc)
                         if opts.age:
                             now -= datetime.timedelta(seconds=opts.age)
                         if 1:

@@ -14,11 +14,11 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
-import json
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils import timezone
 
 from geocamTrack import models as geocamTrackModels
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
@@ -27,6 +27,7 @@ from xgds_sample.models import AbstractSample, Region, SampleType
 from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
+from xgds_notes2.models import AbstractNote, AbstractUserSession, Location
 
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
@@ -178,10 +179,30 @@ class FieldDataProduct(models.Model):
     e.g. a spectrometer
     """
     file = models.FileField(upload_to=getNewDataFileName, max_length=255)
-    creation_time = models.DateTimeField(blank=True, default=datetime.datetime.utcnow(),
-                                         editable=False)
+    creation_time = models.DateTimeField(blank=True, default=timezone.now, editable=False)
     mimeType = models.CharField(max_length=128, blank=True, null=True)
     instrumentName = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
         return "%s: %s, %s" % (self.creation_time, self.instrumentName, self.mimeType)
+    
+
+class BasaltUserSession(AbstractUserSession):
+    location = models.ForeignKey(Location)
+    resource = models.ForeignKey(BasaltResource)
+    
+    @classmethod
+    def getFormFields(cls):
+        return ['role',
+                'location',
+                'resource']
+        
+
+class BasaltNote(AbstractNote):
+    flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
+    
+    def calculateDelayedEventTime(self, event_time):
+        if self.flight:
+            return event_time - datetime.timedelta(seconds=self.flight.delaySeconds)
+            
+        return self.event_time

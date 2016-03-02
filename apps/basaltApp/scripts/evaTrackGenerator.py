@@ -27,6 +27,7 @@ for your testing convenience using the options.
 import socket
 import time
 import datetime
+import pytz
 import logging
 import os
 import math
@@ -123,7 +124,7 @@ def evaBackpackGenerator(opts):
                         lat, lon = line.split(',')
                         lat = float(lat)
                         lon = float(lon)
-                        now = datetime.datetime.utcnow()
+                        now = datetime.datetime.now(pytz.utc)
                         if opts.age:
                             now -= datetime.timedelta(seconds=opts.age)
                             #  for testing live view
