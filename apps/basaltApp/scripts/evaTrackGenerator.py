@@ -143,7 +143,7 @@ def evaBackpackGenerator(opts):
                                                checkSum)
                         logging.info(newLine)
                         client.send(newLine + "\n")
-                        time.sleep(opts.period)
+                        time.sleep(opts.interval)
         except socket.error:
             logging.warning('socket error. broken pipe? will try to accept another connection')
 
@@ -154,9 +154,12 @@ def main():
     parser.add_option('-a', '--age',
                       type='float', default=0.0,
                       help='Age of produced timestamps in seconds [%default]')
-    parser.add_option('-p', '--period',
+    parser.add_option('-i', '--interval',
                       type='float', default=5.0,
-                      help='Period between messages in seconds [%default]')
+                      help='Time between messages in seconds [%default]')
+    parser.add_option('-p', '--port',
+                      type='int', default=50000,
+                      help='Port number to listen for connections [%default]')
     parser.add_option('-f', '--fakePositions',
                       action='store_true', default=False,
                       help='Output fake positions instead of logged positions')

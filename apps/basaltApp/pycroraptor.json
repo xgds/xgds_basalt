@@ -69,19 +69,23 @@
         },
 
 	"zmqCentral": {
-	    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmq/zmqCentral.py -m none -f"
+	    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
         },
 
-	"tracLinkListener": {
-	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/tracLinkListener.py"
+	"eva1TrackListener": {
+	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
 
-	"tracLinkTelemetryCleanup": {
-	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/tracLinkTelemetryCleanup.py"
+	"eva2TrackListener": {
+	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
+
+	"evaTrackTelemetryCleanup": {
+	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackTelemetryCleanup.py"
+        }
     },
 
     "GROUPS": {
-        "startup": []
+        "startup": ["zmqCentral", "evaTrackTelemetryCleanup"]
     }
 }
