@@ -26,6 +26,7 @@ from forms import EVForm
 from models import EV
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
+from xgds_notes2 import views as xgds_notes2_views
 
 
 def editEV(request, pk=None):
@@ -115,3 +116,16 @@ def storeFieldData(request):
         return HttpResponse("No data posted\n", content_type="text/plain")
 
 
+def populateNoteData(request, form):
+    data, tags, errors = xgds_notes2_views.populateNoteData(request, form)
+    
+    # look up the flight
+    resource = data['resource']
+    data.pop('resource')
+    
+    ACTIVE_FLIGHTS_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL)
+    foundFlights = ACTIVE_FLIGHTS_MODEL.get().objects.filter(flight__vehicle = resource)
+    if foundFlights:
+        data['flight'] = foundFlights[0].flight
+
+    return data, tags, errors

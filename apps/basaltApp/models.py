@@ -189,14 +189,14 @@ class FieldDataProduct(models.Model):
 
 class BasaltUserSession(AbstractUserSession):
     location = models.ForeignKey(Location)
-    resource = models.ForeignKey(BasaltResource)
+    resource = models.ForeignKey(plannerModels.Vehicle)
     
     @classmethod
     def getFormFields(cls):
         return ['role',
                 'location',
                 'resource']
-        
+    
 
 class BasaltNote(AbstractNote):
     flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
@@ -206,3 +206,4 @@ class BasaltNote(AbstractNote):
             return event_time - datetime.timedelta(seconds=self.flight.delaySeconds)
             
         return self.event_time
+
