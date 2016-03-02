@@ -195,6 +195,36 @@
     		"dataType":"int",
     		"value":"300"
     	}
+    },
+    {
+    	"pk": 1,
+    	"model": "xgds_core.TimeZoneHistory",
+    	"fields": {
+    		"startTime":"2015-04-01T00:00:00+00:00",
+    		"endTime":"2015-10-26T00:00:00+00:00",
+    		"timeZone":"Pacific/Honolulu",
+    		"notes": "Setup plus initial recon trip to HI"
+    	}
+    },
+    {
+    	"pk": 2,
+    	"model": "xgds_core.TimeZoneHistory",
+    	"fields": {
+    		"startTime":"2015-10-26T00:00:00+00:00",
+    		"endTime":"2016-06-17T00:00:00+00:00",
+    		"timeZone":"America/Los_Angeles",
+    		"notes": "Development work and ORTs at Ames"
+    	}
+    },
+    {
+    	"pk": 3,
+    	"model": "xgds_core.TimeZoneHistory",
+    	"fields": {
+    		"startTime":"2015-06-17T00:00:00+00:00",
+    		"endTime":"2016-07-04T00:00:00+00:00",
+    		"timeZone":"America/Boise",
+    		"notes": "First xGDS supported field deployment to Idaho"
+    	}
     }
-    		
+		
 ]
