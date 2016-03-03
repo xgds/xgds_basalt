@@ -24,11 +24,11 @@
 		    	{% endfor %}
 			</div>
 			{% endif %}
-		<form class="label_number_form" id="label_number_form" action="{% url 'xgds_sample_edit' %}" method="post" enctype="multipart/form-data">
+		<form class="label_number_form" id="label_number_form" action="{% url 'xgds_sample_add_or_update' %}" method="post" enctype="multipart/form-data">
 			<table>
 				<tr>
 					<th><label for="id_label_number">Label Number:</label></th>
-					<td><input id="id_label_number" maxlength="512" name="labelNumber" type="text" /></td>
+					<td><input id="id_label_number" maxlength="512" name="labelNum" type="text" /></td>
 				</tr>
 			</table>
 			{% csrf_token %}

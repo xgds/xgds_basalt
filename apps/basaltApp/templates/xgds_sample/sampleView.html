@@ -49,23 +49,20 @@ activateButtons();
 	</div>
 	{% endif %}
 	
-	<form class="updateSample" id="updateSampleForm" action="{% url 'xgds_sample_add_or_update' labelNum %}" method="post" enctype="multipart/form-data">
-		<div> <button id="edit_sample_button" class="small float_button">Edit Sample</button> </div>
-		<input type=hidden name=sampleId value="{{ sample.pk }}">
-		<table>
+	<div> <a href="edit/{{labelNum}}" class="mybutton">Edit sample info</a> </div>
+	<input type=hidden name=sampleId value="{{ sample.pk }}">
+	<table>
+		{% for name, value in sample.toMapDict.items %}
+		  {% if value %}
 			<tr>
-				<th><label for="id_label_number">Label Number:</label></th>
-				<td><input id="id_label_number" maxlength="512" name="labelNum" type="text" value="{{labelNum}}" readonly /></td>
+			<th><label><strong>{{ name }}</strong></label></th>
+			<td>{{ value }}</td>
 			</tr>
-			<tr class="sample_name_row">
-				<th><label for="id_name">Name:</label></th>
-				<td><input id="id_name" maxlength="512" name="name" type="text" placeholder="i.e NC16B001A" value="{{ sample.name }}"/></td>
-			</tr>
-			{{ form.as_table }}
-		</table>
-		{% csrf_token %}
-		<input type="submit" value="Save"/> 
-	</form>
+		  {% endif %}
+		{% endfor %}
+	</table>
+	{% csrf_token %}
+	<button id="cancel_edit" value="Cancel" class="small" >Cancel</button>	
 </div>
 {{ block.super }}
 {% endblock firstPackery %}
