@@ -72,11 +72,11 @@
 	    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
         },
 
-	"eva1TrackListener": {
+	"EV1TrackListener": {
 	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
 
-	"eva2TrackListener": {
+	"EV2TrackListener": {
 	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
 

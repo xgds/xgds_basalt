@@ -102,7 +102,8 @@
             "name": "EV1",
             "resourceId": 1,
             "vehicle": 1,
-            "primary": true
+            "primary": true,
+            "port": 50000
         }
     },
     {
@@ -112,7 +113,8 @@
             "name": "EV2",
             "resourceId": 2,
             "vehicle": 2,
-            "primary": true
+            "primary": true,
+            "port": 60000
         }
     },
     {

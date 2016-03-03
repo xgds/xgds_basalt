@@ -14,11 +14,13 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
+import os
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
 
 from geocamTrack import models as geocamTrackModels
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
@@ -29,6 +31,8 @@ from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
 from xgds_notes2.models import AbstractNote, AbstractUserSession, Location
 
+from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
+from logilab.common.registry import ObjectNotFound
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
 
@@ -40,6 +44,7 @@ def getNewDataFileName(instance, filename):
 class BasaltResource(geocamTrackModels.AbstractResource):
     resourceId = models.IntegerField()
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
+    port = models.IntegerField()
 
     def __unicode__(self):
         return self.name
@@ -102,22 +107,41 @@ class BasaltFlight(plannerModels.AbstractFlight):
     def startFlightExtras(self, request):
         delayConstant = Constant.objects.get(name="delay")
         self.delaySeconds = int(delayConstant.value)
+        resource=BasaltResource.objects.get(vehicle=self.vehicle)
+        #Create the track if it does not exist
+        if not self.track:
+            try:
+                track = BasaltTrack.objects.get(name=self.name)
+            except ObjectDoesNotExist:
+                track = BasaltTrack(name=self.name,
+                                    resource=resource,
+                                    #                             iconStyle=DEFAULT_ICON_STYLE,
+                                    #                             lineStyle=DEFAULT_LINE_STYLE,
+                                    dataType=DataType.objects.get(name="RawGPSLocation"))
+                track.save()
+                self.track = track
+                self.save()
         
-        #Create the track
-        track = BasaltTrack(name=self.name,
-                            resource=BasaltResource.objects.get(vehicle=self.vehicle),
-#                             iconStyle=DEFAULT_ICON_STYLE,
-#                             lineStyle=DEFAULT_LINE_STYLE,
-                            dataType=DataType.objects.get(name="RawGPSLocation"))
-        track.save()
-        self.track = track
-        self.save()
-        
-        #TODO start the eva track listener
+        #start the eva track listener
+        if settings.PYRAPTORD_SERVICE is True:
+            pyraptord = getPyraptordClient()
+            serviceName = self.vehicle.name + "TrackListener"
+            print serviceName
+            scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
+            command = "%s -o 127.0.0.1 -p %d -n %s -t %s" % (scriptPath, resource.port, self.vehicle.name[-1:], self.name)
+            print command
+            stopPyraptordServiceIfRunning(pyraptord, serviceName)
+            pyraptord.updateServiceConfig(serviceName,
+                                          {'command': command})
+            pyraptord.startService(serviceName)
         pass
 
     def stopFlightExtras(self, request):
-        #TODO stop the eva track listener
+        #stop the eva track listener
+        if settings.PYRAPTORD_SERVICE is True:
+            pyraptord = getPyraptordClient()
+            serviceName = self.vehicle.name + "TrackListener"
+            stopPyraptordServiceIfRunning(pyraptord, serviceName)
         #TODO remove the current position for that track
         pass
     

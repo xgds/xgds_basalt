@@ -59,6 +59,31 @@
             },
             "bbox": [19.172642, -155.435329,
             		 19.430019, -155.190793]
+        },
+        {
+            "type": "Site",
+            "id": "IRG",
+            "name": "Ames",
+            "notes": "NASA Ames Roverscape",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 4141835,
+                    "originEasting": 582724,
+                    "projection": "utm",
+                    "zone": 10,
+                    "zoneLetter": "N",
+                    "frame": "RoverscapeSiteFrameZDown",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y",
+                    "coordinateNotes": "X=Northing Y=Easting",
+                    "coordinateMapping": "lat, lon",
+                    "timezone": "America/Los_Angeles"
+                }
+            },
+            "bbox": [37.420289, -122.064721,
+            		 37.419226, -122.065580]
         }
     ],
 
