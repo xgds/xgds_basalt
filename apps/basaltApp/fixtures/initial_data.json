@@ -249,5 +249,27 @@
                 "childNodesUrl": "/xgds_planner2/completedFlightsTreeNodes",
                 "parent": "mg1"
         }
+    },
+    {
+        "pk": 10,
+        "model": "geocamTrack.linestyle",
+        "fields": {
+            "color": "ff00ff00",
+            "width": 2,
+            "extras": "{}",
+            "name": "default",
+            "uuid": "EV1"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "geocamTrack.linestyle",
+        "fields": {
+            "color": "ffffff00",
+            "width": 2,
+            "extras": "{}",
+            "name": "default",
+            "uuid": "EV2"
+        }
     }
 ]
