@@ -227,6 +227,27 @@
     		"timeZone":"America/Boise",
     		"notes": "First xGDS supported field deployment to Idaho"
     	}
+    },
+    {
+        "pk": "maplink_activeflights_1",
+        "model": "xgds_map_server.MapLink",
+        "fields": {
+                "creator": "root",
+                "name": "Flights (Active)",
+                "description": "Will contain all active flight data",
+                "childNodesUrl": "/xgds_planner2/activeFlightsTreeNodes",
+                "parent": "mg1"
+        }
+    },
+    {
+        "pk": "maplink_completedflights_1",
+        "model": "xgds_map_server.MapLink",
+        "fields": {
+                "creator": "root",
+                "name": "Flights (Completed)",
+                "description": "Will contain all flight data.  Do not select this node; expand and select its children.",
+                "childNodesUrl": "/xgds_planner2/completedFlightsTreeNodes",
+                "parent": "mg1"
+        }
     }
-		
 ]

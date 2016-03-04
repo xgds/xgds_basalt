@@ -14,6 +14,7 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
+import pytz
 import os
 import datetime
 from django.db import models
@@ -70,7 +71,11 @@ class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
 
 class BasaltTrack(geocamTrackModels.AbstractTrack):
     dataType = models.ForeignKey(DataType, null=True, blank=True)
+    timezone = models.CharField(max_length=128)
 
+    def getTimezone(self):
+        return pytz.timezone(self.timezone)
+    
     def toMapDict(self):
         result = geocamTrackModels.AbstractTrack.toMapDict(self)
         result['type'] = 'BasaltTrack'
@@ -113,10 +118,14 @@ class BasaltFlight(plannerModels.AbstractFlight):
             try:
                 track = BasaltTrack.objects.get(name=self.name)
             except ObjectDoesNotExist:
+                timezone = settings.TIME_ZONE
+                if self.plans:
+                    timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
                 track = BasaltTrack(name=self.name,
                                     resource=resource,
-                                    #                             iconStyle=DEFAULT_ICON_STYLE,
-                                    #                             lineStyle=DEFAULT_LINE_STYLE,
+                                    timezone=timezone,
+#                                     iconStyle=DEFAULT_ICON_STYLE,
+#                                     lineStyle=DEFAULT_LINE_STYLE,
                                     dataType=DataType.objects.get(name="RawGPSLocation"))
                 track.save()
                 self.track = track

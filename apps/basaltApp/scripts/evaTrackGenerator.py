@@ -40,7 +40,7 @@ EARTH_RADIUS_METERS = 6371010
 # When the --fakePos option is specified, the target and the chase
 # boat drive in a circle around FAKE_POS_CENTER.
 
-if 1:
+if 0:
     # Pavilion Lake
     FAKE_POS_CENTER_LATITUDE = 51.008101
     FAKE_POS_CENTER_LONGITUDE = -121.776976
@@ -103,7 +103,7 @@ def evaBackpackGenerator(opts):
     sampleTrackingData = f.read()
 
     host = '127.0.0.1'
-    port = 50000
+    port = opts.port
     backlog = 5
     print 'listening on %s:%s' % (host, port)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
