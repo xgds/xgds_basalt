@@ -33,10 +33,9 @@ from xgds_core.models import Constant
 from xgds_notes2.models import AbstractNote, AbstractUserSession, Location
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
-from logilab.common.registry import ObjectNotFound
+
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
-
 
 def getNewDataFileName(instance, filename):
     return settings.XGDS_IMAGE_DATA_SUBDIRECTORY + filename
