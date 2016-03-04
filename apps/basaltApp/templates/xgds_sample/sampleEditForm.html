@@ -15,7 +15,6 @@
 	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
 	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
     <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
-	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
     <!--  load handlebars -->
 	{% for template_name, template in templates.items %}
 		<script type="text/handlebars" id="template-{{template_name}}">
@@ -26,8 +25,6 @@
 
 {% block jsInit %} 
 {{ block.super }}
-activateButtons();
-
 {% endblock jsInit %} 
 
 {% block otherJSInit %} 
@@ -49,8 +46,7 @@ activateButtons();
 	</div>
 	{% endif %}
 	
-	<form class="updateSample" id="updateSampleForm" action="{% url 'xgds_sample_add_or_update' labelNum %}" method="post" enctype="multipart/form-data">
-		<div> <button id="edit_sample_button" class="small float_button">Edit Sample</button> </div>
+	<form class="updateSample" id="updateSampleForm" action="{% url 'xgds_sample_edit' labelNum %}" method="post" enctype="multipart/form-data">
 		<input type=hidden name=sampleId value="{{ sample.pk }}">
 		<table>
 			<tr>
@@ -64,7 +60,10 @@ activateButtons();
 			{{ form.as_table }}
 		</table>
 		{% csrf_token %}
-		<input type="submit" value="Save"/> 
+		<div id="sample-edit-button-group">
+		<a href="recordSample" class="mybutton">Cancel</a>
+		<input id="sample-info-submit" type="submit" value="Save"/>
+		</div>
 	</form>
 </div>
 {{ block.super }}

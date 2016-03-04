@@ -170,7 +170,8 @@ class BasaltPlanExecution(plannerModels.PlanExecution):
 
 
 class Triplicate(AbstractEnumModel):
-    pass
+    def __unicode__(self):
+        return u'%s' % (self.display_name)
 
 
 class BasaltSample(AbstractSample):
