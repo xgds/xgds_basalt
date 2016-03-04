@@ -25,6 +25,8 @@
 
 {% block jsInit %} 
 {{ block.super }}
+activateButtons();
+
 {% endblock jsInit %} 
 
 {% block otherJSInit %} 
@@ -33,30 +35,6 @@
 {% load xgds_sample_extras %}
 
 {% block firstPackery %} 
-<div class='item auto lockAspect' id='item_sample_create' tedata-isStamped="false">
-	<div class="error-message upload-error"></div>
-	<i class="icon-lock-open pinDiv"></i><br />
-	<div id="save-status"> {{status}} </div>
-	
-	{% if messages %}
-	<div id="messages">
-  		{% for message in messages %}
-    	<p>{{ message }}</p>
-    	{% endfor %}
-	</div>
-	{% endif %}
-	
-	<div> <a href="edit/{{labelNum}}" class="mybutton">Edit sample info</a> </div>
-	<input type=hidden name=sampleId value="{{ sample.pk }}">
-	<table>
-		{% for name, value in sampleDict.items %}
-			<tr>
-			<th><label><strong>{{ name|title }}</strong></label></th>
-			<td>{{ value }}</td>
-			</tr>
-		{% endfor %}
-	</table>
-	{% csrf_token %}	
-</div>
+
 {{ block.super }}
 {% endblock firstPackery %}

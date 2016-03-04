@@ -17,22 +17,28 @@
 {% block firstPackery %}
 	<div class='item auto lockAspect' id='create_sample_from_label_num' data-isStamped="false">
 		<i class="icon-lock-open pinDiv"></i><br />
-			{% if messages %}
-			<div id="messages">
-		  		{% for message in messages %}
-		    	<p>{{ message }}</p>
-		    	{% endfor %}
-			</div>
-			{% endif %}
-		<form class="label_number_form" id="label_number_form" action="{% url 'xgds_sample_add_or_update' %}" method="post" enctype="multipart/form-data">
+	<ul>
+		{% for message in messages %}
+		<li class="{{ message.tags }}">
+		{% if 'safe' in message.tags %} 
+			{{message|safe }} 
+		{% else %} 
+			{{ message }} 
+		{% endif %}
+		</li> 
+		{% endfor %}
+	</ul>
+
+	<form class="label_number_form" id="label_number_form" action="{% url 'xgds_sample_edit' %}" method="post" enctype="multipart/form-data">
+			<strong> Look up sample </strong>
 			<table>
 				<tr>
-					<th><label for="id_label_number">Label Number:</label></th>
-					<td><input id="id_label_number" maxlength="512" name="labelNum" type="text" /></td>
+					<th><label for="id_label_number">Label # or sample name:</label></th>
+					<td><input id="id_label_number" maxlength="512" name="label_num_or_sample_name" type="text" /></td>
 				</tr>
 			</table>
 			{% csrf_token %}
-			<input type="submit" value="Open sample"/> 
+			<input id="record_sample_submit_btn" type="submit" value="Open"/> 
 		</form>
 	</div>
 	{{ block.super }}
