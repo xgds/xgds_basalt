@@ -21,9 +21,9 @@
 		{% for message in messages %}
 		<li class="{{ message.tags }}">
 		{% if 'safe' in message.tags %} 
-			{{message|safe }} 
+			{{message|safe|linebreaks }} 
 		{% else %} 
-			{{ message }} 
+			{{ message|linebreaks }} 
 		{% endif %}
 		</li> 
 		{% endfor %}
