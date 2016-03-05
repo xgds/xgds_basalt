@@ -30,7 +30,7 @@ from xgds_sample.models import AbstractSample, Region, SampleType
 from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
-from xgds_notes2.models import AbstractNote, AbstractUserSession, Location
+from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, Location
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
 from logilab.common.registry import ObjectNotFound
@@ -232,7 +232,7 @@ class BasaltUserSession(AbstractUserSession):
                 'resource']
     
 
-class BasaltNote(AbstractNote):
+class BasaltNote(AbstractLocatedNote):
     flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
     
     def calculateDelayedEventTime(self, event_time):
@@ -241,3 +241,13 @@ class BasaltNote(AbstractNote):
             
         return self.event_time
 
+    def toMapDict(self):
+        """
+        Return a reduced dictionary that will be turned to JSON for rendering in a map
+        """
+        result = AbstractLocatedNote.toMapDict(self)
+        if self.flight:
+            result['flight'] = self.flight.name
+        else:
+            result['flight'] = ''
+        return result

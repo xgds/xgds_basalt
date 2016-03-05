@@ -115,7 +115,6 @@ def storeFieldData(request):
     else:
         return HttpResponse("No data posted\n", content_type="text/plain")
 
-
 def populateNoteData(request, form):
     data, tags, errors = xgds_notes2_views.populateNoteData(request, form)
     
