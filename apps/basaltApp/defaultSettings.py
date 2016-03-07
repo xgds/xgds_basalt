@@ -38,4 +38,4 @@ import os
 
 basaltApp_BOWER_INSTALLED_APPS = ()
 XGDS_SAMPLE_START_YEAR = 2016
-XGDS_SAMPLE_HANDLEBARS_DIR = [os.path.join('basaltApp', 'templates', 'handlebars')]
+XGDS_SAMPLE_HANDLEBARS_DIR = [os.path.join('basaltApp', 'templates', 'xgds_sample')]
