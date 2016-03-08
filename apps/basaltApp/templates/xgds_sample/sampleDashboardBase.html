@@ -16,8 +16,6 @@
 		samplesArray.push(JSON.parse(this)); // parse json string
 	});
 	var aoColumns = [			   {"mRender":function(data, type, full){
-	                               		console.log("data is ", data);
-	                               		console.log("full is ", full);
 	                            	   var sampleName = full['name'];
 	                            	   var jsonString = JSON.stringify(full);
 	                                   return "<a onclick='constructSampleView(" + jsonString + ")'>"+ sampleName + "</a>";

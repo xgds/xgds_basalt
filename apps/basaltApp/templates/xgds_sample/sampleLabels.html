@@ -9,32 +9,93 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_sample/css/xgds_sample.css"></link>
  {% endblock cssExtras %}
 
+{% block jsInitPreApp %}    
+	var STATIC_URL = {{ STATIC_URL }};
+	
+	var labelsJson = {{ labelsJson|safe }};
+    var labelsArray = [];
+    $(labelsJson).each(function() {
+    	labelsArray.push(JSON.parse(this));
+    });
+	
+	var samplesJson = {{ samplesJson|safe }};
+	var samplesArray = [];
+	$(samplesJson).each(function() {
+		samplesArray.push(JSON.parse(this));
+	});
+	
+	var aoColumns = [			   {"mData":function(data, type, full){
+	                                   return "<input type='checkbox' name='label_checkbox' value='" + data["id"] +"'>";
+	                               }},
+								   {"mData": function(data, type, full) {
+								   		return data["number"];
+								   }},
+	                               {"mData": function(data, type, full) {
+								   		for(i=0; i < samplesArray.length; i++) {
+								   			if (samplesArray[i]['label'] == data["id"]) {
+									   			return samplesArray[i]['name'];
+									   		}
+								   		} 
+								   		return "";
+								   }},
+	                               {"mData": function(data, type, full) {
+								   		for(i=0; i < samplesArray.length; i++) {
+								   			if (samplesArray[i]['label'] == data["id"]) {
+									   			return samplesArray[i]['collection_time'];
+									   		}
+								   		}
+								   		return "";
+								   }}
+	];
+	setupTable('item_labels_table', 'labels_table', labelsArray, aoColumns);
+{% endblock jsInitPreApp %}
+
+{% block otherJSInit %}
+	matchWidth('item_sample_table','map');
+{% endblock otherJSInit %}
 
 {% block scripts %}
 {{block.super}}
-	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
 	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
-    <!--  load handlebars -->
-	{% for template_name, template in templates.items %}
-		<script type="text/handlebars" id="template-{{template_name}}">
-			{{template|safe}}
-		</script>
-	{% endfor %}
+    <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleLabels.js"></script>
 {% endblock scripts %}
 
-{% block jsInit %} 
-{{ block.super }}
-activateButtons();
 
-{% endblock jsInit %} 
+{% block firstPackery %}
+<div class='item auto freeAspect' id='item_labels_table' data-isStamped="false">
+	<i class="icon-lock-open pinDiv"></i>
+	<form class="create_labels_form" id="create_labels_form" action="" method="post">
+		<strong> Create Labels </strong>
+		<table>
+			<tr>
+				<th><label for="id_start_number">Start number:</label></th>
+				<td><input id="id_start_number" maxlength="512" name="start_number" type="text" /></td>
+			</tr>
+			<tr>
+				<th><label for="id_quantity">Quantity:</label></th>
+				<td><input id="id_quantity" maxlength="512" name="quantity" type="text" /></td>
+			</tr>
+		</table>
+		{% csrf_token %} <input id="create_labels_btn" type="submit" value="Search" />
+	</form>
+</div>
 
-{% block otherJSInit %} 
-{% endblock otherJSInit %} 
-
-{% load xgds_sample_extras %}
-
-{% block firstPackery %} 
-
-{{ block.super }}
+<!-- Labels table -->
+<div class='item w2 freeAspect' id='item_labels_table' data-isStamped="false">
+	<i class="icon-lock-open pinDiv"></i>
+		<table cellpadding="0" cellspacing="0" border="0"  id="labels_table">
+			<thead class="table_header">
+				<tr>
+					<th></th>
+					<th>Label Number</th>
+					<th>Sample Name</th>					
+				    <th>Printed Date</th>
+			    </tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+</div>
 {% endblock firstPackery %}
+
+		
