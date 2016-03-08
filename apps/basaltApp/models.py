@@ -31,6 +31,8 @@ from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, Location
+from xgds_image.models import AbstractImageSet
+from xgds_planner2.utils import getFlight
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
 
@@ -177,6 +179,7 @@ class BasaltSample(AbstractSample):
     number = models.IntegerField(null=True)
     triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True)
+    flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
@@ -250,3 +253,10 @@ class BasaltNote(AbstractLocatedNote):
         else:
             result['flight'] = ''
         return result
+
+
+class BasaltImageSet(AbstractImageSet):
+    flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
+    
+    def finish_initialization(self, request):
+        self.flight = getFlight(self.acquisition_time, self.resource)

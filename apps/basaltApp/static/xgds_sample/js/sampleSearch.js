@@ -48,7 +48,7 @@ function constructSampleView(json) {
 function doSimpleSearch(event) {
     var theForm = this.$("#sample_simple_search_form");
     var postData = theForm.serializeArray();
-    postData.push({'name':'modelClass', 'value':'basaltApp.BasaltSample'});
+    postData.push({'name':'modelClass', 'value': sampleModel});
     setMessage("Searching..."); //set message (TODO) 
     event.preventDefault();
     $.ajax({
@@ -78,7 +78,7 @@ function doSimpleSearch(event) {
 function doSearch(event) {
     var theForm = this.$("#form-AbstractSample");
     var postData = theForm.serializeArray();
-    postData.push({'name':'modelClass', 'value':'basaltApp.BasaltSample'});
+    postData.push({'name':'modelClass', 'value':sampleModel});
     setMessage("Searching..."); //set message (TODO) 
     event.preventDefault();
     $.ajax({
