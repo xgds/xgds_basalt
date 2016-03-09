@@ -186,6 +186,9 @@ class BasaltSample(AbstractSample):
         name = self.region.shortName + str(self.year) + self.type.value + '-' + str(number) + str(self.triplicate.value)
         return name
     
+    def finish_initialization(self, request):
+        self.flight = getFlight(self.acquisition_time, self.resource)
+        
     def updateSampleFromName(self, name):
         assert name
         

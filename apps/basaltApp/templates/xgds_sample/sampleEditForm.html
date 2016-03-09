@@ -15,7 +15,10 @@
 {{block.super}}
 	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
 	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
+	{% include "xgds_core/timeJS.html" %}
+	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
+	<script type="text/javascript" src='{{ STATIC_URL }}xgds_core/js/datetimepickerUtils.js'></script>
+	
     <!--  load handlebars -->
 	{% for template_name, template in templates.items %}
 		<script type="text/handlebars" id="template-{{template_name}}">
@@ -26,6 +29,7 @@
 
 {% block jsInit %} 
 {{ block.super }}
+addDateTimePicker("id_collection_time", $('#id_collection_timezone').val());
 {% endblock jsInit %} 
 
 {% block otherJSInit %} 
