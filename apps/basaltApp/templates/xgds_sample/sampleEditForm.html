@@ -7,13 +7,16 @@
 
  {% block cssExtras %}
  {{ block.super }}
+<style type="text/css" title="currentStyle">
+	@import "{{ EXTERNAL_URL }}jquery-ui/themes/base/jquery-ui.css";
+	@import url('{{EXTERNAL_URL}}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.css');
+</style>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_sample/css/xgds_sample.css"></link>
  {% endblock cssExtras %}
 
 
 {% block scripts %}
 {{block.super}}
-	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
 	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
 	{% include "xgds_core/timeJS.html" %}
 	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
@@ -51,16 +54,16 @@ addDateTimePicker("id_collection_time", $('#id_collection_timezone').val());
 	</div>
 	{% endif %}
 	
-	<form class="updateSample" id="updateSampleForm" action="{% url 'xgds_sample_edit' labelNum %}" method="post" enctype="multipart/form-data">
-		<input type=hidden name=sampleId value="{{ sample.pk }}">
+	<form class="updateSample" id="updateSampleForm" action="{% url 'xgds_sample_record_update' form.instance.label.number %}" method="post" enctype="multipart/form-data">
+		<input type=hidden name=sampleId value="{{ form.instance.pk }}">
 		<table>
 			<tr>
 				<th><label for="id_label_number">Label Number:</label></th>
-				<td><input id="id_label_number" maxlength="512" name="labelNum" type="text" value="{{labelNum}}" readonly /></td>
+				<td><input id="id_label_number" maxlength="512" name="labelNum" type="text" value="{{ form.instance.label.number }}" readonly /></td>
 			</tr>
 			<tr class="sample_name_row">
 				<th><label for="id_name">Name:</label></th>
-				<td><input id="id_name" maxlength="512" name="name" type="text" placeholder="i.e NC16B001A" value="{{ sample.name }}"/></td>
+				<td><input id="id_name" maxlength="512" name="name" type="text" placeholder="i.e NC16B001A" value="{{ form.instance.name }}"/></td>
 			</tr>
 			{{ form.as_table }}
 		</table>
