@@ -46,7 +46,7 @@
 	</div>
 	{% endif %}
 	
-	<div> <a href="edit/{{labelNum}}" class="mybutton">Edit sample info</a> </div>
+	<div> <a href="../edit/{{labelNum}}" class="mybutton">Edit sample info</a> </div>
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
 	<table>
 		{% for name, value in sampleDict.items %}
