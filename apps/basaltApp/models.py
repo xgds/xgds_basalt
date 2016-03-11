@@ -23,15 +23,17 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
+from taggit.managers import TaggableManager
+
 from geocamTrack import models as geocamTrackModels
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
 from xgds_planner2 import models as plannerModels
-from xgds_sample.models import AbstractSample, Region, SampleType
+from xgds_sample import models as xgds_sample_models
 from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
-from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, Location
-from xgds_image.models import AbstractImageSet
+from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location
+from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
@@ -44,9 +46,9 @@ def getNewDataFileName(instance, filename):
 
 
 class BasaltResource(geocamTrackModels.AbstractResource):
-    resourceId = models.IntegerField()
+    resourceId = models.IntegerField(null=True, blank=True)
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
-    port = models.IntegerField()
+    port = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -60,19 +62,16 @@ class DataType(models.Model):
         return self.name
 
 
-class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
-    serverTimestamp = models.DateTimeField(db_index=True)
-    pass
-
-
-class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
-    serverTimestamp = models.DateTimeField(db_index=True)
-    pass
-
-
 class BasaltTrack(geocamTrackModels.AbstractTrack):
+    # set foreign key fields required by parent model to correct types for this site
+    resource = models.ForeignKey(BasaltResource,
+                                 related_name='%(app_label)s_%(class)s_related',
+                                 verbose_name=settings.GEOCAM_TRACK_RESOURCE_VERBOSE_NAME, blank=True, null=True)
+    iconStyle = geocamTrackModels.DEFAULT_ICON_STYLE_FIELD()
+    lineStyle = geocamTrackModels.DEFAULT_LINE_STYLE_FIELD()
+
     dataType = models.ForeignKey(DataType, null=True, blank=True)
-    timezone = models.CharField(max_length=128)
+    timezone = models.CharField(max_length=128, default=settings.TIME_ZONE)
 
     def getTimezone(self):
         return pytz.timezone(self.timezone)
@@ -84,6 +83,24 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     
     def __unicode__(self):
         return '%s %s' % (self.__class__.__name__, self.name)
+
+
+class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    # set foreign key fields required by parent model to correct types for this site
+    track = models.ForeignKey(BasaltTrack, db_index=True, null=True, blank=True)
+
+    serverTimestamp = models.DateTimeField(db_index=True)
+
+    class Meta:
+        abstract = True
+
+
+class CurrentPosition(AbstractBasaltPosition):
+    pass
+
+
+class PastPosition(AbstractBasaltPosition):
+    pass
 
 
 class EV(models.Model):
@@ -107,6 +124,10 @@ class EV(models.Model):
 
 class BasaltFlight(plannerModels.AbstractFlight):
     ''' A Basalt Flight for storing delay and handling start and stop functions '''
+    # set foreign key fields required by parent model to correct types for this site
+    vehicle = plannerModels.DEFAULT_VEHICLE_FIELD()
+    group = plannerModels.DEFAULT_GROUP_FLIGHT_FIELD()
+
     delaySeconds = models.IntegerField(default=0)
     track = models.OneToOneField(BasaltTrack, null=True, blank=True)
     
@@ -154,11 +175,16 @@ class BasaltFlight(plannerModels.AbstractFlight):
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
         #TODO remove the current position for that track
         pass
-    
-class BasaltPlanExecution(plannerModels.PlanExecution):
+
+
+class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
     ''' 
     A Plan Execution that also includes an EV
     '''
+    # set foreign key fields required by parent model to correct types for this site
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+    plan = plannerModels.DEFAULT_PLAN_FIELD()
+
     ev = models.ForeignKey(EV)
     
     def toSimpleDict(self):
@@ -175,7 +201,12 @@ class Triplicate(AbstractEnumModel):
         return u'%s' % (self.display_name)
 
 
-class BasaltSample(AbstractSample):
+class BasaltSample(xgds_sample_models.AbstractSample):
+    # set foreign key fields required by parent model to correct types for this site
+    resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+    track_position = models.ForeignKey(PastPosition, null=True, blank=True)
+    user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
+
     number = models.IntegerField(null=True)
     triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True)
@@ -200,9 +231,9 @@ class BasaltSample(AbstractSample):
         dataDict['triplicate'] = name[9:10]
          
         if not self.region:
-            self.region = Region.objects.get(shortName = dataDict['region'])
+            self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         if not self.type:
-            self.type = SampleType.objects.get(value = dataDict['type'])
+            self.type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         if not self.number:
             self.number = ("%03d" % (int(dataDict['number']),))
         if not self.triplicate:
@@ -237,7 +268,16 @@ class BasaltUserSession(AbstractUserSession):
                 'resource']
     
 
+class BasaltTaggedNote(AbstractTaggedNote):
+    # set foreign key fields required by parent model to correct types for this site
+    content_object = models.ForeignKey('BasaltNote')
+
+
 class BasaltNote(AbstractLocatedNote):
+    # set foreign key fields and manager required by parent model to correct types for this site
+    position = models.ForeignKey(PastPosition, null=True, blank=True)
+    tags = TaggableManager(through=BasaltTaggedNote, blank=True)
+
     flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
     
     def calculateDelayedEventTime(self, event_time):
@@ -258,7 +298,14 @@ class BasaltNote(AbstractLocatedNote):
         return result
 
 
-class BasaltImageSet(AbstractImageSet):
+class BasaltImageSet(xgds_image_models.AbstractImageSet):
+    # set foreign key fields from parent model to point to correct types
+    camera = xgds_image_models.DEFAULT_CAMERA_FIELD()
+    track_position = models.ForeignKey(PastPosition, null=True, blank=True )
+    exif_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_exif_set" )
+    user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
+    resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+
     flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
     
     def finish_initialization(self, request):
