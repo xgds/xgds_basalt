@@ -14,7 +14,6 @@
 {{block.super}}
 	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
 	<script type="text/javascript" src='{{ EXTERNAL_URL }}/handlebars/handlebars.min.js'></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
     <!--  load handlebars -->
 	{% for template_name, template in templates.items %}
 		<script type="text/handlebars" id="template-{{template_name}}">
@@ -46,8 +45,7 @@
 	</div>
 	{% endif %}
 	
-	<div> <a href="../edit/{{ sample.label.number }}" class="mybutton">Edit sample info</a> </div>
-	</br>
+	<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="../edit/{{ sample.label.number }}" class="mybutton small">Edit</a> </div>
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
 	<table>
 		<tr>

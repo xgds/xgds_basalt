@@ -8,56 +8,63 @@
 		<div class="sample-name" ><strong> {{ name }} </strong></div>
 		<button class="small info btn next-button"><i class="icon-right-dir"></i></button>
 		
-		<form action="{{ updateSampleInfo }}" id="sample-info-form" method="post">
+		<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="../edit/{{ sample.label.number }}" class="mybutton small">Edit</a> </div>
+		<input type=hidden name=sampleId value="{{ sample.pk }}">
+		
 		<table>
-			<tr>
-				<th><label for="id_type">Type:</label></th>
-				<td><select id="id_type" name="type">
-						<option value="" selected="selected">---------</option> 
-						{% for type in types_list %}
-						<option value="{{ type.value }}">{{ type.display_name }}</option>
-						{% endfor %}
-				</select></td>
-			</tr>
-			<tr>
-				<th><label for="id_region">Region:</label></th>
-				<td><select id="id_region" name="region">
-						<option value="" selected="selected">---------</option> 
-						{% for region in regions_list %}
-						<option value="{{ region.shortName }}">{{ region.name }}</option>
-						{% endfor %}
-				</select></td>
-			</tr>
-			<tr>
-				<th><label for="id_starting_number">Starting #:</label></th>
-				<td><input id="id_starting_number" name="starting_number" type="text" value="{{ starting_number }}"></td>
-				</tr>
-				<tr>
-				<th> <label for="id_quantity">Quantity:</label> </th>
-				<td> <input id="id_quantity" name="quantity" type="text" value="{{ quantity }}"></td>
-			</tr>
-				<tr>
-					<th><label for="id_triplicate">Triplicate:</label></th>
-					<td><select id="id_triplicate" name="triplicate">
-							<option value="" selected="selected">---------</option>
-							{% for triplicate in triplicate_list %}
-							<option value="{{ triplicate }}">{{ triplicate.display_name }}</option>
-							{% endfor %}
-					</select></td>
-				</tr>
-			<tr>
-				<th><label for="id_year">Year:</label></th>
-				<td><input id="id_year" maxlength="2" name="year" type="text" value="{{ year }}" /></td>
-			</tr>
-			<tr>
-				<th><label for="id_latitude">Latitude:</label></th>
-				<td><input id="id_latitude" name="latitude" step="any" type="number" value="{{ lat }}"/></td>
-			</tr>
-			<tr>
-				<th><label for="id_longitude">Longitude:</label></th>
-				<td><input id="id_longitude" name="longitude" step="any" type="number" value="{{ lon }}"/></td>
-			</tr>
-			</table>
-		</form>
+		<tr>
+			<th><label for="id_name">Name:</label></th>
+			<td> {{ sample.name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_type">Type:</label></th>
+			<td> {{ sample.type.display_name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_region">Region:</label></th>
+			<td>{{ sample.region.name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_resource">Resource:</label></th>
+			<td>{{ sample.resource.name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_collector">Collector:</label></th>
+			<td>{{ sample.collector }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_number">Number:</label></th>
+			<td>{{ sample.label.number }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_triplicate">Triplicate:</label></th>
+			<td>{{ sample.triplicate }}</td>
+		</tr>	
+		<tr>
+			<th><label for="id_year">Year:</label></th>
+			<td> {{ sample.year }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_flight">Flight:</label></th>
+			<td>{{ sample.flight.name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_latitude">Latitude:</label></th>
+			<td>{{ sample.user_position.latitude }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_longitude">Longitude:</label></th>
+			<td>{{ sample.user_position.longitude }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_altitude">Altitude:</label></th>
+			<td>{{ sample.user_position.altitude }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_collection_time">Collection time:</label></th>
+			<td>{% timezone sample.collection_timezone %}{{ sample.collection_time|date:"Y-m-d H:i e" }}{% endtimezone %}</td>
+		</tr>
+	</table>
+
 		<input class="small info btn" type="submit" id="updateSampleInfoSubmit" value="Save" />	
 </div>
