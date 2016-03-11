@@ -1,5 +1,5 @@
 {% extends 'dashboard_base.html' %}
-
+{% load tz %}
 {% block sitemenu-content-secondary %}
 	{% include "sample_subnav.html" %}
 {% endblock %}
@@ -46,15 +46,58 @@
 	</div>
 	{% endif %}
 	
-	<div> <a href="../edit/{{labelNum}}" class="mybutton">Edit sample info</a> </div>
+	<div> <a href="../edit/{{ sample.label.number }}" class="mybutton">Edit sample info</a> </div>
+	</br>
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
 	<table>
-		{% for name, value in sampleDict.items %}
-			<tr>
-			<th><label><strong>{{ name|title }}</strong></label></th>
-			<td>{{ value }}</td>
-			</tr>
-		{% endfor %}
+		<tr>
+			<th><label for="id_type">Type:</label></th>
+			<td> {{ sample.type.display_name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_region">Region:</label></th>
+			<td>{{ sample.region.name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_resource">Resource:</label></th>
+			<td>{{ sample.resource.name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_collector">Collector:</label></th>
+			<td>{{ sample.collector }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_number">Number:</label></th>
+			<td>{{ sample.label.number }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_triplicate">Triplicate:</label></th>
+			<td>{{ sample.triplicate }}</td>
+		</tr>	
+		<tr>
+			<th><label for="id_year">Year:</label></th>
+			<td> {{ sample.year }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_flight">Flight:</label></th>
+			<td>{{ sample.flight.name }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_latitude">Latitude:</label></th>
+			<td>{{ sample.user_position.latitude }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_longitude">Longitude:</label></th>
+			<td>{{ sample.user_position.longitude }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_altitude">Altitude:</label></th>
+			<td>{{ sample.user_position.altitude }}</td>
+		</tr>
+		<tr>
+			<th><label for="id_collection_time">Collection time:</label></th>
+			<td>{% timezone sample.collection_timezone %}{{ sample.collection_time|date:"Y-m-d H:i e" }}{% endtimezone %}</td>
+		</tr>
 	</table>
 	{% csrf_token %}	
 </div>
