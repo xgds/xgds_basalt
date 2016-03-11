@@ -65,10 +65,8 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     resource = models.ForeignKey(BasaltResource,
                                  related_name='%(app_label)s_%(class)s_related',
                                  verbose_name=settings.GEOCAM_TRACK_RESOURCE_VERBOSE_NAME, blank=True, null=True)
-    iconStyle = models.ForeignKey(geocamTrackModels.IconStyle, null=True, blank=True,
-                                  related_name='%(app_label)s_%(class)s_related')
-    lineStyle = models.ForeignKey(geocamTrackModels.LineStyle, null=True, blank=True,
-                                  related_name='%(app_label)s_%(class)s_related')
+    iconStyle = geocamTrackModels.DEFAULT_ICON_STYLE_FIELD()
+    lineStyle = geocamTrackModels.DEFAULT_LINE_STYLE_FIELD()
 
     dataType = models.ForeignKey(DataType, null=True, blank=True)
     timezone = models.CharField(max_length=128, default=settings.TIME_ZONE)
