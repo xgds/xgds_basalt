@@ -275,7 +275,7 @@ class BasaltNote(AbstractLocatedNote):
 
 class BasaltImageSet(xgds_image_models.AbstractImageSet):
     # set foreign key fields from parent model to point to correct types
-    camera = models.ForeignKey(xgds_image_models.Camera, null=True, blank=True)
+    camera = xgds_image_models.DEFAULT_CAMERA_FIELD()
     track_position = models.ForeignKey(PastPosition, null=True, blank=True )
     exif_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_exif_set" )
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
