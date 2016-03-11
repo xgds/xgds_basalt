@@ -23,6 +23,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
+from taggit.managers import TaggableManager
+
 from geocamTrack import models as geocamTrackModels
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
 from xgds_planner2 import models as plannerModels
@@ -30,7 +32,7 @@ from xgds_sample import models as xgds_sample_models
 from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
-from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, Location
+from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
 
@@ -266,7 +268,16 @@ class BasaltUserSession(AbstractUserSession):
                 'resource']
     
 
+class BasaltTaggedNote(AbstractTaggedNote):
+    # set foreign key fields required by parent model to correct types for this site
+    content_object = models.ForeignKey('BasaltNote')
+
+
 class BasaltNote(AbstractLocatedNote):
+    # set foreign key fields and manager required by parent model to correct types for this site
+    position = models.ForeignKey(PastPosition, null=True, blank=True)
+    tags = TaggableManager(through=BasaltTaggedNote, blank=True)
+
     flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
     
     def calculateDelayedEventTime(self, event_time):
