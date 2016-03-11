@@ -122,6 +122,10 @@ class EV(models.Model):
 
 class BasaltFlight(plannerModels.AbstractFlight):
     ''' A Basalt Flight for storing delay and handling start and stop functions '''
+    # set foreign key fields required by parent model to correct types for this site
+    vehicle = plannerModels.DEFAULT_VEHICLE_FIELD()
+    group = plannerModels.DEFAULT_GROUP_FLIGHT_FIELD()
+
     delaySeconds = models.IntegerField(default=0)
     track = models.OneToOneField(BasaltTrack, null=True, blank=True)
     
@@ -169,11 +173,16 @@ class BasaltFlight(plannerModels.AbstractFlight):
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
         #TODO remove the current position for that track
         pass
-    
-class BasaltPlanExecution(plannerModels.PlanExecution):
+
+
+class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
     ''' 
     A Plan Execution that also includes an EV
     '''
+    # set foreign key fields required by parent model to correct types for this site
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+    plan = plannerModels.DEFAULT_PLAN_FIELD()
+
     ev = models.ForeignKey(EV)
     
     def toSimpleDict(self):
