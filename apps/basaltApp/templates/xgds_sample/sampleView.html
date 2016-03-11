@@ -51,6 +51,10 @@
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
 	<table>
 		<tr>
+			<th><label for="id_name">Name:</label></th>
+			<td> {{ sample.name }}</td>
+		</tr>
+		<tr>
 			<th><label for="id_type">Type:</label></th>
 			<td> {{ sample.type.display_name }}</td>
 		</tr>

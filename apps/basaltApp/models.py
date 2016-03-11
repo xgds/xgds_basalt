@@ -310,3 +310,13 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     
     def finish_initialization(self, request):
         self.flight = getFlight(self.acquisition_time, self.resource)
+
+
+class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
+    """ This can be used for screenshots or non geolocated images 
+    """
+
+    # set foreign key fields from parent model to point to correct types
+    imageSet = models.ForeignKey(BasaltImageSet, null=True, related_name="images")
+
+
