@@ -26,7 +26,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from geocamTrack import models as geocamTrackModels
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
 from xgds_planner2 import models as plannerModels
-from xgds_sample.models import AbstractSample, Region, SampleType
+from xgds_sample import models as xgds_sample_models
 from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
@@ -199,7 +199,12 @@ class Triplicate(AbstractEnumModel):
         return u'%s' % (self.display_name)
 
 
-class BasaltSample(AbstractSample):
+class BasaltSample(xgds_sample_models.AbstractSample):
+    # set foreign key fields required by parent model to correct types for this site
+    resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+    track_position = models.ForeignKey(PastPosition, null=True, blank=True)
+    user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
+
     number = models.IntegerField(null=True)
     triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True)
@@ -224,9 +229,9 @@ class BasaltSample(AbstractSample):
         dataDict['triplicate'] = name[9:10]
          
         if not self.region:
-            self.region = Region.objects.get(shortName = dataDict['region'])
+            self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         if not self.type:
-            self.type = SampleType.objects.get(value = dataDict['type'])
+            self.type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         if not self.number:
             self.number = ("%03d" % (int(dataDict['number']),))
         if not self.triplicate:
