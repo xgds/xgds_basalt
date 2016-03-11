@@ -31,7 +31,7 @@ from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, Location
-from xgds_image.models import AbstractImageSet
+from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
@@ -275,7 +275,14 @@ class BasaltNote(AbstractLocatedNote):
         return result
 
 
-class BasaltImageSet(AbstractImageSet):
+class BasaltImageSet(xgds_image_models.AbstractImageSet):
+    # set foreign key fields from parent model to point to correct types
+    camera = models.ForeignKey(xgds_image_models.Camera, null=True, blank=True)
+    track_position = models.ForeignKey(PastPosition, null=True, blank=True )
+    exif_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_exif_set" )
+    user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
+    resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+
     flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
     
     def finish_initialization(self, request):
