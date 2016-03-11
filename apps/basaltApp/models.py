@@ -44,9 +44,9 @@ def getNewDataFileName(instance, filename):
 
 
 class BasaltResource(geocamTrackModels.AbstractResource):
-    resourceId = models.IntegerField()
+    resourceId = models.IntegerField(null=True, blank=True)
     vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
-    port = models.IntegerField()
+    port = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -72,7 +72,7 @@ class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
 
 class BasaltTrack(geocamTrackModels.AbstractTrack):
     dataType = models.ForeignKey(DataType, null=True, blank=True)
-    timezone = models.CharField(max_length=128)
+    timezone = models.CharField(max_length=128, default=settings.TIME_ZONE)
 
     def getTimezone(self):
         return pytz.timezone(self.timezone)
