@@ -60,17 +60,16 @@ class DataType(models.Model):
         return self.name
 
 
-class CurrentPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
-    serverTimestamp = models.DateTimeField(db_index=True)
-    pass
-
-
-class PastPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
-    serverTimestamp = models.DateTimeField(db_index=True)
-    pass
-
-
 class BasaltTrack(geocamTrackModels.AbstractTrack):
+    # set foreign key fields required by parent model to correct types for this site
+    resource = models.ForeignKey(BasaltResource,
+                                 related_name='%(app_label)s_%(class)s_related',
+                                 verbose_name=settings.GEOCAM_TRACK_RESOURCE_VERBOSE_NAME, blank=True, null=True)
+    iconStyle = models.ForeignKey(geocamTrackModels.IconStyle, null=True, blank=True,
+                                  related_name='%(app_label)s_%(class)s_related')
+    lineStyle = models.ForeignKey(geocamTrackModels.LineStyle, null=True, blank=True,
+                                  related_name='%(app_label)s_%(class)s_related')
+
     dataType = models.ForeignKey(DataType, null=True, blank=True)
     timezone = models.CharField(max_length=128, default=settings.TIME_ZONE)
 
@@ -84,6 +83,24 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     
     def __unicode__(self):
         return '%s %s' % (self.__class__.__name__, self.name)
+
+
+class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+    # set foreign key fields required by parent model to correct types for this site
+    track = models.ForeignKey(BasaltTrack, db_index=True, null=True, blank=True)
+
+    serverTimestamp = models.DateTimeField(db_index=True)
+
+    class Meta:
+        abstract = True
+
+
+class CurrentPosition(AbstractBasaltPosition):
+    pass
+
+
+class PastPosition(AbstractBasaltPosition):
+    pass
 
 
 class EV(models.Model):
