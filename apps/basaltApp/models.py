@@ -66,7 +66,7 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     # set foreign key fields required by parent model to correct types for this site
     resource = models.ForeignKey(BasaltResource,
                                  related_name='%(app_label)s_%(class)s_related',
-                                 verbose_name=settings.GEOCAM_TRACK_RESOURCE_VERBOSE_NAME, blank=True, null=True)
+                                 verbose_name='Asset', blank=True, null=True)
     iconStyle = geocamTrackModels.DEFAULT_ICON_STYLE_FIELD()
     lineStyle = geocamTrackModels.DEFAULT_LINE_STYLE_FIELD()
 
@@ -210,7 +210,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     number = models.IntegerField(null=True)
     triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True)
-    flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
@@ -278,7 +278,7 @@ class BasaltNote(AbstractLocatedNote):
     position = models.ForeignKey(PastPosition, null=True, blank=True)
     tags = TaggableManager(through=BasaltTaggedNote, blank=True)
 
-    flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def calculateDelayedEventTime(self, event_time):
         if self.flight:
@@ -306,7 +306,17 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
 
-    flight = models.ForeignKey(settings.XGDS_PLANNER2_FLIGHT_MODEL, null=True, blank=True)
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def finish_initialization(self, request):
         self.flight = getFlight(self.acquisition_time, self.resource)
+
+
+class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
+    """ This can be used for screenshots or non geolocated images 
+    """
+
+    # set foreign key fields from parent model to point to correct types
+    imageSet = models.ForeignKey(BasaltImageSet, null=True, related_name="images")
+
+
