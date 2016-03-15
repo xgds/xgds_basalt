@@ -130,6 +130,7 @@
                     "type": "ParamSpec",
                     "id": "duration",
                     "valueType": "number",
+                    "widget":"h:m:s",
                     "minimum": 0,
                     "default": 300
                 },
