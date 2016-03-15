@@ -196,6 +196,9 @@ class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
         return result
 
 
+class BasaltActiveFlight(plannerModels.AbstractActiveFlight):
+    flight = models.OneToOneField(BasaltFlight, related_name="active")
+    
 class Triplicate(AbstractEnumModel):
     def __unicode__(self):
         return u'%s' % (self.display_name)

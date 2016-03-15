@@ -25,3 +25,6 @@ admin.site.register(BasaltPlanExecution)
 admin.site.register(BasaltSample)
 admin.site.register(FieldDataProduct)
 admin.site.register(DataType)
+admin.site.register(BasaltActiveFlight)
+admin.site.register(BasaltFlight)
+

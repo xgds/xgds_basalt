@@ -35,8 +35,8 @@ from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
 from geocamTrack.models import (IconStyle, LineStyle)
 
-from xgds_planner2.models import ActiveFlight
-from basaltApp.models import (BasaltResource,
+from basaltApp.models import (BasaltActiveFlight,
+                              BasaltResource,
                               CurrentPosition,
                               BasaltTrack,
                               PastPosition,
@@ -123,9 +123,9 @@ class GpsTelemetryCleanup(object):
                 logging.info("Using track name from listener: %s" % trackName)
             if len(trackName) == 0:  # I.e. we were not given a name for track already
                 try:
-                    activeFlight = ActiveFlight.objects.get(flight__vehicle__basaltresource=basaltResource)
+                    activeFlight = BasaltActiveFlight.objects.get(flight__vehicle__basaltresource=basaltResource)
                     trackName = activeFlight.flight.name
-                    logging.info("Using track name from ActiveFlight: %s" % trackName)
+                    logging.info("Using track name from BasaltActiveFlight: %s" % trackName)
                 except ObjectDoesNotExist:
                     trackName = basaltResource.name
                     logging.info("Using track name from EV arg: %s" % trackName)

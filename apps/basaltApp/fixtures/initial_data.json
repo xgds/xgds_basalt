@@ -257,7 +257,7 @@
             "color": "ff00ff00",
             "width": 2,
             "extras": "{}",
-            "name": "default",
+            "name": "ev1_linestyle",
             "uuid": "EV1"
         }
     },
@@ -268,7 +268,7 @@
             "color": "ffffff00",
             "width": 2,
             "extras": "{}",
-            "name": "default",
+            "name": "ev2_linestyle",
             "uuid": "EV2"
         }
     }
