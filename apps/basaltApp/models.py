@@ -13,7 +13,6 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-
 import pytz
 import os
 import datetime
@@ -145,6 +144,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 timezone = settings.TIME_ZONE
                 if self.plans:
                     timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
+                    self.timezone = timezone
                 track = BasaltTrack(name=self.name,
                                     resource=resource,
                                     timezone=timezone,
@@ -159,10 +159,8 @@ class BasaltFlight(plannerModels.AbstractFlight):
         if settings.PYRAPTORD_SERVICE is True:
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
-            print serviceName
             scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
             command = "%s -o 127.0.0.1 -p %d -n %s -t %s" % (scriptPath, resource.port, self.vehicle.name[-1:], self.name)
-            print command
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
             pyraptord.updateServiceConfig(serviceName,
                                           {'command': command})
