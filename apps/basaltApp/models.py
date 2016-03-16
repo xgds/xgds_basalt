@@ -26,6 +26,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from taggit.managers import TaggableManager
 
 from geocamTrack import models as geocamTrackModels
+from geocamTrack.utils import getClosestPosition
+
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
 from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
@@ -46,8 +48,8 @@ def getNewDataFileName(instance, filename):
 
 
 class BasaltResource(geocamTrackModels.AbstractResource):
-    resourceId = models.IntegerField(null=True, blank=True)
-    vehicle = models.ForeignKey(plannerModels.Vehicle, blank=True, null=True)
+    resourceId = models.IntegerField(null=True, blank=True) # analagous to beacon id, identifier for track inputs
+    vehicle = models.OneToOneField(plannerModels.Vehicle, blank=True, null=True)
     port = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
@@ -299,6 +301,12 @@ class BasaltNote(AbstractLocatedNote):
         else:
             result['flight'] = ''
         return result
+    
+    def getPosition(self):
+        # IMPORTANT this should not be used across multitudes of notes, it is designed to be used during construction.
+        if not self.position:
+            self.position = getClosestPosition(timestamp=self.event_time, resource=self.flight.vehicle.basaltresource)
+        return self.position
 
 
 class BasaltImageSet(xgds_image_models.AbstractImageSet):
