@@ -16,8 +16,20 @@
 
 // DESCRIPTION -- define & override the initial openlayers hardcoded base layers
 
-getInitialLayers = function() {
-	return [new ol.layer.Tile({
-                     source: new ol.source.MapQuest({layer: 'sat'})
-                 })]
+if (!map_api_key) {
+    getInitialLayers = function() {
+ 	return [new ol.layer.Tile({
+                      source: new ol.source.MapQuest({layer: 'sat'})
+        })]
+    }
+}
+else {
+    getInitialLayers = function() {
+        return [new ol.layer.Tile({
+            source: new ol.source.BingMaps({
+                key: map_api_key,
+                imagerySet: 'AerialWithLabels',
+                maxZoom: 19}
+                                          )})]
+    }
 }
