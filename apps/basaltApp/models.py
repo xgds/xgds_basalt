@@ -235,7 +235,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return name
     
     def finish_initialization(self, request):
-        self.flight = getFlight(self.acquisition_time, self.resource)
+        self.flight = getFlight(self.acquisition_time, self.resource.vehicle)
         
     def updateSampleFromName(self, name):
         assert name
@@ -333,7 +333,7 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def finish_initialization(self, request):
-        self.flight = getFlight(self.acquisition_time, self.resource)
+        self.flight = getFlight(self.acquisition_time, self.resource.vehicle)
 
 
 class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
