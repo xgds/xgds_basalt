@@ -21,6 +21,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 
 from taggit.managers import TaggableManager
 
@@ -175,6 +176,19 @@ class BasaltFlight(plannerModels.AbstractFlight):
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
         #TODO remove the current position for that track
         pass
+    
+    def getTreeJsonChildren(self):
+        children = super(BasaltFlight, self).getTreeJsonChildren()
+        children.append({"title": "Notes", 
+                         "selected": False, 
+                         "tooltip": "Notes for " + self.name, 
+                         "key": self.uuid + "_notes", 
+                         "data": {"json": reverse('xgds_notes_notesJson', kwargs={'filter': 'flight__pk:'+str(self.pk)}),
+                                 "sseUrl": "", 
+                                 "type": 'MapLink', 
+                                 }
+                         })
+        return children
 
 
 class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
@@ -294,6 +308,7 @@ class BasaltNote(AbstractLocatedNote):
         Return a reduced dictionary that will be turned to JSON for rendering in a map
         """
         result = AbstractLocatedNote.toMapDict(self)
+        result['type'] = 'Note'
         if self.flight:
             result['flight'] = self.flight.name
         else:
