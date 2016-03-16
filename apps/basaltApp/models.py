@@ -79,7 +79,7 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     
     def toMapDict(self):
         result = geocamTrackModels.AbstractTrack.toMapDict(self)
-        result['type'] = 'BasaltTrack'
+        result['type'] = 'Track'
         return result
     
     def __unicode__(self):
