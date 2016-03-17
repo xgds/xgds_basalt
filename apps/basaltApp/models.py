@@ -267,6 +267,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         if not self.year:
             self.year = int(dataDict['year']) 
         self.save()
+    
+    def toMapDict(self):
+        result = xgds_sample_models.AbstractSample.toMapDict(self)
+        result['type'] = 'Sample'
+        if result['flight']:
+            result['flight'] = self.flight.name
+        if self.triplicate:
+            result['triplicate'] = self.triplicate.display_name
+        return result
+    
+    
         
 
 #
