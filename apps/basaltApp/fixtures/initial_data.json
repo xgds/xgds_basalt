@@ -282,5 +282,62 @@
             "name": "ev2_linestyle",
             "uuid": "EV2"
         }
+    },
+    {
+        "pk": 1,
+        "model": "basaltApp.scienceinstrument",
+        "fields": {
+            "shortName": "ftir",
+            "displayName": "FTIR",
+	    "active": true,
+	    "dataImportFunctionName": "ftirDataImporter",
+            "brand": "Agilent",
+	    "model": "FTIR",
+	    "serialNum": "00000",
+	    "xLabel": "Wavenumber",
+	    "yLabel": "Absorbance",
+	    "xUnits": "1/cm",
+	    "yUnits": "Unk",
+	    "reverseX": true,
+	    "reverseY": false
+        }
+    },
+    {
+        "pk": 2,
+        "model": "basaltApp.scienceinstrument",
+        "fields": {
+            "shortName": "asd",
+            "displayName": "ASD",
+	    "active": true,
+	    "dataImportFunctionName": "asdDataImporter",
+            "brand": "ASD",
+	    "model": "FieldSpec 3",
+	    "serialNum": "00000",
+	    "xLabel": "Wavelength",
+	    "yLabel": "Reflectance",
+	    "xUnits": "1/cm",
+	    "yUnits": "Unk",
+	    "reverseX": false,
+	    "reverseY": false
+        }
+    },
+    {
+        "pk": 3,
+        "model": "basaltApp.scienceinstrument",
+        "fields": {
+            "shortName": "pxrf",
+            "displayName": "pXRF",
+	    "active": true,
+	    "dataImportFunctionName": "pxrfDataImporter",
+            "brand": "Bruker",
+	    "model": "Portable pXRF",
+	    "serialNum": "00000",
+	    "xLabel": "Energy",
+	    "yLabel": "Counts",
+	    "xUnits": "Ev",
+	    "yUnits": "Unk",
+	    "reverseX": false,
+	    "reverseY": false
+        }
     }
 ]

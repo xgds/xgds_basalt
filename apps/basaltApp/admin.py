@@ -15,7 +15,7 @@
 #__END_LICENSE__
 
 from django.contrib import admin
-from basaltApp.models import *
+from basaltApp.models import *  # pylint: disable=W0401
 
 admin.site.register(BasaltResource)
 admin.site.register(CurrentPosition)
@@ -23,8 +23,10 @@ admin.site.register(PastPosition)
 admin.site.register(EV)
 admin.site.register(BasaltPlanExecution)
 admin.site.register(BasaltSample)
-admin.site.register(FieldDataProduct)
 admin.site.register(DataType)
 admin.site.register(BasaltActiveFlight)
 admin.site.register(BasaltFlight)
-
+admin.site.register(ScienceInstrument)
+admin.site.register(BasaltInstrumentDataProduct)
+admin.site.register(FtirSample)
+admin.site.register(AsdSample)
