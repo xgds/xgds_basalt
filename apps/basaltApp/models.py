@@ -235,7 +235,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return name
     
     def finish_initialization(self, request):
-        self.flight = getFlight(self.acquisition_time, self.resource.vehicle)
+        self.flight = getFlight(self.collection_time, self.resource.vehicle)
         
     def updateSampleFromName(self, name):
         assert name
