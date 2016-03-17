@@ -188,6 +188,15 @@ class BasaltFlight(plannerModels.AbstractFlight):
                                  "type": 'MapLink', 
                                  }
                          })
+        children.append({"title": "Samples", 
+                         "selected": False, 
+                         "tooltip": "Samples for " + self.name, 
+                         "key": self.uuid + "_samples", 
+                         "data": {"json": reverse('xgds_samples_samplesJson', kwargs={'filter': 'flight__pk:'+str(self.pk)}),
+                                 "sseUrl": "", 
+                                 "type": 'MapLink', 
+                                 }
+                         })
         return children
 
 
@@ -226,7 +235,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
 
     number = models.IntegerField(null=True)
     triplicate = models.ForeignKey(Triplicate, null=True)
-    year = models.PositiveSmallIntegerField(null=True)
+    year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def buildName(self):
