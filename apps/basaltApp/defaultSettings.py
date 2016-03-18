@@ -36,5 +36,4 @@ settings object will not know about the default value!
 """
 import os
 
-basaltApp_BOWER_INSTALLED_APPS = ()
 XGDS_SAMPLE_START_YEAR = 2016

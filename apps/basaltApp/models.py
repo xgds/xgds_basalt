@@ -183,7 +183,28 @@ class BasaltFlight(plannerModels.AbstractFlight):
                          "selected": False, 
                          "tooltip": "Notes for " + self.name, 
                          "key": self.uuid + "_notes", 
-                         "data": {"json": reverse('xgds_notes_notesJson', kwargs={'filter': 'flight__pk:'+str(self.pk)}),
+                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_NOTES_NOTE_MODEL',
+                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
+                                 "sseUrl": "", 
+                                 "type": 'MapLink', 
+                                 }
+                         })
+        children.append({"title": "Images", 
+                         "selected": False, 
+                         "tooltip": "Images for " + self.name, 
+                         "key": self.uuid + "_images", 
+                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_IMAGE_IMAGE_SET_MODEL',
+                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
+                                 "sseUrl": "", 
+                                 "type": 'MapLink', 
+                                 }
+                         })
+        children.append({"title": "Samples", 
+                         "selected": False, 
+                         "tooltip": "Samples for " + self.name, 
+                         "key": self.uuid + "_samples", 
+                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_SAMPLE_SAMPLE_MODEL',
+                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
                                  "sseUrl": "", 
                                  "type": 'MapLink', 
                                  }
@@ -226,7 +247,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
 
     number = models.IntegerField(null=True)
     triplicate = models.ForeignKey(Triplicate, null=True)
-    year = models.PositiveSmallIntegerField(null=True)
+    year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def buildName(self):
@@ -258,6 +279,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         if not self.year:
             self.year = int(dataDict['year']) 
         self.save()
+    
+    def toMapDict(self):
+        result = xgds_sample_models.AbstractSample.toMapDict(self)
+        result['type'] = 'Sample'
+        if result['flight']:
+            result['flight'] = self.flight.name
+        if self.triplicate:
+            result['triplicate'] = self.triplicate.display_name
+        return result
+    
+    
         
 
 #
@@ -428,6 +460,18 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
 	if self.resource:
 	    vehicle = self.resource.vehicle
         self.flight = getFlight(self.acquisition_time, vehicle)
+        
+    def toMapDict(self):
+        """
+        Return a reduced dictionary that will be turned to JSON for rendering in a map
+        """
+        result = xgds_image_models.AbstractImageSet.toMapDict(self)
+        result['type'] = 'ImageSet'
+        if self.flight:
+            result['flight'] = self.flight.name
+        else:
+            result['flight'] = ''
+        return result
 
 
 class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
