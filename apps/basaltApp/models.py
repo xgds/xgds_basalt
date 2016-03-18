@@ -456,7 +456,10 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def finish_initialization(self, request):
-        self.flight = getFlight(self.acquisition_time, self.resource.vehicle)
+	vehicle = None
+	if self.resource:
+	    vehicle = self.resource.vehicle
+        self.flight = getFlight(self.acquisition_time, vehicle)
         
     def toMapDict(self):
         """
