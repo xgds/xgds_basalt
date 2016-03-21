@@ -43,3 +43,6 @@
 [submodule "submodules/xgds_sample"]
 	path = submodules/xgds_sample
 	url = https://github.com/xgds/xgds_sample
+[submodule "submodules/xgds_instrument"]
+	path = submodules/xgds_instrument
+	url = https://github.com/xgds/xgds_instrument.git
