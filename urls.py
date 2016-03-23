@@ -42,4 +42,5 @@ urlpatterns = [
     url(r'^xgds_planner2/', include('xgds_planner2.urls')),
     url(r'^xgds_plot/', include('xgds_plot.urls')),
     url(r'^xgds_video/', include('xgds_video.urls')),
+    url(r'^xgds_instrument/', include('xgds_instrument.urls')),
 ]

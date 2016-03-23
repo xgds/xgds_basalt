@@ -285,7 +285,7 @@
     },
     {
         "pk": 1,
-        "model": "basaltApp.scienceinstrument",
+        "model": "xgds_instrument.scienceinstrument",
         "fields": {
             "shortName": "ftir",
             "displayName": "FTIR",
@@ -304,7 +304,7 @@
     },
     {
         "pk": 2,
-        "model": "basaltApp.scienceinstrument",
+        "model": "xgds_instrument.scienceinstrument",
         "fields": {
             "shortName": "asd",
             "displayName": "ASD",
@@ -323,7 +323,7 @@
     },
     {
         "pk": 3,
-        "model": "basaltApp.scienceinstrument",
+        "model": "xgds_instrument.scienceinstrument",
         "fields": {
             "shortName": "pxrf",
             "displayName": "pXRF",

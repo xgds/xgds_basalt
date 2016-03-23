@@ -17,6 +17,10 @@
 from django.contrib import admin
 from basaltApp.models import *  # pylint: disable=W0401
 
+class BasaltInstrumentDataProductAdmin(admin.ModelAdmin):
+    raw_id_fields = ("location",)
+
+
 admin.site.register(BasaltResource)
 admin.site.register(CurrentPosition)
 admin.site.register(PastPosition)
@@ -27,6 +31,6 @@ admin.site.register(DataType)
 admin.site.register(BasaltActiveFlight)
 admin.site.register(BasaltFlight)
 admin.site.register(ScienceInstrument)
-admin.site.register(BasaltInstrumentDataProduct)
+admin.site.register(BasaltInstrumentDataProduct, BasaltInstrumentDataProductAdmin)
 admin.site.register(FtirSample)
 admin.site.register(AsdSample)

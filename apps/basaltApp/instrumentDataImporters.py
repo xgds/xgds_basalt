@@ -68,7 +68,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         trackName = flight.name
     else:
         trackName = resource.name
-    track = BasaltTrack.objects.get(name=trackName)
+    track = BasaltTrack.getTrackByName(trackName)
     sampleLocation = getClosestPosition(track=track, timestamp=utcStamp,
                                         resource=resource)
     
