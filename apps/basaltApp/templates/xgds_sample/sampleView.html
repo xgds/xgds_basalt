@@ -1,5 +1,6 @@
 {% extends 'dashboard_base.html' %}
 {% load tz %}
+{% load json_dumps %}
 {% block sitemenu-content-secondary %}
 	{% include "sample_subnav.html" %}
 {% endblock %}
@@ -22,6 +23,7 @@
 			{{template|safe}}
 		</script>
 	{% endfor %}
+	<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
 {% endblock scripts %}
 
 {% block jsInit %} 
@@ -29,6 +31,10 @@
 
 // initialize the notes when the window is ready
 $(document).ready(function() {
+
+	{% if sample %}
+		showOnMap([{{sample.toMapDict|json_dumps|safe}}]);
+	{% endif %}
 	var container = $('#notes_content');
 	var tbl = container.find('table#notes_list');
 	if ( $.fn.DataTable.isDataTable( tbl) ) {
