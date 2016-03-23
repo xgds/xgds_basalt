@@ -22,6 +22,7 @@
 			{{template|safe}}
 		</script>
 	{% endfor %}
+	<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}xgds_sample/js/sampleReview.js"></script>
 {% endblock scripts %}
 
 {% block jsInit %} 
@@ -29,6 +30,10 @@
 
 // initialize the notes when the window is ready
 $(document).ready(function() {
+
+	{% if sampleJson %}
+		showOnMap([{{ sampleJson|safe }}]);
+	{% endif %}
 	var container = $('#notes_content');
 	var tbl = container.find('table#notes_list');
 	if ( $.fn.DataTable.isDataTable( tbl) ) {
