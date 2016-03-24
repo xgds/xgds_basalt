@@ -31,7 +31,7 @@ INSTRUMENT DATA
 
     return HttpResponse(importSummary, content_type="text/plain")
 
-def asdDataImporter(inst, portableDataFile, manufacturerDataFile, timestamp, 
+def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, timestamp, 
                     timezone, resource, user=None):
     instrumentData = portableDataFile.read()
     instrumentData = instrumentData.translate(None, "\x00")
