@@ -376,7 +376,11 @@ class BasaltNote(AbstractLocatedNote):
     def getPosition(self):
         # IMPORTANT this should not be used across multitudes of notes, it is designed to be used during construction.
         if not self.position:
-            self.position = getClosestPosition(timestamp=self.event_time, resource=self.flight.vehicle.basaltresource)
+            resource = None
+            if self.flight:
+                if self.flight.vehicle:
+                    resource = self.flight.vehicle.basaltresource
+            self.position = getClosestPosition(timestamp=self.event_time, resource=resource)
         return self.position
 
 
