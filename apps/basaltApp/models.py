@@ -258,7 +258,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
-        name = self.region.shortName + str(self.year) + self.type.value + '-' + str(number) + str(self.triplicate.value)
+        name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number) + str(self.triplicate.value)
         return name
     
     def finish_initialization(self, request):
