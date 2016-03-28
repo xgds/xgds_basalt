@@ -166,8 +166,9 @@ class BasaltFlight(plannerModels.AbstractFlight):
         if settings.PYRAPTORD_SERVICE is True:
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
+            ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
             scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
-            command = "%s -o 127.0.0.1 -p %d -n %s -t %s" % (scriptPath, resource.port, self.vehicle.name[-1:], self.name)
+            command = "%s -o %s -p %d -n %s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], self.name)
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
             pyraptord.updateServiceConfig(serviceName,
                                           {'command': command})
