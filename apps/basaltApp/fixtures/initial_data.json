@@ -284,6 +284,34 @@
         }
     },
     {
+        "pk": 10,
+        "model": "geocamTrack.iconstyle",
+        "fields": {
+            "scale": .3,
+            "name": "ev1_pointer",
+            "url": "/static/basaltApp/icons/ev1_pointer.png",
+            "height": 64,
+            "width": 42,
+            "extras": "{}",
+            "color": "",
+            "uuid": "EV1"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "geocamTrack.iconstyle",
+        "fields": {
+            "scale": .3,
+            "name": "ev2_pointer",
+            "url": "/static/basaltApp/icons/ev2_pointer.png",
+            "height": 64,
+            "width": 42,
+            "extras": "{}",
+            "color": "",
+            "uuid": "EV2"
+        }
+    },
+    {
         "pk": 1,
         "model": "xgds_instrument.scienceinstrument",
         "fields": {
