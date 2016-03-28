@@ -299,7 +299,28 @@ class BasaltSample(xgds_sample_models.AbstractSample):
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
-    
+
+    @property
+    def samples(self):
+        if self.instrument.shortName == "ftir":
+            sampleObjList = self.ftirsample_set.all()
+            samples = [(s.wavenumber, s.reflectance) for s in sampleObjList]
+        elif self.instrument.shortName == "asd":
+            sampleObjList = self.asdsample_set.all()
+            samples = [(s.wavelength, s.absorbance) for s in sampleObjList]
+        else:
+            samples = []
+
+        return samples
+            
+
+    def toMapDict(self):
+        result = AbstractInstrumentDataProduct.toMapDict(self)
+        if self.flight:
+            result['flight'] = self.flight
+        result['ev_name'] = self.resource.vehicle.name
+        return result
+
     def __unicode__(self):
         return "%s: %s, %s, %s, %s (portable), %s (mfg)" % (self.flight, self.resource, 
                                        self.acquisition_time, self.instrument.shortName,
