@@ -98,34 +98,14 @@
       {% endblock %}
     </div>
     
+    
    	{% block footer %}
 	{% endblock footer %}
 	
     
     {% block scripts %}
-    <!-- <script src="{{ EXTERNAL_URL }}modernizr/modernizr.js"></script>
-	 -->
 	<script src="{{ EXTERNAL_URL }}jquery/dist/jquery.min.js"></script>
-
-	<!--
-	Include gumby.js followed by UI modules followed by gumby.init.js
-	Or concatenate and minify into a single file -->
-	<!-- 
-	<script gumby-touch="{{ EXTERNAL_URL }}gumby/js/libs" src="{{ EXTERNAL_URL }}gumby/js/libs/gumby.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.retina.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.fixed.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.skiplink.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.toggleswitch.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.checkbox.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.radiobtn.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.tabs.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/gumby.navbar.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/ui/jquery.validation.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/libs/gumby.init.js"></script>
-
-	<script src="{{ EXTERNAL_URL }}gumby/js/plugins.js"></script>
-	<script src="{{ EXTERNAL_URL }}gumby/js/main.js"></script>
- -->
+    <script src="{{ EXTERNAL_URL }}jquery/dist/jquery.min.js"></script>
     {% endblock %}
 
     <script type="text/javascript">
@@ -135,8 +115,24 @@
 
       {% block jsInit %}
       {% endblock jsInit %}
+      
     </script>
     
+    {% block postContents %}
+    {% block notesSession %}
+    {% if user.is_authenticated %}
+      {% if not request.session.notes_user_session %}
+      	<script type="text/javascript" src="{{ EXTERNAL_URL }}jquery-ui/jquery-ui.min.js"></script>
+      	<style type="text/css" title="currentStyle">
+		@import "{{ EXTERNAL_URL }}jquery-ui/themes/base/jquery-ui.min.css";
+		</style>
+      	{% load user_session_popup %}
+      	{% show_user_session_popup %}
+      {% endif %}
+     {% endif %}
+    
+      {% endblock notesSession %}
+    {% endblock postContents %}
 
   </body>
 </html>
