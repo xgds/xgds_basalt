@@ -155,7 +155,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 track = BasaltTrack(name=self.name,
                                     resource=resource,
                                     timezone=timezone,
-                                    iconStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
+                                    iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=resource.name),
                                     lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
 #                                     lineStyle=DEFAULT_LINE_STYLE,
                                     dataType=DataType.objects.get(name="RawGPSLocation"))
