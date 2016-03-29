@@ -81,6 +81,9 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
             track = None
         return track
 
+    def getLabelName(self, pos):  # Returned shortened name for display
+        self.resource.vehicle.name
+
     def getTimezone(self):
         return pytz.timezone(self.timezone)
     
