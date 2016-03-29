@@ -61,6 +61,14 @@
 
 	<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="../edit/{{ sample.label.number }}" class="mybutton small">Edit</a> </div>
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
+	{% if form.errors %}
+    <ol>
+    {% for error in form.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+	{% endif %}
+	
 	<table>
 		<tr>
 			<th><label for="id_name">Name:</label></th>

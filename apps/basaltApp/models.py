@@ -271,24 +271,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         
     def updateSampleFromName(self, name):
         assert name
-        
         dataDict = {}
         dataDict['region'] = name[:2]
         dataDict['year'] = name[2:4]
         dataDict['type'] = name[4:5]
         dataDict['number'] = name[6:9] 
         dataDict['triplicate'] = name[9:10]
-         
-        if not self.region:
-            self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
-        if not self.type:
-            self.type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
-        if not self.number:
-            self.number = ("%03d" % (int(dataDict['number']),))
-        if not self.triplicate:
-            self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
-        if not self.year:
-            self.year = int(dataDict['year']) 
+        self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
+        self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
+        self.number = ("%03d" % (int(dataDict['number']),))
+        self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
+        self.year = int(dataDict['year']) 
         self.save()
     
     def toMapDict(self):
