@@ -48,7 +48,7 @@ table.planIndex td.exportFormat a {
     <th>#Activities</th>
     {% if settings.XGDS_PLANNER2_SCHEDULE_INCLUDED %}
     <th>Scheduled</th>
-    <th>EV</th>
+    <th>Crew</th>
     {% endif %}
     <th>Export</th>
   </tr>
@@ -90,7 +90,7 @@ table.planIndex td.exportFormat a {
 		<p>Schedule selected plans</p>
 		<table>
 		<tr>
-			<td>Plans</td>
+			<td>{{ settings.XGDS_PLANNER2_PLAN_MONIKER }}</td>
 			<td><span class="planlist"></span></td>
 		</tr>
 		<tr>
@@ -102,7 +102,7 @@ table.planIndex td.exportFormat a {
 		    </td>
 		 </tr>
 		 <tr>
-			<td><label for="id_schedule_ev">EV</label></td>
+			<td><label for="id_schedule_ev">Crew</label></td>
 			<td>
 			<select name="ev" id="id_ev">
   			</select>
