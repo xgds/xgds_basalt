@@ -40,7 +40,6 @@
 	notes_input_div.removeAttr('hidden');
 	notes_input_div.show();
 	
-    initializeTags();
 	initializeInput();
 	hookNoteSubmit();
 
@@ -48,20 +47,28 @@
 
 
 {% block firstPackery %} 
-	{% if messages %}
-		<div id="messages" class='item '>
-	  		{% for message in messages %}
-	    	<p>{{ message }}</p>
-	    	{% endfor %}
-		</div>
-	{% endif %}
 <div class='item w2 lockAspect' id='item_sample_create' data-isStamped="false">
 	<div class="error-message upload-error"></div>
 	<i class="icon-lock-open pinDiv"></i><br />
-	<div id="save-status"> {{status}} </div>
 	
+	{% if messages %}
+	<ul class="messages">
+	    {% for message in messages %}
+	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	    {% endfor %}
+	</ul>
+	{% endif %}
+
 	<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="../edit/{{ sample.label.number }}" class="mybutton small">Edit</a> </div>
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
+	{% if form.errors %}
+    <ol>
+    {% for error in form.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+	{% endif %}
+	
 	<table>
 		<tr>
 			<th><label for="id_name">Name:</label></th>
@@ -69,7 +76,7 @@
 		</tr>
 		<tr>
 			<th><label for="id_type">Type:</label></th>
-			<td> {{ sample.type.display_name }}</td>
+			<td> {{ sample.sample_type.display_name }}</td>
 		</tr>
 		<tr>
 			<th><label for="id_region">Region:</label></th>
@@ -115,7 +122,12 @@
 			<th><label for="id_collection_time">Collection time:</label></th>
 			<td>{% timezone sample.collection_timezone %}{{ sample.collection_time|date:"Y-m-d H:i e" }}{% endtimezone %}</td>
 		</tr>
+		<tr>
+			<th><label for="id_description">Description:</label></th>
+			<td>{{ sample.description }}</td>
+		</tr>
 	</table>
+	<hr>
 	<div id="complete_notes">
 		<strong>Notes</strong>
 		<div id="notes_content" class="tab-content active">

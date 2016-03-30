@@ -81,6 +81,9 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
             track = None
         return track
 
+    def getLabelName(self, pos):  # Returned shortened name for display
+        return "__%s" % self.resource.vehicle.name
+
     def getTimezone(self):
         return pytz.timezone(self.timezone)
     
@@ -155,6 +158,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 track = BasaltTrack(name=self.name,
                                     resource=resource,
                                     timezone=timezone,
+                                    iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=resource.name),
                                     lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
 #                                     lineStyle=DEFAULT_LINE_STYLE,
                                     dataType=DataType.objects.get(name="RawGPSLocation"))
@@ -166,8 +170,9 @@ class BasaltFlight(plannerModels.AbstractFlight):
         if settings.PYRAPTORD_SERVICE is True:
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
+            ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
             scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
-            command = "%s -o 127.0.0.1 -p %d -n %s -t %s" % (scriptPath, resource.port, self.vehicle.name[-1:], self.name)
+            command = "%s -o %s -p %d -n %s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], self.name)
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
             pyraptord.updateServiceConfig(serviceName,
                                           {'command': command})
@@ -266,24 +271,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         
     def updateSampleFromName(self, name):
         assert name
-        
         dataDict = {}
         dataDict['region'] = name[:2]
         dataDict['year'] = name[2:4]
         dataDict['type'] = name[4:5]
         dataDict['number'] = name[6:9] 
         dataDict['triplicate'] = name[9:10]
-         
-        if not self.region:
-            self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
-        if not self.type:
-            self.type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
-        if not self.number:
-            self.number = ("%03d" % (int(dataDict['number']),))
-        if not self.triplicate:
-            self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
-        if not self.year:
-            self.year = int(dataDict['year']) 
+        self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
+        self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
+        self.number = ("%03d" % (int(dataDict['number']),))
+        self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
+        self.year = int(dataDict['year']) 
         self.save()
     
     def toMapDict(self):
@@ -299,7 +297,28 @@ class BasaltSample(xgds_sample_models.AbstractSample):
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
-    
+
+    @property
+    def samples(self):
+        if self.instrument.shortName == "ftir":
+            sampleObjList = self.ftirsample_set.all()
+            samples = [(s.wavenumber, s.reflectance) for s in sampleObjList]
+        elif self.instrument.shortName == "asd":
+            sampleObjList = self.asdsample_set.all()
+            samples = [(s.wavelength, s.absorbance) for s in sampleObjList]
+        else:
+            samples = []
+
+        return samples
+            
+
+    def toMapDict(self):
+        result = AbstractInstrumentDataProduct.toMapDict(self)
+        if self.flight:
+            result['flight'] = self.flight
+        result['ev_name'] = self.resource.vehicle.name
+        return result
+
     def __unicode__(self):
         return "%s: %s, %s, %s, %s (portable), %s (mfg)" % (self.flight, self.resource, 
                                        self.acquisition_time, self.instrument.shortName,

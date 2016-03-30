@@ -20,4 +20,5 @@ media/css/*.r*.css
 /data/
 /var/
 migrations/
+test.txt
 /apps/basaltApp/migrations/
