@@ -261,6 +261,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+    marker_id = models.CharField(null=True, max_length=32)
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
@@ -293,6 +294,9 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         if self.triplicate:
             result['triplicate'] = self.triplicate.display_name
         return result
+    
+    def __unicode__(self):
+        return self.name
     
 
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
