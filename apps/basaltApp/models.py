@@ -261,7 +261,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     triplicate = models.ForeignKey(Triplicate, null=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
-    marker_id = models.CharField(null=True, max_length=32)
+    marker_id = models.CharField(null=True, blank=True, max_length=32)
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
