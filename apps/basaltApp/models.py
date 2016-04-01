@@ -246,7 +246,7 @@ class BasaltActiveFlight(plannerModels.AbstractActiveFlight):
     flight = models.OneToOneField(BasaltFlight, related_name="active")
     
     
-class Triplicate(AbstractEnumModel):
+class Replicate(AbstractEnumModel):
     def __unicode__(self):
         return u'%s' % (self.display_name)
 
@@ -256,17 +256,16 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
-
     number = models.IntegerField(null=True)
-    triplicate = models.ForeignKey(Triplicate, null=True, blank=True)
+    replicate = models.ForeignKey(Replicate, null=True, blank=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     marker_id = models.CharField(null=True, blank=True, max_length=32)
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
-        if self.triplicate: 
-            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number) + str(self.triplicate.value)
+        if self.replicate: 
+            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number) + str(self.replicate.value)
         else: 
             name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number)
         return name
@@ -282,15 +281,15 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         dataDict['type'] = name[4:5]
         dataDict['number'] = name[6:9] 
         try: 
-            dataDict['triplicate'] = name[9:10]
-            triplicate = dataDict['triplicate']
+            dataDict['replicate'] = name[9:10]
+            replicate = dataDict['replicate']
         except: 
-            triplicate = None
+            replicate = None
         self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         self.number = ("%03d" % (int(dataDict['number']),))
-        if triplicate: 
-            self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
+        if replicate: 
+            self.replicate = Replicate.objects.get(value=dataDict['replicate'])
         self.year = int(dataDict['year']) 
         self.save()
     
@@ -299,8 +298,8 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         result['type'] = 'Sample'
         if result['flight']:
             result['flight'] = self.flight.name
-        if self.triplicate:
-            result['triplicate'] = self.triplicate.display_name
+        if self.replicate:
+            result['replicate'] = self.replicate.display_name
         return result
     
     def __unicode__(self):

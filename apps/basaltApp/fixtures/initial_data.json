@@ -155,9 +155,25 @@
             "display_name": "Geology"
         }
     },
+    {
+        "pk": 3,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "C",
+            "display_name": "Chemistry"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "A",
+            "display_name": "Archive"
+        }
+    },
     {	
         "pk": 1,
-        "model": "basaltApp.Triplicate",
+        "model": "basaltApp.Replicate",
         "fields": {
             "value": "A",
             "display_name": "A"
@@ -165,7 +181,7 @@
     },
     {
         "pk": 2,
-        "model": "basaltApp.Triplicate",
+        "model": "basaltApp.Replicate",
         "fields": {
             "value": "B",
             "display_name": "B"
@@ -173,10 +189,26 @@
     },
     {
         "pk": 3,
-        "model": "basaltApp.Triplicate",
+        "model": "basaltApp.Replicate",
         "fields": {
             "value": "C",
             "display_name": "C"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "D",
+            "display_name": "D"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "E",
+            "display_name": "E"
         }
     },
     {	
