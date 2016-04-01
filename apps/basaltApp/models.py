@@ -258,14 +258,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
 
     number = models.IntegerField(null=True)
-    triplicate = models.ForeignKey(Triplicate, null=True)
+    triplicate = models.ForeignKey(Triplicate, null=True, blank=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     marker_id = models.CharField(null=True, blank=True, max_length=32)
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
-        name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number) + str(self.triplicate.value)
+        if self.triplicate: 
+            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number) + str(self.triplicate.value)
+        else: 
+            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number)
         return name
     
     def finish_initialization(self, request):
@@ -278,11 +281,16 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         dataDict['year'] = name[2:4]
         dataDict['type'] = name[4:5]
         dataDict['number'] = name[6:9] 
-        dataDict['triplicate'] = name[9:10]
+        try: 
+            dataDict['triplicate'] = name[9:10]
+            triplicate = dataDict['triplicate']
+        except: 
+            triplicate = None
         self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         self.number = ("%03d" % (int(dataDict['number']),))
-        self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
+        if triplicate: 
+            self.triplicate = Triplicate.objects.get(value=dataDict['triplicate'])
         self.year = int(dataDict['year']) 
         self.save()
     
