@@ -98,7 +98,7 @@ class GpsTelemetryCleanup(object):
             lonHemi, speed, heading, date, declination, declinationDir,\
             modeAndChecksum = content.split(",")
         sourceTimestamp = datetime.datetime.strptime('%s %s' % (date, utcTime),
-                                                     '%d%m%y %H%M%S.00')
+                                                     '%d%m%y %H%M%S.%f')
         sourceTimestamp = sourceTimestamp.replace(tzinfo=pytz.utc)
         lat = parseTracLinkDM(lat, latHemi)
         lon = parseTracLinkDM(lon, lonHemi)
