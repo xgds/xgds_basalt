@@ -70,6 +70,7 @@ def addToPlannerContext(context):
     context['extras'] = json.dumps({"evList":evList})
     return context
 
+
 def addEVToPlanExecution(request, pe):
     if 'ev' in request.POST.keys():
         evPK = request.POST['ev']
@@ -115,6 +116,7 @@ def storeFieldData(request):
                             content_type="text/plain")
     else:
         return HttpResponse("No data posted\n", content_type="text/plain")
+
 
 def populateNoteData(request, form):
     data, tags, errors = xgds_notes2_views.populateNoteData(request, form)
