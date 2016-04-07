@@ -149,8 +149,8 @@ class CurrentNavNode(template.Node):
 
         for pat in self.urlGlobs:
             if fnmatch(resolverMatch.url_name, pat):
-                return ' class="currentnav"'
-        return ''
+                return ' class="nav-item currentnav"'
+        return ' class="nav-item"'
 
     def __repr__(self):
         return "<CurrentNav node urlGlobs=%s>" % self.urlGlobs
