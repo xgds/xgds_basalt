@@ -43,5 +43,5 @@ urlpatterns = [
     url(r'^xgds_plot/', include('xgds_plot.urls')),
     url(r'^xgds_video/', include('xgds_video.urls')),
     url(r'^xgds_instrument/', include('xgds_instrument.urls')),
-#    url(r'^xgds_core/', include('xgds_core.urls')),
+    url(r'^xgds_core/', include('xgds_core.urls')),
 ]

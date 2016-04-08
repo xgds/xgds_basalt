@@ -122,10 +122,7 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "Kings Bowl",
-            "shortName": "KB",
-            "siteFrameZone": "",
-            "siteFrameName": "",
-            "siteFrameTimeZone": ""
+            "shortName": "KB"
         }
     },
     {
@@ -133,10 +130,7 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "Mauna Ulu",
-            "shortName": "MU",
-            "siteFrameZone": "",
-            "siteFrameName": "",
-            "siteFrameTimeZone": ""
+            "shortName": "MU"
         }
     },
     {
@@ -155,9 +149,25 @@
             "display_name": "Geology"
         }
     },
+    {
+        "pk": 3,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "C",
+            "display_name": "Chemistry"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "A",
+            "display_name": "Archive"
+        }
+    },
     {	
         "pk": 1,
-        "model": "basaltApp.Triplicate",
+        "model": "basaltApp.Replicate",
         "fields": {
             "value": "A",
             "display_name": "A"
@@ -165,7 +175,7 @@
     },
     {
         "pk": 2,
-        "model": "basaltApp.Triplicate",
+        "model": "basaltApp.Replicate",
         "fields": {
             "value": "B",
             "display_name": "B"
@@ -173,10 +183,26 @@
     },
     {
         "pk": 3,
-        "model": "basaltApp.Triplicate",
+        "model": "basaltApp.Replicate",
         "fields": {
             "value": "C",
             "display_name": "C"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "D",
+            "display_name": "D"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "E",
+            "display_name": "E"
         }
     },
     {	
@@ -366,6 +392,54 @@
 	    "yUnits": "Unk",
 	    "reverseX": false,
 	    "reverseY": false
+        }
+    },
+    {
+        "pk": 1,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+            "name": "Craters of the Moon",
+            "displayName": "COTM",
+           	"east0": 292808.83,
+           	"north0": 4815290.06,
+           	"zone": "12T",
+           	"zoneNumber": 12,
+           	"south": 0,
+           	"axes": "ENU",
+           	"north": "grid",
+           	"timezone": "America/Boise"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+            "name": "Hawaii Lava Flows",
+            "displayName": "Hawaii",
+	          "east0": 259694.25,
+	          "north0": 2148871.83,
+	          "zone": "5Q",
+	          "zoneNumber": 5,
+	          "south": 0,
+	          "axes": "ENU",
+	          "north": "grid",
+	          "timezone": "US/Hawaii"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+            "name": "Ames",
+            "displayName": "Ames",
+	           "east0": 582753.18,
+	           "north0": 4141805.69,
+	           "zone": "10S",
+	           "zoneNumber": 10,
+	           "south": 0,
+	           "axes": "NED",
+	           "north": "grid",
+	           "timezone": "America/Los_Angeles"
         }
     }
 ]
