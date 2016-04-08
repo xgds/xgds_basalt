@@ -40,6 +40,7 @@ from xgds_planner2.utils import getFlight
 from xgds_instrument.models import ScienceInstrument, AbstractInstrumentDataProduct
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
+from apps.xgds_data.introspection import verbose_name
 
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
@@ -259,7 +260,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     number = models.IntegerField(null=True)
     replicate = models.ForeignKey(Replicate, null=True, blank=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
-    flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32)
     
     def buildName(self):
