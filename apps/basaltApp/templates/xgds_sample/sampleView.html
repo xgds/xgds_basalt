@@ -22,7 +22,6 @@
 {% block otherJSInit %} 
 
 // initialize the notes when the window is ready
-
 	{% if sample %}
 		showOnMap([{{sample.toMapDict|json_dumps|safe}}]);
 	{% endif %}
@@ -40,35 +39,35 @@
 	notes_input_div.removeAttr('hidden');
 	notes_input_div.show();
 	
-	initializeInput();
+	var taginput = notes_input_div.find('.taginput');
+	initializeInput($(taginput)[0]);
 	hookNoteSubmit();
 
 {% endblock otherJSInit %} 
 
 
-{% block firstPackery %} 
-<div class='item w2 lockAspect' id='item_sample_create' data-isStamped="false">
+{% if messages %}
+{% block preDashboard %}
+ <div  id="messages">
+ 		{% for message in messages %}
+   	<p>{{ message }}</p>
+   	{% endfor %}
+</div>
+{% endblock preDashboard %}
+
+{% endif %}
+
+{% block preMap %} 
+<div class="grid-stack-item" id='item_sample_create'
+        data-gs-x="0" data-gs-y="0"
+        data-gs-width="3" data-gs-height="3">
+        <div class="grid-stack-item-content" >
 	<div class="error-message upload-error"></div>
 	<i class="icon-lock-open pinDiv"></i><br />
+	<div id="save-status"> {{status}} </div>
 	
-	{% if messages %}
-	<ul class="messages">
-	    {% for message in messages %}
-	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	    {% endfor %}
-	</ul>
-	{% endif %}
-
-	<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="../edit/{{ sample.label.number }}" class="mybutton small">Edit</a> </div>
+	<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="{% url 'xgds_sample_record_update' sample.label.number %}" class="mybutton small">Edit</a> </div>
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
-	{% if form.errors %}
-    <ol>
-    {% for error in form.errors %}
-        <li><strong>{{ error|escape }}</strong></li>
-    {% endfor %}
-    </ol>
-	{% endif %}
-	
 	<table>
 		<tr>
 			<th><label for="id_name">Name:</label></th>
@@ -95,8 +94,8 @@
 			<td>{{ sample.number }}</td>
 		</tr>
 		<tr>
-			<th><label for="id_triplicate">Triplicate:</label></th>
-			<td>{{ sample.triplicate }}</td>
+			<th><label for="id_replicate">Replicate:</label></th>
+			<td>{{ sample.replicate }}</td>
 		</tr>	
 		<tr>
 			<th><label for="id_year">Year:</label></th>
@@ -127,7 +126,6 @@
 			<td>{{ sample.description }}</td>
 		</tr>
 	</table>
-	<hr>
 	<div id="complete_notes">
 		<strong>Notes</strong>
 		<div id="notes_content" class="tab-content active">
@@ -136,8 +134,16 @@
 		</div>
 	</div>
 	{% csrf_token %}	
+	</div>
 </div>
-<div class='item auto lockAspect' id='create_sample_from_label_num' data-isStamped="false">
+
+{% endblock preMap %}
+
+{% block postMap %}
+<div class="grid-stack-item noresize" id='create_sample_from_label_num'
+        data-gs-x="3" data-gs-y="3"
+        data-gs-width="2" data-gs-height="1">
+        <div class="grid-stack-item-content" >
 		<i class="icon-lock-open pinDiv"></i><br />
 		<form class="label_number_form" id="label_number_form" action="{% url 'xgds_sample_record_edit' %}" method="post" enctype="multipart/form-data">
 			<strong> Look up sample </strong>
@@ -148,7 +154,8 @@
 				</tr>
 			</table>
 			{% csrf_token %}
-			<input id="record_sample_submit_btn" type="submit" class="small" value="Open"/> 
+			<input id="record_sample_submit_btn" type="submit" value="Open"/> 
 		</form>
 	</div>
-{% endblock firstPackery %}
+</div>
+{% endblock postMap %}
