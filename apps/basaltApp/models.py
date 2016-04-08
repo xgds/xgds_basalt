@@ -257,7 +257,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
-    number = models.IntegerField(null=True)
+    number = models.IntegerField(null=True)  # station number
     replicate = models.ForeignKey(Replicate, null=True, blank=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
