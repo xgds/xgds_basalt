@@ -134,6 +134,38 @@
         }
     },
     {
+        "pk": 3,
+        "model": "xgds_sample.Region",
+        "fields": {
+            "name": "Highway Flow",
+            "shortName": "HF"
+        }
+    },
+        {
+        "pk": 4,
+        "model": "xgds_sample.Region",
+        "fields": {
+            "name": "Big Craters Flow",
+            "shortName": "BC"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "xgds_sample.Region",
+        "fields": {
+            "name": "North Craters Flow",
+            "shortName": "NC"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "xgds_sample.Region",
+        "fields": {
+            "name": "Kilauea Iki",
+            "shortName": "KI"
+        }
+    },
+    {
         "pk": 1,
         "model": "xgds_sample.SampleType",
         "fields": {
@@ -163,6 +195,14 @@
         "fields": {
             "value": "A",
             "display_name": "Archive"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "S",
+            "display_name": "Special"
         }
     },
     {	
@@ -203,6 +243,46 @@
         "fields": {
             "value": "E",
             "display_name": "E"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "F",
+            "display_name": "F"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "G",
+            "display_name": "G"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "H",
+            "display_name": "H"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "I",
+            "display_name": "I"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "basaltApp.Replicate",
+        "fields": {
+            "value": "J",
+            "display_name": "J"
         }
     },
     {	
