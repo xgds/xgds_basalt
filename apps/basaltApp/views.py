@@ -29,6 +29,11 @@ from geocamUtil.loader import LazyGetModelByName
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
 
+import datetime
+from subprocess import Popen, PIPE
+from time import sleep as time_sleep
+import re
+
 
 def editEV(request, pk=None):
     ''' Create or edit an EV definition.  Shows list of all existing EVs.
@@ -103,6 +108,59 @@ def callPextantAjax(request, planId):
     return HttpResponse(json.dumps(response), content_type='application/json',
                         status=status)
     
+    
+def showSubsystemStatus(request):
+    # Status timestamp in UTC:
+    statusTimestamp = datetime.datetime.utcnow()
+    
+    # load averages
+    def statusColor(val,yellowThresh,redThresh):
+        if val > redThresh:
+            return '#ff0000'
+        if val > yellowThresh:
+            return '#ffff00'
+        return '#00ff00'
+    
+    loadStatus = {}
+    proc = Popen('uptime',stdout=PIPE)
+    (status,retval) = proc.communicate()
+    pattern = '(?P<time>\S+)\sup\s?(?P<updays>\d+)?(\sday)?(.+)?\s(?P<uphms>\S+),\s+(?P<users>\d+)\suser.*,\s+load average: (?P<load1m>[\.\d]+), (?P<load5m>[\.\d]+), (?P<load15m>[\.\d]+)'
+    match = re.search(pattern,status)
+    if match:
+        loadStatus = match.groupdict()
+        if not match.group('updays'):
+            loadStatus['updays'] = 0
+        loadStatus['load1m'] = float(loadStatus['load1m'])
+        loadStatus['load5m'] = float(loadStatus['load5m'])
+        loadStatus['load15m'] = float(loadStatus['load15m'])
+        loadStatus['load1mColor'] = statusColor(loadStatus['load1m'],1,3)
+        loadStatus['load5mColor'] = statusColor(loadStatus['load5m'],1,3)
+        loadStatus['load15mColor'] = statusColor(loadStatus['load15m'],1,3)
+    
+#     # subsystem status
+#     status = {}
+#     status['domain'] = 'GPS'
+#     status['state'] = 'Running'
+#     status['timestamp'] = datetime.datetime.now()
+#     statuses = [status]
+    return render_to_response("basaltApp/subsystemStatus.html",
+                              {'load_status': loadStatus,
+#                                'statuses': statuses, 
+                               'status_timestamp': statusTimestamp,
+                               'BASALT_APP_SUBSYSTEM_STATUS_URL': reverse('basaltApp_subsystemStatusJson')},
+                              context_instance=RequestContext(request))
+
+
+def subsystemStatusJson(request):
+    status = {}
+    status['domain'] = 'TEST DOMAIN'
+    status['state'] = 'TEST STATUS'
+    status['timestamp'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    statuses = [status]
+    return HttpResponse(json.dumps(statuses, indent=4, sort_keys=True),
+                        content_type='application/json')
+    
+
 
 def storeFieldData(request):
     if request.method == 'POST':
