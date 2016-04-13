@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-basaltApp INDEX PAGE
+<!--  basaltApp INDEX PAGE  -->
+<table cellpadding="5" cellspacing="0" width="100%">
+  <tr>
+    <td><a href="{% url 'basaltApp_showSubsystemStatus' %}">Subsystem Status</a></td>
+    <td>Show status of xGDS telemetry recording and handling processes.
+    </td>
+  </tr>
+</table>
 {% endblock content %}

@@ -27,4 +27,6 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^pextant/(?P<planId>[\d]+)$', views.callPextantAjax, {},
                    'pextant_ajax'),
                url(r'^storeFieldData$', views.storeFieldData, {}, 'storeFieldData'),
+               url(r'^subsystemStatus/$', views.showSubsystemStatus, {}, 'basaltApp_showSubsystemStatus'),
+               url(r'^subsystemStatus\.json$', views.subsystemStatusJson, {}, 'basaltApp_subsystemStatusJson')
            ]
