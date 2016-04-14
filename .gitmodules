@@ -46,3 +46,6 @@
 [submodule "submodules/xgds_instrument"]
 	path = submodules/xgds_instrument
 	url = https://github.com/xgds/xgds_instrument.git
+[submodule "submodules/xgds_status_board"]
+	path = submodules/xgds_status_board
+	url = https://babelfish.arc.nasa.gov/git/xgds_status_board
