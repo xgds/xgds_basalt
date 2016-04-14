@@ -44,4 +44,5 @@ urlpatterns = [
     url(r'^xgds_video/', include('xgds_video.urls')),
     url(r'^xgds_instrument/', include('xgds_instrument.urls')),
     url(r'^xgds_core/', include('xgds_core.urls')),
+    url(r'^xgds_status_board/', include('xgds_status_board.urls')),
 ]
