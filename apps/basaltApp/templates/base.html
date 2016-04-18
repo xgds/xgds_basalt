@@ -121,19 +121,6 @@
     </script>
     
     {% block postContents %}
-    {% block notesSession %}
-    {% if user.is_authenticated %}
-      {% if not request.session.notes_user_session %}
-      	<script type="text/javascript" src="{{ EXTERNAL_URL }}jquery-ui/jquery-ui.min.js"></script>
-      	<style type="text/css" title="currentStyle">
-		@import "{{ EXTERNAL_URL }}jquery-ui/themes/base/jquery-ui.min.css";
-		</style>
-      	{% load user_session_popup %}
-      	{% show_user_session_popup %}
-      {% endif %}
-     {% endif %}
-    
-      {% endblock notesSession %}
     {% endblock postContents %}
 
   </body>
