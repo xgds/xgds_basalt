@@ -22,6 +22,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.core.cache import cache 
 
 from taggit.managers import TaggableManager
 
@@ -31,7 +32,6 @@ from geocamTrack.utils import getClosestPosition
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
 from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
-from __builtin__ import classmethod
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location
@@ -42,6 +42,8 @@ from xgds_instrument.models import ScienceInstrument, AbstractInstrumentDataProd
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
 from apps.xgds_data.introspection import verbose_name
 
+from subprocess import Popen
+import re
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
 
@@ -448,6 +450,5 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
 class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
     """ This can be used for screenshots or non geolocated images 
     """
-
     # set foreign key fields from parent model to point to correct types
     imageSet = models.ForeignKey(BasaltImageSet, null=True, related_name="images")
