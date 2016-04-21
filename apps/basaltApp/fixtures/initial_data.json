@@ -96,6 +96,14 @@
         }
     },
     {
+        "pk": 3,
+        "model": "xgds_planner2.vehicle",
+        "fields": {
+            "name": "SA",
+            "type": "SA"
+        }
+    },
+    {
         "pk": 1,
         "model": "basaltApp.BasaltResource",
         "fields": {
@@ -115,6 +123,17 @@
             "vehicle": 2,
             "primary": true,
             "port": 60000
+        }
+    },
+    {
+        "pk": 3,
+        "model": "basaltApp.BasaltResource",
+        "fields": {
+            "name": "SA",
+            "resourceId": 3,
+            "vehicle": 3,
+            "primary": false,
+            "port": 70000
         }
     },
     {
@@ -305,6 +324,39 @@
     	}
     },
     {
+    	"pk": 11,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"EV1_TRACKING_IP",
+    		"units":"n/a",
+    		"notes":"IP of serial to ethernet box for EV1 GPS",
+    		"dataType":"string",
+    		"value":"10.10.80.46"
+    	}
+    },
+    {
+    	"pk": 21,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"EV2_TRACKING_IP",
+    		"units":"n/a",
+    		"notes":"IP of serial to ethernet box for EV2 GPS",
+    		"dataType":"string",
+    		"value":"10.10.80.47"
+    	}
+    },
+    {
+    	"pk": 31,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"SA_TRACKING_IP",
+    		"units":"n/a",
+    		"notes":"IP of serial to ethernet box for SA GPS",
+    		"dataType":"string",
+    		"value":"10.10.80.48"
+    	}
+    },
+    {
     	"pk": 1,
     	"model": "xgds_core.TimeZoneHistory",
     	"fields": {
@@ -390,6 +442,17 @@
         }
     },
     {
+        "pk": 12,
+        "model": "geocamTrack.linestyle",
+        "fields": {
+            "color": "ff888888",
+            "width": 1,
+            "extras": "{}",
+            "name": "sa_linestyle",
+            "uuid": "SA"
+        }
+    },
+    {
         "pk": 10,
         "model": "geocamTrack.iconstyle",
         "fields": {
@@ -415,6 +478,20 @@
             "extras": "{}",
             "color": "",
             "uuid": "EV2"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "geocamTrack.iconstyle",
+        "fields": {
+            "scale": 1.0,
+            "name": "sa_dot",
+            "url": "/static/geocamTrack/icons/shaded_dot.png",
+            "height": 64,
+            "width": 64,
+            "extras": "{}",
+            "color": "",
+            "uuid": "SA"
         }
     },
     {
@@ -520,6 +597,84 @@
 	           "axes": "NED",
 	           "north": "grid",
 	           "timezone": "America/Los_Angeles"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "xgds_video.VideoSource",
+        "fields": {
+            "name": "EV1",
+            "shortName": "EV1",
+	        "uuid": 1,
+	        "displayColor": "#648f73"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "xgds_video.VideoSource",
+        "fields": {
+            "name": "EV2",
+            "shortName": "EV2",
+	        "uuid": 2,
+	        "displayColor": "#64808f"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "xgds_video.VideoSource",
+        "fields": {
+            "name": "SA",
+            "shortName": "SA",
+	        "uuid": 3,
+	        "displayColor": "#c7c465"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "xgds_video.VideoSettings",
+        "fields": {
+            "width": 1280,
+            "height": 720,
+            "uuid": 1
+        }
+    },
+    {
+        "pk": 1,
+        "model": "xgds_video.VideoFeed",
+        "fields": {
+            "name": "EV1",
+            "shortName": "EV1",
+            "url": "rtsp://10.10.24.68/changeme",
+            "active": 0,
+            "settings_id": 1,
+            "source_id": 1,
+	        "uuid": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "xgds_video.VideoFeed",
+        "fields": {
+            "name": "EV2",
+            "shortName": "EV2",
+            "url": "rtsp://10.10.24.69/changeme",
+            "active": 0,
+            "settings_id": 1,
+            "source_id": 2,
+	        "uuid": 2
+        }
+    },
+    {
+        "pk": 3,
+        "model": "xgds_video.VideoFeed",
+        "fields": {
+            "name": "SA",
+            "shortName": "SA",
+            "url": "rtsp://10.10.24.70/changeme",
+            "active": 0,
+            "settings_id": 1,
+            "source_id": 3,
+	        "uuid": 3
         }
     }
 ]
