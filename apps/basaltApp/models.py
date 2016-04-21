@@ -37,15 +37,20 @@ from xgds_core.models import Constant
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
+from xgds_planner2.models import AbstractActiveFlight
 from xgds_instrument.models import ScienceInstrument, AbstractInstrumentDataProduct
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
-from apps.xgds_data.introspection import verbose_name
+from xgds_data.introspection import verbose_name
+
+from xgds_video.models import *
+from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, startRecording, stopRecording
 
 from subprocess import Popen
 import re
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
+VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)
 
 
 class BasaltResource(geocamTrackModels.AbstractResource):
@@ -135,20 +140,32 @@ class EV(models.Model):
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
 
+class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
+    videoEpisode = models.OneToOneField(settings.XGDS_VIDEO_EPISODE_MODEL, null=True, blank=True)
+
 
 class BasaltFlight(plannerModels.AbstractFlight):
     ''' A Basalt Flight for storing delay and handling start and stop functions '''
     # set foreign key fields required by parent model to correct types for this site
     vehicle = plannerModels.DEFAULT_VEHICLE_FIELD()
-    group = plannerModels.DEFAULT_GROUP_FLIGHT_FIELD()
+    group = models.ForeignKey(BasaltGroupFlight, null=True, blank=True)
 
     delaySeconds = models.IntegerField(default=0)
     track = models.OneToOneField(BasaltTrack, null=True, blank=True)
     
+    videoSource = models.ForeignKey(settings.XGDS_VIDEO_SOURCE_MODEL, null=True, blank=True)
+    
+    def getVideoSource(self):
+        if self.videoSource:
+            return self.videoSource
+        self.videoSource = VIDEO_SOURCE_MODEL.get().objects.get(shortName=self.vehicle.name)
+        return self.videoSource
+        
     def startFlightExtras(self, request):
         delayConstant = Constant.objects.get(name="delay")
         self.delaySeconds = int(delayConstant.value)
         resource=BasaltResource.objects.get(vehicle=self.vehicle)
+        
         #Create the track if it does not exist
         if not self.track:
             try:
@@ -170,6 +187,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 self.save()
         
         #start the eva track listener
+#         if False:
         if settings.PYRAPTORD_SERVICE is True:
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
@@ -180,7 +198,27 @@ class BasaltFlight(plannerModels.AbstractFlight):
             pyraptord.updateServiceConfig(serviceName,
                                           {'command': command})
             pyraptord.startService(serviceName)
-        pass
+        
+        # start the video
+        if settings.XGDS_VIDEO_ON:
+            flightGroup = self.group
+            if not flightGroup.videoEpisode:
+                flightGroup.videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
+                flightGroup.videoEpisode.save()
+                flightGroup.save()
+            else:
+                if flightGroup.videoEpisode.endTime:
+                    flightGroup.videoEpisode.endTime = None
+
+            recordingDir = getRecordedVideoDir(self.name)
+            recordingUrl = getRecordedVideoUrl(self.name)
+            videoSource = self.getVideoSource()
+            print "ABOUT TO START RECORDING"
+            startRecording(videoSource, recordingDir,
+                           recordingUrl, self.start_time,
+                           settings.XGDS_VIDEO_MAX_EPISODE_DURATION_MINUTES,
+                           episode=flightGroup.videoEpisode)
+            
 
     def stopFlightExtras(self, request):
         #stop the eva track listener
@@ -189,7 +227,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
             serviceName = self.vehicle.name + "TrackListener"
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
         #TODO remove the current position for that track
-        pass
+
     
     def getTreeJsonChildren(self):
         children = super(BasaltFlight, self).getTreeJsonChildren()
