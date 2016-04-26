@@ -203,8 +203,9 @@ class BasaltFlight(plannerModels.AbstractFlight):
         if settings.XGDS_VIDEO_ON:
             flightGroup = self.group
             if not flightGroup.videoEpisode:
-                flightGroup.videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
-                flightGroup.videoEpisode.save()
+                videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
+                videoEpisode.save()
+                flightGroup.videoEpisode = videoEpisode
                 flightGroup.save()
             else:
                 if flightGroup.videoEpisode.endTime:
