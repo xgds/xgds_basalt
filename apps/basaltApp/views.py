@@ -154,3 +154,11 @@ def getEpisodeFromName(flightName):
         # Maybe we are looking for a group
         group = BasaltGroupFlight.objects.get(name=flightName)
         return group.videoEpisode
+
+def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
+    """ get path to video for PLRP """
+    if flightName.endswith(sourceShortName):
+        result = '%s/Video/Recordings/Segment%03d/prog_index.m3u8' % (flightName, int(segmentNumber))
+    else:
+        result = '%s_%s/Video/Recordings/Segment%03d/prog_index.m3u8' % (flightName, sourceShortName, int(segmentNumber))
+    return result
