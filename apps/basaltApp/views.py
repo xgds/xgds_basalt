@@ -22,7 +22,7 @@ from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from forms import EVForm
-from models import EV, BasaltActiveFlight, BasaltGroupFlight
+from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
 from xgds_notes2 import views as xgds_notes2_views
