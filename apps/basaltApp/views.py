@@ -129,3 +129,15 @@ def populateNoteData(request, form):
     data['flight'] = getFlight(data['event_time'], resource)
 
     return data, tags, errors
+
+
+def getActiveEpisode(flightName):
+     '''
+    This gets called from xgds_video to get the active episodes
+    '''
+    activeFlights = ActiveFlight.objects.all()
+    for active in activeFlights:
+        if active.flight.group:
+            if active.flight.group.episode:
+                return active.flight.group.episode
+    return None
