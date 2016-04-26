@@ -132,9 +132,10 @@ def populateNoteData(request, form):
 
 
 def getActiveEpisode(flightName):
-     '''
+    '''
     This gets called from xgds_video to get the active episodes
     '''
+    
     activeFlights = ActiveFlight.objects.all()
     for active in activeFlights:
         if active.flight.group:
