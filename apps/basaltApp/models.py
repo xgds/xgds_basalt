@@ -213,7 +213,6 @@ class BasaltFlight(plannerModels.AbstractFlight):
             recordingDir = getRecordedVideoDir(self.name)
             recordingUrl = getRecordedVideoUrl(self.name)
             videoSource = self.getVideoSource()
-            print "ABOUT TO START RECORDING"
             startRecording(videoSource, recordingDir,
                            recordingUrl, self.start_time,
                            settings.XGDS_VIDEO_MAX_EPISODE_DURATION_MINUTES,
