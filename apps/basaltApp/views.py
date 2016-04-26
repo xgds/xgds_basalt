@@ -142,3 +142,15 @@ def getActiveEpisode(flightName):
             if active.flight.group.videoEpisode:
                 return active.flight.group.videoEpisode
     return None
+
+def getEpisodeFromName(flightName):
+    '''
+    This gets called from xgds_video to get the episode from a flight name
+    '''
+    try: 
+        flight = BasaltFlight.objects.get(name=flightName)
+        return flight.group.videoEpisode
+    except:
+        # Maybe we are looking for a group
+        group = BasaltGroupFlight.objects.get(name=flightName)
+        return group.videoEpisode
