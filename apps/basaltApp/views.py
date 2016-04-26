@@ -22,7 +22,7 @@ from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from forms import EVForm
-from models import EV
+from models import EV, BasaltActiveFlight
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
 from xgds_notes2 import views as xgds_notes2_views
@@ -136,9 +136,9 @@ def getActiveEpisode(flightName):
     This gets called from xgds_video to get the active episodes
     '''
     
-    activeFlights = ActiveFlight.objects.all()
+    activeFlights = BasaltActiveFlight.objects.all()
     for active in activeFlights:
         if active.flight.group:
-            if active.flight.group.episode:
-                return active.flight.group.episode
+            if active.flight.group.videoEpisode:
+                return active.flight.group.videoEpisode
     return None
