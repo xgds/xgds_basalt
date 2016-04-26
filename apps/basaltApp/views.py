@@ -25,6 +25,8 @@ from forms import EVForm
 from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
+from xgds_core.models import Constant
+
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
 
@@ -162,3 +164,11 @@ def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
     else:
         result = '%s_%s/Video/Recordings/Segment%03d/prog_index.m3u8' % (flightName, sourceShortName, int(segmentNumber))
     return result
+
+def getDelaySeconds(flightName):
+    try:
+        flight = BasaltFlight.objects.get(name=flightName)
+        return flight.delaySeconds
+    except:
+        delayConstant = Constant.objects.get(name="delay")
+        return int(delayConstant.value)
