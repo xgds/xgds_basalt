@@ -26,10 +26,6 @@
 	{% endif %}
 	var container = $('#notes_content');
 	var tbl = container.find('table#notes_list');
-	if ( $.fn.DataTable.isDataTable( tbl) ) {
-	    var dt = $(tbl).dataTable();
-	    dt.fnClearTable();
-	}
 	initializeNotesReference(container, '{{sample.modelAppLabel}}', '{{sample.modelTypeName}}', '{{sample.pk }}', '{{sample.collection_time|date:"Y-m-d H:i:s"}}' + ' UTC', '{{sample.collection_timezone}}');
 	getNotesForObject('{{sample.modelAppLabel}}', '{{sample.modelTypeName}}', '{{sample.pk }}', 'notes_content', tbl);
 	
@@ -153,7 +149,7 @@
 				</tr>
 			</table>
 			{% csrf_token %}
-			<input id="record_sample_submit_btn" type="submit" value="Open"/> 
+			<input id="record_sample_submit_btn" type="submit" class="small" value="Open"/> 
 		</form>
 	</div>
 </div>
