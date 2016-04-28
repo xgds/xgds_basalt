@@ -38,6 +38,7 @@ from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, Abstrac
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
 from xgds_planner2.models import AbstractActiveFlight
+from xgds_planner2.views import getActiveFlights
 from xgds_instrument.models import ScienceInstrument, AbstractInstrumentDataProduct
 
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
@@ -45,6 +46,7 @@ from xgds_data.introspection import verbose_name
 
 from xgds_video.models import *
 from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, startRecording, stopRecording
+from xgds_video.recordingUtil import endActiveEpisode
 
 from subprocess import Popen
 import re
@@ -229,7 +231,10 @@ class BasaltFlight(plannerModels.AbstractFlight):
         #TODO remove the current position for that track
         
         if settings.XGDS_VIDEO_ON:
-            stopRecording(self.getVideoSource(), datetime.datetime.now(pytz.utc))
+            stopRecording(self.getVideoSource(), self.end_time)
+            if getActiveFlights().count() == 0:
+                endActiveEpisode(self.end_time)
+        
     
     def getTreeJsonChildren(self):
         children = super(BasaltFlight, self).getTreeJsonChildren()
