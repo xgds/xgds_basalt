@@ -133,11 +133,10 @@ def populateNoteData(request, form):
     return data, tags, errors
 
 
-def getActiveEpisode(flightName):
+def getActiveEpisode():
     '''
-    This gets called from xgds_video to get the active episodes
+    This gets called from xgds_video to get the active episode
     '''
-    
     activeFlights = BasaltActiveFlight.objects.all()
     for active in activeFlights:
         if active.flight.group:
