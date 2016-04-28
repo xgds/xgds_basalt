@@ -232,8 +232,16 @@ class BasaltFlight(plannerModels.AbstractFlight):
         
         if settings.XGDS_VIDEO_ON:
             stopRecording(self.getVideoSource(), self.end_time)
-            if getActiveFlights().count() == 0:
-                endActiveEpisode(self.end_time)
+            done = True
+            for flight in self.group.basaltflight_set:
+                if flight.hasStart():
+                    if not flight.hasEnded():
+                        done = False
+                        break
+            if done:
+                episode = self.group.videoEpisode
+                episode.end_time = self.end_time
+                episode.save()
         
     
     def getTreeJsonChildren(self):
