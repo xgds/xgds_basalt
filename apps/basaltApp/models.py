@@ -227,7 +227,9 @@ class BasaltFlight(plannerModels.AbstractFlight):
             serviceName = self.vehicle.name + "TrackListener"
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
         #TODO remove the current position for that track
-
+        
+        if settings.XGDS_VIDEO_ON:
+            stopRecording(self.getVideoSource(), datetime.datetime.now(pytz.utc))
     
     def getTreeJsonChildren(self):
         children = super(BasaltFlight, self).getTreeJsonChildren()
@@ -303,6 +305,19 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32)
     
+    @classmethod
+    def getFieldOrder(cls):
+        return ['region', 
+                'year', 
+                'sample_type', 
+                'number',
+                'replicate', 
+                'collector', 
+                'collection_time',
+                'marker_id',
+                'description',
+                'name']
+        
     def buildName(self):
         number = ("%03d" % (int(self.number),))
         if self.replicate: 
