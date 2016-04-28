@@ -1,12 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_base.html' %}
 
 {% block content %}
-<!--  basaltApp INDEX PAGE  -->
+{% if not settings.GEOCAM_UTIL_LIVE_MODE %}
 <table cellpadding="5" cellspacing="0" width="100%">
   <tr>
-    <td><a href="{% url 'xgds_status_board_showSubsystemStatus' %}">Subsystem Status</a></td>
-    <td>Show status of xGDS telemetry recording and handling processes.
-    </td>
+    <td></td>
+    <td></td>
   </tr>
 </table>
+{% else %}
+{% endif %}
 {% endblock content %}
