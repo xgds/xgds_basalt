@@ -234,7 +234,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
             stopRecording(self.getVideoSource(), self.end_time)
             done = True
             for flight in self.group.basaltflight_set:
-                if flight.hasStart():
+                if flight.hasStarted():
                     if not flight.hasEnded():
                         done = False
                         break
