@@ -330,7 +330,15 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'marker_id',
                 'description',
                 'name']
-        
+    
+    @classmethod
+    def getFieldsForName(cls):
+        return ['region',
+                'year',
+                'sample_type',
+                'number',
+                'replicate']
+    
     def buildName(self):
         number = ("%03d" % (int(self.number),))
         if self.replicate: 
