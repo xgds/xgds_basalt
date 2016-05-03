@@ -204,8 +204,8 @@
         "pk": 3,
         "model": "xgds_sample.SampleType",
         "fields": {
-            "value": "C",
-            "display_name": "Chemistry"
+            "value": "O",
+            "display_name": "ORG"
         }
     },
     {
