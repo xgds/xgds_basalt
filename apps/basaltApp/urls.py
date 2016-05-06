@@ -26,5 +26,7 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^saveEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_save_ev'),
                url(r'^pextant/(?P<planId>[\d]+)$', views.callPextantAjax, {},
                    'pextant_ajax'),
+               url(r'^pextant/(?P<planId>[\d]+)/(?P<clear>[\d])$', views.callPextantAjax, {},
+                   'pextant_ajax_clear'),
                url(r'^storeFieldData$', views.storeFieldData, {}, 'storeFieldData')
            ]

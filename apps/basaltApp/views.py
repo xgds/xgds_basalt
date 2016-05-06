@@ -79,7 +79,7 @@ def addEVToPlanExecution(request, pe):
     return pe
 
 
-def callPextantAjax(request, planId):
+def callPextantAjax(request, planId, clear=0):
     """ Call Pextant over Ajax and either return the modified plan with success message,
     or return error message.
     """
@@ -89,14 +89,19 @@ def callPextantAjax(request, planId):
         plan = PLAN_MODEL.get().objects.get(pk=planId)
         plan = pextantHarness.clearSegmentGeometry(plan)
         response["plan"]= plan.jsonPlan
-        optimize = str(request.POST['optimize'])
-        resolution = float(request.POST['resolution'])
-        maxSlope = float(request.POST['slope'])
-        plan = pextantHarness.callPextant(request, plan, optimize, resolution, maxSlope)
-        response["plan"]= plan.jsonPlan
-        response["msg"]= "Sextant has calculated a new route."
-        response["status"] = True
-        status = 200
+        if clear:
+            response["msg"]= "Sextant route cleared."
+            response["status"] = True
+            status = 200
+        else:
+            optimize = str(request.POST['optimize'])
+            resolution = float(request.POST['resolution'])
+            maxSlope = float(request.POST['slope'])
+            plan = pextantHarness.callPextant(request, plan, optimize, resolution, maxSlope)
+            response["plan"]= plan.jsonPlan
+            response["msg"]= "Sextant has calculated a new route."
+            response["status"] = True
+            status = 200
     except Exception, e:
         response["msg"] = e.args[0]
         response["status"] = False
