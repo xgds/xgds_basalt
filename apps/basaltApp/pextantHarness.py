@@ -100,13 +100,13 @@ def callPextant(request, plan, optimize=None, desiredRes=0.5, maxSlope=15):
     sequence = plan.jsonPlan.sequence
     jsonSequence = json.dumps(sequence)
     try:
-        print 'about to call pathfinder'
+#         print 'about to call pathfinder'
         if not optimize:
             optimize = str(plan.jsonPlan.optimization)
         else:
             plan.jsonPlan.optimization = optimize
         result = pathFinder.completeSearchFromJSON(optimize, jsonSequence)
-        print 'actually came back from pathfinder'
+#         print 'actually came back from pathfinder'
         if 'NaN' not in result and 'Infinity' not in result:
             plan.jsonPlan.sequence = json.loads(result)
             plan.save()

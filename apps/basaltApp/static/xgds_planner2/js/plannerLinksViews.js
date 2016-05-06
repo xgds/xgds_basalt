@@ -65,5 +65,28 @@ app.views.PlanLinksView = Backbone.View.extend({
         	            }
         	        });
         });
+        this.$el.find('#clearPextantButton').click(function(event) {
+            event.preventDefault();
+            var theForm = $("#pextantForm");
+            var postData = theForm.serializeArray();
+            $('#pextantMessage').text('Clearing sextant route...');
+            $.ajax(
+        	        {
+        	            url: "/basaltApp/pextant/" + app.currentPlan.get('serverId') +'/1',
+        	            type: "POST",
+        	            data: postData,
+        	            dataType: 'json',
+        	            success: function(data)
+        	            {
+        	            	$('#pextantMessage').text(data.msg);
+        	            	app.updatePlan(data.plan);
+        	            },
+        	            error: function(data)
+        	            {
+        	            	$('#pextantMessage').text(data.responseJSON.msg);
+        	            	app.updatePlan(data.responseJSON.plan);
+        	            }
+        	        });
+        });
     }
 });

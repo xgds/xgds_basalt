@@ -11,7 +11,6 @@
 	You <strong>MUST</strong> choose an EV person and schedule the plan before you can call Sextant, use the Schedule tab.
 	Note that running Sextant can take a few minutes.
 	<br/>
-	{{ optimization }}
 	<form name='pextantForm' id="pextantForm" action="#" method="post">
 		<input type="hidden" name="planId" id="id_planId" value="{{planId}}"></input>
 		<table>
@@ -36,6 +35,7 @@
 		</tr>
 		</table>
 		<input class="mybutton small" id="pextantButton"  type="submit" value="Call Sextant">
+		<input class="mybutton small" id="clearPextantButton"  type="submit" value="Clear Sextant Path">
 	</form>
 	</p>
 	<div id="pextantMessage" style="color:red;"><br/></div>
