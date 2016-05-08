@@ -9,6 +9,8 @@ from geocamTrack.utils import getClosestPosition
 from xgds_planner2.utils import getFlight
 from basaltApp.models import BasaltInstrumentDataProduct, FtirSample, ScienceInstrument, BasaltTrack
 
+FTIR = "ftir"
+
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      timestamp, timezone, resource, user=None):
     instrumentData = portableDataFile.read()
@@ -58,19 +60,33 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
     instrumentData = spc.File(portableDataFile)
     # Take slice b/c data has trailing tab
     dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
-    instrument = ScienceInstrument.getInstrument("ftir")
+    instrument = ScienceInstrument.getInstrument(FTIR)
 
     #
     # Get flight and track info and find location of sample if available
     #
-    flight = getFlight(utcStamp, resource.vehicle)
-    if flight:
-        trackName = flight.name
-    else:
-        trackName = resource.name
-    track = BasaltTrack.getTrackByName(trackName)
-    sampleLocation = getClosestPosition(track=track, timestamp=utcStamp,
-                                        resource=resource)
+    flight = None
+    try:
+        flight = getFlight(utcStamp, resource.vehicle)
+        if flight:
+            trackName = flight.name
+        elif resource:
+            trackName = resource.name
+        else:
+            trackName = FTIR
+        track = BasaltTrack.getTrackByName(trackName)
+        if not track and trackName == FTIR:
+            track = BasaltTrack(name=FTIR)
+            track = BasaltTrack(name=FTIR,
+                                resource=resource,
+                                timezone=timezone)
+        sampleLocation = getClosestPosition(track=track, 
+                                            timestamp=utcStamp,
+                                            resource=resource)
+
+    except:
+        sampleLocation = None
+        
     
     dataProduct = BasaltInstrumentDataProduct(
         portable_data_file = portableDataFile,
@@ -85,7 +101,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         location = sampleLocation,
         flight = flight,
         resource = resource,
-        user=user
+        creator=user
     )
     dataProduct.save()
     for wn, rf in dataTable[1:]:  # Slice starting @ 1 because 1 line is header

@@ -372,10 +372,11 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     
     def toMapDict(self):
         result = xgds_sample_models.AbstractSample.toMapDict(self)
-        result['type'] = 'Sample'
-        result['flight'] = self.flight.name if self.flight else ''
-        result['replicate'] = self.replicate.display_name if self.replicate else ''
-        result['marker_id'] = self.marker_id if self.marker_id else ''
+        if result:
+            result['type'] = 'Sample'
+            result['flight'] = self.flight.name if self.flight else ''
+            result['replicate'] = self.replicate.display_name if self.replicate else ''
+            result['marker_id'] = self.marker_id if self.marker_id else ''
         return result
     
     def __unicode__(self):
