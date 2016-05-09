@@ -404,8 +404,13 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
     def toMapDict(self):
         result = AbstractInstrumentDataProduct.toMapDict(self)
         if self.flight:
-            result['flight'] = self.flight
-        result['ev_name'] = self.resource.vehicle.name
+            result['flight'] = self.flight.name
+        else:
+            result['flight'] = ''
+        if self.resource:
+            result['ev_name'] = self.resource.vehicle.name
+        else:
+            result['ev_name'] = ''
         return result
 
     def __unicode__(self):
