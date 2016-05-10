@@ -13,6 +13,35 @@ from basaltApp.models import FtirDataProduct, AsdDataProduct, PxrfDataProduct, F
 
 FTIR = "ftir"
 
+def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
+    #
+    # Get flight and track info and find location of sample if available
+    #
+    flight = None
+    try:
+        flight = getFlight(utcStamp, resource.vehicle)
+        if flight:
+            trackName = flight.name
+        elif resource:
+            trackName = resource.name
+        else:
+            trackName = defaultTrackName
+        track = BasaltTrack.getTrackByName(trackName)
+        if not track:
+            if trackName == defaultTrackName:
+                track = BasaltTrack(name=defaultTrackName)
+            else:
+                track = BasaltTrack(name=defaultTrackName,
+                                    resource=resource,
+                                    timezone=timezone)
+        sampleLocation = getClosestPosition(track=track, 
+                                            timestamp=utcStamp,
+                                            resource=resource)
+    except:
+        sampleLocation = None
+    return (flight, sampleLocation)
+
+
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      timestamp, timezone, resource, user=None):
     instrumentData = portableDataFile.read()
@@ -64,31 +93,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
     dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
     instrument = ScienceInstrument.getInstrument(FTIR)
 
-    #
-    # Get flight and track info and find location of sample if available
-    #
-    flight = None
-    try:
-        flight = getFlight(utcStamp, resource.vehicle)
-        if flight:
-            trackName = flight.name
-        elif resource:
-            trackName = resource.name
-        else:
-            trackName = FTIR
-        track = BasaltTrack.getTrackByName(trackName)
-        if not track and trackName == FTIR:
-            track = BasaltTrack(name=FTIR)
-            track = BasaltTrack(name=FTIR,
-                                resource=resource,
-                                timezone=timezone)
-        sampleLocation = getClosestPosition(track=track, 
-                                            timestamp=utcStamp,
-                                            resource=resource)
-
-    except:
-        sampleLocation = None
-        
+    (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
     
     dataProduct = FtirDataProduct(
         portable_data_file = portableDataFile,
@@ -113,21 +118,21 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
             reflectance = rf)
         sample.save()
 
-    myData = StringIO()
-    for c1,c2 in dataTable:
-        myData.write("%s - %s\r\n" % (c1,c2))
-    importSummary = """Import from %s
-Uploaded filename: %s
-Timestamp (UTC): %s
-Original Timezone: %s
-Tracking resource: %s\n
-INSTRUMENT DATA
-%s""" % (instrument.displayName,
-         portableDataFile.name,
-         utcStamp,
-         timezone,
-         resource,
-         myData.getvalue())
+#     myData = StringIO()
+#     for c1,c2 in dataTable:
+#         myData.write("%s - %s\r\n" % (c1,c2))
+#     importSummary = """Import from %s
+# Uploaded filename: %s
+# Timestamp (UTC): %s
+# Original Timezone: %s
+# Tracking resource: %s\n
+# INSTRUMENT DATA
+# %s""" % (instrument.displayName,
+#          portableDataFile.name,
+#          utcStamp,
+#          timezone,
+#          resource,
+#          myData.getvalue())
 #     return HttpResponse(reverse('search_map_single_object', importSummary, content_type="text/plain")
 
     return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
