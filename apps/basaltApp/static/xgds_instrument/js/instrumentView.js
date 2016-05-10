@@ -16,13 +16,74 @@
 
 var xgds_instrument = xgds_instrument || {};
 $.extend(xgds_instrument,{
-	setupInstrumentPlot: function(instrumentJson){
+	clearMessage: function(msg){
+        $('#instrument_message').html('<br/><br/>');
+    },
+    setMessage: function(msg){
+        $('#instrument_message').html(msg);
+    },
+    showValue: function(x, y){
+    	var str = this.labels[0] + ": "+ x + "<br/>" + this.labels[1] + ": " + y;
+		xgds_instrument.setMessage(str);
+    },
+	getData: function(dataProductJson){
 		if (this.plot != undefined){
 			this.plot.destroy();
 			this.plot = null;
 		}
+		this.setMessage('Loading data...');
+		$.ajax({
+            url: dataProductJson.json_data,
+            dataType: 'json',
+            success: $.proxy(function(data) {
+                if (_.isUndefined(data) || data.length === 0){
+                    this.setMessage("None found.");
+                } else {
+                	this.clearMessage();
+                    this.renderInstrumentPlot(dataProductJson, data);
+                }
+            }, this),
+            error: $.proxy(function(data){
+                this.setMessage("Search failed.");
+            }, this)
+          });
 		
 	},
-	renderInstrumentPlot: function(instrumentData){
+	renderInstrumentPlot: function(dataProductJson, instrumentData){
+		this.labels = app.options.searchModels[dataProductJson.instrumentName].plotLabels;
+		this.plot = $.plot("#plotDiv", [{ data: instrumentData,
+		                                  color: 'blue'}],
+		                                { 
+		                                series: {
+		                    				lines: { show: true },
+		                    				points: { show: false }
+		                    			},
+		                    			clickable: true,
+		                    			label: 'poop',
+		                    	        grid: {
+		                    	        	backgroundColor: '#FFFFFF',
+		                    	            hoverable: true,
+		                    	            clickable: true,
+		                    	            autoHighlight: true
+		                    	        },
+		                    	        shadowSize: 0,
+		                    	        zoom: {
+		                    	            interactive: true
+		                    	        },
+		                    	        pan: {
+		                    	            interactive: true
+		                    	        }
+		                    	        });
+		
+		
+		$("#plotDiv").bind("plothover", function (event, pos, item) {
+			if (item) {
+				var x = item.datapoint[0],
+					y = item.datapoint[1];
+				xgds_instrument.plot.unhighlight();
+				xgds_instrument.plot.highlight(item.series, item.datapoint);
+				xgds_instrument.showValue(x, y);
+			}
+		});
 	}
 });
