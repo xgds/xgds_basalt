@@ -1,5 +1,7 @@
 import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
+
 from cStringIO import StringIO
 import pytz
 
@@ -7,7 +9,7 @@ import spc  # library for reading SPC format spectra
 from geocamUtil.TimeUtil import timeZoneToUtc
 from geocamTrack.utils import getClosestPosition
 from xgds_planner2.utils import getFlight
-from basaltApp.models import BasaltInstrumentDataProduct, FtirSample, ScienceInstrument, BasaltTrack
+from basaltApp.models import FtirDataProduct, AsdDataProduct, PxrfDataProduct, FtirSample, ScienceInstrument, BasaltTrack
 
 FTIR = "ftir"
 
@@ -88,7 +90,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         sampleLocation = None
         
     
-    dataProduct = BasaltInstrumentDataProduct(
+    dataProduct = FtirDataProduct(
         portable_data_file = portableDataFile,
         portable_file_format_name = "SPC",
         portable_mime_type = "application/octet-stream",
@@ -126,5 +128,8 @@ INSTRUMENT DATA
          timezone,
          resource,
          myData.getvalue())
+#     return HttpResponse(reverse('search_map_single_object', importSummary, content_type="text/plain")
 
-    return HttpResponse(importSummary, content_type="text/plain")
+    return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
+                                                                            'modelName':'FTIR'}))
+
