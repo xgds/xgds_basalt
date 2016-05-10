@@ -424,9 +424,11 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
     def samples(self):
         samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
         return samples
+    
 
 class PxrfDataProduct(BasaltInstrumentDataProduct):
     pass
+
 
 class FtirSample(models.Model):
     dataProduct = models.ForeignKey(FtirDataProduct)

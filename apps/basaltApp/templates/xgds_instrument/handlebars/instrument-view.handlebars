@@ -1,3 +1,11 @@
+  <style type="text/css">
+    .flotPlot {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 10px;
+    }
+  </style>
+
 <div> <strong>{{instrumentName}}</strong> <!--<a id="edit_instrument_button" href="/xgds_instrument/edit/{{pk}}" class="mybutton small" target="_blank">Edit</a> --></div>
 	<table>
 		<tr>
@@ -43,6 +51,7 @@
 		</tr>
 		{{/if}}
 		<div class="plot-container">
-			<div id="plotDiv" class="demo-placeholder"></div>
+			<span class="alert" id="instrument_message"><br/><br/></span>
+			<div id="plotDiv" class="flotPlot"></div>
 		</div>
 	</table>
