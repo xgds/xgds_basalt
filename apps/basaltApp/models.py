@@ -389,17 +389,7 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
 
     @property
     def samples(self):
-        if self.instrument.shortName == "ftir":
-            sampleObjList = self.ftirsample_set.all()
-            samples = [(s.wavenumber, s.reflectance) for s in sampleObjList]
-        elif self.instrument.shortName == "asd":
-            sampleObjList = self.asdsample_set.all()
-            samples = [(s.wavelength, s.absorbance) for s in sampleObjList]
-        else:
-            samples = []
-
-        return samples
-            
+        return []
 
     def toMapDict(self):
         result = AbstractInstrumentDataProduct.toMapDict(self)
@@ -417,10 +407,29 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
         return "%s: %s, %s, %s, %s (portable), %s (mfg)" % (self.flight, self.resource, 
                                        self.acquisition_time, self.instrument.shortName,
                                        self.portable_mime_type, self.manufacturer_mime_type)
+    
+    class Meta:
+        abstract = True
 
+
+class FtirDataProduct(BasaltInstrumentDataProduct):
+    @property
+    def samples(self):
+        samples = [(s.wavenumber, s.reflectance) for s in self.ftirsample_set.all()]
+        return samples
+
+
+class AsdDataProduct(BasaltInstrumentDataProduct):
+    @property
+    def samples(self):
+        samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
+        return samples
+
+class PxrfDataProduct(BasaltInstrumentDataProduct):
+    pass
 
 class FtirSample(models.Model):
-    dataProduct = models.ForeignKey(BasaltInstrumentDataProduct)
+    dataProduct = models.ForeignKey(FtirDataProduct)
     wavenumber = models.FloatField(db_index=True)
     reflectance = models.FloatField(db_index=True)
 
@@ -433,7 +442,7 @@ class FtirSample(models.Model):
 
 
 class AsdSample(models.Model):
-    dataProduct = models.ForeignKey(BasaltInstrumentDataProduct)
+    dataProduct = models.ForeignKey(AsdDataProduct)
     wavelength = models.FloatField(db_index=True)
     absorbance = models.FloatField(db_index=True)
 
