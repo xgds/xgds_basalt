@@ -3,11 +3,11 @@
 <div class="sitemenu-nav-secondary">
 	<nav class="subnav">
 	<ul>
-		<li class="nav-item {% if modelName == 'ImageSet' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'ImageSet'%}">{{settings.XGDS_IMAGE_IMAGE_SET_MONIKER}}</a></li>
+		<li class="nav-item {% if modelName == 'Photo' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'Photo'%}">{{settings.XGDS_IMAGE_IMAGE_SET_MONIKER}}</a></li>
 		<li class="nav-item {% if modelName == 'Sample' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'Sample'%}">Sample</a></li>
 		<li class="nav-item {% if modelName == 'ASD' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'ASD'%}">ASD</a></li>
 		<li class="nav-item {% if modelName == 'FTIR' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'FTIR'%}">FTIR</a></li>
-		<li class="nav-item {% if modelName == 'pXRF' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'pXRF'%}">pXRF</a></li>
+		<!-- <li class="nav-item {% if modelName == 'pXRF' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'pXRF'%}">pXRF</a></li> -->
   	</ul>
   	</nav>
 </div>
