@@ -99,7 +99,8 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     
     def toMapDict(self):
         result = geocamTrackModels.AbstractTrack.toMapDict(self)
-        result['type'] = 'Track'
+        if result:
+            result['type'] = settings.GEOCAM_TRACK_TRACK_MONIKIER
         return result
     
     def __unicode__(self):
@@ -256,7 +257,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
                                  "type": 'MapLink', 
                                  }
                          })
-        children.append({"title": "Images", 
+        children.append({"title": "Photos", 
                          "selected": False, 
                          "tooltip": "Images for " + self.name, 
                          "key": self.uuid + "_images", 
@@ -271,6 +272,26 @@ class BasaltFlight(plannerModels.AbstractFlight):
                          "tooltip": "Samples for " + self.name, 
                          "key": self.uuid + "_samples", 
                          "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_SAMPLE_SAMPLE_MODEL',
+                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
+                                 "sseUrl": "", 
+                                 "type": 'MapLink', 
+                                 }
+                         })
+        children.append({"title": "ASD", 
+                         "selected": False, 
+                         "tooltip": "ASD readings for " + self.name, 
+                         "key": self.uuid + "_asd", 
+                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.AsdDataProduct',
+                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
+                                 "sseUrl": "", 
+                                 "type": 'MapLink', 
+                                 }
+                         })
+        children.append({"title": "pXRF", 
+                         "selected": False, 
+                         "tooltip": "pXRF readings for " + self.name, 
+                         "key": self.uuid + "_pxrf", 
+                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.PxrfDataProduct',
                                                                                          'filter': 'flight__pk:'+str(self.pk)}),
                                  "sseUrl": "", 
                                  "type": 'MapLink', 
@@ -519,10 +540,10 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def finish_initialization(self, request):
-	vehicle = None
-	if self.resource:
-	    vehicle = self.resource.vehicle
-        self.flight = getFlight(self.acquisition_time, vehicle)
+        vehicle = None
+        if self.resource:
+            vehicle = self.resource.vehicle
+            self.flight = getFlight(self.acquisition_time, vehicle)
         
     def toMapDict(self):
         """
