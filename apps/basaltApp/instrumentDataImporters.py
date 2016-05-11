@@ -84,6 +84,8 @@ INSTRUMENT DATA
          resource,
          instrumentData)
 
+    #TODO need to get raw files and write this importer
+
     return HttpResponse(importSummary, content_type="text/plain")
 
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
@@ -117,23 +119,6 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
             wavenumber = wn,
             reflectance = rf)
         sample.save()
-
-#     myData = StringIO()
-#     for c1,c2 in dataTable:
-#         myData.write("%s - %s\r\n" % (c1,c2))
-#     importSummary = """Import from %s
-# Uploaded filename: %s
-# Timestamp (UTC): %s
-# Original Timezone: %s
-# Tracking resource: %s\n
-# INSTRUMENT DATA
-# %s""" % (instrument.displayName,
-#          portableDataFile.name,
-#          utcStamp,
-#          timezone,
-#          resource,
-#          myData.getvalue())
-#     return HttpResponse(reverse('search_map_single_object', importSummary, content_type="text/plain")
 
     return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
                                                                             'modelName':'FTIR'}))
