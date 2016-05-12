@@ -145,6 +145,15 @@ class EV(models.Model):
 
 class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
     videoEpisode = models.OneToOneField(settings.XGDS_VIDEO_EPISODE_MODEL, null=True, blank=True)
+    
+    @property
+    def view_url(self):
+        return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
+    
+    @property
+    def flights(self):
+        return self.basaltflight_set.all()
+
 
 
 class BasaltFlight(plannerModels.AbstractFlight):
@@ -157,6 +166,10 @@ class BasaltFlight(plannerModels.AbstractFlight):
     track = models.OneToOneField(BasaltTrack, null=True, blank=True)
     
     videoSource = models.ForeignKey(settings.XGDS_VIDEO_SOURCE_MODEL, null=True, blank=True)
+    
+    @property
+    def view_url(self):
+        return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
     
     def getVideoSource(self):
         if self.videoSource:
@@ -287,16 +300,26 @@ class BasaltFlight(plannerModels.AbstractFlight):
                                  "type": 'MapLink', 
                                  }
                          })
-        children.append({"title": "pXRF", 
+        children.append({"title": "FTIR", 
                          "selected": False, 
-                         "tooltip": "pXRF readings for " + self.name, 
-                         "key": self.uuid + "_pxrf", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.PxrfDataProduct',
+                         "tooltip": "FTIR readings for " + self.name, 
+                         "key": self.uuid + "_ftir", 
+                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.FtirDataProduct',
                                                                                          'filter': 'flight__pk:'+str(self.pk)}),
                                  "sseUrl": "", 
                                  "type": 'MapLink', 
                                  }
                          })
+#         children.append({"title": "pXRF", 
+#                          "selected": False, 
+#                          "tooltip": "pXRF readings for " + self.name, 
+#                          "key": self.uuid + "_pxrf", 
+#                          "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.PxrfDataProduct',
+#                                                                                          'filter': 'flight__pk:'+str(self.pk)}),
+#                                  "sseUrl": "", 
+#                                  "type": 'MapLink', 
+#                                  }
+#                          })
         return children
 
 
