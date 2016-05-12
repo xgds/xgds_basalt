@@ -564,7 +564,9 @@
            	"south": 0,
            	"axes": "ENU",
            	"north": "grid",
-           	"timezone": "America/Boise"
+           	"timezone": "America/Boise",
+           	"projCode": "EPSG:32612",
+           	"projString": "+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     {
@@ -580,7 +582,9 @@
            	"south": 0,
            	"axes": "ENU",
            	"north": "grid",
-           	"timezone": "America/Boise"
+           	"timezone": "America/Boise",
+           	"projCode": "EPSG:32612",
+           	"projString": "+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     {
@@ -596,7 +600,9 @@
            	"south": 0,
            	"axes": "ENU",
            	"north": "grid",
-           	"timezone": "America/Boise"
+           	"timezone": "America/Boise",
+           	"projCode": "EPSG:32612",
+           	"projString": "+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     {
@@ -612,7 +618,9 @@
 	          "south": 0,
 	          "axes": "ENU",
 	          "north": "grid",
-	          "timezone": "US/Hawaii"
+	          "timezone": "US/Hawaii",
+	          "projCode": "EPSG:32605",
+           	  "projString": "+proj=utm +zone=5 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     {
@@ -628,7 +636,9 @@
 	           "south": 0,
 	           "axes": "NED",
 	           "north": "grid",
-	           "timezone": "America/Los_Angeles"
+	           "timezone": "America/Los_Angeles",
+	           "projCode": "EPSG:32605",
+           	   "projString": "+proj=utm +zone=10 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     {
