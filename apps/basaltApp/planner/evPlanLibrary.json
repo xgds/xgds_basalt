@@ -12,14 +12,14 @@
         
         {
             "type": "Site",
-            "id": "COM",
-            "name": "Craters of the Moon",
+            "id": "CHY",
+            "name": "COTM Highway",
             "notes": "Idaho",
             "alternateCrs": {
                 "type": "roversw",
                 "properties": {
-                    "originNorthing": 4815290.06,
-                    "originEasting": 292808.83,
+                    "originNorthing": 4815396,
+                    "originEasting": 291997,
                     "projection": "utm",
                     "zone": 12,
                     "zoneLetter": "T",
@@ -32,8 +32,58 @@
                     "timezone": "America/Boise"
                 }
             },
-            "bbox": [43.455575, -113.577912,
-            		 43.474182, -113.547096]
+            "bbox": [43.459274, -113.576569,
+            		 43.4655038, -113.56584]
+        },
+        {
+            "type": "Site",
+            "id": "CNC",
+            "name": "COTM North Crater",
+            "notes": "Idaho",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 4815300,
+                    "originEasting": 294228,
+                    "projection": "utm",
+                    "zone": 12,
+                    "zoneLetter": "T",
+                    "frame": "CratersSiteFrame",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y",
+                    "coordinateNotes": "X=Northing Y=Easting",
+                    "coordinateMapping": "lat, lon",
+                    "timezone": "America/Boise"
+                }
+            },
+            "bbox": [43.45600, -113.55314,
+            		 43.46812, -113.53327]
+        },
+        {
+            "type": "Site",
+            "id": "CBC",
+            "name": "COTM Big Craters",
+            "notes": "Idaho",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 4813103.46,
+                    "originEasting": 292519.88,
+                    "projection": "utm",
+                    "zone": 12,
+                    "zoneLetter": "T",
+                    "frame": "CratersSiteFrame",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y",
+                    "coordinateNotes": "X=Northing Y=Easting",
+                    "coordinateMapping": "lat, lon",
+                    "timezone": "America/Boise"
+                }
+            },
+            "bbox": [43.43735549, -113.5698406,
+            		 43.4474511, -113.55675146]
         },
         {
             "type": "Site",

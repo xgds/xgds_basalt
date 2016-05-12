@@ -555,10 +555,42 @@
         "pk": 1,
         "model": "geocamUtil.SiteFrame",
         "fields": {
-            "name": "Craters of the Moon",
-            "displayName": "COTM",
-           	"east0": 292808.83,
-           	"north0": 4815290.06,
+            "name": "COTM Highway",
+            "displayName": "COTM Highway",
+           	"east0": 291997,
+           	"north0": 4815396,
+           	"zone": "12T",
+           	"zoneNumber": 12,
+           	"south": 0,
+           	"axes": "ENU",
+           	"north": "grid",
+           	"timezone": "America/Boise"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+            "name": "COTM North Crater",
+            "displayName": "COTM North Crater",
+           	"east0": 294228,
+           	"north0": 4815300,
+           	"zone": "12T",
+           	"zoneNumber": 12,
+           	"south": 0,
+           	"axes": "ENU",
+           	"north": "grid",
+           	"timezone": "America/Boise"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+            "name": "COTM Big Craters",
+            "displayName": "COTM Big Craters",
+           	"east0": 292519.88,
+           	"north0": 4813103.46,
            	"zone": "12T",
            	"zoneNumber": 12,
            	"south": 0,
