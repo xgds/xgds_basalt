@@ -72,10 +72,15 @@ table.planIndex td.exportFormat a {
     {% endif %}
     <td class="exportFormat">
       {% for exporter in plan.getExporters %}
+      {% if exporter.label == 'kml' or exporter.label == 'pml' or exporter.label == 'xpJson'%}
         <a href="{{ exporter.url }}" style="text-decoration:none">
           {{ exporter.label }} 
         </a>
+      {% endif %}
       {% endfor %}
+      <a href="{% url 'plan_bearing_distance' plan.id %}" style="text-decoration:none">
+      	Summary
+      </a>
     </td>
   </tr>
 {% endfor %}
