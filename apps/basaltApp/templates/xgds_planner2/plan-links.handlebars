@@ -1,6 +1,7 @@
 <div class="plan-link" id="links-plan">
   <div class="tool-entry">
-      {{#each planLinks}}
+    <a href="/xgds_planner2/plan/bearingDistance/{{planId}}" target="_blank">Summary</a><br/>
+	{{#each planLinks}}
       	<a href="{{this}}" target="_new">{{@key}}</a><br/>
 	{{/each}}
 	<p>
