@@ -20,6 +20,7 @@ from django.shortcuts import render_to_response, redirect, render
 from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from forms import EVForm
 from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight
@@ -29,6 +30,7 @@ from xgds_core.models import Constant
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
+from xgds_planner2.views import getActiveFlights
 
 
 def editEV(request, pk=None):
@@ -176,3 +178,11 @@ def getDelaySeconds(flightName):
     except:
         delayConstant = Constant.objects.get(name="delay")
         return int(delayConstant.value)
+
+def getLiveIndex(request):
+    activeFlights = getActiveFlights()
+    if activeFlights:
+        firstFlight =activeFlights.first().flight
+        return HttpResponseRedirect(reverse('xgds_video_recorded', kwargs={'flightName':firstFlight.group.name})) 
+    else:
+        return HttpResponseRedirect(reverse('index')) 
