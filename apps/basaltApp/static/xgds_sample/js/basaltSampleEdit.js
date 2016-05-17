@@ -16,8 +16,6 @@
 
 var xgds_sample = xgds_sample || {};
 $.extend(xgds_sample,{
-
-
 	showReplicateOptions: function() {
 		/*
 		 * Triplicates Legend:
@@ -54,8 +52,52 @@ $.extend(xgds_sample,{
 		$('#id_altitude').parent().parent().hide();
 		$('#id_flight').parent().parent().hide();
 		this.setupCollectorInput();
-		$("#id_sample_type").change(function() {
-			showReplicateOptions();
+		this.showReplicateOptions();
+		// hook up the show replicate options to type change.
+		var _this = this;
+		$('#id_sample_type').change(_this.showReplicateOptions);
+	},
+	toggleAdvancedInput: function() {
+		$('#id_resource').parent().parent().toggle();
+		$('#id_latitude').parent().parent().toggle();
+		$('#id_longitude').parent().parent().toggle();
+		$('#id_altitude').parent().parent().toggle();
+		$('#id_flight').parent().parent().toggle();
+		if ($('#id_resource').is(":visible")) {
+			$('.toggleInputFields').html('Close out-of-sim fields');	
+		} else {
+			$('.toggleInputFields').html('Open out-of-sim fields');	
+		}
+	},
+	setupCollectorInput: function() {
+		// typeahead autocomplete for input fields
+		var substringMatcher = function(strs) {
+			return function findMatches(q, cb) {
+				var matches, substringRegex;
+				// an array that will be populated with substring matches
+				matches = [];
+				// regex used to determine if a string contains the substring `q`
+				substrRegex = new RegExp(q, 'i');
+				// iterate through the pool of strings and for any string that
+				// contains the substring `q`, add it to the `matches` array
+				$.each(strs, function(i, str) {
+					if (substrRegex.test(str)) {
+						matches.push(str);
+					}
+				});
+
+				cb(matches);
+			};
+		};
+
+		$('#id_collector').typeahead({
+			hint: true,
+			highlight: true,
+			minLength: 1
+		},
+		{
+			name: 'collector',
+			source: substringMatcher(collectors)
 		});
 	}
 });
