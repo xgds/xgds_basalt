@@ -178,43 +178,44 @@ class BasaltFlight(plannerModels.AbstractFlight):
         return self.videoSource
         
     def startFlightExtras(self, request):
-        delayConstant = Constant.objects.get(name="delay")
+        
+        # this is for archival purposes; make sure remoteDelay is set for the other server's delay.
+        delayConstant = Constant.objects.get(name="remoteDelay")
         self.delaySeconds = int(delayConstant.value)
         resource=BasaltResource.objects.get(vehicle=self.vehicle)
         
-        #Create the track if it does not exist
-        if not self.track:
-            try:
-                track = BasaltTrack.objects.get(name=self.name)
-            except ObjectDoesNotExist:
-                timezone = settings.TIME_ZONE
-                if self.plans:
-                    timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
-                    self.timezone = timezone
-                track = BasaltTrack(name=self.name,
-                                    resource=resource,
-                                    timezone=timezone,
-                                    iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=resource.name),
-                                    lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
-#                                     lineStyle=DEFAULT_LINE_STYLE,
-                                    dataType=DataType.objects.get(name="RawGPSLocation"))
-                track.save()
-                self.track = track
-                self.save()
+        if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
+            #Create the track if it does not exist
+            if not self.track:
+                try:
+                    track = BasaltTrack.objects.get(name=self.name)
+                except ObjectDoesNotExist:
+                    timezone = settings.TIME_ZONE
+                    if self.plans:
+                        timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
+                        self.timezone = timezone
+                    track = BasaltTrack(name=self.name,
+                                        resource=resource,
+                                        timezone=timezone,
+                                        iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=resource.name),
+                                        lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
+    #                                     lineStyle=DEFAULT_LINE_STYLE,
+                                        dataType=DataType.objects.get(name="RawGPSLocation"))
+                    track.save()
+                    self.track = track
+                    self.save()
         
-        #start the eva track listener
-#         if False:
-        if settings.PYRAPTORD_SERVICE is True:
-            pyraptord = getPyraptordClient()
-            serviceName = self.vehicle.name + "TrackListener"
-            ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
-            scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
-            command = "%s -o %s -p %d -n %s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], self.name)
-            stopPyraptordServiceIfRunning(pyraptord, serviceName)
-            pyraptord.updateServiceConfig(serviceName,
-                                          {'command': command})
-            pyraptord.startService(serviceName)
-        
+            if settings.PYRAPTORD_SERVICE is True:
+                pyraptord = getPyraptordClient()
+                serviceName = self.vehicle.name + "TrackListener"
+                ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
+                scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
+                command = "%s -o %s -p %d -n %s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], self.name)
+                stopPyraptordServiceIfRunning(pyraptord, serviceName)
+                pyraptord.updateServiceConfig(serviceName,
+                                              {'command': command})
+                pyraptord.startService(serviceName)
+
         # start the video
         if settings.XGDS_VIDEO_ON:
             flightGroup = self.group
@@ -525,7 +526,8 @@ class BasaltNote(AbstractLocatedNote):
     
     def calculateDelayedEventTime(self, event_time):
         if self.flight:
-            return event_time - datetime.timedelta(seconds=self.flight.delaySeconds)
+            delayConstant = Constant.objects.get(name="delay")
+            return event_time - datetime.timedelta(seconds=int(delayConstant.value)) #self.flight.delaySeconds)
             
         return self.event_time
 

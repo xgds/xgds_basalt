@@ -324,6 +324,17 @@
     	}
     },
     {
+    	"pk": 1,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"remoteDelay",
+    		"units":"seconds",
+    		"notes":"Remote system system-wide time delay",
+    		"dataType":"int",
+    		"value":"300"
+    	}
+    },
+    {
     	"pk": 11,
     	"model": "xgds_core.Constant",
     	"fields": {
