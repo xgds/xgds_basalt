@@ -53,7 +53,7 @@ import re
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
 VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)
-
+VIDEO_EPISODE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_EPISODE_MODEL)
 
 class BasaltResource(geocamTrackModels.AbstractResource):
     resourceId = models.IntegerField(null=True, blank=True) # analagous to beacon id, identifier for track inputs
@@ -144,8 +144,16 @@ class EV(models.Model):
         return self.user.first_name + ' ' + self.user.last_name
 
 class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
-    videoEpisode = models.OneToOneField(settings.XGDS_VIDEO_EPISODE_MODEL, null=True, blank=True)
     
+    @property
+    def videoEpisode(self):
+        # because we do not replicate the video episode table we look it up instead of having a foreign key
+        try:
+            foundEpisode = VIDEO_EPISODE_MODEL.get().get(shortName=self.name)
+            return foundEpisode
+        except:
+            return None
+
     @property
     def view_url(self):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
@@ -179,9 +187,6 @@ class BasaltFlight(plannerModels.AbstractFlight):
         
     def startFlightExtras(self, request):
         
-        # this is for archival purposes; make sure remoteDelay is set for the other server's delay.
-        delayConstant = Constant.objects.get(name="remoteDelay")
-        self.delaySeconds = int(delayConstant.value)
         resource=BasaltResource.objects.get(vehicle=self.vehicle)
         
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
@@ -203,6 +208,10 @@ class BasaltFlight(plannerModels.AbstractFlight):
                                         dataType=DataType.objects.get(name="RawGPSLocation"))
                     track.save()
                     self.track = track
+                    
+                    # this is for archival purposes; make sure remoteDelay is set for the other server's delay.
+                    delayConstant = Constant.objects.get(name="remoteDelay")
+                    self.delaySeconds = int(delayConstant.value)
                     self.save()
         
             if settings.PYRAPTORD_SERVICE is True:
@@ -222,8 +231,6 @@ class BasaltFlight(plannerModels.AbstractFlight):
             if not flightGroup.videoEpisode:
                 videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
                 videoEpisode.save()
-                flightGroup.videoEpisode = videoEpisode
-                flightGroup.save()
             else:
                 if flightGroup.videoEpisode.endTime:
                     flightGroup.videoEpisode.endTime = None
