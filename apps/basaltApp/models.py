@@ -14,6 +14,7 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 import pytz
+import traceback
 import os
 import datetime
 from django.db import models
@@ -149,9 +150,10 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
     def videoEpisode(self):
         # because we do not replicate the video episode table we look it up instead of having a foreign key
         try:
-            foundEpisode = VIDEO_EPISODE_MODEL.get().get(shortName=self.name)
+            foundEpisode = VIDEO_EPISODE_MODEL.get().objects.get(shortName=self.name)
             return foundEpisode
         except:
+            traceback.print_exc()
             return None
 
     @property
@@ -174,6 +176,18 @@ class BasaltFlight(plannerModels.AbstractFlight):
     track = models.OneToOneField(BasaltTrack, null=True, blank=True)
     
     videoSource = models.ForeignKey(settings.XGDS_VIDEO_SOURCE_MODEL, null=True, blank=True)
+
+    @property
+    def thumbnail_time_url(self, event_time):
+        return reverse('videoStillThumb', kwargs={'flightName':self.name, 'time':event_time})
+
+    @property
+    def thumbnail_url(self):
+        return reverse('videoStillThumb', kwargs={'flightName':self.name, 'time':0})
+
+    @property
+    def view_time_url(self, event_time):
+        return reverse('xgds_video_recorded_time', kwargs={'flightName':self.name, 'time':event_time})
     
     @property
     def view_url(self):
@@ -595,3 +609,14 @@ class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
     """
     # set foreign key fields from parent model to point to correct types
     imageSet = models.ForeignKey(BasaltImageSet, null=True, related_name="images")
+
+
+class BasaltStillFrame(AbstractStillFrame):
+    flight = models.ForeignKey(BasaltFlight, blank=True)
+
+    @property
+    def videoUrl(self):
+        return '' #TODO implement
+
+    def __unicode__(self):
+        return "%s - %s" % (self.flight.name, self.name)
