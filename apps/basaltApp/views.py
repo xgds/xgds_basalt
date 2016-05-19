@@ -186,3 +186,26 @@ def getLiveIndex(request):
         return HttpResponseRedirect(reverse('xgds_video_recorded', kwargs={'flightName':firstFlight.group.name})) 
     else:
         return HttpResponseRedirect(reverse('index')) 
+
+def getNoteExtras(episodes, source, request):
+    result = {'source':source}
+    if episodes:
+        episode_names = []
+        for e in episodes:
+            episode_names.append(e.shortName)
+        groups = BasaltGroupFlight.objects.filter(name__in=episode_names)
+        if groups:
+            # this assumes only one group
+            flights = BasaltFlight.objects.filter(group=groups[0], vehicle__name=source.name)
+            if flights:
+                flight = flights[0]
+                extras = {}
+#                 extras['flight_uuid'] = flight.uuid
+#                 extras['flightName'] = flight.name
+                extras['flight_id'] = flight.id
+                result['extras'] = extras
+                
+                result['app_label'] = 'basaltApp'
+                result['model_type'] = 'BasaltFlight'
+                result['object_id'] = flight.id
+    return result

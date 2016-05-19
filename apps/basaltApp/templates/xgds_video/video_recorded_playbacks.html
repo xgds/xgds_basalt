@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% load nav %}
+{% block siteSection %}Video{% endblock %}
+    {% block nav %}
+    {% nav "xgds_video_flights" %}
+    {{ block.super }}
+    {% endblock %}
+
+    {% block sitemenu-content-secondary %}
+   		{% include "xgds_video/video_subnav.html" %}
+    {% endblock %}
+
+ {% block cssExtras %}
+ {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ EXTERNAL_URL }}jquery-ui/themes/base/jquery-ui.min.css" ></link>
+    {% include "xgds_notes2/NoteCSS.html" %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_video/css/xgds_video.css"></link>
+ {% endblock cssExtras %}
+
+{% block scripts %}
+{{block.super}}
+	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jquery-ui/jquery-ui.min.js"></script>
+	{% include "xgds_notes2/NoteJS.html" %}
+
+	{% include "xgds_video/VideoJS.html" with INCLUDE_NOTE_INPUT=INCLUDE_NOTE_INPUT JWPLAYER_KEY=settings.JWPLAYER_KEY STATIC_URL=STATIC_URL %}
+	{% block myscripts %}
+	{% if SSE %}
+	<script type="text/javascript" src='{{STATIC_URL}}xgds_notes2/js/liveNotesTable.js'></script>
+	{% else %}
+	<script type="text/javascript" src='{{STATIC_URL}}xgds_notes2/js/recordedNotesTable.js'></script>
+	{% endif %}
+	
+	<script type="text/javascript">
+        var hasSliderTimeLabel = true;
+        var hasMasterSlider = true;
+    </script>
+    {% endblock myscripts %}
+{% endblock %}
+ 
+{% block contents %}
+	{% block errorMessages %}
+	{% if messages %}
+	    <ul class="messages" id="errorMessage" style="color:red;">
+	    {% for message in messages %}
+	        <li>{% if message.tags %} {{ message.tags }}: {% endif %}  {{ message }}</li>
+	    {% endfor %}
+	    </ul>
+	{% endif %}
+	{% endblock errorMessages %}
+
+    {% if segmentsJson %}
+    {% block topStuff %}
+    	<div id="topStuff" >
+    		<div id="controllers" > 
+    			<br/>
+    			<div class="controller_div">
+	          	<a class="btn btn-info" id="playbuttonLink" href="#" onclick="playButtonCallback()">
+	              <i id="playbutton" class="icon-play"></i>
+	              </a>
+	            <a class="btn btn-info" id="pausebuttonLink" href="#" onclick="pauseButtonCallback()">
+	              <i id="pausebutton" class="icon-pause active"></i>
+	              </a>
+	             </div>
+	          </div>
+	    	<div id="infoTable" >
+	    	<table>
+	    		{% if episode %}
+		   			<tr>
+		   				<td> <b> {{ settings.XGDS_PLANNER2_FLIGHT_MONIKER }}: </b> </td>
+		   				<td> {{ episode.shortName }} </td>
+		   			</tr>
+	   			{% endif %}
+	   			<tr>
+	   				<td>Local Time: </td>
+	   				<td> <span id="sliderTimeLabel"></span></td>
+	   			</tr>
+	   		</table>
+	   		</div>
+	   		<div id="seekTimeBox" >
+				<label for="seekTime">Jump to:</label>
+	   			<input  id="seekTime" type="text" name="text-input" placeholder="HH:MM:SS" class="stylish"/>
+	   			<button type="submit" class="mybutton small" id="seekButton" onclick=seekCallBack()> Go </button>
+	   		</div>
+   		</div>
+
+ 		<fieldset id="videoFieldset">
+ 			  <div id="ribbon"></div>
+		 	  <div id="masterSlider" class="masterSlider"></div>
+ 		</fieldset>
+ 		{% endblock topStuff %}
+
+		{% block packery %}
+        <div id="container"> 
+        
+        {% block videoSources %}
+        {% for source in sources %}
+			<div class="item {% if sources|length > 1 %}w2{% endif %} lockAspect" id="item{{ forloop.counter }}" style="background-color:{{ source.displayColor }};">
+	            <div class="buttons">
+	                 <div class="toprow-left"><b>{{ source.name }}</b></div>
+	                 <a class="mybutton toprow-right small" href="{% url 'xgds_video_recorded' flightName source.shortName %}" target="{% if sources|length > 1 %}{{flightName}}_{{source.shortName}}{% else %}_blank{% endif %}" style="width:130px">New Window</a>
+                     <a class="mybutton toprow-right small" href="#" onClick="showStillViewer('{{flightName}}', '{{source.shortName}}', getUrlFormatPlayerTime('{{source.shortName}}'));">Still</a>
+                     {% with feed=source.feed_set.all.0.shortName %}
+	                 {% if feed %}
+	                     <a class="mybutton" id=toprow href="{% url 'xgds_video_live' feed %}">Live</a>
+	                 {% endif %}
+	                 {% endwith %}
+	            </div>
+				<section id="{{source.shortName}}_noteInput">
+             		{% include "xgds_video/video_notes.html" with data=source.form source=source.shortName STATIC_URL=STATIC_URL %}
+             	</section>
+             	<!--embed the video-->
+             	<section>
+              		<div id="player_container" class="row"> <!-- float-left">  -->
+             			<div id="{{ source.shortName }}" class="eleven columns"></div>
+             		</div> <!--  player-container -->
+             		<div id="{{ source.shortName }}Label" style="float:left;text-align:left;font-family:arial,verdana,helvetica"> </div>
+             	</section>
+             	<section>
+             		<div class="float-left">
+                 	Local Time: <span id="testSiteTime{{ source.shortName }}">0</span>
+             		</div>
+             	</section>
+            </div><!--  item -->
+        {% endfor %}
+        {% endblock videoSources %}
+
+	{% block otherPackery %}
+        <div class="item {% if sources|length > 1 %}w2{% endif %} freeAspect" id="notesDiv" style="background-color:#F9FADE;">
+        <div id="messageDiv">
+                </div>
+                <table id="notesTable" class="display">
+                </table>
+        </div>
+        {% endblock otherPackery %}
+        
+        </div> <!--  js packery container -->
+        {% endblock packery %}
+
+    {% endif %}
+{% endblock contents %}
+
+{% block jsInit %}
+{% block notesSetup %}
+{% if INCLUDE_NOTE_INPUT %}
+{% include "xgds_video/init_notes.js" %}
+{% endif %}
+{% endblock notesSetup %}
+
+
+{% block setupIndexUrl %}
+var indexFileUrl = null;
+
+{% if episode %}
+    indexFileUrl = "{% url 'xgds_video_index_file' 'flightName' 'sourceShortName' 'segmentIndex' %}";
+{% endif %}
+{% endblock setupIndexUrl %}
+
+{% block initSegments %}
+{% if segmentsJson %}
+    //globals
+    var xgds_video = { masterSlider: '',
+                       playFlag: false,
+                       seekFlag: false,
+                       initialState: false,
+                       seekOffsetList: {},
+                       baseUrl: "{{ baseUrl }}",
+                       episode: {{ episodeJson|safe }},
+                       displaySegments: {{ segmentsJson|safe }},
+                       firstSegment: null,
+                       lastSegment: null,
+                       onTimePlayer: "{{ sources.0.shortName }}",
+                       movingSlider: false, //if slider is moving, turn off onTime call
+                       seekOffsetList: {}, //needed for seeking vid in flash mode,
+                       indexFileUrl: indexFileUrl,
+	                   noteTimeStamp: toJsDateTime({{ noteTimeStamp|safe }}),
+	                   flightName: {% if flightName %} "{{ flightName }}" {% else %} null {% endif %},
+	                   sourceVehicle: {{ sourceVehicle|safe }},
+	                   flightTZ: '{{ flightTZ }}'
+                     };
+
+    {% if episode %}
+    	convertJSONtoJavascriptDateTime(xgds_video.episode);
+	{% endif %}
+
+    {% for source in sources %}
+        var segments = xgds_video.displaySegments["{{ source.shortName }}"];
+        if ((segments != undefined) && (segments.length > 0)) {
+            $.each(segments, function(id) {
+                var segment = segments[id];
+                segment.startTime = toJsDateTime(segment.startTime);
+                segment.endTime = toJsDateTime(segment.endTime);
+
+                if(xgds_video.firstSegment == null) {
+                    xgds_video.firstSegment = segment;
+                }
+                if (xgds_video.lastSegment == null) {
+                    xgds_video.lastSegment = segment;
+                }
+
+                if (segment.startTime) {
+                    if(segment.startTime < xgds_video.firstSegment.startTime) {
+                        xgds_video.firstSegment = segment;
+                    }
+                }
+                if (segment.endTime) {
+                    if (segment.endTime > xgds_video.lastSegment.endTime) {
+                        xgds_video.lastSegment = segment;
+                    }
+                }
+            });
+        }
+    {% endfor %}
+    {% endif %}
+    {% endblock initSegments %}
+
+	{% block hookControls %}
+	{% if segmentsJson %}
+    //set up the slider and the player
+    if (hasMasterSlider){
+    	setupSlider();
+    }
+    setupJWplayer({"mute":true}, hasMasterSlider, false, "100%");
+    xgds_notes.setupNotesUI();
+    {% endif %}
+    {% endblock hookControls %}
+    
+    {% block myNotesSetup %}
+    var minHeight = 100;
+	{% if segmentsJson %}
+	{% if sources|length = 1 %}
+	{% with filter="flight__name"|add:":"|add:episode.shortName|add:"_"|add:sources.0.shortName%}
+	var thefilter = '{{filter}}';
+	var recordedNotesController = new recordedNotes.RecordedNotesController({
+	           recordedNotesURL: "{% url 'xgds_map_server_objectsJson' 'XGDS_NOTES_NOTE_MODEL' filter %}",
+	//	           recordedNotesURL: "/notes/notesJson/"  + thefilter + "/0",
+			   columns: {{ settings.XGDS_NOTES_TABLE_DEFAULT_COLUMNS|safe }},
+		       ordering: "desc",
+		       divHeight: minHeight,
+		       editable: {% if settings.GEOCAM_UTIL_DATATABLES_EDITOR %}true{% else %} false {% endif %},
+	           xgds_video: xgds_video 
+	       });
+	{% endwith %}
+	{% else %}
+	{% with filter="flight__group__episode__shortName"|add:":"|add:episode.shortName %}
+	var thefilter = '{{filter}}';
+	var recordedNotesController = new recordedNotes.RecordedNotesController({
+			   recordedNotesURL: "{% url 'xgds_map_server_objectsJson' 'XGDS_NOTES_NOTE_MODEL' filter %}",
+	//	           recordedNotesURL: "/notes/notesJson/"  + thefilter + "/0",
+			   columns: {{ settings.XGDS_NOTES_TABLE_DEFAULT_COLUMNS|safe }},
+		       ordering: "desc",
+		       divHeight: minHeight,
+		       editable: {% if settings.GEOCAM_UTIL_DATATABLES_EDITOR %}true{% else %} false {% endif %},
+	           xgds_video: xgds_video 
+	       });
+	 {% endwith %}
+	{% endif %}
+	{% endif %}
+	{% endblock myNotesSetup %}
+	
+	{% block lastJsInit %}
+	initializePackery();
+	{% endblock lastJsInit %}
+ {% endblock jsInit %}
