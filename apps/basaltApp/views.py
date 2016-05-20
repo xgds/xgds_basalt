@@ -208,4 +208,5 @@ def getNoteExtras(episodes, source, request):
                 result['app_label'] = 'basaltApp'
                 result['model_type'] = 'BasaltFlight'
                 result['object_id'] = flight.id
+                result['event_timezone'] = flight.timezone
     return result
