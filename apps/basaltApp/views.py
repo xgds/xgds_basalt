@@ -130,13 +130,20 @@ def storeFieldData(request):
 def populateNoteData(request, form):
     data, tags, errors = xgds_notes2_views.populateNoteData(request, form)
     
+    if 'flight_id' in data:
+        flight = BasaltFlight.objects.get(id=data['flight_id'])
+        data.pop('flight_id')
+        data['flight'] = flight
+    
     # look up the flight
-    resource = None
-    if 'resource' in data:
+    elif 'resource' in data:
+        resource = None
         resource = data['resource']
         data.pop('resource')
-    data['flight'] = getFlight(data['event_time'], resource)
-
+        flight = getFlight(data['event_time'], resource)
+        if flight:
+            data['flight'] = flight 
+    
     return data, tags, errors
 
 
