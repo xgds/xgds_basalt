@@ -177,19 +177,15 @@ class BasaltFlight(plannerModels.AbstractFlight):
     
     videoSource = models.ForeignKey(settings.XGDS_VIDEO_SOURCE_MODEL, null=True, blank=True)
 
-    @property
     def thumbnail_time_url(self, event_time):
         return reverse('videoStillThumb', kwargs={'flightName':self.name, 'time':event_time})
 
-    @property
     def thumbnail_url(self):
         return reverse('videoStillThumb', kwargs={'flightName':self.name, 'time':0})
 
-    @property
     def view_time_url(self, event_time):
         return reverse('xgds_video_recorded_time', kwargs={'flightName':self.name, 'time':event_time})
     
-    @property
     def view_url(self):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
     
