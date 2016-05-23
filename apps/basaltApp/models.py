@@ -153,7 +153,7 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
             foundEpisode = VIDEO_EPISODE_MODEL.get().objects.get(shortName=self.name)
             return foundEpisode
         except:
-            traceback.print_exc()
+#             traceback.print_exc()
             return None
 
     @property
@@ -260,11 +260,12 @@ class BasaltFlight(plannerModels.AbstractFlight):
 
     def stopFlightExtras(self, request):
         #stop the eva track listener
-        if settings.PYRAPTORD_SERVICE is True:
-            pyraptord = getPyraptordClient()
-            serviceName = self.vehicle.name + "TrackListener"
-            stopPyraptordServiceIfRunning(pyraptord, serviceName)
-        #TODO remove the current position for that track
+        if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
+            if settings.PYRAPTORD_SERVICE is True:
+                pyraptord = getPyraptordClient()
+                serviceName = self.vehicle.name + "TrackListener"
+                stopPyraptordServiceIfRunning(pyraptord, serviceName)
+                #TODO remove the current position for that track
         
         if settings.XGDS_VIDEO_ON:
             stopRecording(self.getVideoSource(), self.end_time)
