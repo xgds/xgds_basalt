@@ -324,7 +324,7 @@
     	}
     },
     {
-    	"pk": 1,
+    	"pk": 10,
     	"model": "xgds_core.Constant",
     	"fields": {
     		"name":"remoteDelay",
