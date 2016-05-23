@@ -134,6 +134,10 @@ def populateNoteData(request, form):
         flight = BasaltFlight.objects.get(id=data['flight_id'])
         data.pop('flight_id')
         data['flight'] = flight
+        try:
+            data.pop('resource')
+        except:
+            pass
     
     # look up the flight
     elif 'resource' in data:
