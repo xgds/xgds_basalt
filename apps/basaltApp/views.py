@@ -173,11 +173,14 @@ def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
 
 def getDelaySeconds(flightName):
     try:
-        flight = BasaltFlight.objects.get(name=flightName)
-        return flight.delaySeconds
+        # see if this flight is active and then look up the current delay
+        foundActive = BasaltActiveFlight.objects.get(flight__name=flightName)
+        if foundActive:
+            delayConstant = Constant.objects.get(name="delay")
+            return int(delayConstant.value)
     except:
-        delayConstant = Constant.objects.get(name="delay")
-        return int(delayConstant.value)
+        pass
+    return 0
 
 def getLiveIndex(request):
     activeFlights = getActiveFlights()
