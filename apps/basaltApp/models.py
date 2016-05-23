@@ -201,9 +201,9 @@ class BasaltFlight(plannerModels.AbstractFlight):
         
     def startFlightExtras(self, request):
         
-        resource=BasaltResource.objects.get(vehicle=self.vehicle)
-        
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
+            resource=BasaltResource.objects.get(vehicle=self.vehicle)
+        
             #Create the track if it does not exist
             if not self.track:
                 try:
