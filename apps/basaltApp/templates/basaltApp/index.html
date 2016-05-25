@@ -1,13 +1,47 @@
-{% extends 'dashboard_base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-{% if not settings.GEOCAM_UTIL_LIVE_MODE %}
+{% if settings.GEOCAM_UTIL_LIVE_MODE %}
+<strong style="color:red">There are not currently any active EVAs.</strong><br/>
+When you are told there are active EVAs, please click on the BASALT logo in the upper left.
+</br>
+</br>
+{% endif %}
+
 <table cellpadding="5" cellspacing="0" width="100%">
   <tr>
-    <td></td>
-    <td></td>
+    <td style="text-align:right"><strong>Map</strong></td>
+    <td>View and manage map layers.  Get Google Earth link.</td>
+  </tr>
+  <tr>
+    <td style="text-align:right"><strong>EVA</strong></td>
+    <td>View and manage EVAs and Planned Traverses.  See video for past EVAs.</td>
+  </tr>
+  <tr>
+    <td style="text-align:right"><strong>Notes</strong></td>
+    <td>Review existing notes.  Manage tags.</td>
+  </tr>
+  <tr>
+    <td style="text-align:right"><strong>Sample</strong></td>
+    <td>Print labels.  Record sample information.</td>
+  </tr>
+  <tr>
+    <td style="text-align:right"><strong>Search</strong></td>
+    <td>Search for anything on the map, including Photos, Samples, ASD and FTIR data.</td>
+  </tr>
+  <tr>
+    <td style="text-align:right"><strong>Import</strong></td>
+    <td>Import data including Photos, GPS, Science Instrument, Map Tiles.</td>
+  </tr>
+  {% if settings.GEOCAM_UTIL_LIVE_MODE %}
+  <tr>
+    <td style="text-align:right"><strong>Status</strong></td>
+    <td>See current system status</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td style="text-align:right"><strong>Feedback</strong></td>
+    <td>Send feedback to the xGDS developmen team.</td>
   </tr>
 </table>
-{% else %}
-{% endif %}
 {% endblock content %}
