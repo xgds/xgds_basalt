@@ -39,7 +39,7 @@
 			<li {% currentnav map* xgds_map_server* %}>
 				<a href="{% url 'map' %}" title="Map">Map</a>
 			</li>
-			<li {% currentnav planner2* %}>
+			<li {% currentnav planner2* *video* %}>
 				<a href="{% url 'planner2_flownFlights' %}" title="{{ settings.XGDS_PLANNER2_FLIGHT_MONIKER }}">{{ settings.XGDS_PLANNER2_FLIGHT_MONIKER }}</a>
 			</li>
  			<li {% currentnav *note* %}>
