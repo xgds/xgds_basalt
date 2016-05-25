@@ -659,7 +659,7 @@
             "name": "EV1",
             "shortName": "EV1",
 	        "uuid": 1,
-	        "displayColor": "#648f73"
+	        "displayColor": "#00cc00"
         }
     },
     {
@@ -669,7 +669,7 @@
             "name": "EV2",
             "shortName": "EV2",
 	        "uuid": 2,
-	        "displayColor": "#64808f"
+	        "displayColor": "#00cccc"
         }
     },
     {
@@ -679,7 +679,7 @@
             "name": "SA",
             "shortName": "SA",
 	        "uuid": 3,
-	        "displayColor": "#c7c465"
+	        "displayColor": "#888888"
         }
     },
     {
