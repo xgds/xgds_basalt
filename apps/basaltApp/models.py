@@ -184,7 +184,10 @@ class BasaltFlight(plannerModels.AbstractFlight):
         return reverse('videoStillThumb', kwargs={'flightName':self.name, 'time':0})
 
     def view_time_url(self, event_time):
-        return reverse('xgds_video_recorded_time', kwargs={'flightName':self.name, 'time':event_time})
+        sourceShortName = self.name.split('_')[1]
+        return reverse('xgds_video_recorded_time', kwargs={'flightName':self.name, 
+                                                           'sourceShortName':sourceShortName,
+                                                           'time':event_time})
     
     def view_url(self):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
