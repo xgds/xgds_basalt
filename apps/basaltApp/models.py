@@ -57,7 +57,7 @@ VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)
 VIDEO_EPISODE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_EPISODE_MODEL)
 
 class BasaltResource(geocamTrackModels.AbstractResource):
-    resourceId = models.IntegerField(null=True, blank=True) # analagous to beacon id, identifier for track inputs
+    resourceId = models.IntegerField(null=True, blank=True) # analogous to beacon id, identifier for track inputs
     vehicle = models.OneToOneField(plannerModels.Vehicle, blank=True, null=True)
     port = models.IntegerField(null=True, blank=True)
 

@@ -30,6 +30,8 @@ from django.core.exceptions import ObjectDoesNotExist
 import django
 django.setup()
 
+from django.core.cache import cache   
+
 from geocamUtil.zmqUtil.subscriber import ZmqSubscriber
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
@@ -102,7 +104,10 @@ class GpsTelemetryCleanup(object):
         sourceTimestamp = sourceTimestamp.replace(tzinfo=pytz.utc)
         lat = parseTracLinkDM(lat, latHemi)
         lon = parseTracLinkDM(lon, lonHemi)
-
+        
+        # save subsystem time for status
+        cache.set('telemetryCleanup', datetime.datetime.utcnow())
+        
         # calculate which track record belongs to
         cacheKey = 'gpstrack.%s' % resourceId
         pickledTrack = cache.get(cacheKey)

@@ -45,6 +45,8 @@ from plrpExplorer.models import (NewFlight,
 import django
 django.setup()
 
+from django.core.cache import cache   
+
 from plrpExplorer import settings
 
 DM_REGEX = re.compile(r'(?P<sign>-?)(?P<degrees>\d+)(?P<minutes>\d\d\.\d+)')
