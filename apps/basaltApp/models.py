@@ -47,7 +47,7 @@ from xgds_data.introspection import verbose_name
 
 from xgds_video.models import *
 from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, startRecording, stopRecording
-from xgds_video.recordingUtil import endActiveEpisode
+from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, stopFlightRecording
 
 from subprocess import Popen
 import re
@@ -196,6 +196,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
         if self.videoSource:
             return self.videoSource
         self.videoSource = VIDEO_SOURCE_MODEL.get().objects.get(shortName=self.vehicle.name)
+        self.save()
         return self.videoSource
 
     def getResource(self):
@@ -240,35 +241,35 @@ class BasaltFlight(plannerModels.AbstractFlight):
                                           {'command': command})
             pyraptord.startService(serviceName)
         
-    def startVideoRecording(self):
-        flightGroup = self.group
-        if not flightGroup.videoEpisode:
-            videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
-            videoEpisode.save()
-        else:
-            if flightGroup.videoEpisode.endTime:
-                flightGroup.videoEpisode.endTime = None
+#     def startVideoRecording(self):
+#         flightGroup = self.group
+#         if not flightGroup.videoEpisode:
+#             videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
+#             videoEpisode.save()
+#         else:
+#             if flightGroup.videoEpisode.endTime:
+#                 flightGroup.videoEpisode.endTime = None
+# 
+#         recordingDir = getRecordedVideoDir(self.name)
+#         recordingUrl = getRecordedVideoUrl(self.name)
+#         videoSource = self.getVideoSource()
+#         startRecording(videoSource, recordingDir,
+#                        recordingUrl, self.start_time,
+#                        settings.XGDS_VIDEO_MAX_EPISODE_DURATION_MINUTES,
+#                        episode=flightGroup.videoEpisode)
 
-        recordingDir = getRecordedVideoDir(self.name)
-        recordingUrl = getRecordedVideoUrl(self.name)
-        videoSource = self.getVideoSource()
-        startRecording(videoSource, recordingDir,
-                       recordingUrl, self.start_time,
-                       settings.XGDS_VIDEO_MAX_EPISODE_DURATION_MINUTES,
-                       episode=flightGroup.videoEpisode)
-
-    def stopVideoRecording(self):
-        stopRecording(self.getVideoSource(), self.end_time)
-        done = True
-        for flight in self.group.basaltflight_set.all():
-            if flight.hasStarted():
-                if not flight.hasEnded():
-                    done = False
-                    break
-        if done:
-            episode = self.group.videoEpisode
-            episode.endTime = self.end_time
-            episode.save()
+#     def stopVideoRecording(self):
+#         stopRecording(self.getVideoSource(), self.end_time)
+#         done = True
+#         for flight in self.group.basaltflight_set.all():
+#             if flight.hasStarted():
+#                 if not flight.hasEnded():
+#                     done = False
+#                     break
+#         if done:
+#             episode = self.group.videoEpisode
+#             episode.endTime = self.end_time
+#             episode.save()
 
     def startFlightExtras(self, request):
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
@@ -276,7 +277,8 @@ class BasaltFlight(plannerModels.AbstractFlight):
 
         # start the video
         if settings.XGDS_VIDEO_ON:
-            self.startVideoRecording()
+            self.getVideoSource()
+            startFlightRecording(request, self.name)
 
     def stopFlightExtras(self, request):
         #stop the eva track listener
@@ -284,7 +286,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
             self.stopTracking()
         
         if settings.XGDS_VIDEO_ON:
-            self.stopVideoRecording()
+            stopFlightRecording(request, self.name)
         
     
     def getTreeJsonChildren(self):
