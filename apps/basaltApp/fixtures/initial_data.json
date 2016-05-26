@@ -368,6 +368,28 @@
     	}
     },
     {
+    	"pk": 32,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"RED_CAMERA_IP",
+    		"units":"n/a",
+    		"notes":"IP of wifi card for the red camera",
+    		"dataType":"string",
+    		"value":"10.10.24.75"
+    	}
+    },
+    {
+    	"pk": 33,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"FTIR_IP",
+    		"units":"n/a",
+    		"notes":"IP of wifi card for the FTIR's PDA",
+    		"dataType":"string",
+    		"value":"10.10.24.76"
+    	}
+    },
+    {
     	"pk": 1,
     	"model": "xgds_core.TimeZoneHistory",
     	"fields": {
