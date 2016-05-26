@@ -26,6 +26,7 @@ from gevent.queue import Queue
 
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
+from django.core.cache import cache   
 
 DEFAULT_HOST = '10.10.91.5'  # this is for in the field
 DEFAULT_HOST = '127.0.0.1'
