@@ -30,6 +30,8 @@ from django.core.cache import cache
 import datetime
 import os
 
+import pydevd
+
 DEFAULT_HOST = '10.10.91.5'  # this is for in the field
 DEFAULT_HOST = '127.0.0.1'
 
@@ -102,7 +104,8 @@ def zmqPublish(opts, q):
         subsystemHostnames['gpsController1'] = Constant.objects.get(name="EV1_TRACKING_IP").value
         subsystemHostnames['gpsController2'] = Constant.objects.get(name="EV2_TRACKING_IP").value
         subsystemHostnames['saCamera'] = Constant.objects.get(name="SA_TRACKING_IP").value
-        subsystemHostnames['redCamera'] = "10.10.24.75"
+        subsystemHostnames['redCamera'] = Constant.objects.get(name="RED_CAMERA_IP").value
+        subsystemHostnames['FTIR'] = Constant.objects.get(name="FTIR_IP").value
         
         setSubsystemStatus(subsystemHostnames)
         setGpsDataQuality(msg)
@@ -112,6 +115,7 @@ def zmqPublish(opts, q):
 def evaTrackListener(opts):
     q = Queue()
     jobs = []
+    pydevd.settrace('10.10.21.146')
     try:
         jobs.append(gevent.spawn(socketListen, opts, q))
         jobs.append(gevent.spawn(zmqPublish, opts, q))
