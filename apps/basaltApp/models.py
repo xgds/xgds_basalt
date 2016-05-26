@@ -197,87 +197,94 @@ class BasaltFlight(plannerModels.AbstractFlight):
             return self.videoSource
         self.videoSource = VIDEO_SOURCE_MODEL.get().objects.get(shortName=self.vehicle.name)
         return self.videoSource
+
+    def getResource(self):
+        resource=LazyGetModelByName(settings.GEOCAM_TRACK_RESOURCE_MODEL).get().objects.get(vehicle=self.vehicle)
+        return resource 
+
+    def startTracking(self):
+        resource=self.getResource()
         
+        #Create the track if it does not exist
+        if not self.track:
+            TRACK_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_TRACK_MODEL)
+            try:
+                track = TRACK_MODEL.get().objects.get(name=self.name)
+            except ObjectDoesNotExist:
+                timezone = settings.TIME_ZONE
+                if self.plans:
+                    timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
+                    self.timezone = timezone
+                track = TRACK_MODEL.get()(name=self.name,
+                                          resource=resource,
+                                          timezone=timezone,
+                                          iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=resource.name),
+                                          lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
+                                          dataType=DataType.objects.get(name="RawGPSLocation"))
+                track.save()
+                self.track = track
+                
+                # this is for archival purposes; make sure remoteDelay is set for the other server's delay.
+                delayConstant = Constant.objects.get(name="remoteDelay")
+                self.delaySeconds = int(delayConstant.value)
+                self.save()
+    
+        if settings.PYRAPTORD_SERVICE is True:
+            pyraptord = getPyraptordClient()
+            serviceName = self.vehicle.name + "TrackListener"
+            ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
+            scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
+            command = "%s -o %s -p %d -n %s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], self.name)
+            stopPyraptordServiceIfRunning(pyraptord, serviceName)
+            pyraptord.updateServiceConfig(serviceName,
+                                          {'command': command})
+            pyraptord.startService(serviceName)
+        
+    def startVideoRecording(self):
+        flightGroup = self.group
+        if not flightGroup.videoEpisode:
+            videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
+            videoEpisode.save()
+        else:
+            if flightGroup.videoEpisode.endTime:
+                flightGroup.videoEpisode.endTime = None
+
+        recordingDir = getRecordedVideoDir(self.name)
+        recordingUrl = getRecordedVideoUrl(self.name)
+        videoSource = self.getVideoSource()
+        startRecording(videoSource, recordingDir,
+                       recordingUrl, self.start_time,
+                       settings.XGDS_VIDEO_MAX_EPISODE_DURATION_MINUTES,
+                       episode=flightGroup.videoEpisode)
+
+    def stopVideoRecording(self):
+        stopRecording(self.getVideoSource(), self.end_time)
+        done = True
+        for flight in self.group.basaltflight_set.all():
+            if flight.hasStarted():
+                if not flight.hasEnded():
+                    done = False
+                    break
+        if done:
+            episode = self.group.videoEpisode
+            episode.endTime = self.end_time
+            episode.save()
+
     def startFlightExtras(self, request):
-        
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
-            resource=BasaltResource.objects.get(vehicle=self.vehicle)
-        
-            #Create the track if it does not exist
-            if not self.track:
-                try:
-                    track = BasaltTrack.objects.get(name=self.name)
-                except ObjectDoesNotExist:
-                    timezone = settings.TIME_ZONE
-                    if self.plans:
-                        timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
-                        self.timezone = timezone
-                    track = BasaltTrack(name=self.name,
-                                        resource=resource,
-                                        timezone=timezone,
-                                        iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=resource.name),
-                                        lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
-    #                                     lineStyle=DEFAULT_LINE_STYLE,
-                                        dataType=DataType.objects.get(name="RawGPSLocation"))
-                    track.save()
-                    self.track = track
-                    
-                    # this is for archival purposes; make sure remoteDelay is set for the other server's delay.
-                    delayConstant = Constant.objects.get(name="remoteDelay")
-                    self.delaySeconds = int(delayConstant.value)
-                    self.save()
-        
-            if settings.PYRAPTORD_SERVICE is True:
-                pyraptord = getPyraptordClient()
-                serviceName = self.vehicle.name + "TrackListener"
-                ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
-                scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
-                command = "%s -o %s -p %d -n %s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], self.name)
-                stopPyraptordServiceIfRunning(pyraptord, serviceName)
-                pyraptord.updateServiceConfig(serviceName,
-                                              {'command': command})
-                pyraptord.startService(serviceName)
+            self.startTracking()
 
         # start the video
         if settings.XGDS_VIDEO_ON:
-            flightGroup = self.group
-            if not flightGroup.videoEpisode:
-                videoEpisode = VideoEpisode(shortName=flightGroup.name, startTime=self.start_time )
-                videoEpisode.save()
-            else:
-                if flightGroup.videoEpisode.endTime:
-                    flightGroup.videoEpisode.endTime = None
-
-            recordingDir = getRecordedVideoDir(self.name)
-            recordingUrl = getRecordedVideoUrl(self.name)
-            videoSource = self.getVideoSource()
-            startRecording(videoSource, recordingDir,
-                           recordingUrl, self.start_time,
-                           settings.XGDS_VIDEO_MAX_EPISODE_DURATION_MINUTES,
-                           episode=flightGroup.videoEpisode)
-            
+            self.startVideoRecording()
 
     def stopFlightExtras(self, request):
         #stop the eva track listener
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
-            if settings.PYRAPTORD_SERVICE is True:
-                pyraptord = getPyraptordClient()
-                serviceName = self.vehicle.name + "TrackListener"
-                stopPyraptordServiceIfRunning(pyraptord, serviceName)
-                #TODO remove the current position for that track
+            self.stopTracking()
         
         if settings.XGDS_VIDEO_ON:
-            stopRecording(self.getVideoSource(), self.end_time)
-            done = True
-            for flight in self.group.basaltflight_set.all():
-                if flight.hasStarted():
-                    if not flight.hasEnded():
-                        done = False
-                        break
-            if done:
-                episode = self.group.videoEpisode
-                episode.endTime = self.end_time
-                episode.save()
+            self.stopVideoRecording()
         
     
     def getTreeJsonChildren(self):
