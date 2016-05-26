@@ -111,7 +111,7 @@
             "resourceId": 1,
             "vehicle": 1,
             "primary": true,
-            "port": 50000
+            "port": 10001
         }
     },
     {
@@ -122,7 +122,7 @@
             "resourceId": 2,
             "vehicle": 2,
             "primary": true,
-            "port": 60000
+            "port": 10001
         }
     },
     {
@@ -133,7 +133,7 @@
             "resourceId": 3,
             "vehicle": 3,
             "primary": false,
-            "port": 70000
+            "port": 10001
         }
     },
     {
@@ -342,7 +342,7 @@
     		"units":"n/a",
     		"notes":"IP of serial to ethernet box for EV1 GPS",
     		"dataType":"string",
-    		"value":"10.10.80.46"
+    		"value":"10.10.24.33"
     	}
     },
     {
@@ -353,7 +353,7 @@
     		"units":"n/a",
     		"notes":"IP of serial to ethernet box for EV2 GPS",
     		"dataType":"string",
-    		"value":"10.10.80.47"
+    		"value":"10.10.24.43"
     	}
     },
     {
@@ -362,9 +362,9 @@
     	"fields": {
     		"name":"SA_TRACKING_IP",
     		"units":"n/a",
-    		"notes":"IP of serial to ethernet box for SA GPS",
+    		"notes":"IP of serial to ethernet box for SA GPS FAKE IP",
     		"dataType":"string",
-    		"value":"10.10.80.48"
+    		"value":"10.10.24.81"
     	}
     },
     {
@@ -697,7 +697,7 @@
         "fields": {
             "name": "EV1",
             "shortName": "EV1",
-            "url": "rtsp://10.10.24.68/changeme",
+            "url": "rtsp://10.10.24.32/stream1",
             "active": 0,
             "settings_id": 1,
             "source_id": 1,
@@ -710,7 +710,7 @@
         "fields": {
             "name": "EV2",
             "shortName": "EV2",
-            "url": "rtsp://10.10.24.69/changeme",
+            "url": "rtsp://10.10.24.42/stream1",
             "active": 0,
             "settings_id": 1,
             "source_id": 2,
@@ -723,7 +723,7 @@
         "fields": {
             "name": "SA",
             "shortName": "SA",
-            "url": "rtsp://10.10.24.70/changeme",
+            "url": "rtsp://10.10.24.80/axis-media/media.amp",
             "active": 0,
             "settings_id": 1,
             "source_id": 3,
