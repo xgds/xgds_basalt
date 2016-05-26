@@ -41,10 +41,10 @@ OKAY = 1
 WARNING = 2
 ERROR = 3
 
-import django
-django.setup()
+#import django
+#django.setup()
 
-from xgds_core.models import Constant
+#from xgds_core.models import Constant
 
 def socketListen(opts, q):
     logging.info('constructing socket')
@@ -98,14 +98,14 @@ def zmqPublish(opts, q):
         logging.debug('publishing: %s', msg)
         
         # hostnames of subsystem for the status board.
-        subsystemHostnames = {}
-        subsystemHostnames['gpsController1'] = Constant.objects.get(name="EV1_TRACKING_IP").value
-        subsystemHostnames['gpsController2'] = Constant.objects.get(name="EV2_TRACKING_IP").value
-        subsystemHostnames['saCamera'] = Constant.objects.get(name="SA_TRACKING_IP").value
-        subsystemHostnames['redCamera'] = "10.10.24.75"
+        #subsystemHostnames = {}
+        #subsystemHostnames['gpsController1'] = Constant.objects.get(name="EV1_TRACKING_IP").value
+        #subsystemHostnames['gpsController2'] = Constant.objects.get(name="EV2_TRACKING_IP").value
+        #subsystemHostnames['saCamera'] = Constant.objects.get(name="SA_TRACKING_IP").value
+        #subsystemHostnames['redCamera'] = "10.10.24.75"
         
-        setSubsystemStatus(subsystemHostnames)
-        setGpsDataQuality(msg)
+        #setSubsystemStatus(subsystemHostnames)
+        #setGpsDataQuality(msg)
         p.pubStream.send(msg)
 
 
