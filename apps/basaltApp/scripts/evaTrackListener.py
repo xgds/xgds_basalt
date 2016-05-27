@@ -27,10 +27,7 @@ from gevent.queue import Queue
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
 from django.core.cache import cache   
-import datetime
 import os
-
-import pydevd
 
 DEFAULT_HOST = '10.10.91.5'  # this is for in the field
 DEFAULT_HOST = '127.0.0.1'
@@ -38,15 +35,6 @@ DEFAULT_HOST = '127.0.0.1'
 DEFAULT_PORT = 30000  # this is for in the field
 DEFAULT_PORT = 50000
 
-#subsystem status markers
-OKAY = 1
-WARNING = 2
-ERROR = 3
-
-import django
-django.setup()
-
-from xgds_core.models import Constant
 
 def socketListen(opts, q):
     logging.info('constructing socket')
@@ -64,58 +52,18 @@ def socketListen(opts, q):
             q.put(line)
 
 
-def setGpsDataQuality(msg):
-    '''
-    Sets 'GpsDataQuality' field in the memcache for subsystem status board
-    '''
-    dataQuality = msg.split(',')[2]
-    if dataQuality == 'A':
-        dataQuality = OKAY
-    else: # dataQuality == 'V'
-        dataQuality = ERROR
-    logging.debug('Data Quality is : %s', dataQuality)
-    # get the EV number from msg
-    evNum = msg.split(':')[1]
-    logging.debug('EVA NUM is : %s', evNum)
-    if evNum == '1':
-        cache.set('gpsDataQuality1', dataQuality)
-    else: # Ev2
-        cache.set('gpsDataQuality2', dataQuality)
-
-
-def setSubsystemStatus(subsystemHostnames):
-    for subsystem in subsystemHostnames:
-        response = os.system("ping -c 1 " + subsystemHostnames[subsystem])
-        if response == 0: # hostname is up
-            logging.debug('SAVING %s', subsystem)
-            logging.debug(datetime.datetime.utcnow())
-            cache.set(subsystem, datetime.datetime.utcnow())
-            
-
 def zmqPublish(opts, q):
     p = ZmqPublisher(**ZmqPublisher.getOptionValues(opts))
     p.start()
     for line in q:
         msg = 'gpsposition:%s:%s:' % (opts.evaNumber, opts.trackName) + line
         logging.debug('publishing: %s', msg)
-        
-        # hostnames of subsystem for the status board.
-        subsystemHostnames = {}
-        subsystemHostnames['gpsController1'] = Constant.objects.get(name="EV1_TRACKING_IP").value
-        subsystemHostnames['gpsController2'] = Constant.objects.get(name="EV2_TRACKING_IP").value
-        subsystemHostnames['saCamera'] = Constant.objects.get(name="SA_TRACKING_IP").value
-        subsystemHostnames['redCamera'] = Constant.objects.get(name="RED_CAMERA_IP").value
-        subsystemHostnames['FTIR'] = Constant.objects.get(name="FTIR_IP").value
-        
-        setSubsystemStatus(subsystemHostnames)
-        setGpsDataQuality(msg)
         p.pubStream.send(msg)
 
 
 def evaTrackListener(opts):
     q = Queue()
     jobs = []
-    pydevd.settrace('10.10.21.146')
     try:
         jobs.append(gevent.spawn(socketListen, opts, q))
         jobs.append(gevent.spawn(zmqPublish, opts, q))
