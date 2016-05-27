@@ -751,5 +751,39 @@
             "source_id": 3,
 	        "uuid": 3
         }
+    },
+    {
+        "pk": 10000,
+        "model": "auth.User",
+        "fields": {
+            "password": "redcamera",
+            "username": "redcamera",
+            "first_name": "Red",
+            "last_name": "Camera",
+            "is_active": 1
+        }
+    },
+    {
+        "pk": 10001,
+        "model": "auth.User",
+        "fields": {
+            "password": "redcamera2",
+            "username": "redcamera2",
+            "first_name": "Red",
+            "last_name": "Camera2",
+            "is_active": 1
+        }
+    },
+    {
+        "pk": 10002,
+        "model": "auth.User",
+        "fields": {
+            "password": "ftir",
+            "username": "ftir",
+            "first_name": "FTIR",
+            "last_name": " ",
+            "is_active": 1
+        }
     }
+    
 ]
