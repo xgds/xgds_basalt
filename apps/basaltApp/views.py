@@ -31,6 +31,7 @@ from xgds_core.models import Constant
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
 from xgds_planner2.views import getActiveFlights
+from xgds_map_server.views import getViewMultiModelPage
 
 
 def editEV(request, pk=None):
@@ -200,6 +201,9 @@ def getLiveIndex(request):
         return HttpResponseRedirect(reverse('xgds_video_recorded', kwargs={'flightName':firstFlight.group.name})) 
     else:
         return HttpResponseRedirect(reverse('index')) 
+
+def getLiveObjects(request):
+    return getViewMultiModelPage(request, ['Photo','FTIR'])
 
 def getNoteExtras(episodes, source, request):
     result = {'source':source}
