@@ -147,6 +147,36 @@
     
     "commands": [
         {
+            "type": "evSite",
+            "presetName": "Site: Approach",
+            "duration": 900,
+            "presetCode": "SAP"
+        },
+        {
+            "type": "evSite",
+            "presetName": "Site: Contextual Survey",
+            "duration": 300,
+            "presetCode": "SCS"
+        },
+        {
+            "type": "evStation",
+            "presetName": "Station: Search",
+            "duration": 900,
+            "presetCode": "SSS"
+        },
+        {
+            "type": "evStation",
+            "presetName": "Station: Pre-Sampling Survey",
+            "duration": 900,
+            "presetCode": "SPS"
+        },
+        {
+            "type": "evStation",
+            "presetName": "Station: Sampling",
+            "duration": 1800,
+            "presetCode": "SSM"
+        },
+        {
             "type": "Pause",
             "presetName": "Pause",
             "duration": 300,
