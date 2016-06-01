@@ -183,10 +183,24 @@
             "parent": "EVCommand",
             "color": "#F1EDE2",
             "notes": "Perform sterilization procedures"
+        },
+        {
+            "type": "CommandSpec",
+            "id": "evSite",
+            "parent": "EVCommand",
+            "color": "#ccff99"
+        },
+        {
+            "type": "CommandSpec",
+            "id": "evStation",
+            "parent": "EVCommand",
+            "color": "#ffbb99"
         }
      ],
 
     "stationSequenceCommands": [
+    	"evSite",
+    	"evStation",
     	"Context",
     	"Sample",
     	"Sterilize",
