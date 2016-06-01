@@ -424,7 +424,7 @@
         "model": "xgds_map_server.MapLink",
         "fields": {
                 "creator": "root",
-                "name": "_Flights (Active)",
+                "name": " EVAs (Active)",
                 "description": "Will contain all active flight data",
                 "childNodesUrl": "/xgds_planner2/activeFlightsTreeNodes",
                 "parent": "mg1"
@@ -435,7 +435,7 @@
         "model": "xgds_map_server.MapLink",
         "fields": {
                 "creator": "root",
-                "name": "_Flights (Completed)",
+                "name": " EVAs (Completed)",
                 "description": "Will contain all flight data.  Do not select this node; expand and select its children.",
                 "childNodesUrl": "/xgds_planner2/completedFlightsTreeNodes",
                 "parent": "mg1"
@@ -446,7 +446,7 @@
         "model": "xgds_map_server.MapLink",
         "fields": {
                 "creator": "root",
-                "name": "_EVA Route Plans",
+                "name": " EVA Planned Traverses",
                 "description": "All saved plans",
                 "childNodesUrl": "/xgds_planner2/plansTreeNodes",
                 "parent": "mg1"
