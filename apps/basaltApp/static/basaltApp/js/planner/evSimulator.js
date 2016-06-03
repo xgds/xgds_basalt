@@ -60,12 +60,12 @@ _.extend(ev.Simulator.prototype, {
         this.distanceTraveled = this.distanceTraveled + norm;
 
         var hintedSpeed = segment.get('hintedSpeed');
-        if (typeof(hintedSpeed) == 'undefined' || hintedSpeed < 0) {
+        if (_.isUndefined(hintedSpeed) || _.isNull(hintedSpeed) || hintedSpeed < 0) {
             hintedSpeed = context.plan.get('defaultSpeed');
         }
         var segmentDriveTime =  Math.round(norm / hintedSpeed);
         var derivedInfo = segment.get('derivedInfo');
-        if (_.isUndefined(derivedInfo)){
+        if (_.isUndefined(derivedInfo) || _.isNull(derivedInfo)){
         	derivedInfo = {};
         	segment.set('derivedInfo', derivedInfo);
         }
