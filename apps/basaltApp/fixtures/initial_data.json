@@ -390,6 +390,39 @@
     	}
     },
     {
+    	"pk": 34,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"EV1_CAMERA_IP",
+    		"units":"n/a",
+    		"notes":"IP of EV1 Video Camera",
+    		"dataType":"string",
+    		"value":"10.10.24.32"
+    	}
+    },
+    {
+    	"pk": 35,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"EV2_CAMERA_IP",
+    		"units":"n/a",
+    		"notes":"IP of EV2 Video Camera",
+    		"dataType":"string",
+    		"value":"10.10.24.42"
+    	}
+    },
+    {
+    	"pk": 36,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"SA_CAMERA_IP",
+    		"units":"n/a",
+    		"notes":"IP of SA Camera",
+    		"dataType":"string",
+    		"value":"10.10.24.80"
+    	}
+    },
+    {
     	"pk": 1,
     	"model": "xgds_core.TimeZoneHistory",
     	"fields": {
