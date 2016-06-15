@@ -141,7 +141,8 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "Kings Bowl",
-            "shortName": "KB"
+            "shortName": "KB",
+            "zone": 2
         }
     },
     {
@@ -149,7 +150,8 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "Mauna Ulu",
-            "shortName": "MU"
+            "shortName": "MU",
+            "zone":2
         }
     },
     {
@@ -157,7 +159,8 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "Highway Flow",
-            "shortName": "HF"
+            "shortName": "HF",
+            "zone": 1
         }
     },
         {
@@ -165,7 +168,8 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "Big Craters Flow",
-            "shortName": "BC"
+            "shortName": "BC",
+            "zone": 5
         }
     },
     {
@@ -173,7 +177,8 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "North Craters Flow",
-            "shortName": "NC"
+            "shortName": "NC",
+            "zone": 4
         }
     },
     {
@@ -181,7 +186,8 @@
         "model": "xgds_sample.Region",
         "fields": {
             "name": "Kilauea Iki",
-            "shortName": "KI"
+            "shortName": "KI",
+            "zone": 2
         }
     },
     {
