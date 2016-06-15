@@ -85,7 +85,6 @@ $.extend(xgds_sample,{
 						matches.push(str);
 					}
 				});
-
 				cb(matches);
 			};
 		};
