@@ -210,7 +210,7 @@
         "pk": 3,
         "model": "xgds_sample.SampleType",
         "fields": {
-            "value": "O",
+            "value": "M",
             "display_name": "ORG"
         }
     },
