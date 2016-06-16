@@ -6,29 +6,13 @@
     "SERVICES": {
 
         "EV1_vlc": {
-            "command": " ",
-	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV1"
+            "command": " "
         },
-        "EV1_segmenter": {
-            "command": " ",
-	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV1"
-        },
-
         "EV2_vlc": {
-            "command": " ",
-	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV2"
-        },
-        "EV2_segmenter": {
-            "command": " ",
-	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV2"
+            "command": " "
         },
         "SA_vlc": {
-            "command": " ",
-	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SA"
-        },
-        "SA_segmenter": {
-            "command": " ",
-	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SA"
+            "command": " "
         },
 
 		"zmqCentral": {
