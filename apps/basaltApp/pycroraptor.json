@@ -31,27 +31,46 @@
 	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SA"
         },
 
-	"zmqCentral": {
-	    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
+		"zmqCentral": {
+		    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
         },
-
-	"EV1TrackListener": {
-	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
+	
+		"EV1TrackListener": {
+		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
-
-	"EV2TrackListener": {
-	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
+	
+		"EV2TrackListener": {
+		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
-
-	"SATrackListener": {
-            "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
+		"SATrackListener": {
+	            "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
-	"evaTrackTelemetryCleanup": {
-	    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackTelemetryCleanup.py"
-        }
-    },
-
+		"evaTrackTelemetryCleanup": {
+		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackTelemetryCleanup.py"
+        },
+	    "gpsController1": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController1"
+	    },
+	    "gpsController2": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController2"
+	    },
+	    "saCamera": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n saCamera"
+	    },
+	    "redCamera": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redCamera"
+	    },
+	    "FTIR": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n FTIR"
+	    },
+	    "video1": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video1"
+	    },
+	    "video2": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video2"
+	    }
+	},
     "GROUPS": {
-        "startup": ["zmqCentral", "evaTrackTelemetryCleanup"]
+        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "redCamera", "FTIR", "video1", "video2"]
     }
 }
