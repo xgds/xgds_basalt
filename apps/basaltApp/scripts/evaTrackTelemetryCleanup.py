@@ -24,13 +24,11 @@ import traceback
 import pytz
 from uuid import uuid4
 
-from django.core.cache import cache
+from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
 
 import django
 django.setup()
-
-from django.core.cache import cache   
 
 from geocamUtil.zmqUtil.subscriber import ZmqSubscriber
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
@@ -44,6 +42,7 @@ from basaltApp.models import (BasaltActiveFlight,
                               PastPosition,
                               DataType)
 
+cache = caches['default']
 
 DM_REGEX = re.compile(r'(?P<degrees>\d+)(?P<minutes>\d\d\.\d+)')
 DEFAULT_ICON_STYLE = IconStyle.objects.get(name='default')
