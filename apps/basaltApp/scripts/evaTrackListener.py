@@ -26,8 +26,8 @@ from gevent.queue import Queue
 
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
-from django.core.cache import cache   
 import os
+import memcache
 
 DEFAULT_HOST = '10.10.91.5'  # this is for in the field
 DEFAULT_HOST = '127.0.0.1'
@@ -35,6 +35,12 @@ DEFAULT_HOST = '127.0.0.1'
 DEFAULT_PORT = 30000  # this is for in the field
 DEFAULT_PORT = 50000
 
+#subsystem status markers
+OKAY = 1
+WARNING = 2
+ERROR = 3
+
+_cache = memcache.Client(['127.0.0.1:11211'], debug=0)
 
 def socketListen(opts, q):
     logging.info('constructing socket')
@@ -52,6 +58,20 @@ def socketListen(opts, q):
             q.put(line)
 
 
+def setGpsDataQuality(msg):
+    '''
+    Sets 'GpsDataQuality' field in the memcache for subsystem status board
+    '''
+    dataQuality = msg.split(',')[2]
+    if dataQuality == 'A':
+        dataQuality = OKAY
+    else: # dataQuality == 'V'
+        dataQuality = ERROR
+    # get the EV number from msg
+    evNum = msg.split(':')[1]
+    _cache.set('gpsDataQuality' + evNum, dataQuality)
+
+
 def zmqPublish(opts, q):
     p = ZmqPublisher(**ZmqPublisher.getOptionValues(opts))
     p.start()
@@ -59,6 +79,7 @@ def zmqPublish(opts, q):
         msg = 'gpsposition:%s:%s:' % (opts.evaNumber, opts.trackName) + line
         logging.debug('publishing: %s', msg)
         p.pubStream.send(msg)
+        setGpsDataQuality(msg)
 
 
 def evaTrackListener(opts):
