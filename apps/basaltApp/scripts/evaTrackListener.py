@@ -16,6 +16,8 @@
 # __END_LICENSE__
 
 import logging
+import datetime
+import json
 
 from zmq.eventloop import ioloop
 ioloop.install()
@@ -36,9 +38,9 @@ DEFAULT_PORT = 30000  # this is for in the field
 DEFAULT_PORT = 50000
 
 #subsystem status markers
-OKAY = 1
-WARNING = 2
-ERROR = 3
+OKAY = '#00ff00'
+WARNING = '#ffff00'
+ERROR = '#ff0000'
 
 _cache = memcache.Client(['127.0.0.1:11211'], debug=0)
 
@@ -69,7 +71,10 @@ def setGpsDataQuality(msg):
         dataQuality = ERROR
     # get the EV number from msg
     evNum = msg.split(':')[1]
-    _cache.set('gpsDataQuality' + evNum, dataQuality)
+    myKey = "gpsDataQuality%s" % str(evNum)
+    status = {'dataQuality': dataQuality,
+              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+    _cache.set(myKey, json.dumps(status))
 
 
 def zmqPublish(opts, q):
