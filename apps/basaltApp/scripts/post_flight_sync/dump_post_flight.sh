@@ -33,5 +33,5 @@ echo 'done dumping'
 
 echo 'tarring'
 cd /tmp
-tar -czvf ./$hostname/$hostname$today.tar.gz $hostname/*$today.sql $hostname/*.sh 
+tar -czvf ./$hostname/$hostname$today.tar.gz $hostname/*$today.sql $hostname/load_post_flight.*
 echo 'done'

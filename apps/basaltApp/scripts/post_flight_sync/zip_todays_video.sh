@@ -16,9 +16,10 @@
 # __END_LICENSE__
 
 today=$(date +"%Y%m%d")
+hostname=$(hostname)
 read -p "Enter flight letter: " flightLetter
-echo zipping video for $today$flightLetter into /tmp/boat_video
-mkdir /tmp/boat_video
+echo zipping video for $hostname $today$flightLetter into /tmp/$hostname/video
+mkdir -p /tmp/$hostname/video
 cd ~/xgds_basalt/data
-tar -cvzf /tmp/boat_video/$today$flightLetter.tar.gz ./$today$flightLetter*/
+tar -cvzf /tmp/$hostname/video/$hostname$today$flightLetter.tar.gz ./$today$flightLetter*/
 echo done

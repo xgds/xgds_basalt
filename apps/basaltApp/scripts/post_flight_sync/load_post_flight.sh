@@ -14,8 +14,27 @@
 #specific language governing permissions and limitations under the License.
 # __END_LICENSE__
 
-echo 'loading'
-sudo chown mysql:mysql /tmp/boat/*.sql
+today=$(date +"%Y-%m-%d")
+# WE ONLY LOAD DATA FROM BOAT, EVER
+hostname='boat'
+
+echo $today
+
+echo 'renaming sql files for loading'
+path=/tmp/$hostname/$hostname/
+episodeFilename=${path}${hostname}_video_episode_${today}.sql
+episodeNewFilename=${path}${hostname}_video_episode.sql
+
+segmentFilename=${path}${hostname}_video_segment_${today}.sql
+segmentNewFilename=${path}${hostname}_video_segment.sql
+
+cp ${episodeFilename} ${episodeNewFilename}
+cp ${segmentFilename} ${segmentNewFilename}
+
+sudo chown mysql:mysql ${path}*.sql
+
+echo 'loading data from boat'
 read -s -p "enter mysql password" sqlpwd
 mysql -u root -p xgds_basalt --password=$sqlpwd < ./load_post_flight.sql
+echo ''
 echo 'done loading'
