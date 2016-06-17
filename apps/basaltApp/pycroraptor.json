@@ -32,6 +32,7 @@
 		"evaTrackTelemetryCleanup": {
 		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackTelemetryCleanup.py"
         },
+        
 	    "gpsController1": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController1"
 	    },
@@ -52,9 +53,15 @@
 	    },
 	    "video2": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video2"
+	    },
+	    "fieldLoadAvg": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n field"
+	    },
+	    "basecampLoadAvg": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecamp"
 	    }
 	},
     "GROUPS": {
-        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "redCamera", "FTIR", "video1", "video2"]
+        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg"]
     }
 }
