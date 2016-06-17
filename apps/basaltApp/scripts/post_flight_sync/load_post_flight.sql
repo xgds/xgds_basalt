@@ -1,4 +1,6 @@
 set FOREIGN_KEY_CHECKS=0;
+set @today=DATE(NOW());
+set @prefix='/tmp/boat/xgds_video_video';
 
 delete from xgds_video_videoepisode;
 delete from xgds_video_videosegment;
