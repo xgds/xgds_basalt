@@ -736,7 +736,7 @@
         "fields": {
             "name": "EV1",
             "shortName": "EV1",
-            "url": "rtsp://10.10.24.32/stream1",
+            "url": "rtsp://10.10.24.71:8554/proxyStream-1",
             "active": 0,
             "settings_id": 1,
             "source_id": 1,
@@ -749,7 +749,7 @@
         "fields": {
             "name": "EV2",
             "shortName": "EV2",
-            "url": "rtsp://10.10.24.42/stream1",
+            "url": "rtsp://10.10.24.71:8554/proxyStream-2",
             "active": 0,
             "settings_id": 1,
             "source_id": 2,
@@ -762,7 +762,7 @@
         "fields": {
             "name": "SA",
             "shortName": "SA",
-            "url": "rtsp://10.10.24.80/axis-media/media.amp",
+            "url": "rtsp://10.10.24.71:8554/proxyStream-3",
             "active": 0,
             "settings_id": 1,
             "source_id": 3,
