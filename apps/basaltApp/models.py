@@ -49,8 +49,13 @@ from xgds_video.models import *
 from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, startRecording, stopRecording
 from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, stopFlightRecording
 
+from xgds_status_board.models import *
+
 from subprocess import Popen
 import re
+
+from django.core.cache import caches  
+_cache = caches['default']
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
 VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)

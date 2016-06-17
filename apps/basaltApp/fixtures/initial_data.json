@@ -795,6 +795,280 @@
             "first_name": "FTIR",
             "last_name": " "
         }
-    }
-    
+    },
+    {
+		"pk": 1, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "EV1",
+			"displayName": "EV1",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 2, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "EV2",
+			"displayName": "EV2",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 3, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "baseCamp",
+			"displayName": "Base Camp Services",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 4, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "field",
+			"displayName": "Field Services",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 1, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "gpsController1",
+			"displayName": "GPS Controller",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "EV1_TRACKING_IP"
+		}
+	},
+	{
+		"pk": 2, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "gpsController2",
+			"displayName": "GPS Controller",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "EV2_TRACKING_IP"
+		}
+	}, 
+	{
+		"pk": 3, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "gpsDataQuality1",
+			"displayName": "GPS Data Quality",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	}, 
+	{
+		"pk": 4, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "gpsDataQuality2",
+			"displayName": "GPS Data Quality",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 5, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "telemetryListener1",
+			"displayName": "Telemetry Listener",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	}, 
+	{
+		"pk": 6, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "telemetryListener2",
+			"displayName": "Telemetry Listener",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 7, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "basecampVideoRecorder",
+			"displayName": "VideoRecorder",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	}, 
+	{
+		"pk": 8, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "fieldVideoRecorder",
+			"displayName": "VideoRecorder",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 9, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "FTIR",
+			"displayName": "FTIR",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "FTIR_IP"
+		}
+	},	
+	{
+		"pk": 10, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "ASD",
+			"displayName": "ASD Spectrometer",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	}, 
+	{
+		"pk": 11, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "redCamera",
+			"displayName": "Red Camera",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "RED_CAMERA_IP"
+		}
+	},
+	{
+		"pk": 12, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "saCamera",
+			"displayName": "SA Camera",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "SA_CAMERA_IP"
+		}
+	},
+	{
+		"pk": 13, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "video1",
+			"displayName": "Video 1",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "EV1_CAMERA_IP"
+		}
+	}, 
+	{
+		"pk": 14, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "video2",
+			"displayName": "Video 2",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "EV2_CAMERA_IP"
+		}
+	}, 	
+	{
+		"pk": 15, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "telemetryCleanup",
+			"displayName": "Telemetry Cleanup",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	}, 
+	{
+		"pk": 17, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "fieldDataReplication",
+			"displayName": "Data Replication",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 120,
+			"failureThreshold": 180
+		}
+	}, 
+	{
+		"pk": 18, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "basecampDataReplication",
+			"displayName": "Data Replication",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 120,
+			"failureThreshold": 180
+		}
+	},
+	{
+		"pk": 19, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "fieldLoadAverage",
+			"displayName": "Load Average",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 120,
+			"failureThreshold": 180
+		}
+	},
+	{
+		"pk": 20, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "basecampLoadAverage",
+			"displayName": "Load Average",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 120,
+			"failureThreshold": 180
+		}
+	}
 ]

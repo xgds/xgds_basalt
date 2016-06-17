@@ -4,12 +4,14 @@ import os
 import time
 import memcache
 import logging
+import json
 
 import django
 django.setup()
 
 from xgds_status_board.models import Subsystem
 _cache = memcache.Client(['127.0.0.1:11211'], debug=0)
+    
         
 def setSubsystemStatus(opts):
     """
@@ -26,7 +28,9 @@ def setSubsystemStatus(opts):
         hostname = subsystem.getHostname()
         response = os.system("ping -c 1 " + hostname)
         if response == 0: # hostname is up
-            _cache.set(subsystemName, datetime.datetime.utcnow())
+            myKey = subsystemName
+            status = {"lastUpdated": datetime.datetime.utcnow().isoformat()}
+            _cache.set(myKey, json.dumps(status))
         time.sleep(5)
 
 

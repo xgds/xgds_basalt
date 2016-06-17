@@ -22,6 +22,7 @@ import atexit
 import datetime
 import traceback
 import pytz
+import json
 from uuid import uuid4
 
 from django.core.cache import caches
@@ -104,8 +105,10 @@ class GpsTelemetryCleanup(object):
         lat = parseTracLinkDM(lat, latHemi)
         lon = parseTracLinkDM(lon, lonHemi)
         
-        # save subsystem time for status
-        cache.set('telemetryCleanup', datetime.datetime.utcnow())
+        # save subsystem status to cache
+        myKey = "telemetryCleanup"
+        status = {'lastUpdated': datetime.datetime.utcnow().isoformat()}
+        cache.set(myKey, json.dumps(status))
         
         # calculate which track record belongs to
         cacheKey = 'gpstrack.%s' % resourceId
