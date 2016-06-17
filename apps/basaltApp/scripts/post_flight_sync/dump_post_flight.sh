@@ -15,19 +15,23 @@
 #specific language governing permissions and limitations under the License.
 # __END_LICENSE__
 
-echo 'clearing old dump'
-rm -rf /tmp/boat_old
-mv /tmp/boat /tmp/boat_old
-mkdir /tmp/boat
-cp load_post_flight.* /tmp/boat
-chmod ugo+rw /tmp/boat
+today=$(date +"%Y-%m-%d")
+hostname=$(hostname)
+
+# make sure we have directories
+mkdir /tmp/$hostname
+chmod ugo+rw /tmp/$hostname
+
+echo 'clearing old database dumps'
+rm /tmp/$hostname/*.s*
+cp load_post_flight.* /tmp/$hostname
 
 echo 'dumping'
 read -s -p "enter mysql password" sqlpwd
-mysql -u root -p pavilion_lake --password=$sqlpwd < ./dump_post_flight.sql
+mysql -u root -p xgds_basalt --password=$sqlpwd < ./dump_post_flight.sql
 echo 'done dumping'
 
 echo 'tarring'
 cd /tmp
-tar -czvf ./boat/boat.tar.gz boat/*.s*
+tar -czvf ./$hostname/$hostname$today.tar.gz $hostname/*$today.sql $hostname/*.sh 
 echo 'done'

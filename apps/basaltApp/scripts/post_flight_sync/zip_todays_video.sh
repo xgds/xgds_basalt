@@ -15,8 +15,7 @@
 #specific language governing permissions and limitations under the License.
 # __END_LICENSE__
 
-#today=$(date +"%Y%m%d")
-today='20160524'
+today=$(date +"%Y%m%d")
 read -p "Enter flight letter: " flightLetter
 echo zipping video for $today$flightLetter into /tmp/boat_video
 mkdir /tmp/boat_video
