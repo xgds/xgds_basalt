@@ -29,6 +29,15 @@
         },
         {
             "type": "ParamSpec",
+            "id": "boundary",
+            "valueType": "number",
+            "minimum": 0,
+            "default": 0.6,
+            "required": false,
+            "notes": "Waypoint boundary (meters)."
+        },
+        {
+            "type": "ParamSpec",
             "id": "distanceMeters",
             "valueType": "number",
             "minimum": 0,
@@ -93,6 +102,11 @@
             "type": "ParamSpec",
             "id": "tolerance",
             "parent": "tolerance"
+        },
+        {
+            "type": "ParamSpec",
+            "id": "boundary",
+            "parent": "boundary"
         },
         {
             "type": "ParamSpec",
