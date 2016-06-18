@@ -59,6 +59,7 @@ $(function() {
                 }, this);
                 
                 this.listenTo(this.model, 'change', this.redrawTolerance);
+                this.listenTo(this.model, 'change', this.redrawBoundary);
 
             },
             getToleranceGeometry: function() {
@@ -72,6 +73,19 @@ $(function() {
                 if (!_.isUndefined(this.toleranceGeometry)) {
                 	this.toleranceGeometry.setCenter(this.point);
                 	this.toleranceGeometry.setRadius(this.model.get('tolerance'));
+                }
+            },
+            getBoundaryGeometry: function() {
+            	if ('boundary' in this.model.attributes) {
+            		var radius = this.model.get('boundary');
+            		return new ol.geom.Circle(this.point, radius);
+            	}
+            	return undefined;
+            },
+            redrawBoundary: function() {
+                if (!_.isUndefined(this.boundaryGeometry)) {
+                	this.boundaryGeometry.setCenter(this.point);
+                	this.boundaryGeometry.setRadius(this.model.get('boundary'));
                 }
             },
             
@@ -106,6 +120,19 @@ $(function() {
     	            this.toleranceFeature.setStyle(olStyles.styles['tolerance']);
     	            this.features.push(this.toleranceFeature);
             		this.stationsDecoratorsVector.addFeature(this.toleranceFeature);
+                }
+                
+             // draw the boundary circle
+                this.boundaryGeometry = this.getBoundaryGeometry();
+                if (this.boundaryGeometry != null){
+    	            this.boundaryFeature = new ol.Feature({geometry: this.boundaryGeometry,
+    	                id: this.model.attributes['id'] + '_stn_boundary',
+    	                name: this.model.attributes['id'] + '_stn_boundary',
+    	                model: this.model,
+    	                style: olStyles.styles['boundary']});
+    	            this.boundaryFeature.setStyle(olStyles.styles['boundary']);
+    	            this.features.push(this.boundaryFeature);
+            		this.stationsDecoratorsVector.addFeature(this.boundaryFeature);
                 }
 
                 this.geometry.on('change', this.geometryChanged, this);
