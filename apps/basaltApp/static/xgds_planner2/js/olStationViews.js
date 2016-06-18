@@ -65,7 +65,8 @@ $(function() {
             getToleranceGeometry: function() {
             	if ('tolerance' in this.model.attributes) {
             		var radius = this.model.get('tolerance');
-            		return new ol.geom.Circle(this.point, radius);
+            		var circle4326 = ol.geom.Polygon.circular(this.getSphere(), inverseTransform(this.point), radius, 64);
+            		return circle4326.clone().transform(LONG_LAT, DEFAULT_COORD_SYSTEM);
             	}
             	return undefined;
             },
@@ -75,10 +76,17 @@ $(function() {
                 	this.toleranceGeometry.setRadius(this.model.get('tolerance'));
                 }
             },
+            getSphere: function() {
+            	if (_.isUndefined(app.wgs84Sphere)){
+            		app.wgs84Sphere = new ol.Sphere(app.options.BODY_RADIUS_METERS);
+            	}
+            	return app.wgs84Sphere;
+            },
             getBoundaryGeometry: function() {
             	if ('boundary' in this.model.attributes) {
             		var radius = this.model.get('boundary');
-            		return new ol.geom.Circle(this.point, radius);
+            		var circle4326 = ol.geom.Polygon.circular(this.getSphere(), inverseTransform(this.point), radius, 64);
+            		return circle4326.clone().transform(LONG_LAT, DEFAULT_COORD_SYSTEM);
             	}
             	return undefined;
             },
