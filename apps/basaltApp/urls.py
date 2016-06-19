@@ -30,5 +30,7 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                    'pextant_ajax_clear'),
                url(r'^storeFieldData$', views.storeFieldData, {}, 'storeFieldData'),
                url(r'^live', views.getLiveIndex, {}, 'basalt_live'),
-               url(r'^objectsLive', views.getLiveObjects, {}, 'basalt_live_objects')
+               url(r'^objectsLive', views.getLiveObjects, {}, 'basalt_live_objects'),
+               url(r'^wrist$', TemplateView.as_view(template_name='basaltApp/kmlWrist.html'), {}, 'wrist'),
+               
            ]
