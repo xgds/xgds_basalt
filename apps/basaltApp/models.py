@@ -36,7 +36,8 @@ from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
-from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location
+from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin
+
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
 from xgds_planner2.models import AbstractActiveFlight
@@ -484,7 +485,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return self.name
     
 
-class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
+class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
 
@@ -608,6 +609,18 @@ class BasaltNote(AbstractLocatedNote):
 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
+
+    
+    @property
+    def tag_ids(self):
+        return ''
+    
     def calculateDelayedEventTime(self, event_time):
         if self.flight:
             delayConstant = Constant.objects.get(name="delay")
@@ -678,7 +691,7 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
         Return a reduced dictionary that will be turned to JSON for rendering in a map
         """
         result = xgds_image_models.AbstractImageSet.toMapDict(self)
-        result['type'] = 'ImageSet'
+        result['type'] = 'Photo'
         if self.flight:
             result['flight'] = self.flight.name
         else:
