@@ -46,7 +46,7 @@ var FtirDataProduct = {
         constructMapElement:function(dataJson){
             var coords = transform([dataJson.lon, dataJson.lat]);
             var feature = new ol.Feature({
-                name: dataJson.instrumentName,
+                name: dataJson.instrument_name,
                 geometry: new ol.geom.Point(coords)
             });
             feature.setStyle(this.getStyles(dataJson));
@@ -56,7 +56,7 @@ var FtirDataProduct = {
         getStyles: function(dataJson) {
             var styles = [this.styles['iconStyle']];
             var theText = new ol.style.Text(this.styles['text']);
-            theText.setText(dataJson.instrumentName);
+            theText.setText(dataJson.instrument_name);
             var textStyle = new ol.style.Style({
                 text: theText
             });
@@ -64,10 +64,11 @@ var FtirDataProduct = {
             return styles;
         },
         setupPopup: function(feature, dataJson) {
-            var data = ["EV:", dataJson.ev_name ? dataJson.ev_name : '',
-                        "Collector:", dataJson.collector ? dataJson.collector : '',
-                        "Flight:", dataJson.flight ? dataJson.flight : '',
-                        "Time:", dataJson.acquisitionTime ? getLocalTimeString(dataJson.acquisitionTime, dataJson.acquisitionTimezone):''
+            var data = [" ", "<a href='/xgds_map_server/view/FTIR/"  + dataJson.pk + "' target='_blank'>View FTIR</a>",
+                        "EV:", dataJson.ev_name ? dataJson.ev_name : '',
+                        "Collector:", dataJson.collector_name ? dataJson.collector_name : '',
+                        "Flight:", dataJson.flight_name ? dataJson.flight_name : '',
+                        "Time:", dataJson.acquisition_time ? getLocalTimeString(dataJson.acquisition_time, dataJson.acquisition_timezone):''
                         ];
 
             var trString = "<tr><td>%s</td><td>%s</td></tr>";
