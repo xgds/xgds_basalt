@@ -488,6 +488,12 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
 
+    @classmethod
+    def getSearchableFields(self):
+        result = super(BasaltInstrumentDataProduct, self).getSearchableFields()
+        result.append('flight__name')
+        return result
+    
     @property
     def ev_name(self):
         if self.resource:
