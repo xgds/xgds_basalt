@@ -400,6 +400,13 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32)
     
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
+
     @classmethod
     def getFieldOrder(cls):
         return ['region', 
@@ -420,6 +427,18 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'sample_type',
                 'number',
                 'replicate']
+
+    @property
+    def replicate_name(self):
+        if self.replicate:
+            return self.replicate.display_name
+        return None 
+    
+    @property
+    def resource_name(self):
+        if self.resource:
+            return self.resource.name
+        return None
     
     def buildName(self):
         number = ("%03d" % (int(self.number),))
@@ -470,15 +489,28 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
 
     @property
+    def ev_name(self):
+        if self.resource:
+            return self.resource.vehicle.name
+        return None
+
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
+
+    @property
     def samples(self):
         return []
 
     def toMapDict(self):
         result = AbstractInstrumentDataProduct.toMapDict(self)
         if self.flight:
-            result['flight'] = self.flight.name
+            result['flight_name'] = self.flight.name
         else:
-            result['flight'] = ''
+            result['flight_name'] = ''
         if self.resource:
             result['ev_name'] = self.resource.vehicle.name
         else:
@@ -495,6 +527,11 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
 
 
 class FtirDataProduct(BasaltInstrumentDataProduct):
+    
+    @property
+    def type(self):
+        return 'FtirDataProduct'
+
     @property
     def samples(self):
         samples = [(s.wavenumber, s.reflectance) for s in self.ftirsample_set.all()]
@@ -502,6 +539,10 @@ class FtirDataProduct(BasaltInstrumentDataProduct):
 
 
 class AsdDataProduct(BasaltInstrumentDataProduct):
+    @property
+    def type(self):
+        return 'AsdDataProduct'
+
     @property
     def samples(self):
         samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
@@ -600,7 +641,26 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+
+    @classmethod
+    def getSearchableFields(self):
+        result = super(BasaltImageSet, self).getSearchableFields()
+        result.append('flight__name')
+        return result
     
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
+
+    @property
+    def resource_name(self):
+        if self.resource:
+            return self.resource.name
+        return None
+
     def finish_initialization(self, request):
         vehicle = None
         if self.resource:
