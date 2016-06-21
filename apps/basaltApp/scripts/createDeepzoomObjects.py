@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import django
 django.setup()
 
@@ -18,4 +20,6 @@ For each of these imagesets,
 
 for imageset in allImageSets:
     if (imageset.associated_deepzoom) == None:
+        print 'About to create deepzoom for imageset ' + imageset.name
         dzt = imageset.create_deepzoom_image() 
+        print 'DONE'
