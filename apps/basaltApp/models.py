@@ -415,6 +415,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'year', 
                 'sample_type', 
                 'number',
+                'station_number',
                 'replicate', 
                 'collector', 
                 'collection_time',
@@ -428,6 +429,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'year',
                 'sample_type',
                 'number',
+                'station_number',
                 'replicate']
 
     @property
@@ -443,12 +445,16 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return None
     
     def buildName(self):
+        region = self.region.shortName
+        year = str(self.year)
+        sampleType = self.sample_type.value
         number = ("%03d" % (int(self.number),))
+        stationNum = ("%02d" % (int(self.station_number),))
         if self.replicate: 
-            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number) + str(self.replicate.value)
+            replicate = str(self.replicate.value)
         else: 
-            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number)
-        return name
+            replicate = ''
+        return region + year + sampleType + '-ST' +  stationNum + '-' + number + replicate
     
     def finish_initialization(self, request):
         self.flight = getFlight(self.collection_time, self.resource.vehicle)
@@ -459,15 +465,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         dataDict['region'] = name[:2]
         dataDict['year'] = name[2:4]
         dataDict['type'] = name[4:5]
-        dataDict['number'] = name[6:9] 
+        dataDict['station_number'] = name[8:10] 
+        dataDict['number'] = name[11:14]
         try: 
-            dataDict['replicate'] = name[9:10]
+            dataDict['replicate'] = name[14:]
             replicate = dataDict['replicate']
         except: 
             replicate = None
         self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         self.number = ("%03d" % (int(dataDict['number']),))
+        self.station_number = ("%02d" % (int(dataDict['station_number']),))
         if replicate: 
             self.replicate = Replicate.objects.get(value=dataDict['replicate'])
         self.year = int(dataDict['year']) 
