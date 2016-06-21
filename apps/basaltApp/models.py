@@ -658,7 +658,6 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     exif_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_exif_set" )
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
-
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
 
     @classmethod
