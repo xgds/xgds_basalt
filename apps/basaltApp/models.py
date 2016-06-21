@@ -483,8 +483,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return result
     
     def __unicode__(self):
-        return self.name
-    
+        return 'basaltSample id=%d' % self.pk
 
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
