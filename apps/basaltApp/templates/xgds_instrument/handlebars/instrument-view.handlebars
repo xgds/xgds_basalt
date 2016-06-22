@@ -6,16 +6,16 @@
     }
   </style>
 
-<div> <strong>{{instrumentName}}</strong> <!--<a id="edit_instrument_button" href="/xgds_instrument/edit/{{pk}}" class="mybutton small" target="_blank">Edit</a> --></div>
+<div> <strong>{{instrument_name}}</strong> <!--<a id="edit_instrument_button" href="/xgds_instrument/edit/{{pk}}" class="mybutton small" target="_blank">Edit</a> --></div>
 	<table>
 		<tr>
 			<th><label for="id_acquisition_time">Acquisition time:</label></th>
 			<td>{{prettyTime acquisition_time acquisition_timezone}}</td>
 		</tr>
-		{{#if flight}}
+		{{#if flight_name}}
 		<tr>
 			<th><label for="id_flight">EVA:</label></th>
-			<td>{{flight}}</td>
+			<td>{{flight_name}}</td>
 		</tr>
 		{{/if}}
 		{{#if ev_name}}
@@ -24,21 +24,21 @@
 			<td>{{ev_name}}</td>
 		</tr>
 		{{/if}}
-		{{#if manufacturer_data_file}}
+		{{#if manufacturer_data_file_url}}
 		<tr>
 			<th><label for="id_manufacturer_data_file">Manufacturer data file:</label></th>
-			<td><a href="{{manufacturer_data_file}}">{{manufacturer_data_file}}</a></td>
+			<td><a href="{{manufacturer_data_file_url}}">{{manufacturer_data_file_url}}</a></td>
 		</tr>
 		{{/if}}
-		{{#if portable_data_file}}
+		{{#if portable_data_file_url}}
 		<tr>
 			<th><label for="id_portable_data_file">Portable data file:</label></th>
-			<td><a href="{{portable_data_file}}">{{portable_data_file}}</a></td>
+			<td><a href="{{portable_data_file_url}}">{{portable_data_file_url}}</a></td>
 		</tr>
 		{{/if}}
 		<tr>
 			<th><label for="id_csv_data">CSV data file:</label></th>
-			<td><a href="{{csv_data}}">CSV</a></td>
+			<td><a href="{{csvDataUrl}}">CSV</a></td>
 		</tr>
 		<tr>
 			<th><label for="id_latitude">Latitude:</label></th>
@@ -48,10 +48,10 @@
 			<th><label for="id_longitude">Longitude:</label></th>
 			<td>{{lon}}</td>
 		</tr>
-		{{#if alt}}
+		{{#if altitude}}
 		<tr>
 			<th><label for="id_altitude">Altitude:</label></th>
-			<td>{{alt}}</td>
+			<td>{{altitude}}</td>
 		</tr>
 		{{/if}}
 		<div class="plot-container">
