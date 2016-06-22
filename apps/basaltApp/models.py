@@ -64,7 +64,7 @@ VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)
 VIDEO_EPISODE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_EPISODE_MODEL)
 
 class BasaltResource(geocamTrackModels.AbstractResource):
-    resourceId = models.IntegerField(null=True, blank=True) # analogous to beacon id, identifier for track inputs
+    resourceId = models.IntegerField(null=True, blank=True, db_index=True) # analogous to beacon id, identifier for track inputs
     vehicle = models.OneToOneField(plannerModels.Vehicle, blank=True, null=True)
     port = models.IntegerField(null=True, blank=True)
 
@@ -89,7 +89,7 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     lineStyle = geocamTrackModels.DEFAULT_LINE_STYLE_FIELD()
 
     dataType = models.ForeignKey(DataType, null=True, blank=True)
-    timezone = models.CharField(max_length=128, default=settings.TIME_ZONE)
+    timezone = models.CharField(max_length=128, default=settings.TIME_ZONE, db_index=True)
 
     @classmethod
     def getTrackByName(cls, trackName):
@@ -138,7 +138,7 @@ class EV(models.Model):
     An EV is a user who can execute a plan.  Information must be provided to Pextant
     about the user to correctly model the path
     ''' 
-    mass = models.FloatField()
+    mass = models.FloatField(db_index=True)
     user = models.OneToOneField(User)
     
     def toSimpleDict(self):
@@ -395,12 +395,12 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
-    number = models.IntegerField(null=True, verbose_name='Two digit sample Location #')
-    station_number = models.IntegerField(null=True, blank=True, verbose_name='Three digit station #')
+    number = models.IntegerField(null=True, verbose_name='Two digit sample Location #', db_index=True)
+    station_number = models.IntegerField(null=True, blank=True, verbose_name='Three digit station #', db_index=True)
     replicate = models.ForeignKey(Replicate, null=True, blank=True)
-    year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
+    year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")), db_index=True)
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
-    marker_id = models.CharField(null=True, blank=True, max_length=32)
+    marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     
     @property
     def flight_name(self):
