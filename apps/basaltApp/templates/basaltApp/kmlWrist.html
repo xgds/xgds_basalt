@@ -12,8 +12,20 @@
   <body>
   
   <h2>
+  {% if messages %}
+	 <div  id="messages" class="error">
+	    <ul class="messages" id="errorMessage" style="color:red;">
+	    {% for message in messages %}
+	        <li>{% if message.tags %} {{ message.tags }}: {% endif %}  {{ message }}</li>
+	    {% endfor %}
+	    </ul>
+	</div>
+	{% endif %}
   <p>
-  	<a href="/xgds_planner2/plan/export/929eba50-4532-4d54-b6b3-af4af41c7e47/MD2_EVA2_Stn3_Stn4_A.kml">TODAY'S PLANNED TRAVERSE</a></html>
+  	<a href="/basaltApp/activePlan/EV1">EV1 PLANNED TRAVERSE</a></html>
+  </p>
+  <p>
+  	<a href="/basaltApp/activePlan/EV2">EV2 PLANNED TRAVERSE</a></html>
   </p>
   <p>
   	<a href="/track/trackIndex.kml">TRACK POSITIONS</a>
