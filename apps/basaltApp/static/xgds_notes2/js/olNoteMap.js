@@ -30,7 +30,7 @@ var Note = {
             this.initStyles();
             var olFeatures = [];
             for (var i = 0; i < notesJson.length; i++) {
-                if (notesJson[i].lat !== "") {
+                if (_.isNumber(notesJson[i].lat)) {
                     var noteFeature = this.constructMapElement(notesJson[i]);
                     olFeatures = olFeatures.concat(noteFeature);
                 }
@@ -48,7 +48,7 @@ var Note = {
             var coords = transform([noteJson.lon, noteJson.lat]);
             var feature = new ol.Feature({
                 name: getLocalTimeString(noteJson.event_time, noteJson.event_timezone),
-                uuid: noteJson.id,
+                uuid: noteJson.pk,
                 geometry: new ol.geom.Point(coords)
             });
             feature.setStyle(this.getStyles(noteJson));
@@ -59,9 +59,11 @@ var Note = {
             var styles = [this.styles['iconStyle']];
             if (noteJson.tags != '') {
                 var theText = new ol.style.Text(this.styles['text']);
-                noteJson.flattenedTags = noteJson.tags.reduce(function(a, b) {
-                    return a.concat(b + " ");
-                  });
+                if (noteJson.tag_names.length > 0){
+                	noteJson.flattenedTags = noteJson.tag_names.reduce(function(a, b) {
+                		return a.concat(" " + b);
+                	});
+                }
                 theText.setText(noteJson.flattenedTags);
                 var textStyle = new ol.style.Style({
                     text: theText
@@ -79,9 +81,9 @@ var Note = {
             formattedString = formattedString + "</table>";
             var data = ["Tags:", noteJson.flattenedTags,
                         "Note:", noteJson.content,
-//                        "Altitude:", noteJson.altitude + " m",
-                        "Flight:", noteJson.flight,
-                        "Author:", noteJson.author];
+                        "Altitude:", noteJson.altitude + " m",
+                        "Flight:", noteJson.flight_name,
+                        "Author:", noteJson.author_name];
             var popupContents = vsprintf(formattedString, data);
             feature['popup'] = popupContents;
         		

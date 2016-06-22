@@ -64,17 +64,22 @@ $(function() {
             },
             getToleranceGeometry: function() {
             	if ('tolerance' in this.model.attributes) {
-            		var radius = this.model.get('tolerance');
-            		var circle4326 = ol.geom.Polygon.circular(this.getSphere(), inverseTransform(this.point), radius, 64);
-            		return circle4326.clone().transform(LONG_LAT, DEFAULT_COORD_SYSTEM);
+            		var circle4326 = ol.geom.Polygon.circular(this.getSphere(), inverseTransform(this.point), this.model.get('tolerance'), 64);
+            		return circle4326.transform(LONG_LAT, DEFAULT_COORD_SYSTEM);
             	}
             	return undefined;
             },
             redrawTolerance: function() {
-                if (!_.isUndefined(this.toleranceGeometry)) {
-                	this.toleranceGeometry.setCenter(this.point);
-                	this.toleranceGeometry.setRadius(this.model.get('tolerance'));
+            	this.toleranceGeometry = this.getToleranceGeometry();
+                if (this.toleranceGeometry != null){
+                	if (this.toleranceFeature != null){
+                		this.toleranceFeature.setGeometry(this.toleranceGeometry);
+                	}
                 }
+//                if (!_.isUndefined(this.toleranceGeometry)) {
+//                	this.toleranceGeometry.setCenter(this.point);
+  //              	this.toleranceGeometry.setRadius(this.model.get('tolerance'));
+//                }
             },
             getSphere: function() {
             	if (_.isUndefined(app.wgs84Sphere)){
@@ -86,15 +91,21 @@ $(function() {
             	if ('boundary' in this.model.attributes) {
             		var radius = this.model.get('boundary');
             		var circle4326 = ol.geom.Polygon.circular(this.getSphere(), inverseTransform(this.point), radius, 64);
-            		return circle4326.clone().transform(LONG_LAT, DEFAULT_COORD_SYSTEM);
+            		return circle4326.transform(LONG_LAT, DEFAULT_COORD_SYSTEM);
             	}
             	return undefined;
             },
             redrawBoundary: function() {
-                if (!_.isUndefined(this.boundaryGeometry)) {
-                	this.boundaryGeometry.setCenter(this.point);
-                	this.boundaryGeometry.setRadius(this.model.get('boundary'));
+            	this.boundaryGeometry = this.getBoundaryGeometry();
+                if (this.boundaryGeometry != undefined){
+                	if (this.boundaryFeature != null){
+                		this.boundaryFeature.setGeometry(this.boundaryGeometry);
+                	}
                 }
+//                if (!_.isUndefined(this.boundaryGeometry)) {
+//                	this.boundaryGeometry.setCenter(this.point);
+//                	this.boundaryGeometry.setRadius(this.model.get('boundary'));
+//                }
             },
             
             redrawPolygons: function() {
