@@ -607,6 +607,14 @@ class BasaltTaggedNote(AbstractTaggedNote):
 
 
 class BasaltNote(AbstractLocatedNote):
+    # Override this to specify a list of related fields
+    # to be join-query loaded when notes are listed, as an optimization
+    # prefetch for reverse or for many to many.
+    prefetch_related_fields = ['tags']
+
+    # select related for forward releationships.  
+    select_related_fields = ['author', 'role', 'location', 'flight', 'position']
+    
     # set foreign key fields and manager required by parent model to correct types for this site
     position = models.ForeignKey(PastPosition, null=True, blank=True)
     tags = TaggableManager(through=BasaltTaggedNote, blank=True)
@@ -619,11 +627,6 @@ class BasaltNote(AbstractLocatedNote):
             return self.flight.name
         else:
             return None
-
-    
-    @property
-    def tag_ids(self):
-        return ''
     
     def calculateDelayedEventTime(self, event_time):
         if self.flight:
