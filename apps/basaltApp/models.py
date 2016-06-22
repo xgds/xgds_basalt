@@ -36,7 +36,8 @@ from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
-from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location
+from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin
+
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
 from xgds_planner2.models import AbstractActiveFlight
@@ -63,7 +64,7 @@ VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)
 VIDEO_EPISODE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_EPISODE_MODEL)
 
 class BasaltResource(geocamTrackModels.AbstractResource):
-    resourceId = models.IntegerField(null=True, blank=True) # analogous to beacon id, identifier for track inputs
+    resourceId = models.IntegerField(null=True, blank=True, db_index=True) # analogous to beacon id, identifier for track inputs
     vehicle = models.OneToOneField(plannerModels.Vehicle, blank=True, null=True)
     port = models.IntegerField(null=True, blank=True)
 
@@ -88,7 +89,7 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     lineStyle = geocamTrackModels.DEFAULT_LINE_STYLE_FIELD()
 
     dataType = models.ForeignKey(DataType, null=True, blank=True)
-    timezone = models.CharField(max_length=128, default=settings.TIME_ZONE)
+    timezone = models.CharField(max_length=128, default=settings.TIME_ZONE, db_index=True)
 
     @classmethod
     def getTrackByName(cls, trackName):
@@ -137,7 +138,7 @@ class EV(models.Model):
     An EV is a user who can execute a plan.  Information must be provided to Pextant
     about the user to correctly model the path
     ''' 
-    mass = models.FloatField()
+    mass = models.FloatField(db_index=True)
     user = models.OneToOneField(User)
     
     def toSimpleDict(self):
@@ -394,18 +395,27 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
-    number = models.IntegerField(null=True, verbose_name='Sample Location #')
+    number = models.IntegerField(null=True, verbose_name='Two digit sample Location #', db_index=True)
+    station_number = models.IntegerField(null=True, blank=True, verbose_name='Three digit station #', db_index=True)
     replicate = models.ForeignKey(Replicate, null=True, blank=True)
-    year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")))
+    year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")), db_index=True)
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
-    marker_id = models.CharField(null=True, blank=True, max_length=32)
+    marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
+
     @classmethod
     def getFieldOrder(cls):
         return ['region', 
                 'year', 
                 'sample_type', 
                 'number',
+                'station_number',
                 'replicate', 
                 'collector', 
                 'collection_time',
@@ -419,15 +429,32 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'year',
                 'sample_type',
                 'number',
+                'station_number',
                 'replicate']
+
+    @property
+    def replicate_name(self):
+        if self.replicate:
+            return self.replicate.display_name
+        return None 
+    
+    @property
+    def resource_name(self):
+        if self.resource:
+            return self.resource.name
+        return None
     
     def buildName(self):
+        region = self.region.shortName
+        year = str(self.year)
+        sampleType = self.sample_type.value
         number = ("%03d" % (int(self.number),))
+        stationNum = ("%02d" % (int(self.station_number),))
         if self.replicate: 
-            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number) + str(self.replicate.value)
+            replicate = str(self.replicate.value)
         else: 
-            name = self.region.shortName + str(self.year) + self.sample_type.value + '-' + str(number)
-        return name
+            replicate = ''
+        return region + year + sampleType + '-ST' +  stationNum + '-' + number + replicate
     
     def finish_initialization(self, request):
         self.flight = getFlight(self.collection_time, self.resource.vehicle)
@@ -438,15 +465,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         dataDict['region'] = name[:2]
         dataDict['year'] = name[2:4]
         dataDict['type'] = name[4:5]
-        dataDict['number'] = name[6:9] 
+        dataDict['station_number'] = name[8:10] 
+        dataDict['number'] = name[11:14]
         try: 
-            dataDict['replicate'] = name[9:10]
+            dataDict['replicate'] = name[14:]
             replicate = dataDict['replicate']
         except: 
             replicate = None
         self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         self.number = ("%03d" % (int(dataDict['number']),))
+        self.station_number = ("%02d" % (int(dataDict['station_number']),))
         if replicate: 
             self.replicate = Replicate.objects.get(value=dataDict['replicate'])
         self.year = int(dataDict['year']) 
@@ -462,12 +491,30 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return result
     
     def __unicode__(self):
-        return self.name
-    
+        return 'basaltSample id=%d' % self.pk
 
-class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
+class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+
+    @classmethod
+    def getSearchableFields(self):
+        result = super(BasaltInstrumentDataProduct, self).getSearchableFields()
+        result.append('flight__name', 'minerals')
+        return result
+    
+    @property
+    def ev_name(self):
+        if self.resource:
+            return self.resource.vehicle.name
+        return None
+
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
 
     @property
     def samples(self):
@@ -476,9 +523,9 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
     def toMapDict(self):
         result = AbstractInstrumentDataProduct.toMapDict(self)
         if self.flight:
-            result['flight'] = self.flight.name
+            result['flight_name'] = self.flight.name
         else:
-            result['flight'] = ''
+            result['flight_name'] = ''
         if self.resource:
             result['ev_name'] = self.resource.vehicle.name
         else:
@@ -495,6 +542,12 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct):
 
 
 class FtirDataProduct(BasaltInstrumentDataProduct):
+    minerals = models.CharField(max_length=1024, blank=True)
+    
+    @property
+    def type(self):
+        return 'FtirDataProduct'
+
     @property
     def samples(self):
         samples = [(s.wavenumber, s.reflectance) for s in self.ftirsample_set.all()]
@@ -502,6 +555,12 @@ class FtirDataProduct(BasaltInstrumentDataProduct):
 
 
 class AsdDataProduct(BasaltInstrumentDataProduct):
+    minerals = models.CharField(max_length=1024, blank=True)
+
+    @property
+    def type(self):
+        return 'AsdDataProduct'
+
     @property
     def samples(self):
         samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
@@ -555,11 +614,26 @@ class BasaltTaggedNote(AbstractTaggedNote):
 
 
 class BasaltNote(AbstractLocatedNote):
+    # Override this to specify a list of related fields
+    # to be join-query loaded when notes are listed, as an optimization
+    # prefetch for reverse or for many to many.
+    prefetch_related_fields = ['tags']
+
+    # select related for forward releationships.  
+    select_related_fields = ['author', 'role', 'location', 'flight', 'position']
+    
     # set foreign key fields and manager required by parent model to correct types for this site
     position = models.ForeignKey(PastPosition, null=True, blank=True)
     tags = TaggableManager(through=BasaltTaggedNote, blank=True)
 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+    
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
     
     def calculateDelayedEventTime(self, event_time):
         if self.flight:
@@ -598,9 +672,27 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     exif_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_exif_set" )
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
-
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+
+    @classmethod
+    def getSearchableFields(self):
+        result = super(BasaltImageSet, self).getSearchableFields()
+        result.append('flight__name')
+        return result
     
+    @property
+    def flight_name(self):
+        if self.flight:
+            return self.flight.name
+        else:
+            return None
+
+    @property
+    def resource_name(self):
+        if self.resource:
+            return self.resource.name
+        return None
+
     def finish_initialization(self, request):
         vehicle = None
         if self.resource:
@@ -612,7 +704,7 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
         Return a reduced dictionary that will be turned to JSON for rendering in a map
         """
         result = xgds_image_models.AbstractImageSet.toMapDict(self)
-        result['type'] = 'ImageSet'
+        result['type'] = 'Photo'
         if self.flight:
             result['flight'] = self.flight.name
         else:

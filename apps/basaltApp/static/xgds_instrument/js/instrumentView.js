@@ -33,7 +33,7 @@ $.extend(xgds_instrument,{
 		}
 		this.setMessage('Loading data...');
 		$.ajax({
-            url: dataProductJson.json_data,
+            url: dataProductJson.jsonDataUrl,
             dataType: 'json',
             success: $.proxy(function(data) {
                 if (_.isUndefined(data) || data.length === 0){
@@ -50,7 +50,7 @@ $.extend(xgds_instrument,{
 		
 	},
 	renderInstrumentPlot: function(dataProductJson, instrumentData){
-		this.labels = app.options.searchModels[dataProductJson.instrumentName].plotLabels;
+		this.labels = app.options.searchModels[dataProductJson.instrument_name].plotLabels;
 		this.plot = $.plot("#plotDiv", [{ data: instrumentData,
 		                                  color: 'blue'}],
 		                                { 
