@@ -706,9 +706,13 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
         result = xgds_image_models.AbstractImageSet.toMapDict(self)
         result['type'] = 'Photo'
         if self.flight:
-            result['flight'] = self.flight.name
+            result['flight_name'] = self.flight.name
         else:
-            result['flight'] = ''
+            result['flight_name'] = ''
+        if self.resource:
+            result['resource_name'] = self.resource.name
+        else:
+            result['resource_name'] = ''
         return result
 
 
