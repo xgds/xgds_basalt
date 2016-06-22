@@ -21,6 +21,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  H
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.contrib import messages 
 
 from forms import EVForm
 from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight
@@ -152,6 +153,28 @@ def populateNoteData(request, form):
     return data, tags, errors
 
 
+def getActivePlan(request, vehicleName, wrist=True):
+    foundFlights = BasaltActiveFlight.objects.filter(flight__vehicle__name=vehicleName)
+    if foundFlights:
+        flight = foundFlights.first().flight
+        if flight.plans:
+            plan = flight.plans.first().plan
+            relUrl = plan.getExportUrl('.kml')
+#             fname = '%s.kml' % plan.escapedName()
+#             relUrl = reverse('planner2_planExport', kwargs={'uuid': plan.uuid, 'name': fname})
+#             response = HttpResponse(content_type='text/csv')
+#             response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+#             url = request.build_absolute_uri(relUrl)
+#             return url
+            return redirect(relUrl)
+#             http://10.0.3.20/xgds_planner2/plan/export/4e724492-a4a9-4f1b-aee9-16957546f222/CBC1003_A_EVA_A.kml
+    messages.error(request, "No Planned Traverse found for " + vehicleName + ". Tell team to schedule it.")
+    if not wrist:
+        return redirect(reverse('error'))
+    else:
+        return redirect(reverse('wrist'))
+    
 def getActiveEpisode():
     '''
     This gets called from xgds_video to get the active episode
