@@ -16,9 +16,11 @@
 # __END_LICENSE__
 
 from glob import glob
+from datetime import datetime
 import re
-import datetime
 import os
+import m3u8
+import pytz
 import optparse
 import time
 import django
@@ -65,7 +67,12 @@ for i, dir in enumerate(segmentDirs):
     videoChunks = sorted(videoChunks, key = lambda chunk: int(re.sub(".+prog_index-(\d+).ts", "\\1", chunk)))
     if len(videoChunks) > 0:
         (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(videoChunks[1])
-        startTime = mtime - 5
+        index = m3u8.load('%s/%s' % (dir, 'prog_index.m3u8'))
+        m3u8segment = index.segments[0]
+        duration = m3u8segment.duration
+        startTime = mtime - duration
+        startDT = datetime.fromtimestamp(startTime, pytz.utc)
         (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(videoChunks[-1])
         endTime = mtime
-        print "Segment%03d: Start: %s End: %s" % (i, time.asctime(time.gmtime(startTime)), time.asctime(time.gmtime(endTime)))
+        endDT = datetime.fromtimestamp(endTime, pytz.utc)
+        print "Segment%03d: Start: %s End: %s" % (i, startDT, endDT)
