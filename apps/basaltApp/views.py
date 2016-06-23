@@ -33,7 +33,7 @@ from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
 from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
 from xgds_map_server.views import getViewMultiModelPage
-
+from xgds_video.util import getSegmentPath
 
 def editEV(request, pk=None):
     ''' Create or edit an EV definition.  Shows list of all existing EVs.
@@ -220,10 +220,9 @@ def getEpisodeFromName(flightName):
 def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
     """ get path to video for PLRP """
     if flightName.endswith(sourceShortName):
-        result = '%s/Video/Recordings/Segment%03d/prog_index.m3u8' % (flightName, int(segmentNumber))
+        return getSegmentPath(flightName, None, segmentNumber)
     else:
-        result = '%s_%s/Video/Recordings/Segment%03d/prog_index.m3u8' % (flightName, sourceShortName, int(segmentNumber))
-    return result
+        return getSegmentPath(flightName, sourceShortName, segmentNumber)
 
 def getDelaySeconds(flightName):
     try:
