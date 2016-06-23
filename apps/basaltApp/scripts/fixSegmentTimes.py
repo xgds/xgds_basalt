@@ -62,7 +62,7 @@ print "Found %d Segment directories" % len(segmentDirs)
 
 for i, dir in enumerate(segmentDirs):
     videoChunks = glob("%s/*.ts" % dir)
-    videoChunks = sorted(videoChunks, key = lambda chunk: int(re.sub(".+prog_index(\d+).ts", "\\1", chunk)))
+    videoChunks = sorted(videoChunks, key = lambda chunk: int(re.sub(".+prog_index-(\d+).ts", "\\1", chunk)))
     if len(videoChunks) > 0:
         (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(videoChunks[1])
         startTime = mtime - 5
