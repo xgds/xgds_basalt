@@ -31,7 +31,7 @@ from xgds_core.models import Constant
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
-from xgds_planner2.views import getActiveFlights
+from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
 from xgds_map_server.views import getViewMultiModelPage
 
 
@@ -160,20 +160,39 @@ def getActivePlan(request, vehicleName, wrist=True):
         if flight.plans:
             plan = flight.plans.first().plan
             relUrl = plan.getExportUrl('.kml')
-#             fname = '%s.kml' % plan.escapedName()
-#             relUrl = reverse('planner2_planExport', kwargs={'uuid': plan.uuid, 'name': fname})
-#             response = HttpResponse(content_type='text/csv')
-#             response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
-
-#             url = request.build_absolute_uri(relUrl)
-#             return url
             return redirect(relUrl)
-#             http://10.0.3.20/xgds_planner2/plan/export/4e724492-a4a9-4f1b-aee9-16957546f222/CBC1003_A_EVA_A.kml
     messages.error(request, "No Planned Traverse found for " + vehicleName + ". Tell team to schedule it.")
     if not wrist:
         return redirect(reverse('error'))
     else:
         return redirect(reverse('wrist'))
+    
+def getTodaysPlans(request):
+    letters = []
+    plankmls = []
+    groupFlights = getTodaysGroupFlights()
+    if groupFlights:
+        for gf in groupFlights.all():
+            letter = gf.name[-1]
+            for flight in gf.flights.all():
+                if flight.plans:
+                    plan = flight.plans.last().plan
+                    if letter not in letters:
+                        letters.append(letter)
+                        plankmls.append(plan.getExportUrl('.kml') )
+        
+    if not letters:
+        messages.error(request, "No Planned Traverses found for today. Tell team to schedule in xGDS.")
+        return None
+    else:
+        return zip(letters, plankmls)
+
+
+def wrist(request):
+    found = getTodaysPlans(request)
+    return render_to_response("basaltApp/kmlWrist.html",
+                              {'letter_plans': found},
+                              context_instance=RequestContext(request))
     
 def getActiveEpisode():
     '''

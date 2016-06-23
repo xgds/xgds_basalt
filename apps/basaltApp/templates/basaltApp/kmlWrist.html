@@ -1,6 +1,7 @@
 <!doctype html>
 {% load pipeline %}
 {% load staticfiles %}
+{% load basename %}
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
   	<meta charset="utf-8">
@@ -21,12 +22,13 @@
 	    </ul>
 	</div>
 	{% endif %}
+	
+{% for letter, plankml in letter_plans %}
   <p>
-  	<a href="/basaltApp/activePlan/EV1">EV1 PLANNED TRAVERSE</a></html>
+  	<strong>{{letter}}: </strong>
+  	<a href="{{ plankml }}">{{ plankml|basename }}</a></html>
   </p>
-  <p>
-  	<a href="/basaltApp/activePlan/EV2">EV2 PLANNED TRAVERSE</a></html>
-  </p>
+{% endfor %}
   <p>
   	<a href="/track/trackIndex.kml">TRACK POSITIONS</a>
   </p>
