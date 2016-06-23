@@ -18,6 +18,7 @@ def setSubsystemStatus(opts):
     Pings each subsystem for a response at every "interval_sec" seconds.
     """
     while True:
+        time.sleep(5)
         logging.info('pinging %s' % opts.subsystemName)
         subsystemName = opts.subsystemName
         try: 
@@ -31,7 +32,6 @@ def setSubsystemStatus(opts):
             myKey = subsystemName
             status = {"lastUpdated": datetime.datetime.utcnow().isoformat()}
             _cache.set(myKey, json.dumps(status))
-        time.sleep(5)
 
 
 def main():
