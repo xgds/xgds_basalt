@@ -59,9 +59,18 @@
 	    },
 	    "basecampLoadAvg": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecamp"
-	    }
+	    },
+	    "physioTablet1": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n physioTablet1"
+	    },
+	    "physioTablet2": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n physioTablet2"
+	    },
+	    "photoImportScript": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/autorunPhotoImportScript.py -n 10.10.21.78"
+	    } 
 	},
     "GROUPS": {
-        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg"]
+        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg", "physioTablet1", "physioTablet2"]
     }
 }
