@@ -56,6 +56,7 @@ from xgds_status_board.models import *
 from subprocess import Popen
 import re
 
+
 from django.core.cache import caches  
 _cache = caches['default']
 
@@ -420,8 +421,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'collector', 
                 'collection_time',
                 'marker_id',
-                'description',
-                'name']
+                'description']
     
     @classmethod
     def getFieldsForName(cls):
@@ -443,6 +443,16 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         if self.resource:
             return self.resource.name
         return None
+    
+    def getCurrentNumber(self):
+        allSamples = BasaltSample.objects.all()
+        numbers = [sample.number for sample in allSamples]
+        numbers = [n for n in numbers if n is not None]
+        numbers.sort()
+        if len(numbers) > 0:
+            return int(numbers[-1]) + 1
+        else:
+            return 0
     
     def buildName(self):
         region = self.region.shortName
@@ -479,19 +489,23 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         if replicate: 
             self.replicate = Replicate.objects.get(value=dataDict['replicate'])
         self.year = int(dataDict['year']) 
+        self.name = name
         self.save()
     
     def toMapDict(self):
         result = xgds_sample_models.AbstractSample.toMapDict(self)
         if result:
             result['type'] = 'Sample'
-            result['flight'] = self.flight.name if self.flight else ''
-            result['replicate'] = self.replicate.display_name if self.replicate else ''
-            result['marker_id'] = self.marker_id if self.marker_id else ''
+            result['flight'] = self.flight.id if self.flight else None
+            result['replicate'] = self.replicate.id if self.replicate else None
+            result['marker_id'] = self.marker_id if self.marker_id else None
         return result
     
     def __unicode__(self):
-        return 'basaltSample id=%d' % self.pk
+        if self.pk:
+            return 'basaltSample id=%d' % self.pk
+        else: 
+            return ''
 
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
