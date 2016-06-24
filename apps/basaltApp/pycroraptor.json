@@ -59,6 +59,9 @@
 	    },
 	    "basecampLoadAvg": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecamp"
+	    },
+	    "photoImportScript": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/autorunPhotoImportScript.py -n 10.10.21.78"
 	    }
 	},
     "GROUPS": {
