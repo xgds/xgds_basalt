@@ -28,11 +28,14 @@ def setSubsystemStatus(opts):
             continue
         hostname = subsystem.getHostname()
         response = os.system("ping -c 1 " + hostname)
+        if response != 0: # cannot ping host
+            # try pinging again.
+            response = os.system("ping -c 1 " + hostname)
         if response == 0: # hostname is up
             myKey = subsystemName
             status = {"lastUpdated": datetime.datetime.utcnow().isoformat()}
             _cache.set(myKey, json.dumps(status))
-
+        
 
 def main():
     import optparse
