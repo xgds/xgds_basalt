@@ -16,6 +16,7 @@
 
 from geocamUtil import KmlUtil
 
+from xml.sax.saxutils import escape
 from xgds_planner2.planExporter import TreeWalkPlanExporter
 from xgds_planner2 import xpjson
 from polycircles import polycircles
@@ -54,7 +55,7 @@ class KmlPlanExporter(TreeWalkPlanExporter):
         result = result + ('''
 <Placemark>
   <name>%s</name>
-  <styleUrl>%s</styleUrl>''' % (name, styleUrl))
+  <styleUrl>%s</styleUrl>''' % (escape(name), styleUrl))
         if directionStyle:
             result = result + directionStyle
         result = result + ('''
@@ -76,7 +77,7 @@ class KmlPlanExporter(TreeWalkPlanExporter):
     <LineString>
       <tessellate>1</tessellate>
       <coordinates>
-''' % {'name': name + ' boundary'}
+''' % {'name': escape(name) + ' boundary'}
         for coord in boundaryCircle.vertices:
             result = result + str(coord[1]) + ',' + str(coord[0]) + '\n'
         result = result + str(boundaryCircle.vertices[0][1]) + ',' + str(boundaryCircle.vertices[0][0]) + '\n'
@@ -98,7 +99,7 @@ class KmlPlanExporter(TreeWalkPlanExporter):
     <LineString>
       <tessellate>1</tessellate>
       <coordinates>
-''' % {'name': name + ' tolerance'}
+''' % {'name': escape(name) + ' tolerance'}
         for coord in toleranceCircle.vertices:
             result = result + str(coord[1]) + ',' + str(coord[0]) + '\n'
         result = result + str(toleranceCircle.vertices[0][1]) + ',' + str(toleranceCircle.vertices[0][0]) + '\n'
@@ -124,7 +125,7 @@ class KmlPlanExporter(TreeWalkPlanExporter):
     <LineString>
       <tessellate>1</tessellate>
       <coordinates>
-''' % {'name': segment.id }
+''' % {'name': escape(segment.id) }
         for coord in coords:
             result = result + str(coord[0]) + ',' + str(coord[1]) + '\n'
         result = result + '''
