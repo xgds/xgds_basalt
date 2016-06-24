@@ -407,6 +407,28 @@
     	}
     },
     {
+    	"pk": 37,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"PHYSIO_TABLET_1_IP",
+    		"units":"n/a",
+    		"notes":"IP of Physio Tablet",
+    		"dataType":"string",
+    		"value":"10.10.24.101"
+    	}
+    },
+    {
+    	"pk": 38,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"PHYSIO_TABLET_2_IP",
+    		"units":"n/a",
+    		"notes":"IP of Physio Tablet",
+    		"dataType":"string",
+    		"value":"10.10.24.102"
+    	}
+    },
+    {
     	"pk": 1,
     	"model": "xgds_core.TimeZoneHistory",
     	"fields": {
@@ -1072,6 +1094,32 @@
 			"logFileUrl": "",
 			"warningThreshold": 120,
 			"failureThreshold": 180
+		}
+	},
+	{
+		"pk": 21, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "physioTablet1",
+			"displayName": "Physio Tablet",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "PHYSIO_TABLET_1_IP"
+		}
+	},
+	{
+		"pk": 22, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "physioTablet2",
+			"displayName": "Physio Tablet",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "PHYSIO_TABLET_2_IP"
 		}
 	}
 ]
