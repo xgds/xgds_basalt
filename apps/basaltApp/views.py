@@ -32,7 +32,7 @@ from xgds_core.models import Constant
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
 from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
-from xgds_map_server.views import getViewMultiModelPage
+from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
 
 def editEV(request, pk=None):
@@ -220,9 +220,9 @@ def getEpisodeFromName(flightName):
 def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
     """ get path to video for PLRP """
     if flightName.endswith(sourceShortName):
-        return getSegmentPath(flightName, None, segmentNumber)
+        return '%s/prog_index.m3u8' % getSegmentPath(flightName, None, segmentNumber)
     else:
-        return getSegmentPath(flightName, sourceShortName, segmentNumber)
+        return '%s/prog_index.m3u8' % getSegmentPath(flightName, sourceShortName, segmentNumber)
 
 def getDelaySeconds(flightName):
     try:
@@ -248,7 +248,7 @@ def getLiveIndex(request):
         return HttpResponseRedirect(reverse('index')) 
 
 def getLiveObjects(request):
-    return getViewMultiModelPage(request, ['Photo','FTIR'])
+    return viewMultiLast(request, ['Photo'])
 
 def getNoteExtras(episodes, source, request):
     result = {'source':source}

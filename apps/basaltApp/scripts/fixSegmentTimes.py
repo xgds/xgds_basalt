@@ -66,11 +66,14 @@ for i, dir in enumerate(segmentDirs):
     videoChunks = glob("%s/*.ts" % dir)
     videoChunks = sorted(videoChunks, key = lambda chunk: int(re.sub(".+prog_index-(\d+).ts", "\\1", chunk)))
     if len(videoChunks) > 0:
-        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(videoChunks[1])
+        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(videoChunks[0])
         index = m3u8.load('%s/%s' % (dir, 'prog_index.m3u8'))
         m3u8segment = index.segments[0]
         duration = m3u8segment.duration
-        startTime = mtime - duration
+#        print "duration %f " % duration
+#	print "mtime %d " % mtime
+#	print "mdt %s " % datetime.fromtimestamp(mtime, pytz.utc)
+        startTime = float(mtime) - duration
         startDT = datetime.fromtimestamp(startTime, pytz.utc)
         (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(videoChunks[-1])
         endTime = mtime
