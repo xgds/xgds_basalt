@@ -220,9 +220,9 @@ def getEpisodeFromName(flightName):
 def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
     """ get path to video for PLRP """
     if flightName.endswith(sourceShortName):
-        return getSegmentPath(flightName, None, segmentNumber)
+        return '%s/prog_index.m3u8' % getSegmentPath(flightName, None, segmentNumber)
     else:
-        return getSegmentPath(flightName, sourceShortName, segmentNumber)
+        return '%s/prog_index.m3u8' % getSegmentPath(flightName, sourceShortName, segmentNumber)
 
 def getDelaySeconds(flightName):
     try:
