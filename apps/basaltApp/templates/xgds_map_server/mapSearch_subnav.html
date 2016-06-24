@@ -9,7 +9,7 @@
 		<li class="nav-item {% if modelName == 'FTIR' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'FTIR'%}">FTIR</a></li>
 		<!-- <li class="nav-item {% if modelName == 'pXRF' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'pXRF'%}">pXRF</a></li> -->
 		<li class="nav-item {% if modelName == 'Note' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'Note'%}">Notes</a></li>
-		<li class="nav-item {% if modelNames %}currentnav{% endif %}"><a href="{% url 'basalt_live_objects'%}">Latest Data</a></li>
+		<li class="nav-item {% if model_names %}currentnav{% endif %}"><a href="{% url 'basalt_live_objects'%}">Latest Data</a></li>
   	</ul>
   	</nav>
 </div>
