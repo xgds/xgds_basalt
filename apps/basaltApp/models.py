@@ -396,8 +396,8 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
-    number = models.IntegerField(null=True, verbose_name='Two digit sample Location #', db_index=True)
-    station_number = models.IntegerField(null=True, blank=True, verbose_name='Three digit station #', db_index=True)
+    number = models.IntegerField(null=True, verbose_name='Two digit sample location #', db_index=True)
+    station_number = models.CharField(null=True, max_length=32, blank=True, verbose_name='Two digit station #', db_index=True)
     replicate = models.ForeignKey(Replicate, null=True, blank=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")), db_index=True)
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
@@ -459,7 +459,11 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         year = str(self.year)
         sampleType = self.sample_type.value
         number = ("%03d" % (int(self.number),))
-        stationNum = ("%02d" % (int(self.station_number),))
+        
+        try:
+            stationNum = ("%02d" % (int(self.station_number),))
+        except:
+            stationNum = self.station_number.strip()
         if self.replicate: 
             replicate = str(self.replicate.value)
         else: 
@@ -485,7 +489,10 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         self.number = ("%03d" % (int(dataDict['number']),))
-        self.station_number = ("%02d" % (int(dataDict['station_number']),))
+        try:
+            self.station_number = ("%02d" % (int(dataDict['station_number']),))
+        except:
+            self.station_number = dataDict['station_number']
         if replicate: 
             self.replicate = Replicate.objects.get(value=dataDict['replicate'])
         self.year = int(dataDict['year']) 

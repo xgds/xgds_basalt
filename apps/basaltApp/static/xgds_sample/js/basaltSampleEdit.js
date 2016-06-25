@@ -24,7 +24,15 @@ $.extend(xgds_sample,{
 		 * Geology 
 		 * Archive
 		 */
-		var selected = $("#id_sample_type option:selected").html();
+		var selected = "Biology";
+		try {
+			var sample_type_el = $("#id_sample_type option:selected");
+			selected = sample_type_el.text();
+		} catch (err) {
+			// pass
+			console.log(err);
+		}
+		//var selected = $("#id_sample_type option:selected").html();
 		$("#id_replicate").children('option').hide();
 		$("#id_replicate").removeAttr('disabled');
 		if (selected == "Biology") {
@@ -55,20 +63,11 @@ $.extend(xgds_sample,{
 	
 	getSampleInfo: function() {
 		/**
-		 * Fetch the sample info given its label number or name.
+		 * Fetch the sample info from the server given its label number or name.
 		 */
 		var url = getSampleInfoUrl;
-		var labelNum = $("#id_label_number").val();
-		var sampleName = $("#id_name").val();
-		
 		var postData = {};
-		if (labelNum != "") {
-			postData['labelNum'] = labelNum;
-		} else if (sampleName != "") {
-			postData['sampleName'] = sampleName;
-		} else {
-			return null;
-		}
+		postData[$("#search_input_type").val()] = $("#id_search_input").val();
 		
 		var _this = this;
 		$.ajax({
@@ -79,6 +78,7 @@ $.extend(xgds_sample,{
 			{
 				// insert data sent from the server.
 				var json_dict = data[0];
+				_this.updateLabelName(json_dict.label_number, json_dict.name);
 				var field_id = "";
 				for (var key in json_dict) {
 					field_id = _this.getFormFieldID(key);
@@ -88,9 +88,9 @@ $.extend(xgds_sample,{
 						$('#' + field_id).val(field_val);
 					}
 				}
-				// copy over the fields into hidden
-		    	$('#id_hidden_labelNum').val(labelNum);
-		    	$('#id_hidden_name').val(sampleName);
+				
+				_this.updateNotes(json_dict);
+		    	
 			},
 			error: function(request, status, error) {
 				console.log("ERROR!")
@@ -98,13 +98,35 @@ $.extend(xgds_sample,{
 		});
 	},
 	
+	updateNotes: function(data){
+		//TODO if collection_time is null or changes must update
+		var container = $('#notes_content');
+		xgds_notes.initializeNotesReference(container, data.app_label, data.model_type, data.pk, data.collection_time, data.collection_timezone);
+		xgds_notes.getNotesForObject(data.app_label, data.model_type, data.pk, 'notes_content', container.find('table.notes_list'));
+	},
+	
+	updateLabelName: function(labelNum, sampleName) {
+		// copy over the fields into hidden
+    	$('#id_hidden_labelNum').val(labelNum);
+    	$('#id_hidden_name').val(sampleName);
+		$("#label_number_title").html("<strong> Label number: " + labelNum  + "</strong>");
+    	if (_.isNull(sampleName) || sampleName == "") {
+			$("#sample_name_title").html("<strong> Name: (Autofills on save) </strong>");
+		} else {
+			$("#sample_name_title").html("<strong>Name: " + sampleName  + "</strong>");
+		}
+	},
+	
 	getInputFieldsToUpdate: function() {
 		/**
 		 * Get only the input fields inside the form. 
 		 */
-		var input_fields = $(':input').not($("input[id='id_label_number']"));
-		input_fields = input_fields.not($("input[id='id_name']"));
+		var input_fields = $(':input').not($("input[id='id_search_input']"));
 		return input_fields.not($("select[class='sample_info_type']"));
+	},
+	
+	clearMessages: function() {
+		$('.messages').html('<br/>');
 	},
 	
 	onEnterLoadSampleInfo: function(event) {
@@ -116,10 +138,19 @@ $.extend(xgds_sample,{
 		 */
 		// on label number field enter, get the sample info
 	    if(event.keyCode == 13) {
+	    	
+	    	this.clearMessages();
+	    	
 	    	//if it's a name, make sure it passes sanity checks
-	    	var sampleName = $('#id_name').val();
-	    	if (sampleName != "") {
-	    		var numchars = sampleName.length;
+	    	
+	    	var searchType = $("#search_input_type").val();
+	    	var searchInput = $("#id_search_input").val();
+    		var numchars = searchInput.length;
+    		if (numchars == 0) {
+    			$("#error-message").html("Cannot search on nothing.");
+    			return;
+    		}
+	    	if (searchType == "sampleName") {
 	    		if ((numchars != 14) && (numchars != 15)) {
 	    			$("#error-message").html("Sample name is not valid!");
 	    			return;
@@ -129,25 +160,6 @@ $.extend(xgds_sample,{
 			// enable fields
 	    	var all_input_fields = this.getInputFieldsToUpdate();
 	    	all_input_fields.prop("disabled", false);
-	    	
-	    	// update the editing title
-	    	var labelNum = $('#id_label_number').val();
-	    	var sampleName = $('#id_name').val();
-	    	
-			if ($(".sample_info_type option:selected").val() == "sampleName") {
-				if (sampleName == "") {
-					$("#sample_name_title").html("<strong> Name: (Autofills on save) </strong>");
-				} else {
-					$("#sample_name_title").html("<strong>Name: " + sampleName  + "</strong>");
-				}
-			} else {
-				$("#label_number_title").html("<strong> Label number: " + labelNum  + "</strong>");
-				if (sampleName == "") {
-					$("#sample_name_title").html("<strong> Name: (Autofills on save) </strong>");
-				} else {
-					$("#sample_name_title").html("<strong>Name: " + sampleName  + "</strong>");
-				}
-			}
 	    	
 			// clear the error message
 			$("#error-message").html("");
@@ -241,7 +253,6 @@ $.extend(xgds_sample,{
 		var _this = this;
 		this.hideOutOfSimFields();
 		this.setupCollectorInput();
-		this.showReplicateOptions();
 		
 		// handler for select box change event.
 		$('.sample_info_type').change(function(event){
@@ -269,10 +280,12 @@ $.extend(xgds_sample,{
 		$('#id_sample_type').change(_this.showReplicateOptions);
 		
 		// if we get to edit page from sampleview, pull up the info
-		if (currentLabelNum) {
-			$("#id_label_number").val(parseInt(currentLabelNum));
-			this.getSampleInfo();
+		if (existingSample) {
+			// label number and name should be hidden within the form
+			this.updateLabelName(hiddenLabel,hiddenName);
 		}
+		
+		this.showReplicateOptions();
 	}
 });
 
