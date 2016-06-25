@@ -414,7 +414,7 @@
     		"units":"n/a",
     		"notes":"IP of Physio Tablet",
     		"dataType":"string",
-    		"value":"10.10.24.101"
+    		"value":"10.10.24.103"
     	}
     },
     {
@@ -424,6 +424,28 @@
     		"name":"PHYSIO_TABLET_2_IP",
     		"units":"n/a",
     		"notes":"IP of Physio Tablet",
+    		"dataType":"string",
+    		"value":"10.10.24.104"
+    	}
+    },
+    {
+    	"pk": 39,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"WRIST_1_IP",
+    		"units":"n/a",
+    		"notes":"IP of EV1 Wrist Display",
+    		"dataType":"string",
+    		"value":"10.10.24.101"
+    	}
+    },
+    {
+    	"pk": 40,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"WRIST_2_IP",
+    		"units":"n/a",
+    		"notes":"IP of EV2 Wrist Display",
     		"dataType":"string",
     		"value":"10.10.24.102"
     	}
@@ -1120,6 +1142,32 @@
 			"warningThreshold": 10,
 			"failureThreshold": 20,
 			"constantName": "PHYSIO_TABLET_2_IP"
+		}
+	},
+	{
+		"pk": 23, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "wrist1",
+			"displayName": "Wrist",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "WRIST_1_IP"
+		}
+	},
+	{
+		"pk": 24, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "wrist2",
+			"displayName": "Wrist",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "WRIST_2_IP"
 		}
 	}
 ]
