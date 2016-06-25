@@ -60,7 +60,16 @@ $.extend(xgds_sample,{
 		var url = getSampleInfoUrl;
 		var labelNum = $("#id_label_number").val();
 		var sampleName = $("#id_name").val();
-		var postData = {'labelNum': labelNum, 'sampleName': sampleName};
+		
+		var postData = {};
+		if (labelNum != "") {
+			postData['labelNum'] = labelNum;
+		} else if (sampleName != "") {
+			postData['sampleName'] = sampleName;
+		} else {
+			return null;
+		}
+		
 		var _this = this;
 		$.ajax({
 			url: url,
