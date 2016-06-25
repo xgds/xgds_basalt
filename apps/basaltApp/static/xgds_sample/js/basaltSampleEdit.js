@@ -135,9 +135,18 @@ $.extend(xgds_sample,{
 	    	var sampleName = $('#id_name').val();
 	    	
 			if ($(".sample_info_type option:selected").val() == "sampleName") {
-				$("#editing_title").html("<strong>Sample name: " + sampleName  + "</strong>");
+				if (sampleName == "") {
+					$("#sample_name_title").html("<strong> Name: (Autofills on save) </strong>");
+				} else {
+					$("#sample_name_title").html("<strong>Name: " + sampleName  + "</strong>");
+				}
 			} else {
-				$("#editing_title").html("<strong> Label number: " + labelNum  + "</strong>");
+				$("#label_number_title").html("<strong> Label number: " + labelNum  + "</strong>");
+				if (sampleName == "") {
+					$("#sample_name_title").html("<strong> Name: (Autofills on save) </strong>");
+				} else {
+					$("#sample_name_title").html("<strong>Name: " + sampleName  + "</strong>");
+				}
 			}
 	    	
 			// clear the error message
@@ -214,7 +223,6 @@ $.extend(xgds_sample,{
 				cb(matches);
 			};
 		};
-
 		$('#id_collector').typeahead({
 			hint: true,
 			highlight: true,
