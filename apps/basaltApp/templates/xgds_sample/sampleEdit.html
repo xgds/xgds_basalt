@@ -86,16 +86,8 @@ $(document).ready(function() {
             <div class="grid-stack-item-content">
 	<i class="icon-lock-open pinDiv"></i>
 	<div id="error-message"></div>
-	
-	<div><strong> Editing sample </strong></div>
-	{% if form.errors %}
-    <ol>
-    {% for error in form.errors %}
-        <li><strong>{{ error|escape }}</strong></li>
-    {% endfor %}
-    </ol>
-	{% endif %}
-	<table>
+	<div><strong> Look up sample </strong></div>
+	<table id="lookupsample_table">
 		<tr>
 			<th>
 				<select class="sample_info_type" name="get_sample">
@@ -106,7 +98,16 @@ $(document).ready(function() {
 			<td class='sample_info_type_value'><input id="id_label_number" min="0" name="label" type="number" />  Press enter to load data.</td>
 		</tr>
 	</table>
+	</br>
 	
+	<div id="editing_title"><strong> </strong></div>
+	{% if form.errors %}
+    <ol>
+    {% for error in form.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+	{% endif %}
 	<form class="updateSample" id="updateSampleForm" action="{% url 'xgds_sample_info_save' %}" method="post" enctype="multipart/form-data">
 		<table>
 			{{ form.as_table }}
