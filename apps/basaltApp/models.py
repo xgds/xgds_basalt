@@ -565,6 +565,10 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
 class FtirDataProduct(BasaltInstrumentDataProduct):
     minerals = models.CharField(max_length=1024, blank=True)
     
+    @classmethod
+    def getSearchableFields(self):
+        return ['name', 'description', 'minerals']
+    
     @property
     def type(self):
         return 'FtirDataProduct'
@@ -577,6 +581,10 @@ class FtirDataProduct(BasaltInstrumentDataProduct):
 
 class AsdDataProduct(BasaltInstrumentDataProduct):
     minerals = models.CharField(max_length=1024, blank=True)
+
+    @classmethod
+    def getSearchableFields(self):
+        return ['name', 'description', 'minerals']
 
     @property
     def type(self):
