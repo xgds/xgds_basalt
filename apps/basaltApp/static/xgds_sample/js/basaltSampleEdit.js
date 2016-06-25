@@ -88,6 +88,9 @@ $.extend(xgds_sample,{
 						$('#' + field_id).val(field_val);
 					}
 				}
+				// copy over the fields into hidden
+		    	$('#id_hidden_labelNum').val(labelNum);
+		    	$('#id_hidden_name').val(sampleName);
 			},
 			error: function(request, status, error) {
 				console.log("ERROR!")
@@ -113,6 +116,18 @@ $.extend(xgds_sample,{
 		 */
 		// on label number field enter, get the sample info
 	    if(event.keyCode == 13) {
+	    	//if it's a name, make sure it passes sanity checks
+	    	var sampleName = $('#id_name').val();
+	    	if (sampleName != "") {
+	    		var numchars = sampleName.length;
+	    		if ((numchars != 14) && (numchars != 15)) {
+	    			$("#error-message").html("Sample name is not valid!");
+	    			return;
+	    		}
+	    		
+	    		//TODO: get a list of existing sample names and validate against it!
+	    	}
+	    	
 			// enable fields
 	    	var all_input_fields = this.getInputFieldsToUpdate();
 	    	all_input_fields.prop("disabled", false);
@@ -237,10 +252,6 @@ $.extend(xgds_sample,{
 		if (currentLabelNum) {
 			$("#id_label_number").val(parseInt(currentLabelNum));
 			this.getSampleInfo();
-	    	var labelNum = $('#id_label_number').val();
-	    	$('#id_hidden_labelNum').val(labelNum);
-	    	var sampleName = $('#id_name').val();
-	    	$('#id_hidden_name').val(sampleName);
 		}
 	}
 });

@@ -25,7 +25,7 @@
 	<script type="text/javascript">
 		var collectors = {{ users|safe }};
 	</script>
-	<script type="text/javascript" src='{{ STATIC_URL }}xgds_sample/js/sampleEdit.js'></script>
+	<!-- <script type="text/javascript" src='{{ STATIC_URL }}xgds_sample/js/sampleEdit.js'></script> -->
 	<script type="text/javascript" src='{{ STATIC_URL }}xgds_sample/js/basaltSampleEdit.js'></script>
 	
     <!--  load handlebars -->
@@ -85,6 +85,7 @@ $(document).ready(function() {
         data-gs-width="3" data-gs-height="5">
             <div class="grid-stack-item-content">
 	<i class="icon-lock-open pinDiv"></i>
+	<div id="error-message"></div>
 	
 	<div><strong> Editing sample </strong></div>
 	{% if form.errors %}
