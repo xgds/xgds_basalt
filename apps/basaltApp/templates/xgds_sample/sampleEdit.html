@@ -40,7 +40,16 @@
 {{ block.super }}
 // url to server side code that fetches sample info for given sample label or name.
 var getSampleInfoUrl = '{{ getSampleInfoUrl }}';
-var currentLabelNum = "{{currentLabelNum}}";
+{% if form.instance.pk %}
+var existingSample = true;
+var hiddenLabel = "{{form.instance.label_number}}";
+var hiddenName = "{{form.instance.name}}";
+{% else %}
+var existingSample = false;
+var hiddenLabel = null;
+var hiddenName = null;
+{% endif %}
+
 var fieldsEnabledFlag = {{ fieldsEnabledFlag }};
 
 // add time picker 
@@ -67,15 +76,19 @@ $(document).ready(function() {
 {% load xgds_sample_extras %}
 
 {% block preDashboard %}
-{% if messages %}
+
 <div class="error-message upload-error">
 	<ul class="messages">
+	{% if messages %}
 	    {% for message in messages %}
 	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
 	    {% endfor %}
+	    {% else %}
+	    <br/>
+	    {% endif  %}
 	</ul>
 </div>
-{% endif  %}
+
 {% endblock preDashboard %}
 
 
@@ -90,12 +103,12 @@ $(document).ready(function() {
 	<table id="lookupsample_table">
 		<tr>
 			<th>
-				<select class="sample_info_type" name="get_sample">
+				<select class="sample_info_type" id="search_input_type">
 					<option value="labelNum">Label Number</option>
 					<option value="sampleName">Sample Name</option>
 				</select>
 			</th>
-			<td class='sample_info_type_value'><input id="id_label_number" min="0" name="label" type="number" />  Press enter to load data.</td>
+			<td class='sample_info_type_value'><input id="id_search_input" min="0" />  Press enter to load data.</td>
 		</tr>
 	</table>
 	</br>
