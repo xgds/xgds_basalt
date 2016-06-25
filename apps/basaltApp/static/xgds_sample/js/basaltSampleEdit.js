@@ -124,13 +124,25 @@ $.extend(xgds_sample,{
 	    			$("#error-message").html("Sample name is not valid!");
 	    			return;
 	    		}
-	    		
-	    		//TODO: get a list of existing sample names and validate against it!
 	    	}
 	    	
 			// enable fields
 	    	var all_input_fields = this.getInputFieldsToUpdate();
 	    	all_input_fields.prop("disabled", false);
+	    	
+	    	// update the editing title
+	    	var labelNum = $('#id_label_number').val();
+	    	var sampleName = $('#id_name').val();
+	    	
+			if ($(".sample_info_type option:selected").val() == "sampleName") {
+				$("#editing_title").html("<strong>Sample name: " + sampleName  + "</strong>");
+			} else {
+				$("#editing_title").html("<strong> Label number: " + labelNum  + "</strong>");
+			}
+	    	
+			// clear the error message
+			$("#error-message").html("");
+			
 	    	// ajax to get sample info for given label insert into the form.
 	    	this.getSampleInfo();
 	    }
