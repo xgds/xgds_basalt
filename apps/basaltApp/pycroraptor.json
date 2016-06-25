@@ -66,11 +66,18 @@
 	    "physioTablet2": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n physioTablet2"
 	    },
+	    "wrist1": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n wrist1"
+	    },
+	    "wrist2": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n wrist2"
+	    },
 	    "photoImportScript": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/autorunPhotoImportScript.py -n 10.10.21.78"
 	    } 
 	},
     "GROUPS": {
-        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg", "physioTablet1", "physioTablet2"]
+        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", 
+        			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg", "physioTablet1", "physioTablet2", "wrist1", "wrist2"]
     }
 }

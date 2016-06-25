@@ -17,12 +17,12 @@
 var xgds_sample = xgds_sample || {};
 $.extend(xgds_sample,{
 	showReplicateOptions: function() {
-		/*
-		 * Triplicates Legend:
-			Biology = A, B, C
-			Chemistry = D, E
-			Geology 
-			Archive
+		/**
+		 * Triplicates Legend (sampleType = triplicates):
+		 * Biology = A, B, C
+		 * Chemistry = D, E
+		 * Geology 
+		 * Archive
 		 */
 		var selected = $("#id_sample_type option:selected").html();
 		$("#id_replicate").children('option').hide();
@@ -45,18 +45,138 @@ $.extend(xgds_sample,{
 			$("#id_replicate option[value='10']").show();
 		}
 	},
-	initializeSampleEditForm: function(){
+	
+	getFormFieldID: function(jsonKey) {  
+		/**
+		 * Construct field id from the json key from server
+		 */
+		return "id_" + jsonKey;
+	},
+	
+	getSampleInfo: function() {
+		/**
+		 * Fetch the sample info given its label number or name.
+		 */
+		var url = getSampleInfoUrl;
+		var labelNum = $("#id_label_number").val();
+		var sampleName = $("#id_name").val();
+		
+		var postData = {};
+		if (labelNum != "") {
+			postData['labelNum'] = labelNum;
+		} else if (sampleName != "") {
+			postData['sampleName'] = sampleName;
+		} else {
+			return null;
+		}
+		
+		var _this = this;
+		$.ajax({
+			url: url,
+			type: "POST",
+			data: postData, // serializes the form's elements.
+			success: function(data)
+			{
+				// insert data sent from the server.
+				var json_dict = data[0];
+				var field_id = "";
+				for (var key in json_dict) {
+					field_id = _this.getFormFieldID(key);
+					field_val = json_dict[key];
+					if($("#" + field_id).length != 0) {
+						// id exists on page.
+						$('#' + field_id).val(field_val);
+					}
+				}
+				// copy over the fields into hidden
+		    	$('#id_hidden_labelNum').val(labelNum);
+		    	$('#id_hidden_name').val(sampleName);
+			},
+			error: function(request, status, error) {
+				console.log("ERROR!")
+			}
+		});
+	},
+	
+	getInputFieldsToUpdate: function() {
+		/**
+		 * Get only the input fields inside the form. 
+		 */
+		var input_fields = $(':input').not($("input[id='id_label_number']"));
+		input_fields = input_fields.not($("input[id='id_name']"));
+		return input_fields.not($("select[class='sample_info_type']"));
+	},
+	
+	onEnterLoadSampleInfo: function(event) {
+		/**
+		 * On sample name or label number enter,
+		 * enable the fields
+		 * load sample data (ajax)
+		 * (optional) copy over the label number or sample name field into form's hidden fields 
+		 */
+		// on label number field enter, get the sample info
+	    if(event.keyCode == 13) {
+	    	//if it's a name, make sure it passes sanity checks
+	    	var sampleName = $('#id_name').val();
+	    	if (sampleName != "") {
+	    		var numchars = sampleName.length;
+	    		if ((numchars != 14) && (numchars != 15)) {
+	    			$("#error-message").html("Sample name is not valid!");
+	    			return;
+	    		}
+	    	}
+	    	
+			// enable fields
+	    	var all_input_fields = this.getInputFieldsToUpdate();
+	    	all_input_fields.prop("disabled", false);
+	    	
+	    	// update the editing title
+	    	var labelNum = $('#id_label_number').val();
+	    	var sampleName = $('#id_name').val();
+	    	
+			if ($(".sample_info_type option:selected").val() == "sampleName") {
+				if (sampleName == "") {
+					$("#sample_name_title").html("<strong> Name: (Autofills on save) </strong>");
+				} else {
+					$("#sample_name_title").html("<strong>Name: " + sampleName  + "</strong>");
+				}
+			} else {
+				$("#label_number_title").html("<strong> Label number: " + labelNum  + "</strong>");
+				if (sampleName == "") {
+					$("#sample_name_title").html("<strong> Name: (Autofills on save) </strong>");
+				} else {
+					$("#sample_name_title").html("<strong>Name: " + sampleName  + "</strong>");
+				}
+			}
+	    	
+			// clear the error message
+			$("#error-message").html("");
+			
+	    	// ajax to get sample info for given label insert into the form.
+	    	this.getSampleInfo();
+	    }
+	},
+	
+	onSampleInfoTypeValueChange: function() {
+    	// fill in hidden data
+    	var labelNum = $('#id_label_number').val();
+    	$('#id_hidden_labelNum').val(labelNum);
+    	var sampleName = $('#id_name').val();
+    	$('#id_hidden_name').val(sampleName);
+	},
+	
+	hideOutOfSimFields: function() {
+		// hide out of sim fields
 		$('#id_resource').parent().parent().hide();
 		$('#id_latitude').parent().parent().hide();
 		$('#id_longitude').parent().parent().hide();
 		$('#id_altitude').parent().parent().hide();
 		$('#id_flight').parent().parent().hide();
-		this.setupCollectorInput();
-		this.showReplicateOptions();
-		// hook up the show replicate options to type change.
-		var _this = this;
-		$('#id_sample_type').change(_this.showReplicateOptions);
 	},
+	
+	/**
+	 * Show or hide the 'out of sim' fields.
+	 */
 	toggleAdvancedInput: function() {
 		$('#id_resource').parent().parent().toggle();
 		$('#id_latitude').parent().parent().toggle();
@@ -69,7 +189,22 @@ $.extend(xgds_sample,{
 			$('.toggleInputFields').html('Open out-of-sim fields');	
 		}
 	},
+	
+	onSampleInfoTypeChange: function() {
+		/**
+		 * Enter sample info for given sample name or sample label number.
+		 */ 
+		if ($(".sample_info_type option:selected").val() == "sampleName") {
+			$(".sample_info_type_value").html('<input id="id_name" name="name" type="text"/>  Press enter to load data.');
+		} else {
+			$(".sample_info_type_value").html('<input id="id_label_number" min="0" name="label" type="number"/>  Press enter to load data.');
+		}
+	},
+	
 	setupCollectorInput: function() {
+		/**
+		 * Autocomplete 'collector' field.
+		 */
 		// typeahead autocomplete for input fields
 		var substringMatcher = function(strs) {
 			return function findMatches(q, cb) {
@@ -88,7 +223,6 @@ $.extend(xgds_sample,{
 				cb(matches);
 			};
 		};
-
 		$('#id_collector').typeahead({
 			hint: true,
 			highlight: true,
@@ -98,7 +232,50 @@ $.extend(xgds_sample,{
 			name: 'collector',
 			source: substringMatcher(collectors)
 		});
+	},
+	
+	initializeSampleEditForm: function(){
+		/**
+		 * Initialize the sample edit form
+		 */
+		var _this = this;
+		this.hideOutOfSimFields();
+		this.setupCollectorInput();
+		this.showReplicateOptions();
+		
+		// handler for select box change event.
+		$('.sample_info_type').change(function(event){
+			_this.onSampleInfoTypeChange(); 
+		});
+		
+		var all_input_fields = this.getInputFieldsToUpdate();
+		// only disable fields if the form save succeeded or it's a new form
+		if (fieldsEnabledFlag == 0) {
+			all_input_fields.prop("disabled", true);
+		}
+		
+		// handler for 'on enter' event.
+		$('.sample_info_type_value').keyup(function(event){
+			_this.onEnterLoadSampleInfo(event)
+		});
+		
+		// handler for value change event
+		$('.sample_info_type_value').change(function(event){
+			_this.onSampleInfoTypeValueChange(event);
+		});
+		
+		// hook up the show replicate options to type change.
+		var _this = this;
+		$('#id_sample_type').change(_this.showReplicateOptions);
+		
+		// if we get to edit page from sampleview, pull up the info
+		if (currentLabelNum) {
+			$("#id_label_number").val(parseInt(currentLabelNum));
+			this.getSampleInfo();
+		}
 	}
 });
+
+
 
 
