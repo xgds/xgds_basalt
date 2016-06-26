@@ -34,6 +34,8 @@ from xgds_planner2.utils import getFlight
 from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
+from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink
+
 
 def editEV(request, pk=None):
     ''' Create or edit an EV definition.  Shows list of all existing EVs.
@@ -193,6 +195,21 @@ def wrist(request):
     return render_to_response("basaltApp/kmlWrist.html",
                               {'letter_plans': found},
                               context_instance=RequestContext(request))
+
+
+def wristKmlTrack(request):
+    found = {}
+    activeFlights = getActiveFlights()
+    for af in activeFlights:
+        if "_EV" in af.flight.name:
+            # build the kml for that ev
+            found['%s Current' % af.flight.name]=request.build_absolute_uri('/track/tracks.kml?track=%s&line=0' % af.flight.name)
+            found['%s Recent' % af.flight.name]=request.build_absolute_uri('/track/recent/tracks.kml?track=%s&recent=900&icon=0' % af.flight.name)
+
+    kmlContent = ''
+    for name, url in found.iteritems():
+        kmlContent += buildNetworkLink(url, name)
+    return wrapKmlForDownload(kmlContent)
     
 def getActiveEpisode():
     '''
