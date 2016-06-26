@@ -60,6 +60,7 @@ $.extend(xgds_sample,{
 	},
 	
 	updateNonEditableFields: function() {
+		this.nonEditableFields.push('#id_number');
 	},
 	
 	postInit: function() {
