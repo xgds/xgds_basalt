@@ -9,9 +9,10 @@ import spc  # library for reading SPC format spectra
 from geocamUtil.TimeUtil import timeZoneToUtc
 from geocamTrack.utils import getClosestPosition
 from xgds_planner2.utils import getFlight
-from basaltApp.models import FtirDataProduct, AsdDataProduct, PxrfDataProduct, FtirSample, ScienceInstrument, BasaltTrack
+from basaltApp.models import FtirDataProduct, AsdDataProduct, PxrfDataProduct, FtirSample, ScienceInstrument, BasaltTrack, AsdSample
 
 FTIR = "ftir"
+ASD = "asd"
 
 def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
     #
@@ -64,29 +65,40 @@ INSTRUMENT DATA
 
     return HttpResponse(importSummary, content_type="text/plain")
 
-def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, timestamp, 
+def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, user=None):
-    instrumentData = portableDataFile.read()
-    instrumentData = instrumentData.translate(None, "\x00")
-    utcStamp = timeZoneToUtc(timezone.localize(timestamp))
-    importSummary = """Import from %s
-Uploaded filename: %s
-Timestamp (Orig): %s
-Timestamp (UTC): %s
-Original Timezone: %s
-Tracking resource: %s\n
-INSTRUMENT DATA
-%s""" % (instrument["displayName"],
-         portableDataFile.name,
-         timestamp,
-         utcStamp,
-         timezone,
-         resource,
-         instrumentData)
+    instrumentData = spc.File(portableDataFile)
+    # Take slice b/c data has trailing tab
+    dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
+    instrument = ScienceInstrument.getInstrument(ASD)
 
-    #TODO need to get raw files and write this importer
+    (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
+    
+    dataProduct = AsdDataProduct(
+        portable_data_file = portableDataFile,
+        portable_file_format_name = "SPC",
+        portable_mime_type = "application/octet-stream",
+        acquisition_time = utcStamp,
+        acquisition_timezone = timezone.zone,
+        creation_time = datetime.datetime.now(pytz.utc),
+        manufacturer_data_file = manufacturerDataFile,
+        manufacturer_mime_type = "application/octet-stream",
+        instrument = instrument,
+        location = sampleLocation,
+        flight = flight,
+        resource = resource,
+        creator=user
+    )
+    dataProduct.save()
+    for wl, ab in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
+        sample = AsdSample(
+            dataProduct = dataProduct,
+            wavelength = wl,
+            absorbance = ab)
+        sample.save()
 
-    return HttpResponse(importSummary, content_type="text/plain")
+    return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
+                                                                            'modelName':'ASD'}))
 
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      utcStamp, timezone, resource, user=None):
