@@ -403,6 +403,16 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     
+    @classmethod
+    def getSearchableNumericFields(self):
+        return ['year', 'number', 'label__number']
+
+    @classmethod
+    def getSearchableFields(self):
+        result = super(BasaltSample, self).getSearchableFields()
+        result.extend(['station_number', 'marker_id','replicate__display_name', 'flight__name'])
+        return result
+
     @property
     def type(self):
         return 'Sample'
