@@ -44,7 +44,7 @@ def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
 
 
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile,
-                     timestamp, timezone, resource, user=None):
+                     timestamp, timezone, resource, name, description, user=None):
     instrumentData = portableDataFile.read()
     instrumentData = instrumentData.translate(None, "\x00")
     utcStamp = timeZoneToUtc(timezone.localize(timestamp))
@@ -66,7 +66,7 @@ INSTRUMENT DATA
     return HttpResponse(importSummary, content_type="text/plain")
 
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
-                    timezone, resource, user=None):
+                    timezone, resource, name, description, minerals, user=None):
     instrumentData = spc.File(portableDataFile)
     # Take slice b/c data has trailing tab
     dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
@@ -87,7 +87,10 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
         location = sampleLocation,
         flight = flight,
         resource = resource,
-        creator=user
+        creator=user,
+        name = name,
+        description = description,
+        minerals = minerals
     )
     dataProduct.save()
     for wl, ab in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
@@ -101,12 +104,11 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
                                                                             'modelName':'ASD'}))
 
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
-                     utcStamp, timezone, resource, user=None):
+                     utcStamp, timezone, resource, name, description, minerals, user=None):
     instrumentData = spc.File(portableDataFile)
     # Take slice b/c data has trailing tab
     dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
     instrument = ScienceInstrument.getInstrument(FTIR)
-
     (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
     
     dataProduct = FtirDataProduct(
@@ -122,7 +124,10 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         location = sampleLocation,
         flight = flight,
         resource = resource,
-        creator=user
+        creator=user,
+        name = name,
+        description = description,
+        minerals = minerals
     )
     dataProduct.save()
     for wn, rf in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
