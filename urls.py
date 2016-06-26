@@ -23,7 +23,7 @@ from django.views.generic import RedirectView, TemplateView
 from django.contrib import admin
 admin.autodiscover()
 
-import basaltApp.views
+from basaltApp.views import wrist
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -45,4 +45,6 @@ urlpatterns = [
     url(r'^xgds_instrument/', include('xgds_instrument.urls')),
     url(r'^xgds_core/', include('xgds_core.urls')),
     url(r'^xgds_status_board/', include('xgds_status_board.urls')),
+    url(r'^w/', include('xgds_status_board.urls')),
+    url(r'^w$', wrist, {'loginRequired':False}, 'w'),
 ]
