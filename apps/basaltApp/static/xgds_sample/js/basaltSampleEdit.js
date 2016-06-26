@@ -59,10 +59,14 @@ $.extend(xgds_sample,{
 		this.advancedInputFields.push('#id_flight');
 	},
 	
+	updateNonEditableFields: function() {
+	},
+	
 	postInit: function() {
 		// hook up the show replicate options to type change.
 		var _this = this;
 		$('#id_sample_type').change(_this.showReplicateOptions);
+		$('#id_number').prop("disabled", true);
 		
 	},
 	
