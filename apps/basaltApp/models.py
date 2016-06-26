@@ -422,7 +422,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'number',
                 'station_number',
                 'replicate', 
-                'collector', 
+                'collector_name', 
                 'collection_time',
                 'marker_id',
                 'description']
