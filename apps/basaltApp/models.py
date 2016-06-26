@@ -404,6 +404,10 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     
     @property
+    def type(self):
+        return 'Sample'
+    
+    @property
     def flight_name(self):
         if self.flight:
             return self.flight.name
