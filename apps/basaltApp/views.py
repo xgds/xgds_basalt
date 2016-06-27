@@ -28,7 +28,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 
 from forms import EVForm, BasaltInstrumentDataForm
-from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight, ScienceInstrument, BasaltInstrumentDataProduct
+from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
@@ -385,17 +385,20 @@ def saveUpdatedInstrumentData(request, instrument_name, pk):
     dataProduct = InstrumentDataProductModel.objects.get(pk = pk)
     if request.method == 'POST':
         # save the update info into the model.
-        dataProductDict = request.POST.dict()
-        dataProduct.name = dataProductDict['name'] 
-        dataProduct.description = dataProductDict['description']
-        dataProduct.minerals = dataProductDict['minerals']
+        postDict = request.POST.dict()
+        dataProduct.name = postDict['name'] 
+        dataProduct.description = postDict['description']
+        dataProduct.minerals = postDict['minerals']
+        resourceId = postDict['resource']
+        resource = BasaltResource.objects.get(id=resourceId)
+        dataProduct.resource = resource
         
         # get timezone
-        dataProduct.acquisition_timezone = dataProductDict['timezone']
-        tz = pytz.timezone(dataProductDict['timezone'])
+        dataProduct.acquisition_timezone = postDict['timezone']
+        tz = pytz.timezone(postDict['timezone'])
         
         # convert to timezone-aware datetime
-        timezoneTimeStr = dataProductDict['dataCollectionTime']
+        timezoneTimeStr = postDict['dataCollectionTime']
         timezoneTime = stringToDateTime(timezoneTimeStr, tz)        
         
         # convert to utc time
