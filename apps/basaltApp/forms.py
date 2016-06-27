@@ -19,6 +19,11 @@ from django.forms import ModelForm
 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.forms import DateTimeField
+from geocamUtil.extFileField import ExtFileField
+from basaltApp.models import *
+from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField
+from xgds_instrument.models import ScienceInstrument
 
 from models import EV
 
@@ -50,9 +55,15 @@ class EmailFeedbackForm(forms.Form):
 
 
 class EVForm(ModelForm):
-#     pk = forms.IntegerField(widget=forms.HiddenInput(), required=False)
-    
     class Meta:
         model = EV
         fields = ['mass', 'user']
-        
+
+
+class BasaltInstrumentImportForm(ImportInstrumentDataForm):
+    INSTRUMENT_MODEL = \
+                LazyGetModelByName(settings.XGDS_INSTRUMENT_INSTRUMENT_MODEL)
+    instrument = InstrumentModelChoiceField(INSTRUMENT_MODEL.get().objects.all(), widget = forms.HiddenInput())
+    minerals = forms.CharField(widget=forms.Textarea, label="Minerals")
+    name = forms.CharField(required=False, label="Name")
+    description = forms.CharField(widget=forms.Textarea, label="Description")

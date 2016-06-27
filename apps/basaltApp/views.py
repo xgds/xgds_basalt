@@ -22,9 +22,10 @@ from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.contrib import messages 
+from django.core.urlresolvers import reverse
 
-from forms import EVForm
-from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight
+from forms import EVForm, BasaltInstrumentImportForm
+from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight, ScienceInstrument
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
@@ -35,6 +36,7 @@ from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
 from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink
+from xgds_instrument.views import lookupImportFunctionByName
 
 
 def editEV(request, pk=None):
@@ -169,6 +171,7 @@ def getActivePlan(request, vehicleName, wrist=True):
     else:
         return redirect(reverse('wrist'))
     
+    
 def getTodaysPlans(request):
     letters = []
     plankmls = []
@@ -211,6 +214,7 @@ def wristKmlTrack(request):
         kmlContent += buildNetworkLink(url, name)
     return wrapKmlForDownload(kmlContent)
     
+    
 def getActiveEpisode():
     '''
     This gets called from xgds_video to get the active episode
@@ -221,6 +225,7 @@ def getActiveEpisode():
             if active.flight.group.videoEpisode:
                 return active.flight.group.videoEpisode
     return None
+
 
 def getEpisodeFromName(flightName):
     '''
@@ -234,12 +239,14 @@ def getEpisodeFromName(flightName):
         group = BasaltGroupFlight.objects.get(name=flightName)
         return group.videoEpisode
 
+
 def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
     """ get path to video for PLRP """
     if flightName.endswith(sourceShortName):
         return '%s/prog_index.m3u8' % getSegmentPath(flightName, None, segmentNumber)
     else:
         return '%s/prog_index.m3u8' % getSegmentPath(flightName, sourceShortName, segmentNumber)
+
 
 def getDelaySeconds(flightName):
     try:
@@ -253,6 +260,7 @@ def getDelaySeconds(flightName):
         pass
     return 0
 
+
 def getLiveIndex(request):
     activeFlights = getActiveFlights()
     if activeFlights:
@@ -264,8 +272,10 @@ def getLiveIndex(request):
     else:
         return HttpResponseRedirect(reverse('index')) 
 
+
 def getLiveObjects(request):
     return viewMultiLast(request, ['Photo'])
+
 
 def getNoteExtras(episodes, source, request):
     result = {'source':source}
@@ -290,3 +300,60 @@ def getNoteExtras(episodes, source, request):
                 result['object_id'] = flight.id
                 result['event_timezone'] = flight.timezone
     return result
+
+
+# def getInstrumentForm(instrumentName):
+#     if instrumentName == 'FTIR':
+#         return FtirInstrumentImportForm
+#     elif instrumentName == "ASD":
+#         return AsdInstrumentImportForm
+#     elif instrumentName == "pXRF":
+#         return PxrfInstrumentImportForm
+
+
+def getInstrumentDataImportPage(request, instrumentName):
+#     form = getInstrumentForm(instrumentName)()
+    form = BasaltInstrumentImportForm()
+    instrument = ScienceInstrument.getInstrument(instrumentName)
+    form.fields['instrument'].initial = instrument.id
+    errors = ""
+         
+    instrumentDataImportUrl = reverse('save_instrument_data', kwargs={'instrumentName': instrumentName})
+    return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
+                              RequestContext(request, {'form': form,
+                                                       'errors': errors,
+                                                       'instrumentDataImportUrl': instrumentDataImportUrl,
+                                                       'instrumentType': instrumentName})
+                              )      
+
+
+def saveInstrumentData(request, instrumentName):
+    instrumentDataImportUrl = reverse('save_instrument_data', kwargs={'instrumentName': instrumentName})
+    if request.method == 'POST':
+        form = BasaltInstrumentImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            instrument = form.cleaned_data["instrument"]
+            messages.success(request, 'Instrument data is successfully saved.' )
+            importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
+                                                   instrument.dataImportFunctionName)
+            minerals = ""
+            if 'minerals' in form.cleaned_data:
+                minerals = form.cleaned_data['minerals']
+            return importFxn(instrument, 
+                             request.FILES["portableDataFile"],
+                             request.FILES["manufacturerDataFile"],
+                             form.cleaned_data["dataCollectionTime"],
+                             form.getTimezone(), 
+                             form.getResource(),
+                             form.cleaned_data['name'],
+                             form.cleaned_data['description'],
+                             minerals,
+                             request.user)
+        else: 
+            messages.error(request, 'Form errors %s' % form.errors)
+        return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
+                          RequestContext(request, {'form': form,
+                                                   'errors': form.errors,
+                                                   'instrumentDataImportUrl': instrumentDataImportUrl,
+                                                   'instrumentType': instrumentName})
+                          )      
