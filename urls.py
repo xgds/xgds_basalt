@@ -23,7 +23,7 @@ from django.views.generic import RedirectView, TemplateView
 from django.contrib import admin
 admin.autodiscover()
 
-from basaltApp.views import wrist
+from basaltApp.views import wrist, editInstrumentData
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^xgds_planner2/', include('xgds_planner2.urls')),
     url(r'^xgds_plot/', include('xgds_plot.urls')),
     url(r'^xgds_video/', include('xgds_video.urls')),
+    url(r'^xgds_instrument/edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', editInstrumentData, {}, 'basalt_instrument_data_edit'),
     url(r'^xgds_instrument/', include('xgds_instrument.urls')),
     url(r'^xgds_core/', include('xgds_core.urls')),
     url(r'^xgds_status_board/', include('xgds_status_board.urls')),
