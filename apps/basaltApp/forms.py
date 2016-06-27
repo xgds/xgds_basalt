@@ -66,4 +66,4 @@ class BasaltInstrumentImportForm(ImportInstrumentDataForm):
     instrument = InstrumentModelChoiceField(INSTRUMENT_MODEL.get().objects.all(), widget = forms.HiddenInput())
     minerals = forms.CharField(widget=forms.Textarea, label="Minerals")
     name = forms.CharField(required=False, label="Name")
-    description = forms.CharField(widget=forms.Textarea, label="Description")
+    description = forms.CharField(widget=forms.Textarea, label="Description", required=False)
