@@ -687,10 +687,12 @@ class BasaltNote(AbstractLocatedNote):
             return None
     
     def calculateDelayedEventTime(self, event_time):
-        if self.flight:
-            delayConstant = Constant.objects.get(name="delay")
-            return event_time - datetime.timedelta(seconds=int(delayConstant.value)) #self.flight.delaySeconds)
-            
+        try:
+            if self.flight.active:
+                delayConstant = Constant.objects.get(name="delay")
+                return event_time - datetime.timedelta(seconds=int(delayConstant.value))
+        except:
+            pass
         return self.event_time
 
     def toMapDict(self):
