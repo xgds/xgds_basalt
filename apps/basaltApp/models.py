@@ -56,7 +56,6 @@ from xgds_status_board.models import *
 from subprocess import Popen
 import re
 
-
 from django.core.cache import caches  
 _cache = caches['default']
 
@@ -403,6 +402,17 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     
+    @classmethod
+    def getSearchableNumericFields(self):
+        return ['year', 'number', 'label__number']
+
+    @classmethod
+    def getSearchableFields(self):
+        result = super(BasaltSample, self).getSearchableFields()
+        result.extend(['station_number', 'marker_id','replicate__display_name', 'flight__name'])
+        return result
+
+    
     @property
     def flight_name(self):
         if self.flight:
@@ -418,7 +428,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'number',
                 'station_number',
                 'replicate', 
-                'collector', 
+                'collector_name', 
                 'collection_time',
                 'marker_id',
                 'description']
@@ -563,37 +573,49 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
 
 
 class FtirDataProduct(BasaltInstrumentDataProduct):
-    minerals = models.CharField(max_length=1024, blank=True)
+    minerals = models.CharField(max_length=2048, blank=True)
     
     @classmethod
     def getSearchableFields(self):
         return ['name', 'description', 'minerals']
     
-    @property
-    def type(self):
-        return 'FtirDataProduct'
-
+    @classmethod
+    def cls_type(cls):
+        return 'FTIR'
+    
     @property
     def samples(self):
         samples = [(s.wavenumber, s.reflectance) for s in self.ftirsample_set.all()]
         return samples
+    
+    def toMapDict(self):
+        result = BasaltInstrumentDataProduct.toMapDict(self)
+        if self.minerals:
+            result['minerals'] = self.minerals
+        return result
 
 
 class AsdDataProduct(BasaltInstrumentDataProduct):
-    minerals = models.CharField(max_length=1024, blank=True)
+    minerals = models.CharField(max_length=2048, blank=True)
 
     @classmethod
     def getSearchableFields(self):
         return ['name', 'description', 'minerals']
-
-    @property
-    def type(self):
-        return 'AsdDataProduct'
-
+    
+    @classmethod
+    def cls_type(cls):
+        return 'ASD'
+    
     @property
     def samples(self):
         samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
         return samples
+    
+    def toMapDict(self):
+        result = BasaltInstrumentDataProduct.toMapDict(self)
+        if self.minerals:
+            result['minerals'] = self.minerals
+        return result
     
 
 class PxrfDataProduct(BasaltInstrumentDataProduct):
