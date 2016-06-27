@@ -551,6 +551,17 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
     def samples(self):
         return []
 
+    @classmethod
+    def getDataForm(cls, instrument_name):
+        if instrument_name == 'FTIR':
+            return FtirDataProduct
+        elif instrument_name == 'ASD':
+            return AsdDataProduct
+        elif instrument_name == 'pXRF':
+            return PxrfDataProduct
+        else: 
+            return None
+    
     def toMapDict(self):
         result = AbstractInstrumentDataProduct.toMapDict(self)
         if self.flight:
