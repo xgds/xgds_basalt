@@ -208,6 +208,7 @@ def wristKmlTrack(request):
             # build the kml for that ev
             found['%s Current' % af.flight.name]=request.build_absolute_uri('/track/tracks.kml?track=%s&line=0' % af.flight.name)
             found['%s Recent' % af.flight.name]=request.build_absolute_uri('/track/recent/tracks.kml?track=%s&recent=900&icon=0' % af.flight.name)
+    found['Notes'] = request.build_absolute_uri('/notes/notesFeed.kml')
 
     kmlContent = ''
     for name, url in found.iteritems():
