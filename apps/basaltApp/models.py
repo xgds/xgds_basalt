@@ -412,9 +412,6 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         result.extend(['station_number', 'marker_id','replicate__display_name', 'flight__name'])
         return result
 
-    @property
-    def type(self):
-        return 'Sample'
     
     @property
     def flight_name(self):
@@ -582,10 +579,10 @@ class FtirDataProduct(BasaltInstrumentDataProduct):
     def getSearchableFields(self):
         return ['name', 'description', 'minerals']
     
-    @property
-    def type(self):
-        return 'FtirDataProduct'
-
+    @classmethod
+    def cls_type(cls):
+        return 'FTIR'
+    
     @property
     def samples(self):
         samples = [(s.wavenumber, s.reflectance) for s in self.ftirsample_set.all()]
@@ -604,11 +601,11 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
     @classmethod
     def getSearchableFields(self):
         return ['name', 'description', 'minerals']
-
-    @property
-    def type(self):
-        return 'AsdDataProduct'
-
+    
+    @classmethod
+    def cls_type(cls):
+        return 'ASD'
+    
     @property
     def samples(self):
         samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
