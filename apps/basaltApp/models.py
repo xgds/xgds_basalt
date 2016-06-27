@@ -56,7 +56,6 @@ from xgds_status_board.models import *
 from subprocess import Popen
 import re
 
-
 from django.core.cache import caches  
 _cache = caches['default']
 
@@ -574,7 +573,7 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
 
 
 class FtirDataProduct(BasaltInstrumentDataProduct):
-    minerals = models.CharField(max_length=1024, blank=True)
+    minerals = models.CharField(max_length=2048, blank=True)
     
     @classmethod
     def getSearchableFields(self):
@@ -588,10 +587,16 @@ class FtirDataProduct(BasaltInstrumentDataProduct):
     def samples(self):
         samples = [(s.wavenumber, s.reflectance) for s in self.ftirsample_set.all()]
         return samples
+    
+    def toMapDict(self):
+        result = BasaltInstrumentDataProduct.toMapDict(self)
+        if self.minerals:
+            result['minerals'] = self.minerals
+        return result
 
 
 class AsdDataProduct(BasaltInstrumentDataProduct):
-    minerals = models.CharField(max_length=1024, blank=True)
+    minerals = models.CharField(max_length=2048, blank=True)
 
     @classmethod
     def getSearchableFields(self):
@@ -605,6 +610,12 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
     def samples(self):
         samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
         return samples
+    
+    def toMapDict(self):
+        result = BasaltInstrumentDataProduct.toMapDict(self)
+        if self.minerals:
+            result['minerals'] = self.minerals
+        return result
     
 
 class PxrfDataProduct(BasaltInstrumentDataProduct):

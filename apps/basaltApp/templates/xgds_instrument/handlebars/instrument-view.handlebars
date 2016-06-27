@@ -8,6 +8,25 @@
 
 <div> <strong>{{instrument_name}}</strong> <!--<a id="edit_instrument_button" href="/xgds_instrument/edit/{{pk}}" class="mybutton small" target="_blank">Edit</a> --></div>
 	<table>
+		{{#if name}}
+		<tr>
+			<th><label for="id_name">Name:</label></th>
+			<td>{{name}}</td>
+		</tr>
+		{{/if}}
+		{{#if description}}
+		<tr>
+			<th><label for="id_description">Description:</label></th>
+			<td>{{description}}</td>
+		</tr>
+		{{/if}}
+		{{#if minerals}}
+		<tr>
+			<th><label for="id_minerals">Minerals:</label></th>
+			<td>{{ minerals }}</td>
+		</tr>
+		{{/if}}
+		
 		<tr>
 			<th><label for="id_acquisition_time">Acquisition time:</label></th>
 			<td>{{prettyTime acquisition_time acquisition_timezone}}</td>
@@ -26,13 +45,13 @@
 		{{/if}}
 		{{#if manufacturer_data_file_url}}
 		<tr>
-			<th><label for="id_manufacturer_data_file">Manufacturer data file:</label></th>
+			<th><label for="id_manufacturer_data_file">Manufacturer data file (.pdz,.a2r,.asd):</label></th>
 			<td><a href="{{manufacturer_data_file_url}}">{{manufacturer_data_file_url}}</a></td>
 		</tr>
 		{{/if}}
 		{{#if portable_data_file_url}}
 		<tr>
-			<th><label for="id_portable_data_file">Portable data file:</label></th>
+			<th><label for="id_portable_data_file">Portable data file (.spc,.txt,.csv):</label></th>
 			<td><a href="{{portable_data_file_url}}">{{portable_data_file_url}}</a></td>
 		</tr>
 		{{/if}}
