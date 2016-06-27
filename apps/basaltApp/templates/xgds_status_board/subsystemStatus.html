@@ -1,0 +1,9 @@
+{% extends "xgds_status_board/subsystemStatus_base.html" %}
+
+{% load core_constant %}
+
+{% block preDashboard %}
+DELAY: {% constant_value 'delay' %} s</br>
+REMOTE DELAY: {% constant_value 'remoteDelay' %} s
+
+{% endblock preDashboard %}
