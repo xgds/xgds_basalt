@@ -65,6 +65,7 @@ INSTRUMENT DATA
 
     return HttpResponse(importSummary, content_type="text/plain")
 
+
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None):
     instrumentData = spc.File(portableDataFile)

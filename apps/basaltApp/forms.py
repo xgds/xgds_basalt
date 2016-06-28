@@ -60,7 +60,7 @@ class EVForm(ModelForm):
         fields = ['mass', 'user']
 
 
-class BasaltInstrumentImportForm(ImportInstrumentDataForm):
+class BasaltInstrumentDataForm(ImportInstrumentDataForm):
     INSTRUMENT_MODEL = \
                 LazyGetModelByName(settings.XGDS_INSTRUMENT_INSTRUMENT_MODEL)
     instrument = InstrumentModelChoiceField(INSTRUMENT_MODEL.get().objects.all(), widget = forms.HiddenInput())
