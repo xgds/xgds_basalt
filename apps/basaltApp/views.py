@@ -359,7 +359,7 @@ def saveNewInstrumentData(request, instrumentName):
             
             return importFxn(instrument, 
                              request.FILES["portableDataFile"],
-                             request.FILES["manufacturerDataFile"],
+                             request.FILES.get("manufacturerDataFile", None),
                              utcStamp, 
                              timezone, 
                              form.getResource(),
