@@ -1169,5 +1169,18 @@
 			"failureThreshold": 20,
 			"constantName": "WRIST_2_IP"
 		}
-	}
+	},
+	{
+		"pk": 25, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "redMipCamera",
+			"displayName": "Mip Red Camera",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "RED_MIP_CAMERA_IP"
+		}
+	},
 ]
