@@ -76,10 +76,6 @@ $(function() {
                 		this.toleranceFeature.setGeometry(this.toleranceGeometry);
                 	}
                 }
-//                if (!_.isUndefined(this.toleranceGeometry)) {
-//                	this.toleranceGeometry.setCenter(this.point);
-  //              	this.toleranceGeometry.setRadius(this.model.get('tolerance'));
-//                }
             },
             getSphere: function() {
             	if (_.isUndefined(app.wgs84Sphere)){

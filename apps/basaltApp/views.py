@@ -271,7 +271,7 @@ def getLiveIndex(request):
     activeFlights = getActiveFlights()
     if activeFlights:
         firstFlight =activeFlights.first().flight
-        if settings.HOSTNAME == 'boat':
+        if settings.HOSTNAME == 'basalt':
             return HttpResponseRedirect(reverse('xgds_video_live'))
         else: 
             return HttpResponseRedirect(reverse('xgds_video_recorded', kwargs={'flightName':firstFlight.group.name})) 
