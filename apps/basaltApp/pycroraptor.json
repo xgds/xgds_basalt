@@ -45,6 +45,9 @@
 	    "redCamera": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redCamera"
 	    },
+	    "redMipCamera": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redMipCamera"
+	    },
 	    "FTIR": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n FTIR"
 	    },

@@ -105,11 +105,11 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     def getTimezone(self):
         return pytz.timezone(self.timezone)
     
-    def toMapDict(self):
-        result = geocamTrackModels.AbstractTrack.toMapDict(self)
-        if result:
-            result['type'] = settings.GEOCAM_TRACK_TRACK_MONIKIER
-        return result
+#     def toMapDict(self):
+#         result = geocamTrackModels.AbstractTrack.toMapDict(self)
+#         if result:
+#             result['type'] = settings.GEOCAM_TRACK_TRACK_MONIKIER
+#         return result
     
     def __unicode__(self):
         return '%s %s' % (self.__class__.__name__, self.name)
@@ -509,15 +509,15 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         self.name = name
         self.save()
     
-    def toMapDict(self):
-        result = xgds_sample_models.AbstractSample.toMapDict(self)
-        if result:
-            result['type'] = 'Sample'
-            result['flight'] = self.flight.id if self.flight else None
-            result['replicate'] = self.replicate.id if self.replicate else None
-            result['marker_id'] = self.marker_id if self.marker_id else None
-        return result
-    
+#     def toMapDict(self):
+#         result = xgds_sample_models.AbstractSample.toMapDict(self)
+#         if result:
+#             result['type'] = 'Sample'
+#             result['flight'] = self.flight.id if self.flight else None
+#             result['replicate'] = self.replicate.id if self.replicate else None
+#             result['marker_id'] = self.marker_id if self.marker_id else None
+#         return result
+#     
     def __unicode__(self):
         if self.pk:
             return 'basaltSample id=%d' % self.pk
@@ -562,17 +562,17 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
         else: 
             return None
     
-    def toMapDict(self):
-        result = AbstractInstrumentDataProduct.toMapDict(self)
-        if self.flight:
-            result['flight_name'] = self.flight.name
-        else:
-            result['flight_name'] = ''
-        if self.resource:
-            result['ev_name'] = self.resource.vehicle.name
-        else:
-            result['ev_name'] = ''
-        return result
+#     def toMapDict(self):
+#         result = AbstractInstrumentDataProduct.toMapDict(self)
+#         if self.flight:
+#             result['flight_name'] = self.flight.name
+#         else:
+#             result['flight_name'] = ''
+#         if self.resource:
+#             result['ev_name'] = self.resource.vehicle.name
+#         else:
+#             result['ev_name'] = ''
+#         return result
 
     def __unicode__(self):
         return "%s: %s, %s, %s, %s (portable), %s (mfg)" % (self.flight, self.resource, 
@@ -599,11 +599,11 @@ class FtirDataProduct(BasaltInstrumentDataProduct):
         samples = [(s.wavenumber, s.reflectance) for s in self.ftirsample_set.all()]
         return samples
     
-    def toMapDict(self):
-        result = BasaltInstrumentDataProduct.toMapDict(self)
-        if self.minerals:
-            result['minerals'] = self.minerals
-        return result
+#     def toMapDict(self):
+#         result = BasaltInstrumentDataProduct.toMapDict(self)
+#         if self.minerals:
+#             result['minerals'] = self.minerals
+#         return result
 
 
 class AsdDataProduct(BasaltInstrumentDataProduct):
@@ -622,11 +622,11 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
         samples = [(s.wavelength, s.absorbance) for s in self.asdsample_set.all()]
         return samples
     
-    def toMapDict(self):
-        result = BasaltInstrumentDataProduct.toMapDict(self)
-        if self.minerals:
-            result['minerals'] = self.minerals
-        return result
+#     def toMapDict(self):
+#         result = BasaltInstrumentDataProduct.toMapDict(self)
+#         if self.minerals:
+#             result['minerals'] = self.minerals
+#         return result
     
 
 class PxrfDataProduct(BasaltInstrumentDataProduct):
@@ -706,17 +706,17 @@ class BasaltNote(AbstractLocatedNote):
             pass
         return self.event_time
 
-    def toMapDict(self):
-        """
-        Return a reduced dictionary that will be turned to JSON for rendering in a map
-        """
-        result = AbstractLocatedNote.toMapDict(self)
-        result['type'] = 'Note'
-        if self.flight:
-            result['flight'] = self.flight.name
-        else:
-            result['flight'] = ''
-        return result
+#     def toMapDict(self):
+#         """
+#         Return a reduced dictionary that will be turned to JSON for rendering in a map
+#         """
+#         result = AbstractLocatedNote.toMapDict(self)
+#         result['type'] = 'Note'
+#         if self.flight:
+#             result['flight'] = self.flight.name
+#         else:
+#             result['flight'] = ''
+#         return result
     
     def getPosition(self):
         # IMPORTANT this should not be used across multitudes of notes, it is designed to be used during construction.
@@ -763,21 +763,21 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
             vehicle = self.resource.vehicle
             self.flight = getFlight(self.acquisition_time, vehicle)
         
-    def toMapDict(self):
-        """
-        Return a reduced dictionary that will be turned to JSON for rendering in a map
-        """
-        result = xgds_image_models.AbstractImageSet.toMapDict(self)
-        result['type'] = 'Photo'
-        if self.flight:
-            result['flight_name'] = self.flight.name
-        else:
-            result['flight_name'] = ''
-        if self.resource:
-            result['resource_name'] = self.resource.name
-        else:
-            result['resource_name'] = ''
-        return result
+#     def toMapDict(self):
+#         """
+#         Return a reduced dictionary that will be turned to JSON for rendering in a map
+#         """
+#         result = xgds_image_models.AbstractImageSet.toMapDict(self)
+#         result['type'] = 'Photo'
+#         if self.flight:
+#             result['flight_name'] = self.flight.name
+#         else:
+#             result['flight_name'] = ''
+#         if self.resource:
+#             result['resource_name'] = self.resource.name
+#         else:
+#             result['resource_name'] = ''
+#         return result
 
 
 class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
