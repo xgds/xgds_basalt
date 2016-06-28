@@ -1,0 +1,76 @@
+{% extends "dashboard_base.html" %}
+{% block siteSection %}Edit Instrument Data{% endblock %}
+
+{% load tz %}
+{% load siteFrames %}
+
+{% block cssExtras %}
+{{ block.super }}
+<style type="text/css" title="currentStyle">
+	@import "{{ EXTERNAL_URL }}jquery-ui/themes/base/jquery-ui.css";
+	@import url('{{EXTERNAL_URL}}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.css');
+</style>
+
+<style type="text/css">
+   .flotPlot {
+       width: 100%;
+       height: 200px;
+       margin-bottom: 10px;
+   }
+</style>
+
+{% endblock cssExtras %}
+
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<strong>{{instrument_name}} Instrument Data Edit Form</strong>
+<div class="plot-container">
+	<span class="alert" id="instrument_message"><br/><br/></span>
+	<div id="plotDiv" class="flotPlot"></div>
+</div>
+
+<div><a href="{{manufacturer_data_file_url}}">Manufacturer data file</a></div>
+<div><a href="{{portable_data_file_url}}">Portable data file</a></div>
+
+
+<form id="instrument_data_edit_form" action="{{ updateInstrumentDataUrl }}" method="post" enctype="multipart/form-data">
+	<table>
+    {{ form.as_table }}
+    </table>
+    <div id="buttons" >
+        <input id="save" class="mybutton" type="submit" value="Save">
+    </div>
+</form>
+
+
+{% endblock content %}
+
+{% block scripts %}
+  {{ block.super }}
+  	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jquery-ui/jquery-ui.min.js"></script>
+	{% include "xgds_core/timeJS.html" %}
+	<script language="javascript" type="text/javascript" src="{{ EXTERNAL_URL }}jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
+	<script type="text/javascript" src='{{ STATIC_URL }}xgds_core/js/datetimepickerUtils.js'></script>
+	<script type=text/javascript>
+	var appOptions = {
+			searchModels: {{ settings.XGDS_MAP_SERVER_JS_MAP|safe }}
+	};
+	app.start(appOptions);
+	</script>
+	<script type="text/javascript" src="{{EXTERNAL_URL}}Flot/jquery.flot.js"></script>
+	<script type="text/javascript" src='{{ STATIC_URL }}xgds_instrument/js/instrumentView.js'></script>
+{% endblock scripts %}
+
+{% block jsInit %}
+$(document).ready( function () {
+addDateTimePicker("id_dataCollectionTime", '{{settings.TIME_ZONE}}'); //Etc/UTC'); 
+xgds_instrument.getData({{ dataProductJson|safe }});
+});
+{% endblock jsInit %}

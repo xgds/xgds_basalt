@@ -1,3 +1,4 @@
+
 #__BEGIN_LICENSE__
 # Copyright (c) 2015, United States Government, as represented by the
 # Administrator of the National Aeronautics and Space Administration.
@@ -36,5 +37,10 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^wrist.kml$', views.wristKmlTrack, {'loginRequired':False}, 'kmlwrist'),
                # get instrument import page
                url(r'^instrumentDataImport/(?P<instrumentName>\w*)$', views.getInstrumentDataImportPage, name="get_instrument_data_import_page"),
-               url(r'^saveInstrumentData/(?P<instrumentName>\w*)$', views.saveInstrumentData, name='save_instrument_data')
+               # save newly imported instrument data
+               url(r'^saveInstrumentData/(?P<instrumentName>\w*)$', views.saveNewInstrumentData, name='save_instrument_data'),
+               #get instrument edit page
+               url(r'^edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.editInstrumentData, name="instrument_data_edit"),
+               # update instrument data
+               url(r'^update/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.saveUpdatedInstrumentData, name="instrument_data_update")
            ]

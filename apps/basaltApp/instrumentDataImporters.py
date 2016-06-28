@@ -65,6 +65,7 @@ INSTRUMENT DATA
 
     return HttpResponse(importSummary, content_type="text/plain")
 
+
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None):
     instrumentData = spc.File(portableDataFile)
@@ -103,17 +104,45 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
     return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
                                                                             'modelName':'ASD'}))
 
-def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
-                     utcStamp, timezone, resource, name, description, minerals, user=None):
-    instrumentData = spc.File(portableDataFile)
+def readAsciiFtirData(aspFile):
+    pointCount = int(aspFile.readline().rstrip())
+    pointCountM1 = pointCount - 1
+    maxWaveNum = float(aspFile.readline().rstrip())
+    minWaveNum = float(aspFile.readline().rstrip())
+    waveDelta = (maxWaveNum-minWaveNum)/pointCountM1
+    # Now read and dump the next 3 lines, which we don't understand...
+    aspFile.readline()
+    aspFile.readline()
+    aspFile.readline()
+    spectrumData = [((pointCountM1-i)*waveDelta+minWaveNum, 
+                     float(aspFile.readline().rstrip()))
+                    for i in range(pointCount)]
+    return spectrumData
+
+def readSpcFtirData(spcFile):
+    instrumentData = spc.File(spcFile)
     # Take slice b/c data has trailing tab
-    dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
+    dataTable = [r.split("\t")[0:2]
+                 for r in instrumentData.data_txt().split("\n") if r != '']
+    # First line is headers, so we drop it
+    dataTable = dataTable[1:]
+    return dataTable
+
+def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
+                     utcStamp, timezone, resource, name, description, minerals,
+                     user=None):
+    if (portableDataFile.name.lower().endswith(".spc")):
+        dataTable = readSpcFtirData(portableDataFile)
+        portableFileFormat = "SPC"
+    if (portableDataFile.name.lower().endswith(".asp")):
+        dataTable = readAsciiFtirData(portableDataFile)
+        portableFileFormat = "ASP"
     instrument = ScienceInstrument.getInstrument(FTIR)
     (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
     
     dataProduct = FtirDataProduct(
         portable_data_file = portableDataFile,
-        portable_file_format_name = "SPC",
+        portable_file_format_name = portableFileFormat,
         portable_mime_type = "application/octet-stream",
         acquisition_time = utcStamp,
         acquisition_timezone = timezone.zone,
@@ -130,7 +159,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         minerals = minerals
     )
     dataProduct.save()
-    for wn, rf in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
+    for wn, rf in dataTable:
         sample = FtirSample(
             dataProduct = dataProduct,
             wavenumber = wn,

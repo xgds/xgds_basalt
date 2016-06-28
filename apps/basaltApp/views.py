@@ -14,8 +14,11 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 import json
+import datetime
+import pytz
 from django.conf import settings
 from django.shortcuts import render_to_response, redirect, render
+from django import forms
 
 from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
 from django.template import RequestContext
@@ -24,8 +27,8 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages 
 from django.core.urlresolvers import reverse
 
-from forms import EVForm, BasaltInstrumentImportForm
-from models import EV, BasaltFlight, BasaltActiveFlight, BasaltGroupFlight, ScienceInstrument
+from forms import EVForm, BasaltInstrumentDataForm
+from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
@@ -37,6 +40,8 @@ from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
 from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink
 from xgds_instrument.views import lookupImportFunctionByName
+
+from geocamUtil.TimeUtil import utcToTimeZone, timeZoneToUtc
 
 
 def editEV(request, pk=None):
@@ -303,18 +308,8 @@ def getNoteExtras(episodes, source, request):
     return result
 
 
-# def getInstrumentForm(instrumentName):
-#     if instrumentName == 'FTIR':
-#         return FtirInstrumentImportForm
-#     elif instrumentName == "ASD":
-#         return AsdInstrumentImportForm
-#     elif instrumentName == "pXRF":
-#         return PxrfInstrumentImportForm
-
-
 def getInstrumentDataImportPage(request, instrumentName):
-#     form = getInstrumentForm(instrumentName)()
-    form = BasaltInstrumentImportForm()
+    form = BasaltInstrumentDataForm()
     instrument = ScienceInstrument.getInstrument(instrumentName)
     form.fields['instrument'].initial = instrument.id
     errors = ""
@@ -328,10 +323,28 @@ def getInstrumentDataImportPage(request, instrumentName):
                               )      
 
 
-def saveInstrumentData(request, instrumentName):
+def stringToDateTime(datetimeStr, timezone):
+    date_formats = list(forms.DateTimeField.input_formats) + [
+    '%Y/%m/%d %H:%M:%S',
+    '%Y-%m-%d %H:%M:%S',
+    '%m/%d/%Y %H:%M'
+    ]
+    datetimeObj = None
+    for date_format in date_formats:
+        try:
+            datetimeObj = datetime.datetime.strptime(datetimeStr, date_format)
+        except ValueError:
+            pass
+        else:
+            break
+    datetimeObj = timezone.localize(datetimeObj)
+    return datetimeObj
+
+
+def saveNewInstrumentData(request, instrumentName):
     instrumentDataImportUrl = reverse('save_instrument_data', kwargs={'instrumentName': instrumentName})
     if request.method == 'POST':
-        form = BasaltInstrumentImportForm(request.POST, request.FILES)
+        form = BasaltInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
             instrument = form.cleaned_data["instrument"]
             messages.success(request, 'Instrument data is successfully saved.' )
@@ -340,11 +353,15 @@ def saveInstrumentData(request, instrumentName):
             minerals = ""
             if 'minerals' in form.cleaned_data:
                 minerals = form.cleaned_data['minerals']
+            
+            utcStamp = form.cleaned_data["dataCollectionTime"]
+            timezone = form.getTimezone()
+            
             return importFxn(instrument, 
                              request.FILES["portableDataFile"],
                              request.FILES["manufacturerDataFile"],
-                             form.cleaned_data["dataCollectionTime"],
-                             form.getTimezone(), 
+                             utcStamp, 
+                             timezone, 
                              form.getResource(),
                              form.cleaned_data['name'],
                              form.cleaned_data['description'],
@@ -358,3 +375,78 @@ def saveInstrumentData(request, instrumentName):
                                                    'instrumentDataImportUrl': instrumentDataImportUrl,
                                                    'instrumentType': instrumentName})
                           )      
+
+
+def saveUpdatedInstrumentData(request, instrument_name, pk):
+    """
+    Updates instrument data on save.
+    """
+    InstrumentDataProductModel = BasaltInstrumentDataProduct.getDataForm(instrument_name)
+    dataProduct = InstrumentDataProductModel.objects.get(pk = pk)
+    if request.method == 'POST':
+        # save the update info into the model.
+        postDict = request.POST.dict()
+        dataProduct.name = postDict['name'] 
+        dataProduct.description = postDict['description']
+        dataProduct.minerals = postDict['minerals']
+        resourceId = postDict['resource']
+        resource = BasaltResource.objects.get(id=resourceId)
+        dataProduct.resource = resource
+        
+        # get timezone
+        dataProduct.acquisition_timezone = postDict['timezone']
+        tz = pytz.timezone(postDict['timezone'])
+        
+        # convert to timezone-aware datetime
+        timezoneTimeStr = postDict['dataCollectionTime']
+        timezoneTime = stringToDateTime(timezoneTimeStr, tz)        
+        
+        # convert to utc time
+        utcTime = timeZoneToUtc(timezoneTime)
+        dataProduct.acquisition_time = utcTime
+        dataProduct.save()
+        
+        messages.success(request, 'Instrument data successfully saved!')
+
+        return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK': pk,
+                                                                                'modelName': instrument_name}))
+        
+        
+        
+def editInstrumentData(request, instrument_name, pk):
+    """
+    Renders instrument data edit page -- if data exists, displays the existing data.
+    """
+    InstrumentDataProductModel = BasaltInstrumentDataProduct.getDataForm(instrument_name)
+    dataProduct = InstrumentDataProductModel.objects.get(pk = pk)
+    jsonDict = dataProduct.toMapDict()
+    
+    # get existing data. 
+    form = BasaltInstrumentDataForm(initial=jsonDict)
+    
+    # convert to local time. 
+    utcTime = dataProduct.acquisition_time
+    timezone = dataProduct.acquisition_timezone
+    acquisitionTime = utcToTimeZone(utcTime, timezone)
+    acquisitionTime = acquisitionTime.strftime('%m/%d/%Y %H:%M')
+    
+    form.fields['dataCollectionTime'].initial = acquisitionTime
+    form.fields['timezone'].initial = timezone
+    
+    # hide the two file fields
+    form.fields['portableDataFile'].widget = forms.HiddenInput()
+    form.fields['manufacturerDataFile'].widget = forms.HiddenInput()
+    
+    updateInstrumentDataUrl = reverse('instrument_data_update', kwargs={'instrument_name': instrument_name, 'pk': pk})
+    return render(
+        request,
+        'xgds_instrument/editInstrumentData.html',
+        {
+            'form': form, 
+            'instrument_name': instrument_name,
+            'dataProductJson': json.dumps(jsonDict), 
+            'updateInstrumentDataUrl': updateInstrumentDataUrl, 
+            'manufacturer_data_file_url': jsonDict['manufacturer_data_file_url'],
+            'portable_data_file_url': jsonDict['portable_data_file_url']
+        },
+    )
