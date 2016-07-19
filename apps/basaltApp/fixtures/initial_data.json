@@ -191,6 +191,15 @@
         }
     },
     {
+        "pk": 7,
+        "model": "xgds_sample.Region",
+        "fields": {
+            "name": "Snake River Plain",
+            "shortName": "SR",
+            "zone": 2
+        }
+    },
+    {
         "pk": 1,
         "model": "xgds_sample.SampleType",
         "fields": {
