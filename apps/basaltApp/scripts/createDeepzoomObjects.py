@@ -20,9 +20,16 @@ For each of these imagesets,
 
 for imageset in allImageSets:
     if (imageset.associated_deepzoom) == None:
+        
+        # FIRST check if the deep zoom object exists
+        
+        
+        
         print 'About to create deepzoom for imageset ' + imageset.name
         try:
             dzt = imageset.create_deepzoom_image() 
             print 'DONE'
         except:
             print 'problem with ' + imageset.name
+            
+            
