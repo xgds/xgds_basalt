@@ -392,7 +392,7 @@ class Replicate(AbstractEnumModel):
 
 class BasaltSample(xgds_sample_models.AbstractSample):
     # set foreign key fields required by parent model to correct types for this site
-    resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+    resource = models.ForeignKey(BasaltResource, null=True, blank=True, default=BasaltResource.objects.get(name=settings.XGDS_SAMPLE_DEFAULT_COLLECTOR))
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
     number = models.IntegerField(null=True, verbose_name='Two digit sample location #', db_index=True)
@@ -489,13 +489,16 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         dataDict['region'] = name[:2]
         dataDict['year'] = name[2:4]
         dataDict['type'] = name[4:5]
-        dataDict['station_number'] = name[8:10] 
-        dataDict['number'] = name[11:14]
-        try: 
-            dataDict['replicate'] = name[14:]
-            replicate = dataDict['replicate']
-        except: 
-            replicate = None
+        dataDict['station_number'] = name[8:10]
+        
+        if name[-1].isalpha():
+            dataDict['replicate'] = name[-1]
+            index = len(name) -2
+            dataDict['number'] = name[11:index]
+        else: 
+            dataDict['replicate'] = None 
+            dataDict['number'] = name[11:]
+        
         self.region = xgds_sample_models.Region.objects.get(shortName = dataDict['region'])
         self.sample_type = xgds_sample_models.SampleType.objects.get(value = dataDict['type'])
         self.number = ("%03d" % (int(dataDict['number']),))
@@ -503,7 +506,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
             self.station_number = ("%02d" % (int(dataDict['station_number']),))
         except:
             self.station_number = dataDict['station_number']
-        if replicate: 
+        if dataDict['replicate']: 
             self.replicate = Replicate.objects.get(value=dataDict['replicate'])
         self.year = int(dataDict['year']) 
         self.name = name
