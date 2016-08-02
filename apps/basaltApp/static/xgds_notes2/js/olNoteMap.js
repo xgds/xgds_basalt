@@ -81,7 +81,7 @@ var Note = {
             formattedString = formattedString + "</table>";
             var data = ["Tags:", noteJson.flattenedTags,
                         "Note:", noteJson.content,
-                        "Altitude:", noteJson.altitude + " m",
+                        "Altitude:", noteJson.alt + " m",
                         "Flight:", noteJson.flight_name,
                         "Author:", noteJson.author_name];
             var popupContents = vsprintf(formattedString, data);
