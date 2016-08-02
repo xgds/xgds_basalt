@@ -16,7 +16,7 @@
 
 var xgds_sample = xgds_sample || {};
 $.extend(xgds_sample,{
-	showReplicateOptions: function() {
+	showReplicateOptions: function(replicate_name) {
 		/**
 		 * Triplicates Legend (sampleType = triplicates):
 		 * Biology = A, B, C
@@ -52,6 +52,9 @@ $.extend(xgds_sample,{
 			$("#id_replicate option[value='9']").show();
 			$("#id_replicate option[value='10']").show();
 		}
+		if (replicate_name != undefined){
+			$("#id_replicate option:contains('" + replicate_name + "')").attr('selected','selected');
+		}
 	},
 	
 	updateAdvancedInputFields: function() {
@@ -68,11 +71,10 @@ $.extend(xgds_sample,{
 		var _this = this;
 		$('#id_sample_type').change(_this.showReplicateOptions);
 		$('#id_number').prop("disabled", true);
-		
 	},
 	
 	postDataLoad: function(data){
-		this.showReplicateOptions();
+		this.showReplicateOptions(data.replicate_name);
 	}
 	
 });
