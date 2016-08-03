@@ -10,6 +10,7 @@ from geocamUtil.TimeUtil import timeZoneToUtc
 from geocamTrack.utils import getClosestPosition
 from xgds_planner2.utils import getFlight
 from basaltApp.models import FtirDataProduct, AsdDataProduct, PxrfDataProduct, FtirSample, ScienceInstrument, BasaltTrack, AsdSample
+from xgds_instrument.views import editInstrumentDataPosition
 
 FTIR = "ftir"
 ASD = "asd"
@@ -44,7 +45,8 @@ def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
 
 
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile,
-                     timestamp, timezone, resource, name, description, user=None):
+                     timestamp, timezone, resource, name, description, user=None,
+                     latitude=None, longitude=None, altitude=None):
     instrumentData = portableDataFile.read()
     instrumentData = instrumentData.translate(None, "\x00")
     utcStamp = timeZoneToUtc(timezone.localize(timestamp))
@@ -63,17 +65,21 @@ INSTRUMENT DATA
          resource,
          instrumentData)
 
+#     if latitude or longitude or altitude:
+#         editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
+
     return HttpResponse(importSummary, content_type="text/plain")
 
 
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
-                    timezone, resource, name, description, minerals, user=None):
+                    timezone, resource, name, description, minerals, user=None,
+                    latitude=None, longitude=None, altitude=None):
     instrumentData = spc.File(portableDataFile)
     # Take slice b/c data has trailing tab
     dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
     instrument = ScienceInstrument.getInstrument(ASD)
 
-    (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
+    (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
     
     dataProduct = AsdDataProduct(
         portable_data_file = portableDataFile,
@@ -85,7 +91,7 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
         manufacturer_data_file = manufacturerDataFile,
         manufacturer_mime_type = "application/octet-stream",
         instrument = instrument,
-        location = sampleLocation,
+        track_position = sampleLocation,
         flight = flight,
         resource = resource,
         creator=user,
@@ -94,6 +100,9 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
         minerals = minerals
     )
     dataProduct.save()
+    if latitude or longitude or altitude:
+        editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
+
     for wl, ab in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
         sample = AsdSample(
             dataProduct = dataProduct,
@@ -130,7 +139,7 @@ def readSpcFtirData(spcFile):
 
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      utcStamp, timezone, resource, name, description, minerals,
-                     user=None):
+                     user=None, latitude=None, longitude=None, altitude=None):
     if (portableDataFile.name.lower().endswith(".spc")):
         dataTable = readSpcFtirData(portableDataFile)
         portableFileFormat = "SPC"
@@ -150,7 +159,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         manufacturer_data_file = manufacturerDataFile,
         manufacturer_mime_type = "application/octet-stream",
         instrument = instrument,
-        location = sampleLocation,
+        track_position = sampleLocation,
         flight = flight,
         resource = resource,
         creator=user,
@@ -159,6 +168,9 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         minerals = minerals
     )
     dataProduct.save()
+    if latitude or longitude or altitude:
+        editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
+    
     for wn, rf in dataTable:
         sample = FtirSample(
             dataProduct = dataProduct,

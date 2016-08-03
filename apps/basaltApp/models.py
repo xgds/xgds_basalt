@@ -392,7 +392,7 @@ class Replicate(AbstractEnumModel):
 
 class BasaltSample(xgds_sample_models.AbstractSample):
     # set foreign key fields required by parent model to correct types for this site
-    resource = models.ForeignKey(BasaltResource, null=True, blank=True, default=BasaltResource.objects.get(name=settings.XGDS_SAMPLE_DEFAULT_COLLECTOR))
+    resource = models.ForeignKey(BasaltResource, null=True, blank=True) #, default=BasaltResource.objects.get(name=settings.XGDS_SAMPLE_DEFAULT_COLLECTOR))
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
     number = models.IntegerField(null=True, verbose_name='Two digit sample location #', db_index=True)
