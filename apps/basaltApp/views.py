@@ -39,9 +39,10 @@ from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
 from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink
-from xgds_instrument.views import lookupImportFunctionByName
+from xgds_instrument.views import lookupImportFunctionByName, editInstrumentDataPosition
 
 from geocamUtil.TimeUtil import utcToTimeZone, timeZoneToUtc
+from apps.geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 
 
 def editEV(request, pk=None):
@@ -366,7 +367,10 @@ def saveNewInstrumentData(request, instrumentName):
                              form.cleaned_data['name'],
                              form.cleaned_data['description'],
                              minerals,
-                             request.user)
+                             request.user,
+                             form.cleaned_data['lat'],
+                             form.cleaned_data['lon'],
+                             form.cleaned_data['alt'])
         else: 
             messages.error(request, 'Form errors %s' % form.errors)
         return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
@@ -390,8 +394,9 @@ def saveUpdatedInstrumentData(request, instrument_name, pk):
         dataProduct.description = postDict['description']
         dataProduct.minerals = postDict['minerals']
         resourceId = postDict['resource']
-        resource = BasaltResource.objects.get(id=resourceId)
-        dataProduct.resource = resource
+        if resourceId:
+            resource = BasaltResource.objects.get(id=resourceId)
+            dataProduct.resource = resource
         
         # get timezone
         dataProduct.acquisition_timezone = postDict['timezone']
@@ -404,6 +409,9 @@ def saveUpdatedInstrumentData(request, instrument_name, pk):
         # convert to utc time
         utcTime = timeZoneToUtc(timezoneTime)
         dataProduct.acquisition_time = utcTime
+        
+        if (('lat' in postDict) and ('lon' in postDict)) or ('alt' in postDict):
+            editInstrumentDataPosition(dataProduct, postDict['lat'], postDict['lon'], postDict['alt'])
         dataProduct.save()
         
         messages.success(request, 'Instrument data successfully saved!')
@@ -444,7 +452,7 @@ def editInstrumentData(request, instrument_name, pk):
         {
             'form': form, 
             'instrument_name': instrument_name,
-            'dataProductJson': json.dumps(jsonDict), 
+            'dataProductJson': json.dumps(jsonDict, cls=DatetimeJsonEncoder), 
             'updateInstrumentDataUrl': updateInstrumentDataUrl, 
             'manufacturer_data_file_url': jsonDict['manufacturer_data_file_url'],
             'portable_data_file_url': jsonDict['portable_data_file_url']
