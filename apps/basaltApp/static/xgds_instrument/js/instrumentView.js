@@ -59,7 +59,6 @@ $.extend(xgds_instrument,{
 		                    				points: { show: false }
 		                    			},
 		                    			clickable: true,
-		                    			label: 'poop',
 		                    	        grid: {
 		                    	        	backgroundColor: '#FFFFFF',
 		                    	            hoverable: true,
@@ -72,7 +71,16 @@ $.extend(xgds_instrument,{
 		                    	        },
 		                    	        pan: {
 		                    	            interactive: true
-		                    	        }
+		                    	        },
+		                    	        axisLabels: {
+		                    	            show: true
+		                    	        },
+		                    	        xaxes: [{
+		                    	            axisLabel: this.labels[0]
+		                    	        }],
+		                    	        yaxes: [{
+		                    	            axisLabel: this.labels[1]
+		                    	        }]
 		                    	        });
 		
 		
