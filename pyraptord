@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# pyraptord        Startup script for pyraptord
+#
+# chkconfig: 2345 92 8
+# description: Pyraptord is a process manager
+# processname: pyraptord
+# config: /home/irg/xgds_basalt/apps/basaltApp/pycroraptorConfig.py
+# config: /home/irg/xgds_basalt/apps/basaltApp/ports.json
+# pidfile: /var/log/pyraptord/pyraptord.pid
+
+# This boot script was tested under RedHat Enterprise Linux 6. To use:
+# * Edit paths to match your deployment configuration.
+# * Install this file as /etc/init.d/pyraptord
+# * You may need to install chkconfig: 'yum install chkconfig'.
+# * Run 'chkconfig --add pyraptord'
+
+# Source function library.
+#. /etc/rc.d/init.d/functions
+
+projdir=/home/vagrant/xgds_basalt
+pyraptord=$projdir/apps/geocamPycroraptor2/bin/pyraptord.py
+config_dir=$projdir/apps/basaltApp
+python_dir=/usr/bin
+user=vagrant
+
+sudo -H -u $user bash -s <<EOF
+export PATH=${python_dir}:$PATH  # run the correct python, if not first in default PATH
+source $projdir/sourceme.sh  # further environment setup, if needed
+cd $config_dir
+$pyraptord -c $config_dir/pycroraptor.json $1
+EOF
