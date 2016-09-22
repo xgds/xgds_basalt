@@ -1,7 +1,9 @@
 {% block sitemenu-content-secondary %}
 {% load nav %}
+{% load help_button %}
 <div class="sitemenu-nav-secondary">
 	<nav class="subnav">
+	{% help_button help_content_path help_title %}
 	<ul>
 		<li class="nav-item {% if modelName == 'Photo' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'Photo'%}">{{settings.XGDS_IMAGE_IMAGE_SET_MONIKER}}</a></li>
 		<li class="nav-item {% if modelName == 'Sample' %}currentnav{% endif %}"><a href="{% url 'search_map_object' 'Sample'%}">Sample</a></li>
