@@ -458,3 +458,6 @@ def editInstrumentData(request, instrument_name, pk):
             'portable_data_file_url': jsonDict['portable_data_file_url']
         },
     )
+
+def check_forward(request, *args, **kwargs):
+    return HttpResponse(request.META.get('HTTP_X_FORWARDED_FOR', 'None: ' + request.META['REMOTE_ADDR']))
