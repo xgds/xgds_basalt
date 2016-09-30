@@ -48,3 +48,9 @@ urlpatterns = [
     url(r'^xgds_status_board/', include('xgds_status_board.urls')),
     url(r'^w$', wrist, {'loginRequired':False}, 'w'),
 ]
+
+if settings.DEBUG_TOOLBAR:
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

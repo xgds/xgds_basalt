@@ -740,8 +740,26 @@
 	           "axes": "NED",
 	           "north": "grid",
 	           "timezone": "America/Los_Angeles",
-	           "projCode": "EPSG:32605",
+	           "projCode": "EPSG:2227",
            	   "projString": "+proj=utm +zone=10 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+            "name": "KSC",
+            "displayName": "KSC",
+	           "east0": 534430.57,
+	           "north0": 3155079.45,
+	           "zone": "17R",
+	           "zoneNumber": 17,
+	           "south": 0,
+	           "axes": "NED",
+	           "north": "grid",
+	           "timezone": "America/New_York",
+	           "projCode": "EPSG:2236",
+	           "projString": "+proj=utm +zone=17 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
         }
     },
     {
@@ -1191,5 +1209,5 @@
 			"failureThreshold": 20,
 			"constantName": "RED_MIP_CAMERA_IP"
 		}
-	},
+	}
 ]
