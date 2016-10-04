@@ -50,6 +50,7 @@ DEFAULT_ICON_STYLE = IconStyle.objects.get(name='default')
 DEFAULT_LINE_STYLE = LineStyle.objects.get(name='default')
 RAW_DATA_TYPE = DataType.objects.get(name="RawGPSLocation") 
 TRACK_CACHE_TIMEOUT = 30
+GPS_SENTENCE_TYPE = "$GPRMC"
 
 def parseTracLinkDM(dm, hemi):
     m = DM_REGEX.match(dm.strip())
@@ -85,7 +86,7 @@ class GpsTelemetryCleanup(object):
             logging.warning('exception caught, continuing')
 
     def handle_gpsposition0(self, topic, body):
-        # example: 2:$GPMRC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
+        # example: 2:$GPRMC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
 
         serverTimestamp = datetime.datetime.now(pytz.utc)
 
@@ -96,6 +97,9 @@ class GpsTelemetryCleanup(object):
         # parse record
         resourceIdStr, trackName, content = body.split(":")
         resourceId = int(resourceIdStr)
+        if not content.startswith(GPS_SENTENCE_TYPE):
+            logging.info('UNRECOGNIZED GPS SENTENCE: %s', content)
+            return
         sentenceType, utcTime, activeVoid, lat, latHemi, lon,\
             lonHemi, speed, heading, date, declination, declinationDir,\
             modeAndChecksum = content.split(",")
