@@ -37,6 +37,8 @@ DEFAULT_HOST = '127.0.0.1'
 DEFAULT_PORT = 30000  # this is for in the field
 DEFAULT_PORT = 50000
 
+DATA_DELIVERY_PROTOCOL = "UDP"
+
 #subsystem status markers
 OKAY = '#00ff00'
 WARNING = '#ffff00'
@@ -44,7 +46,7 @@ ERROR = '#ff0000'
 
 _cache = memcache.Client(['127.0.0.1:11211'], debug=0)
 
-def socketListen(opts, q):
+def socketListenTcp(opts, q):
     logging.info('constructing socket')
     s = socket.socket()
     logging.info('connecting to server at host %s port %s',
@@ -59,6 +61,24 @@ def socketListen(opts, q):
             line, buf = buf.split('\n', 1)
             q.put(line)
 
+def socketListenUdp(opts, q):
+    logging.info('constructing socket')
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.bind(("", int(opts.port)))
+    logging.info('Listening for UDP on port %s', opts.port)
+    logging.info('connection established')
+
+    buf = ''
+    while True:
+        data, addr = s.recvfrom(1024)
+        data = data.rstrip()
+        q.put(data+"\n")
+
+def socketListen(opts, q):
+    if DATA_DELIVERY_PROTOCOL == "UDP":
+        socketListenUdp(opts, q)
+    if DATA_DELIVERY_PROTOCOL == "TCP":
+        socketListenTcp(opts, q)
 
 def setGpsDataQuality(msg):
     '''
