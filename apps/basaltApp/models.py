@@ -723,13 +723,29 @@ class BasaltNote(AbstractLocatedNote):
     
     def getPosition(self):
         # IMPORTANT this should not be used across multitudes of notes, it is designed to be used during construction.
-        if not self.position:
+        if not self.position and self.location_found == None:
             resource = None
             if self.flight:
                 if self.flight.vehicle:
                     resource = self.flight.vehicle.basaltresource
             self.position = getClosestPosition(timestamp=self.event_time, resource=resource)
+            if self.position:
+                self.location_found = True
+            else:
+                self.location_found = False
+            self.save()
         return self.position
+    
+    @classmethod
+    def getSearchFormFields(cls):
+        return ['content',
+                'tags',
+                'flight',
+                'event_timezone',
+                'author',
+                'role',
+                'location'
+                ]
 
 
 class BasaltImageSet(xgds_image_models.AbstractImageSet):
