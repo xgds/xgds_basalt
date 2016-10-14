@@ -656,6 +656,10 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
 #         return result
     
 
+#TODO this does not currently have a minerals field, we have to 
+# either make it have/use a minerals field or better yet have tags
+# regardless once we enable pxrf search it must either have minerals
+# field or the minerals has to come out of common search things
 class PxrfDataProduct(BasaltInstrumentDataProduct):
     pass
 
