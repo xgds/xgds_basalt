@@ -775,6 +775,28 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
         result.append('flight__name')
         return result
     
+    @classmethod
+    def getSearchFormFields(cls):
+        return ['name',
+                'description',
+                'author',
+                'camera',
+                'resource',
+                'flight'
+                ]
+    
+    @classmethod
+    def getSearchFieldOrder(cls):
+        return ['resource',
+                'flight',
+                'author',
+                'name',
+                'description',
+                'camera',
+                'acquisition_timezone',
+                'min_acquisition_time',
+                'max_acquisition_time']
+
     @property
     def flight_name(self):
         if self.flight:
