@@ -21,6 +21,7 @@ from django.views.generic.base import TemplateView
 from basaltApp import views
 
 urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index'),
+               url(r'^setup$', TemplateView.as_view(template_name='basaltApp/setup.html'), {}, 'setup_intro'),
                url(r'^editEV/?$', views.editEV, {}, 'planner2_edit_ev'),
                url(r'^editEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_edit_ev'),
                url(r'^saveEV/?$', views.editEV, {}, 'planner2_save_ev'),

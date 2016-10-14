@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block sitemenu-content-secondary %}
+{% include "basaltApp/setup_subnav.html" %}
+{% endblock %}
+
+{% block content %}
+
+<table cellpadding="5" cellspacing="0" width="100%">
+  <tr>
+    <td style="text-align:right"><strong>Note Tags</strong></td>
+    <td>Customize the tags and hierarchy for recording notes.  <a href="{% url 'xgds_notes_edit_tags' %}">Edit Note Tags</a></td>
+  </tr>
+  <tr>
+    <td style="text-align:right"><strong>Crew Mass</strong></td>
+    <td>Sextant path planner requires crew mass to be configured for its calculations. <a href="{% url 'planner2_edit_ev' %}">Edit Crew Mass</a></td>
+  </tr>
+</table>
+{% endblock content %}
