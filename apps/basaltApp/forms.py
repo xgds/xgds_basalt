@@ -16,16 +16,18 @@
 
 from django import forms
 from django.forms import ModelForm
-
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import DateTimeField
 from geocamUtil.extFileField import ExtFileField
+from geocamUtil.loader import LazyGetModelByName
+
 from basaltApp.models import *
-from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField
+from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField, SearchInstrumentDataForm
 from xgds_instrument.models import ScienceInstrument
 
-from models import EV
+from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -61,9 +63,45 @@ class EVForm(ModelForm):
 
 
 class BasaltInstrumentDataForm(ImportInstrumentDataForm):
-    INSTRUMENT_MODEL = \
-                LazyGetModelByName(settings.XGDS_INSTRUMENT_INSTRUMENT_MODEL)
+    INSTRUMENT_MODEL = LazyGetModelByName(settings.XGDS_INSTRUMENT_INSTRUMENT_MODEL)
     instrument = InstrumentModelChoiceField(INSTRUMENT_MODEL.get().objects.all(), widget = forms.HiddenInput())
     minerals = forms.CharField(widget=forms.Textarea, label="Minerals")
     name = forms.CharField(required=False, label="Name")
     description = forms.CharField(widget=forms.Textarea, label="Description", required=False)
+
+# class SearchPXRFDataForm(SearchInstrumentDataForm):
+#     
+#     field_order = PxrfDataProduct.getSearchFieldOrder()
+# 
+#     class Meta:
+#         model = PxrfDataProduct
+#         fields = PxrfDataProduct.getSearchFormFields()
+        
+class SearchASDDataForm(SearchInstrumentDataForm):
+    
+    field_order = AsdDataProduct.getSearchFieldOrder()
+
+    def buildQueryForField(self, fieldname, field, value, minimum=False, maximum=False):
+        if fieldname == 'minerals':
+            return self.buildContainsQuery(fieldname, field, value)
+        return super(SearchInstrumentDataForm, self).buildQueryForField(fieldname, field, value, minimum, maximum)
+
+    class Meta:
+        model = AsdDataProduct
+        fields = AsdDataProduct.getSearchFormFields()
+
+
+class SearchFTIRDataForm(SearchInstrumentDataForm):
+    
+    field_order = FtirDataProduct.getSearchFieldOrder()
+
+    def buildQueryForField(self, fieldname, field, value, minimum=False, maximum=False):
+        if fieldname == 'minerals':
+            return self.buildContainsQuery(fieldname, field, value)
+        return super(SearchInstrumentDataForm, self).buildQueryForField(fieldname, field, value, minimum, maximum)
+    
+    class Meta:
+        model = FtirDataProduct
+        fields = FtirDataProduct.getSearchFormFields()
+
+

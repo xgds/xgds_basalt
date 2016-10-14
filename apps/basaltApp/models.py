@@ -565,6 +565,30 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
         else: 
             return None
     
+    @classmethod
+    def getSearchFormFields(cls):
+        return ['resource',
+                'flight',
+                'name',
+                'description',
+                'minerals',
+                'collector',
+                'creator',
+                ]
+    
+    @classmethod
+    def getSearchFieldOrder(cls):
+        return ['resource',
+                'flight',
+                'name',
+                'description',
+                'minerals',
+                'collector',
+                'creator',
+                'acquisition_timezone',
+                'min_acquisition_time',
+                'max_acquisition_time']
+    
 #     def toMapDict(self):
 #         result = AbstractInstrumentDataProduct.toMapDict(self)
 #         if self.flight:
