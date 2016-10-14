@@ -747,6 +747,18 @@ class BasaltNote(AbstractLocatedNote):
                 'location'
                 ]
 
+    @classmethod
+    def getSearchFieldOrder(cls):
+        return ['tags',
+                'hierarchy',
+                'content',
+                'author',
+                'flight',
+                'role',
+                'location',
+                'event_timezone',
+                'min_event_time',
+                'max_event_time']
 
 class BasaltImageSet(xgds_image_models.AbstractImageSet):
     # set foreign key fields from parent model to point to correct types

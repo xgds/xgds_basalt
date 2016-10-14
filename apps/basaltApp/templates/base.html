@@ -60,9 +60,11 @@
 			<li {% currentnav planner2* *video* %}>
 				<a href="{% url 'planner2_flownFlights' %}" title="{{ settings.XGDS_PLANNER2_FLIGHT_MONIKER }}">{{ settings.XGDS_PLANNER2_FLIGHT_MONIKER }}</a>
 			</li>
+			<!-- 
 			<li {% currentnav *note* %}>
 				<a href="{% url 'xgds_notes_review' %}" title="{{ settings.XGDS_NOTES_MONIKER }}">{{ settings.XGDS_NOTES_MONIKER }}</a>
 			</li>
+			 -->
 			<li {% currentnav *xgds_sample* %} >
 				<a href="{% url 'xgds_sample_record_edit' %}" title="sample">Sample</a>
 			</li>
@@ -71,6 +73,9 @@
 			</li>
 			<li {% currentnav xgds_data_import %}>
 				<a href="{% url 'xgds_data_import' %}" title="Import">Import</a>
+			</li>
+			<li {% currentnav *setup* %} >
+				<a href="{% url 'setup_intro' %}" title="Setup">Setup</a>
 			</li>
 			{% if settings.GEOCAM_UTIL_LIVE_MODE %}
 			<li {% currentnav *tatus* %}>
