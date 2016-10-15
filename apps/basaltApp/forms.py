@@ -26,6 +26,7 @@ from geocamUtil.loader import LazyGetModelByName
 from basaltApp.models import *
 from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField, SearchInstrumentDataForm
 from xgds_instrument.models import ScienceInstrument
+from xgds_sample.forms import SearchSampleForm
 
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
@@ -105,3 +106,7 @@ class SearchFTIRDataForm(SearchInstrumentDataForm):
         fields = FtirDataProduct.getSearchFormFields()
 
 
+class SearchBasaltSampleForm(SearchSampleForm):
+    number = forms.IntegerField(required=False)
+    year = forms.IntegerField(required=False, initial=None)
+    
