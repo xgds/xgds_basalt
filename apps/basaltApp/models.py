@@ -412,6 +412,42 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         result.extend(['station_number', 'marker_id','replicate__display_name', 'flight__name'])
         return result
 
+    @classmethod
+    def getSearchFormFields(cls):
+        return ['name',
+                'label',
+                'number',
+                'station_number',
+                'replicate',
+                'flight',
+                'marker_id',
+                'year',
+                'sample_type',
+                'description',
+                'region',
+                'resource',
+                'collector',
+                ]
+    
+    @classmethod
+    def getSearchFieldOrder(cls):
+        return ['name',
+                'label',
+                'region',
+                'year',
+                'sample_type',
+                'number',
+                'station_number',
+                'replicate',
+                'collector',
+                'marker_id',
+                'description',
+                'resource',
+                'flight',
+                'collection_timezone',
+                'min_collection_time',
+                'max_collection_time'
+                ]
     
     @property
     def flight_name(self):
