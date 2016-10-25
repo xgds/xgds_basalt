@@ -51,6 +51,7 @@ DEFAULT_LINE_STYLE = LineStyle.objects.get(name='default')
 RAW_DATA_TYPE = DataType.objects.get(name="RawGPSLocation") 
 TRACK_CACHE_TIMEOUT = 30
 GPS_SENTENCE_TYPE = "$GPRMC"
+COMPASS_SENTENCE_TYPE = "$"
 
 def parseTracLinkDM(dm, hemi):
     m = DM_REGEX.match(dm.strip())
@@ -60,6 +61,67 @@ def parseTracLinkDM(dm, hemi):
     minutes = float(m.group('minutes'))
     return sign * (degrees + minutes / 60.0)
 
+def isSentenceType(sentence, sentenceType):
+    return sentence.startswith("%1s," % sentenceType)
+
+def hasGoodNmeaChecksum(sentence):
+    checkSum=0
+    if len(sentence) < 4:
+        return false  # Can't possibly be good if shorter than this
+    for ch in sentence[1:len(sentence)-3]:
+        checkSum = checkSum ^ ord(ch)
+    checkSumHex = ("%02x" % checkSum).upper()
+    
+    if sentence[-2:] == checkSumHex:
+        return True
+    else:
+        return False
+
+def checkCompassDataQuality(sentence):
+    return True
+
+def checkGpsDataQuality(resourceId, sentence):
+    '''
+    Confirms checksum and satellite lock field for GPS sentence.
+    Returns True if data is good (i.e. checksum OK and satellites locked).
+    Sets 'GpsDataQuality' field in the memcache for subsystem status board
+    '''
+
+    #subsystem status color codes
+    OKAY_COLOR = '#00ff00'
+    WARNING_COLOR = '#ffff00'
+    ERROR_COLOR = '#ff0000'
+
+    dataQualityGood = False
+    # Bail out immediately if we have obviosuly corrupted data
+    if not hasGoodNmeaChecksum(sentence):
+        logging.warning("Bad checksum: %1s", sentence)
+        return False
+
+    dataQualityCode = sentence.split(',')[2]
+    if dataQualityCode == 'A':
+        dataQualityColor = OKAY_COLOR
+        dataQualityGood = True
+    else: # dataQualityCode == 'V'
+        dataQualityColor = ERROR_COLOR
+        dataQualityGood = False
+
+    # get the EV number from NMEA sentence
+    myKey = "gpsDataQuality%s" % str(resourceId)
+    status = {'dataQuality': dataQualityColor,
+              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+
+    cache.set(myKey, json.dumps(status))
+    return dataQualityGood
+
+def checkDataQuality(resourceId, sentence):
+    if isSentenceType(sentence, GPS_SENTENCE_TYPE):
+        return checkGpsDataQuality(resourceId, sentence)
+    elif isSentenceType(sentence, COMPASS_SENTENCE_TYPE):
+        return checkCompassDataQuality(resourceId, sentence)
+    else:
+        logging.warning("Unrecognized NMEA sentence: %s" % sentence)
+        return False
 
 class GpsTelemetryCleanup(object):
     def __init__(self, opts):
@@ -95,10 +157,10 @@ class GpsTelemetryCleanup(object):
             return
 
         # parse record
-        resourceIdStr, trackName, content = body.split(":")
+        resourceIdStr, trackName, content = body.split(":", 2)
         resourceId = int(resourceIdStr)
-        if not content.startswith(GPS_SENTENCE_TYPE):
-            logging.info('UNRECOGNIZED GPS SENTENCE: %s', content)
+        if not checkDataQuality(resourceId, content):
+            logging.info('UNRECOGNIZED OR CORRUPT GPS SENTENCE: %s', content)
             return
         sentenceType, utcTime, activeVoid, lat, latHemi, lon,\
             lonHemi, speed, heading, date, declination, declinationDir,\
