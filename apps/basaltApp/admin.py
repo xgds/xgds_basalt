@@ -20,6 +20,8 @@ from basaltApp.models import *  # pylint: disable=W0401
 class BasaltInstrumentDataProductAdmin(admin.ModelAdmin):
     raw_id_fields = ("location",)
 
+class BasaltImageSetAdmin(admin.ModelAdmin):
+    raw_id_fields = ("track_position", "exif_position", "user_position")
 
 admin.site.register(BasaltResource)
 admin.site.register(CurrentPosition)
@@ -37,3 +39,4 @@ admin.site.register(ScienceInstrument)
 admin.site.register(FtirSample)
 admin.site.register(AsdSample)
 admin.site.register(BasaltSingleImage)
+admin.site.register(BasaltImageSet, BasaltImageSetAdmin)
