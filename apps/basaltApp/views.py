@@ -13,6 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
+import traceback
 import json
 import datetime
 import pytz
@@ -111,12 +112,16 @@ def callPextantAjax(request, planId, clear=0):
             optimize = str(request.POST['optimize'])
             resolution = float(request.POST['resolution'])
             maxSlope = float(request.POST['slope'])
-            plan = pextantHarness.callPextant(request, plan, optimize, resolution, maxSlope)
+            post_extent = request.POST['extent']
+            if post_extent:
+                extent = [float(val) for val in (str(post_extent).split(','))]
+            plan = pextantHarness.callPextant(request, plan, optimize, resolution, maxSlope, extent)
             response["plan"]= plan.jsonPlan
             response["msg"]= "Sextant has calculated a new route."
             response["status"] = True
             status = 200
     except Exception, e:
+        traceback.print_exc()
         response["msg"] = e.args[0]
         response["status"] = False
         status = 406
