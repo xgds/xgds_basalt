@@ -39,11 +39,6 @@ DEFAULT_PORT = 50000
 
 DATA_DELIVERY_PROTOCOL = "UDP"
 
-#subsystem status markers
-OKAY = '#00ff00'
-WARNING = '#ffff00'
-ERROR = '#ff0000'
-
 _cache = memcache.Client(['127.0.0.1:11211'], debug=0)
 
 def socketListenTcp(opts, q):
@@ -72,29 +67,13 @@ def socketListenUdp(opts, q):
     while True:
         data, addr = s.recvfrom(1024)
         data = data.rstrip()
-        q.put(data+"\n")
+        q.put(data)
 
 def socketListen(opts, q):
     if DATA_DELIVERY_PROTOCOL == "UDP":
         socketListenUdp(opts, q)
     if DATA_DELIVERY_PROTOCOL == "TCP":
         socketListenTcp(opts, q)
-
-def setGpsDataQuality(msg):
-    '''
-    Sets 'GpsDataQuality' field in the memcache for subsystem status board
-    '''
-    dataQuality = msg.split(',')[2]
-    if dataQuality == 'A':
-        dataQuality = OKAY
-    else: # dataQuality == 'V'
-        dataQuality = ERROR
-    # get the EV number from msg
-    evNum = msg.split(':')[1]
-    myKey = "gpsDataQuality%s" % str(evNum)
-    status = {'dataQuality': dataQuality,
-              'lastUpdated': datetime.datetime.utcnow().isoformat()}
-    _cache.set(myKey, json.dumps(status))
 
 
 def zmqPublish(opts, q):
@@ -104,7 +83,6 @@ def zmqPublish(opts, q):
         msg = 'gpsposition:%s:%s:' % (opts.evaNumber, opts.trackName) + line
         logging.debug('publishing: %s', msg)
         p.pubStream.send(msg)
-        setGpsDataQuality(msg)
 
 
 def evaTrackListener(opts):
