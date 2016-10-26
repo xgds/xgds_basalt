@@ -698,10 +698,30 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
 
 #TODO this does not currently have a minerals field, we have to 
 # either make it have/use a minerals field or better yet have tags
-# regardless once we enable pxrf search it must either have minerals
-# field or the minerals has to come out of common search things
 class PxrfDataProduct(BasaltInstrumentDataProduct):
-    pass
+
+    @classmethod
+    def getSearchFormFields(cls):
+        return ['resource',
+                'flight',
+                'name',
+                'description',
+                'collector',
+                'creator',
+                ]
+    
+    @classmethod
+    def getSearchFieldOrder(cls):
+        return ['resource',
+                'flight',
+                'name',
+                'description',
+                'collector',
+                'creator',
+                'acquisition_timezone',
+                'min_acquisition_time',
+                'max_acquisition_time']
+    
 
 
 class FtirSample(models.Model):

@@ -70,17 +70,17 @@ class EVForm(ModelForm):
 class BasaltInstrumentDataForm(ImportInstrumentDataForm):
     INSTRUMENT_MODEL = LazyGetModelByName(settings.XGDS_INSTRUMENT_INSTRUMENT_MODEL)
     instrument = InstrumentModelChoiceField(INSTRUMENT_MODEL.get().objects.all(), widget = forms.HiddenInput())
-    minerals = forms.CharField(widget=forms.Textarea, label="Minerals")
     name = forms.CharField(required=False, label="Name")
     description = forms.CharField(widget=forms.Textarea, label="Description", required=False)
+    minerals = forms.CharField(widget=forms.Textarea, label="Minerals")
 
-# class SearchPXRFDataForm(SearchInstrumentDataForm):
-#     
-#     field_order = PxrfDataProduct.getSearchFieldOrder()
-# 
-#     class Meta:
-#         model = PxrfDataProduct
-#         fields = PxrfDataProduct.getSearchFormFields()
+class SearchPXRFDataForm(SearchInstrumentDataForm):
+     
+    field_order = PxrfDataProduct.getSearchFieldOrder()
+ 
+    class Meta:
+        model = PxrfDataProduct
+        fields = PxrfDataProduct.getSearchFormFields()
         
 class SearchASDDataForm(SearchInstrumentDataForm):
     
@@ -97,6 +97,7 @@ class SearchASDDataForm(SearchInstrumentDataForm):
 
 
 class SearchFTIRDataForm(SearchInstrumentDataForm):
+    minerals = forms.CharField(widget=forms.Textarea, label="Minerals")
     
     field_order = FtirDataProduct.getSearchFieldOrder()
 
