@@ -28,17 +28,32 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from pextant.api import Pathfinder
 from pextant.ExplorerModel import Astronaut
 from pextant.ExplorationObjective import *
-from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap
+from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap, LatLongCoord
 
-def getMap(site, desiredRes=0.5, maxSlope=15):
+def getCornersForMap(extent, zone, zoneLetter):
+    if extent:
+#         nw_corner = UTMCoord(extent[0], extent[3], zone, zoneLetter)
+#         se_corner = UTMCoord(extent[2], extent[1], zone, zoneLetter)
+        nw_corner = LatLongCoord(extent[3], extent[0])
+        se_corner = LatLongCoord(extent[1], extent[2])
+        return nw_corner, se_corner
+    return None, None
+    
+def getMap(site, desiredRes=0.5, maxSlope=15, extent=None):
     site_frame = site['name']
     dem_name = site_frame.replace(' ', '_')+'.tif'
     fullPath = os.path.join(settings.STATIC_ROOT, 'basaltApp', 'dem', dem_name)
     if os.path.isfile(fullPath): 
         zone=site['alternateCrs']['properties']['zone']
         zoneLetter=site['alternateCrs']['properties']['zoneLetter']
+        
+        if extent:
+            nw_corner, se_corner = getCornersForMap(extent, zone, zoneLetter)
+        else:
+            nw_corner = None
+            se_corner = None
         #TODO limit based on bounds of plan
-        dem = loadElevationMap(fullPath, maxSlope=maxSlope, zone=zone, zoneLetter=zoneLetter, desiredRes=desiredRes)
+        dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner, se_corner=se_corner, zone=zone, zone_letter=zoneLetter, desired_res=desiredRes)
         return dem
     return None
 
@@ -76,7 +91,7 @@ def clearSegmentGeometry(plan):
     plan.save()
     return plan
     
-def callPextant(request, plan, optimize=None, desiredRes=0.5, maxSlope=15):
+def callPextant(request, plan, optimize=None, desiredRes=0.5, maxSlope=15, extent=None):
     executions = plan.executions
     if not executions:
         msg = 'Plan %s not scheduled; could not call Sextant' % plan.name
@@ -92,7 +107,7 @@ def callPextant(request, plan, optimize=None, desiredRes=0.5, maxSlope=15):
     
     site = plan.jsonPlan['site']
 
-    dem = getMap(site, desiredRes, maxSlope)
+    dem = getMap(site, desiredRes, maxSlope, extent)
     if not dem:
         raise Exception('Could not load DEM while calling Pextant for ' + site['name'])
 #      
