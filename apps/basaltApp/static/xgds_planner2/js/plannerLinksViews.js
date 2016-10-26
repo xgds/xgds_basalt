@@ -31,6 +31,18 @@ app.views.PlanLinksView = Backbone.View.extend({
             this.template = Handlebars.compile(source);
         }
     },
+    getBoundingExtent: function() {
+    	var extent = app.map.planView.getPlanExtens();
+    	var amount = 5.0;
+    	extent[0] = extent[0] - amount;
+        extent[1] = extent[1] - amount;
+        extent[2] = extent[2] + amount;
+        extent[3] = extent[3] + amount;
+        var firstCoords = inverseTransform([extent[0], extent[1]]);
+        var lastCoords = inverseTransform([extent[2], extent[3]]);
+        var result =  [firstCoords[0], firstCoords[1], lastCoords[0], lastCoords[1]];
+        return result;
+    },
     render: function() {
         this.$el.html(this.template({
             planLinks: app.planLinks,
@@ -42,10 +54,12 @@ app.views.PlanLinksView = Backbone.View.extend({
         if (callback != null) {
             callback(this.$el);
         }
+        var context = this;
         this.$el.find('#pextantButton').click(function(event) {
             event.preventDefault();
             var theForm = $("#pextantForm");
             var postData = theForm.serializeArray();
+            postData.push({name:'extent', 'value': context.getBoundingExtent()})
             $('#pextantMessage').text('Sextant is processing, stand by...');
             $.ajax(
         	        {
