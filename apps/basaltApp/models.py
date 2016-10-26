@@ -111,6 +111,10 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
 #             result['type'] = settings.GEOCAM_TRACK_TRACK_MONIKIER
 #         return result
     
+    @classmethod
+    def getSearchFormFields(cls):
+        return ['name', 'resource', 'timezone']
+
     def __unicode__(self):
         return '%s %s' % (self.__class__.__name__, self.name)
 
