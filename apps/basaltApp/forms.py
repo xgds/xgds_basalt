@@ -20,13 +20,17 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import DateTimeField
+from django.utils.functional import lazy
 from geocamUtil.extFileField import ExtFileField
 from geocamUtil.loader import LazyGetModelByName
+from geocamUtil.forms.AbstractImportForm import getTimezoneChoices
+from geocamTrack.forms import SearchTrackForm
 
 from basaltApp.models import *
 from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField, SearchInstrumentDataForm
 from xgds_instrument.models import ScienceInstrument
 from xgds_sample.forms import SearchSampleForm
+
 
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
@@ -110,3 +114,7 @@ class SearchBasaltSampleForm(SearchSampleForm):
     number = forms.IntegerField(required=False)
     year = forms.IntegerField(required=False, initial=None)
     
+
+class SearchBasaltTrackForm(SearchTrackForm):
+    timezone = forms.ChoiceField(required=False, choices=lazy(getTimezoneChoices, list)(empty=True), 
+                                label='Time Zone', help_text='Required for Min/Max Time')
