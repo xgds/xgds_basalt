@@ -38,8 +38,10 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^wrist.kml$', views.wristKmlTrack, {'loginRequired':False}, 'kmlwrist'),
                # get instrument import page
                url(r'^instrumentDataImport/(?P<instrumentName>\w*)$', views.getInstrumentDataImportPage, name="get_instrument_data_import_page"),
+               url(r'^pXRFDataImport/$', views.getPxrfDataImportPage, name="get_pxrf_data_import_page"),
                # save newly imported instrument data
                url(r'^saveInstrumentData/(?P<instrumentName>\w*)$', views.saveNewInstrumentData, name='save_instrument_data'),
+               url(r'^savePxrfData/$', views.saveNewPxrfData, name='save_pxrf_data'),
                #get instrument edit page
                url(r'^edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.editInstrumentData, name="instrument_data_edit"),
                # update instrument data

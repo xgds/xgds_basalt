@@ -13,6 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
+import pydevd
 import traceback
 import json
 import datetime
@@ -28,7 +29,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages 
 from django.core.urlresolvers import reverse
 
-from forms import EVForm, BasaltInstrumentDataForm
+from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm
 from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
@@ -328,7 +329,22 @@ def getInstrumentDataImportPage(request, instrumentName):
                                                        'instrumentType': instrumentName})
                               )      
 
-
+def getPxrfDataImportPage(request):
+    form = PxrfInstrumentDataForm()
+    instrumentName = 'pxrf'
+    instrument = ScienceInstrument.getInstrument(instrumentName)
+    form.fields['instrument'].initial = instrument.id
+    errors = ""
+         
+    instrumentDataImportUrl = reverse('save_pxrf_data')
+    return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
+                              RequestContext(request, {'form': form,
+                                                       'errors': errors,
+                                                       'instrumentDataImportUrl': instrumentDataImportUrl,
+                                                       'instrumentType': instrumentName})
+                              )      
+    
+    
 def stringToDateTime(datetimeStr, timezone):
     date_formats = list(forms.DateTimeField.input_formats) + [
     '%Y/%m/%d %H:%M:%S',
@@ -348,7 +364,6 @@ def stringToDateTime(datetimeStr, timezone):
 
 
 def saveNewInstrumentData(request, instrumentName):
-    instrumentDataImportUrl = reverse('save_instrument_data', kwargs={'instrumentName': instrumentName})
     if request.method == 'POST':
         form = BasaltInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
@@ -356,22 +371,16 @@ def saveNewInstrumentData(request, instrumentName):
             messages.success(request, 'Instrument data is successfully saved.' )
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
                                                    instrument.dataImportFunctionName)
-            minerals = ""
-            if 'minerals' in form.cleaned_data:
-                minerals = form.cleaned_data['minerals']
-            
-            utcStamp = form.cleaned_data["dataCollectionTime"]
-            timezone = form.getTimezone()
             
             return importFxn(instrument, 
                              request.FILES["portableDataFile"],
                              request.FILES.get("manufacturerDataFile", None),
-                             utcStamp, 
-                             timezone, 
+                             form.cleaned_data["dataCollectionTime"], 
+                             form.getTimezone(), 
                              form.getResource(),
                              form.cleaned_data['name'],
                              form.cleaned_data['description'],
-                             minerals,
+                             form.cleaned_data['minerals'],
                              request.user,
                              form.cleaned_data['lat'],
                              form.cleaned_data['lon'],
@@ -381,10 +390,43 @@ def saveNewInstrumentData(request, instrumentName):
         return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
                           RequestContext(request, {'form': form,
                                                    'errors': form.errors,
-                                                   'instrumentDataImportUrl': instrumentDataImportUrl,
+                                                   'instrumentDataImportUrl': reverse('save_instrument_data', kwargs={'instrumentName': instrumentName}),
                                                    'instrumentType': instrumentName})
                           )      
 
+
+def saveNewPxrfData(request):
+    if request.method == 'POST':
+        pydevd.settrace('192.168.0.11')
+        form = PxrfInstrumentDataForm(request.POST, request.FILES)
+        if form.is_valid():
+            instrument = form.cleaned_data["instrument"]
+            messages.success(request, 'Instrument data is successfully saved.' )
+            importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
+                                                   instrument.dataImportFunctionName)
+            
+            return importFxn(instrument, 
+                             request.FILES["portableDataFile"],
+                             request.FILES.get("manufacturerDataFile", None),
+                             request.FILES.get("elementResultsCsvFile", None),
+                             form.cleaned_data["dataCollectionTime"], 
+                             form.getTimezone(), 
+                             form.getResource(),
+                             form.cleaned_data['name'],
+                             form.cleaned_data['description'],
+                             form.cleaned_data['minerals'],
+                             request.user,
+                             form.cleaned_data['lat'],
+                             form.cleaned_data['lon'],
+                             form.cleaned_data['alt'])
+        else: 
+            messages.error(request, 'Form errors %s' % form.errors)
+        return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
+                          RequestContext(request, {'form': form,
+                                                   'errors': form.errors,
+                                                   'instrumentDataImportUrl': reverse('save_pxrf_data'),
+                                                   'instrumentType': 'pxrf'})
+                          )      
 
 def saveUpdatedInstrumentData(request, instrument_name, pk):
     """

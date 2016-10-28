@@ -1,4 +1,3 @@
-import pydevd
 import datetime
 import csv
 from django.http import HttpResponse, HttpResponseRedirect
@@ -47,14 +46,14 @@ def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
     return (flight, sampleLocation)
 
 
-def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile,
+def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, elementResultsCsvFile,
                      utcStamp, timezone, resource, name, description, minerals=None, user=None,
                      latitude=None, longitude=None, altitude=None):
-    pydevd.settrace('192.168.0.11')
     instrument = ScienceInstrument.getInstrument(PXRF)
     (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
     
     metadata = {'portable_data_file':portableDataFile,
+                'elementResultsCsvFile': elementResultsCsvFile,
                 'portable_file_format_name':"csv",
                 'portable_mime_type':"application/csv",
                 'acquisition_time':utcStamp,
@@ -68,7 +67,8 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile,
                 'resource':resource,
                 'creator':user,
                 'name':name,
-                'description':description,}
+                'description':description,
+                'elements':minerals}
 #     csvfile = open(portableDataFile, 'rU')
     csvreader = csv.reader(portableDataFile, delimiter=',')
     for row in csvreader:
@@ -105,58 +105,6 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile,
     return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
                                                                             'modelName':'pXRF'}))
         
-    #TODO add these to model
-#     Label    20151215SpectrumSample
-# Duration Time    29.63
-# Ambient Temperature    85
-# Detector Temperature    -15
-# Valid Accumulated Counts    921140
-# Raw Accumulated Counts    1000810
-# Valid Count Last Packet    28526
-# Raw Count Last Packet    31081
-# Live Time    27.307005
-# HV DAC    201
-# HV ADC    40
-# Filament DAC    225
-# Filament ADC    30
-# Pulse Length    200
-# Pulse Period    254
-# Filter    4
-# eV per channel    20.0157
-# Number of Channels    2048
-# Vacuum    0
-
-#TODO iterate thru other values and fill out samples
-#TODO create pxrf sample
-#     for wn, rf in dataTable:
-#         sample = PxrfSample(
-#             dataProduct = dataProduct,
-#             wavenumber = wn,
-#             reflectance = rf)
-#         sample.save()
-
-#OLD CODE
-#     utcStamp = timeZoneToUtc(timezone.localize(timestamp))
-#     importSummary = """Import from %s
-# Uploaded filename: %s
-# Timestamp (Orig): %s
-# Timestamp (UTC): %s
-# Original Timezone: %s
-# Tracking resource: %s\n
-# INSTRUMENT DATA
-# %s""" % (instrument["displayName"],
-#          portableDataFile.name,
-#          timestamp,
-#          utcStamp,
-#          timezone,
-#          resource,
-#          instrumentData)
-
-#     if latitude or longitude or altitude:
-#         editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
-
-#     return HttpResponse(importSummary, content_type="text/plain")
-
 
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None,
