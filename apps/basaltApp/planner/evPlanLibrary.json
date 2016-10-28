@@ -93,8 +93,8 @@
             "alternateCrs": {
                 "type": "roversw",
                 "properties": {
-                    "originNorthing": 2148871.83,
-                    "originEasting": 259694.25,
+                    "originNorthing": 2142944.1,
+                    "originEasting": 268475.7,
                     "projection": "utm",
                     "zone": 5,
                     "zoneLetter": "Q",
@@ -107,8 +107,8 @@
                     "timezone": "US/Hawaii"
                 }
             },
-            "bbox": [19.172642, -155.435329,
-            		 19.430019, -155.190793]
+            "bbox": [19.36258137556692, -155.21292462944984,
+            		 19.371974326960242, -155.19550099968913]
         },
         {
             "type": "Site",
