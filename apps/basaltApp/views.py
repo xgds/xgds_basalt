@@ -13,7 +13,6 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-import pydevd
 import traceback
 import json
 import datetime
@@ -397,7 +396,6 @@ def saveNewInstrumentData(request, instrumentName):
 
 def saveNewPxrfData(request):
     if request.method == 'POST':
-        pydevd.settrace('192.168.0.11')
         form = PxrfInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
             instrument = form.cleaned_data["instrument"]
