@@ -32,6 +32,8 @@ from geocamTrack import models as geocamTrackModels
 from geocamTrack.utils import getClosestPosition
 
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
+from xgds_core.couchDbStorage import CouchDbStorage
+
 from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
 from geocamUtil.loader import LazyGetModelByName
@@ -53,11 +55,16 @@ from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, sto
 
 from xgds_status_board.models import *
 
+from xgds_instrument.models import getNewDataFileName
+
 from subprocess import Popen
 import re
 
 from django.core.cache import caches  
 _cache = caches['default']
+
+couchStore = CouchDbStorage()
+
 
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
 VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)
@@ -699,7 +706,9 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
 #TODO this does not currently have a minerals field, we have to 
 # either make it have/use a minerals field or better yet have tags
 class PxrfDataProduct(BasaltInstrumentDataProduct):
+    elementResultsCsvFile = models.FileField(upload_to=getNewDataFileName, max_length=255, storage=couchStore)
     
+    elements = models.CharField(max_length=2048, blank=True)
     label = models.CharField(max_length=128, default='', blank=True, null=True, db_index=True)
     durationTime = models.FloatField(default=0, verbose_name='Duration Time (seconds')
     ambientTemperature = models.FloatField(null=True, verbose_name='Ambient Temperature')
@@ -726,6 +735,11 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
         samples = [(s.channelNumber, s.intensity) for s in self.pxrfsample_set.all()]
         return samples
 
+    @property
+    def element_results_csv_file_url(self):
+        if self.elementResultsCsvFile:
+            return self.elementResultsCsvFile.url
+        return None
 
     @classmethod
     def getSearchFormFields(cls):

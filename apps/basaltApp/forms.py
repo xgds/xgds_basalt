@@ -71,7 +71,16 @@ class BasaltInstrumentDataForm(ImportInstrumentDataForm):
     instrument = InstrumentModelChoiceField(INSTRUMENT_MODEL.get().objects.all(), widget = forms.HiddenInput())
     name = forms.CharField(required=False, label="Name")
     description = forms.CharField(widget=forms.Textarea, label="Description", required=False)
-    minerals = forms.CharField(widget=forms.Textarea, label="Minerals")
+    minerals = forms.CharField(widget=forms.Textarea, label="Minerals", required=False)
+
+class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
+    minerals = forms.CharField(widget=forms.Textarea, label="Elements", required=False)
+    elementResultsCsvFile = ExtFileField(ext_whitelist=(".csv",),
+                                         required=True,
+                                         label="Results Csv File")
+    
+    field_order = ['timezone', 'resource', 'dataCollectionTime', 'portableDataFile', 'manufacturerDataFile', 'elementResultsCsvFile',
+                   'lat', 'lon', 'alt', 'name', 'description', 'minerals']
 
 class SearchPXRFDataForm(SearchInstrumentDataForm):
      
