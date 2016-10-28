@@ -730,6 +730,14 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
     numberofChannels = models.IntegerField(default=0, verbose_name='# of Channels')
     vacuum = models.FloatField(default=-1)
     
+    @classmethod
+    def getSearchableFields(self):
+        return ['name', 'description', 'label', 'elements']
+    
+    @classmethod
+    def cls_type(cls):
+        return 'pXRF'
+    
     @property
     def samples(self):
         samples = [(s.channelNumber, s.intensity) for s in self.pxrfsample_set.all()]
