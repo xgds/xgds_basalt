@@ -31,7 +31,6 @@ from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoic
 from xgds_instrument.models import ScienceInstrument
 from xgds_sample.forms import SearchSampleForm
 
-
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
 

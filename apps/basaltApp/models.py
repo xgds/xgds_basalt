@@ -699,6 +699,33 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
 #TODO this does not currently have a minerals field, we have to 
 # either make it have/use a minerals field or better yet have tags
 class PxrfDataProduct(BasaltInstrumentDataProduct):
+    
+    label = models.CharField(max_length=128, default='', blank=True, null=True, db_index=True)
+    durationTime = models.FloatField(default=0, verbose_name='Duration Time (seconds')
+    ambientTemperature = models.FloatField(null=True, verbose_name='Ambient Temperature')
+    detectorTemperature = models.FloatField(null=True, verbose_name='Detector Temperature')
+    temperatureUnits = models.CharField(max_length=1, default='F', verbose_name='Temperature Units')
+    validAccumulatedCounts = models.IntegerField(default=0, verbose_name='Valid Accumulated Counts')
+    rawAccumulatedCounts = models.IntegerField(default=0, verbose_name='Raw Accumulated Counts')
+    validCountLastPacket = models.IntegerField(default=0, verbose_name='Valid Counts Last Packet')
+    rawCountLastPacket = models.IntegerField(default=0, verbose_name='Raw Counts Last Packet')
+    liveTime = models.FloatField(default=0, verbose_name='Live Time (seconds)')
+    hVDAC = models.IntegerField(default=0)
+    hVADC = models.IntegerField(default=0)
+    filamentDAC = models.IntegerField(default=0)
+    filamentADC = models.IntegerField(default=0)
+    pulseLength = models.IntegerField(default=0, verbose_name='Pulse Length')
+    pulsePeriod = models.IntegerField(default=0, verbose_name='Pulse Period')
+    filter = models.IntegerField(default=-1, verbose_name='Filter #')
+    eVperchannel = models.FloatField(default=-1, verbose_name='eV Per Channel')
+    numberofChannels = models.IntegerField(default=0, verbose_name='# of Channels')
+    vacuum = models.FloatField(default=-1)
+    
+    @property
+    def samples(self):
+        samples = [(s.channelNumber, s.intensity) for s in self.pxrfsample_set.all()]
+        return samples
+
 
     @classmethod
     def getSearchFormFields(cls):
@@ -723,6 +750,18 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
                 'max_acquisition_time']
     
 
+class PxrfSample(models.Model):
+    dataProduct = models.ForeignKey(PxrfDataProduct)
+    channelNumber = models.IntegerField(db_index=True)
+    intensity = models.IntegerField(db_index=True)
+
+    class Meta:
+        ordering = ['dataProduct', 'channelNumber']
+        
+    def __unicode__(self):
+        return "%s: (%f, %f)" % (self.dataProduct.name,
+                                 self.channelNumber, self.intensity)
+        
 
 class FtirSample(models.Model):
     dataProduct = models.ForeignKey(FtirDataProduct)
@@ -734,7 +773,7 @@ class FtirSample(models.Model):
         
     def __unicode__(self):
         return "%s: (%f, %f)" % (self.dataProduct.acquisition_time,
-                           self.wavenumber, self.reflectance)
+                                 self.wavenumber, self.reflectance)
 
 
 class AsdSample(models.Model):
