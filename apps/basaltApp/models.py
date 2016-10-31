@@ -706,7 +706,7 @@ class AsdDataProduct(BasaltInstrumentDataProduct):
 #TODO this does not currently have a minerals field, we have to 
 # either make it have/use a minerals field or better yet have tags
 class PxrfDataProduct(BasaltInstrumentDataProduct):
-    elementResultsCsvFile = models.FileField(upload_to=getNewDataFileName, max_length=255, storage=couchStore)
+    elementResultsCsvFile = models.FileField(upload_to=getNewDataFileName, max_length=255, null=True, blank=True, storage=couchStore)
     
     elements = models.CharField(max_length=2048, blank=True)
     label = models.CharField(max_length=128, default='', blank=True, null=True, db_index=True)
