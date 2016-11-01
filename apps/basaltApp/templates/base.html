@@ -128,12 +128,14 @@
    	{% block footer %}
 	{% endblock footer %}
 	
-    
+	{% block prescripts %}
+	{% endblock prescripts %}
+	
     {% block scripts %}
 	<script src="{{ EXTERNAL_URL }}jquery/dist/jquery.min.js"></script>
 	<script src="{{ STATIC_URL }}xgds_core/js/helpPopup.js"></script>
     {% endblock %}
-
+    
     <script type="text/javascript">
       {% block jsSetVars %}
       var defaultTimeZone = '{{TIME_ZONE}}';
