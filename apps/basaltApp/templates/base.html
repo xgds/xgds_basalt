@@ -136,6 +136,9 @@
 	<script src="{{ STATIC_URL }}xgds_core/js/helpPopup.js"></script>
     {% endblock %}
     
+    {% block postscripts %}
+	{% endblock postscripts %}
+    
     <script type="text/javascript">
       {% block jsSetVars %}
       var defaultTimeZone = '{{TIME_ZONE}}';
