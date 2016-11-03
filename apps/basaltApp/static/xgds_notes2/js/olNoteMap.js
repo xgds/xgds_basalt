@@ -62,8 +62,13 @@ var Note = {
         constructMapElement:function(noteJson){
         	noteJson.flattenedTags = '';
             var coords = transform([noteJson.lon, noteJson.lat]);
+            var view_url = noteJson.content_url;
+            if (_.isUndefined(view_url) || _.isEmpty(view_url)) {
+            	view_url = '/xgds_map_server/view/' + noteJson.type + '/' + noteJson.pk;
+            }
             var feature = new ol.Feature({
             	selected: false,
+            	view_url: view_url,
                 name: getLocalTimeString(noteJson.event_time, noteJson.event_timezone),
                 uuid: noteJson.pk,
                 pk: noteJson.pk,

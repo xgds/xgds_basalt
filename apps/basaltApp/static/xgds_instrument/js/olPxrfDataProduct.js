@@ -62,6 +62,7 @@ var pXRF = {
             var coords = transform([dataJson.lon, dataJson.lat]);
             var feature = new ol.Feature({
             	selected: false,
+            	view_url: dataJson.view_url,
                 name: dataJson.instrument_name,
                 pk: dataJson.pk,
                 type: dataJson.type,
