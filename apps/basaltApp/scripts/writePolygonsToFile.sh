@@ -23,13 +23,13 @@ mysql -u root -p -h shore xgds_basalt --password=$sqlpwd < ./writePolygonsToFile
 echo 'finished writing to file'
 
 echo 'copy files from shore'
-scp irg@shore:/tmp/groundoverlay.sql /tmp/.
-scp irg@shore:/tmp/polygon.sql /tmp/.
-scp irg@shore:/tmp/point.sql /tmp/.
-scp irg@shore:/tmp/linestring.sql /tmp/.
+scp irg@shore:/tmp/tempSql/groundoverlay.sql /tmp/tempSql/.
+scp irg@shore:/tmp/tempSql/polygon.sql /tmp/tempSql/.
+scp irg@shore:/tmp/tempSql/point.sql /tmp/tempSql/.
+scp irg@shore:/tmp/tempSql/linestring.sql /tmp/tempSql/.
 
-ssh irg@shore 'rm /tmp/groundoverlay.sql'
-ssh irg@shore 'rm /tmp/polygon.sql'
-ssh irg@shore 'rm /tmp/point.sql'
-ssh irg@shore 'rm /tmp/linestring.sql'
+ssh irg@shore 'rm /tmp/tempSql/groundoverlay.sql'
+ssh irg@shore 'rm /tmp/tempSql/polygon.sql'
+ssh irg@shore 'rm /tmp/tempSql/point.sql'
+ssh irg@shore 'rm /tmp/tempSql/linestring.sql'
 echo 'finished copying files from shore'
