@@ -24,8 +24,8 @@ mysql -u root -p xgds_basalt --password=$sqlpwd < ./insertPolygonsToDB.sql
 echo 'done inserting to database'
 
 echo 'deleting temporary files'
-sudo rm -rf /tmp/groundoverlay.sql
-sudo rm -rf /tmp/polygon.sql
-sudo rm -rf /tmp/linestring.sql
-sudo rm -rf /tmp/point.sql
+sudo rm -rf /tmp/tempSql/groundoverlay.sql
+sudo rm -rf /tmp/tempSql/polygon.sql
+sudo rm -rf /tmp/tempSql/linestring.sql
+sudo rm -rf /tmp/tempSql/point.sql
 echo 'done deleting temp files' 
