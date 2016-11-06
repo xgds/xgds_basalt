@@ -122,7 +122,7 @@ def callPextantAjax(request, planId, clear=0):
             status = 200
     except Exception, e:
         traceback.print_exc()
-        response["msg"] = e.getMessage()
+        response["msg"] = str(e)
         response["status"] = False
         status = 406
     return HttpResponse(json.dumps(response), content_type='application/json',
