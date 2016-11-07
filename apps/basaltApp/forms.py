@@ -30,9 +30,12 @@ from basaltApp.models import *
 from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField, SearchInstrumentDataForm
 from xgds_instrument.models import ScienceInstrument
 from xgds_sample.forms import SearchSampleForm
+from xgds_notes2.forms import SearchNoteForm
+from xgds_planner2.models import Vehicle
 
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
+GROUP_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_GROUP_FLIGHT_MODEL)
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -119,6 +122,11 @@ class SearchFTIRDataForm(SearchInstrumentDataForm):
         fields = FtirDataProduct.getSearchFormFields()
 
 
+class SearchBasaltNoteForm(SearchNoteForm):
+    flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), label=settings.XGDS_PLANNER2_FLIGHT_MONIKER, required=False)
+    flight__vehicle = forms.ModelChoiceField(Vehicle.objects.all(), label='Resource', required=False)
+    
+    
 class SearchBasaltSampleForm(SearchSampleForm):
     number = forms.IntegerField(required=False)
     year = forms.IntegerField(required=False, initial=None)

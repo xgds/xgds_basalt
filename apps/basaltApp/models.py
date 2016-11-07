@@ -848,6 +848,13 @@ class BasaltNote(AbstractLocatedNote):
             return self.flight.name
         else:
             return None
+
+    @property  
+    def flight_group_name(self):
+        if self.flight:
+            return self.flight.group.name
+        else:
+            return None
     
     def calculateDelayedEventTime(self, event_time):
         try:
@@ -889,7 +896,6 @@ class BasaltNote(AbstractLocatedNote):
     def getSearchFormFields(cls):
         return ['content',
                 'tags',
-                'flight',
                 'event_timezone',
                 'author',
                 'role',
@@ -902,7 +908,8 @@ class BasaltNote(AbstractLocatedNote):
                 'hierarchy',
                 'content',
                 'author',
-                'flight',
+                'flight__group',
+                'flight__vehicle',
                 'role',
                 'location',
                 'event_timezone',
