@@ -28,7 +28,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages 
 from django.core.urlresolvers import reverse
 
-from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm
+from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm, SearchBasaltNoteForm
 from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName
@@ -37,6 +37,7 @@ from xgds_core.models import Constant
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
 from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
+from xgds_planner2.models import Vehicle
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
 from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink
@@ -277,7 +278,7 @@ def getLiveIndex(request):
     activeFlights = getActiveFlights()
     if activeFlights:
         firstFlight =activeFlights.first().flight
-        if settings.HOSTNAME == 'basalt':
+        if settings.HOSTNAME == 'boat':
             return HttpResponseRedirect(reverse('xgds_video_live'))
         else: 
             return HttpResponseRedirect(reverse('xgds_video_recorded', kwargs={'flightName':firstFlight.group.name})) 
@@ -506,3 +507,15 @@ def editInstrumentData(request, instrument_name, pk):
 
 def check_forward(request, *args, **kwargs):
     return HttpResponse(request.META.get('HTTP_X_FORWARDED_FOR', 'None: ' + request.META['REMOTE_ADDR']))
+
+def buildNotesForm(args):
+    theForm = SearchBasaltNoteForm()
+    
+    if args['flight__group_name']:
+        group = BasaltGroupFlight.objects.get(name=args['flight__group_name'])
+        theForm.fields['flight__group'].initial = group.id
+    if args['vehicle__name']:
+        vehicle = Vehicle.objects.get(name=args['vehicle__name'])
+        theForm.fields['flight__vehicle'].initial = vehicle.id
+    
+    return theForm
