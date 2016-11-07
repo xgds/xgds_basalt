@@ -16,6 +16,7 @@
 import traceback
 import json
 import datetime
+import time
 import pytz
 from django.conf import settings
 from django.shortcuts import render_to_response, redirect, render
@@ -123,7 +124,7 @@ def callPextantAjax(request, planId, clear=0):
             status = 200
     except Exception, e:
         traceback.print_exc()
-        response["msg"] = e.getMessage()
+        response["msg"] = str(e)
         response["status"] = False
         status = 406
     return HttpResponse(json.dumps(response), content_type='application/json',
@@ -278,7 +279,7 @@ def getLiveIndex(request):
     activeFlights = getActiveFlights()
     if activeFlights:
         firstFlight =activeFlights.first().flight
-        if settings.HOSTNAME == 'basalt':
+        if settings.HOSTNAME == 'boat':
             return HttpResponseRedirect(reverse('xgds_video_live'))
         else: 
             return HttpResponseRedirect(reverse('xgds_video_recorded', kwargs={'flightName':firstFlight.group.name})) 
@@ -507,6 +508,12 @@ def editInstrumentData(request, instrument_name, pk):
 
 def check_forward(request, *args, **kwargs):
     return HttpResponse(request.META.get('HTTP_X_FORWARDED_FOR', 'None: ' + request.META['REMOTE_ADDR']))
+
+def getCurrentTimeWithDelayCorrection():
+    delayRecord = Constant.objects.get(name="delay")
+    currentTimeCorrected = time.time() - int(delayRecord.value)
+
+    return currentTimeCorrected
 
 def buildNotesForm(args):
     theForm = SearchBasaltNoteForm()
