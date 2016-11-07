@@ -16,6 +16,7 @@
 import traceback
 import json
 import datetime
+import time
 import pytz
 from django.conf import settings
 from django.shortcuts import render_to_response, redirect, render
@@ -507,6 +508,12 @@ def editInstrumentData(request, instrument_name, pk):
 
 def check_forward(request, *args, **kwargs):
     return HttpResponse(request.META.get('HTTP_X_FORWARDED_FOR', 'None: ' + request.META['REMOTE_ADDR']))
+
+def getCurrentTimeWithDelayCorrection():
+    delayRecord = Constant.objects.get(name="delay")
+    currentTimeCorrected = time.time() - int(delayRecord.value)
+
+    return currentTimeCorrected
 
 def buildNotesForm(args):
     theForm = SearchBasaltNoteForm()
