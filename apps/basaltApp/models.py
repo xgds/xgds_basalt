@@ -38,7 +38,7 @@ from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
-from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin
+from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin, HierarchichalTag
 
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
@@ -856,6 +856,14 @@ class BasaltNote(AbstractLocatedNote):
         else:
             return None
     
+    @classmethod
+    def buildTagsQuery(cls, search_value):
+        splits=search_value.split(' ')
+        found_tags = HierarchichalTag.objects.filter(name__in=splits)
+        if found_tags:
+            return {'tags__in':found_tags}
+        return None
+
     def calculateDelayedEventTime(self, event_time):
         try:
             if self.flight.active:
