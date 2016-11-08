@@ -84,11 +84,12 @@ var Note = {
             if (noteJson.tags != '') {
                 var theText = new ol.style.Text(this.styles['text']);
                 if (noteJson.tag_names.length > 0){
-                	noteJson.flattenedTags = noteJson.tag_names.reduce(function(a, b) {
+                	noteJson.flattenedTags = noteJson.tag_names[0].reduce(function(a, b) {
                 		return a.concat(" " + b);
                 	});
+                	theText.setText(noteJson.tag_names[0]);
                 }
-                theText.setText(noteJson.flattenedTags);
+                
                 var textStyle = new ol.style.Style({
                     text: theText
                 });
