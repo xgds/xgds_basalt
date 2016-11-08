@@ -526,3 +526,15 @@ def buildNotesForm(args):
         theForm.fields['flight__vehicle'].initial = vehicle.id
     
     return theForm
+
+def getTimezoneFromFlightName(flightName):
+    try:
+        group = BasaltGroupFlight.objects.get(name=flightName)
+        return group.flights[0].timezone
+    except:
+        try:
+            flight = BasaltFlight.objects.get(name=flightName)
+            return flight.timezone
+        except:
+            return settings.TIME_ZONE
+        
