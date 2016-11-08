@@ -131,7 +131,6 @@ def callPextantAjax(request, planId, clear=0):
                         status=status)
         
 
-
 def storeFieldData(request):
     if request.method == 'POST':
         postData = request.POST
