@@ -16,6 +16,21 @@
 
 var xgds_sample = xgds_sample || {};
 $.extend(xgds_sample,{
+	getFormFieldID: function(jsonKey) {  
+		/**
+		 * Construct field id from the json key from server
+		 */
+		// handle cases where json key doesn't match id
+		if (jsonKey == "replicate_name") {
+			return "id_replicate";
+		} else if (jsonKey == "region_name") {
+			return "id_region";
+		} else if (jsonKey == "sample_type_name") {
+			return "id_sample_type";
+		} else {
+			return "id_" + jsonKey;
+		}
+	},
 	showReplicateOptions: function(replicate_name) {
 		/**
 		 * Triplicates Legend (sampleType = triplicates):
@@ -39,9 +54,11 @@ $.extend(xgds_sample,{
 			$("#id_replicate option[value='1']").show();
 			$("#id_replicate option[value='2']").show();
 			$("#id_replicate option[value='3']").show();
+			xgds_sample.setDomElement("id_replicate", 'A');
 		} else if (selected == "ORG") {
 			$("#id_replicate option[value='4']").show();
 			$("#id_replicate option[value='5']").show();
+			xgds_sample.setDomElement("id_replicate", 'D');
 		} else if ((selected == "Archive") || (selected == "Geology")) {
 			$("#id_replicate").val('');
 			$("#id_replicate").attr('disabled','disabled')
@@ -51,9 +68,10 @@ $.extend(xgds_sample,{
 			$("#id_replicate option[value='8']").show();
 			$("#id_replicate option[value='9']").show();
 			$("#id_replicate option[value='10']").show();
+			xgds_sample.setDomElement("id_replicate", 'F');
 		}
 		if (replicate_name != undefined){
-			$("#id_replicate option:contains('" + replicate_name + "')").attr('selected','selected');
+			xgds_sample.setDomElement("id_replicate", replicate_name)
 		}
 	},
 	
@@ -76,7 +94,6 @@ $.extend(xgds_sample,{
 	postDataLoad: function(data){
 		this.showReplicateOptions(data.replicate_name);
 	}
-	
 });
 
 
