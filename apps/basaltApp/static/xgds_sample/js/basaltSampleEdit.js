@@ -51,7 +51,7 @@ $.extend(xgds_sample,{
 			// pass
 			console.log(err);
 		}
-		//var selected = $("#id_sample_type option:selected").html();
+		
 		$("#id_replicate").children('option').hide();
 		$("#id_replicate").removeAttr('disabled');
 		if (selected == "Biology") {
@@ -76,7 +76,7 @@ $.extend(xgds_sample,{
 		}
 		if (replicate_name != undefined){
 			xgds_sample.setDomElement("id_replicate", replicate_name)
-		}
+		} 
 	},
 	
 	updateAdvancedInputFields: function() {
@@ -97,7 +97,6 @@ $.extend(xgds_sample,{
 		this.hookSampleTypeListener();
 		$('#id_number').prop("disabled", true);
 	},
-	
 	postDataLoad: function(data){
 		this.hookSampleTypeListener();
 		this.showReplicateOptions(data.replicate_name);
