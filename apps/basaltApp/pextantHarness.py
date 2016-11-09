@@ -27,15 +27,16 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from pextant.api import Pathfinder
 from pextant.ExplorerModel import Astronaut
+from pextant.geoshapely import GeoPoint, LAT_LONG
 from pextant.ExplorationObjective import *
-from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap, LatLongCoord
+from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap
 
 def getCornersForMap(extent, zone, zoneLetter):
     if extent:
 #         nw_corner = UTMCoord(extent[0], extent[3], zone, zoneLetter)
 #         se_corner = UTMCoord(extent[2], extent[1], zone, zoneLetter)
-        nw_corner = LatLongCoord(extent[3], extent[0])
-        se_corner = LatLongCoord(extent[1], extent[2])
+        nw_corner = GeoPoint(LAT_LONG, extent[3], extent[0])
+        se_corner = GeoPoint(LAT_LONG, extent[1], extent[2])
         return nw_corner, se_corner
     return None, None
     
