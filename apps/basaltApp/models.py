@@ -63,6 +63,9 @@ import re
 from django.core.cache import caches  
 _cache = caches['default']
 
+RESOURCE_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_RESOURCE_MODEL)
+ACTIVE_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL)
+
 couchStore = CouchDbStorage()
 
 
@@ -181,6 +184,9 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
     @property
     def flights(self):
         return self.basaltflight_set.all()
+    
+    def __unicode__(self):
+        return '%s %s' % (self.__class__.__name__, self.name)
 
 
 
@@ -559,20 +565,23 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         self.name = name
         self.save()
     
-#     def toMapDict(self):
-#         result = xgds_sample_models.AbstractSample.toMapDict(self)
-#         if result:
-#             result['type'] = 'Sample'
-#             result['flight'] = self.flight.id if self.flight else None
-#             result['replicate'] = self.replicate.id if self.replicate else None
-#             result['marker_id'] = self.marker_id if self.marker_id else None
-#         return result
-#     
+    def setExtrasDefault(self, defaultResource):
+        if not self.resource:
+            if defaultResource: 
+                self.resource = defaultResource
+        if not self.flight:
+            foundActiveFlights = ACTIVE_FLIGHT_MODEL.get().objects.filter(flight__vehicle = defaultResource.vehicle)
+            if foundActiveFlights: 
+                defaultFlight = foundActiveFlights[0].flight
+                self.flight = defaultFlight
+        self.save()
+
     def __unicode__(self):
         if self.pk:
             return 'basaltSample id=%d' % self.pk
         else: 
             return ''
+
 
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)

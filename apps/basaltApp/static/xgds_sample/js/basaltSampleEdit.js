@@ -26,7 +26,11 @@ $.extend(xgds_sample,{
 		} else if (jsonKey == "region_name") {
 			return "id_region";
 		} else if (jsonKey == "sample_type_name") {
-			return "id_sample_type";
+			return "id_sample_type"; 
+		} else if (jsonKey == "flight_name") {
+			return "id_flight";
+		} else if (jsonKey == "resource_name") {
+			return "id_resource";
 		} else {
 			return "id_" + jsonKey;
 		}
@@ -76,22 +80,26 @@ $.extend(xgds_sample,{
 	},
 	
 	updateAdvancedInputFields: function() {
-		this.advancedInputFields.push('#id_resource');
-		this.advancedInputFields.push('#id_flight');
+//		this.advancedInputFields.push('#id_resource');
+//		this.advancedInputFields.push('#id_flight');
 	},
 	
 	updateNonEditableFields: function() {
 		this.nonEditableFields.push('#id_number');
 	},
-	
+	hookSampleTypeListener: function() {
+		$('#id_sample_type').off('change');
+		$('#id_sample_type').on('change', this.showReplicateOptions);
+	},
 	postInit: function() {
 		// hook up the show replicate options to type change.
 		var _this = this;
-		$('#id_sample_type').change(_this.showReplicateOptions);
+		this.hookSampleTypeListener();
 		$('#id_number').prop("disabled", true);
 	},
 	
 	postDataLoad: function(data){
+		this.hookSampleTypeListener();
 		this.showReplicateOptions(data.replicate_name);
 	}
 });
