@@ -54,7 +54,7 @@ def getMap(site, desiredRes=0.5, maxSlope=15, extent=None):
             nw_corner = None
             se_corner = None
         #TODO limit based on bounds of plan
-        dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner, se_corner=se_corner, zone=zone, zone_letter=zoneLetter, desired_res=desiredRes)
+        dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner, se_corner=se_corner, desired_res=desiredRes)
         return dem
     return None
 
