@@ -33,8 +33,6 @@ from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap
 
 def getCornersForMap(extent, zone, zoneLetter):
     if extent:
-#         nw_corner = UTMCoord(extent[0], extent[3], zone, zoneLetter)
-#         se_corner = UTMCoord(extent[2], extent[1], zone, zoneLetter)
         nw_corner = GeoPoint(LAT_LONG, extent[3], extent[0])
         se_corner = GeoPoint(LAT_LONG, extent[1], extent[2])
         return nw_corner, se_corner
@@ -53,8 +51,9 @@ def getMap(site, desiredRes=0.5, maxSlope=15, extent=None):
         else:
             nw_corner = None
             se_corner = None
-        #TODO limit based on bounds of plan
-        dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner, se_corner=se_corner, desired_res=desiredRes)
+	cartesian = Cartesian(nw_corner, desiredRes)
+	nw_corner_pad, se_corner_pad = GeoEnvelope(nw_corner, se_corner).addMargin(cartesian, 30).getBounds()
+	dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner_pad, se_corner=se_corner_pad, desired_res=desiredRes)
         return dem
     return None
 
