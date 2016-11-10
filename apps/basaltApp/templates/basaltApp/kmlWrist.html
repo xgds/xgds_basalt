@@ -26,11 +26,11 @@
 {% for letter, plankml in letter_plans %}
   <p>
   	<strong>{{letter}}: </strong>
-  	<a href="{{ plankml }}" download>{{ plankml|basename }}</a></html>
+  	<a href="{{ plankml }}" target="_blank" download>{{ plankml|basename }}</a></html>
   </p>
 {% endfor %}
   <p>
-  	<a href="/basaltApp/wrist.kml" download>WORKING TRACK POSITIONS</a>
+  	<a href="/basaltApp/wrist.kml" target="_blank" download>WORKING TRACK POSITIONS</a>
   </p>
 </h2>
     
