@@ -7,9 +7,6 @@
 [submodule "submodules/xgds_map_server"]
 	path = submodules/xgds_map_server
 	url = https://github.com/xgds/xgds_map_server.git
-[submodule "submodules/xgds_notes"]
-	path = submodules/xgds_notes
-	url = https://babelfish.arc.nasa.gov/git/xgds_notes
 [submodule "geocamTrackWeb"]
 	path = geocamTrackWeb
 	url = git://github.com/geocam/geocamTrackWeb.git
