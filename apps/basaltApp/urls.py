@@ -45,5 +45,8 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                #get instrument edit page
                url(r'^edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.editInstrumentData, name="instrument_data_edit"),
                # update instrument data
-               url(r'^update/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.saveUpdatedInstrumentData, name="instrument_data_update")
+               url(r'^update/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.saveUpdatedInstrumentData, name="instrument_data_update"),
+               url(r'^hvnp_so2.kml$', views.getHvnpKml, name="hvnp_so2"),
+               url(r'^hvnp_so2_link.kml$', views.getHvnpNetworkLink, name="hvnp_so2_link"),
+               
            ]
