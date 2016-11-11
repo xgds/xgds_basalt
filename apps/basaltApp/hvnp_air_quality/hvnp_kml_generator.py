@@ -18,7 +18,8 @@
 
 # This Python script will generate a KML network link and a KML file which renders 
 # placemarks for the air quality at Hawai'i Volcanoes National Park.
-import urllib2
+
+import requests
 import json
 from xml.sax.saxutils import escape
 from fastkml import kml, geometry, styles
@@ -38,11 +39,18 @@ NAME_SPACE = '{http://www.opengis.net/kml/2.2}'
 # Global variables
 CURRENT_DATA = None
 CONDITIONS = {}
-SITE_POSITIONS = {'Visitor Center': {'lat': 19.4308,
-                                     'lon': -155.2578,
+# SITE_POSITIONS = {'Visitor Center': {'lat': 19.4308,
+#                                      'lon': -155.2578,
+#                                      'alt': 1215},
+#                     'Jaggar Museum': {'lat': 19.4203,
+#                                     'lon': -155.2881,
+#                                     'alt': 1123}}
+
+SITE_POSITIONS = {'Visitor Center': {'lat': 19.387979,
+                                     'lon': -155.107504,
                                      'alt': 1215},
-                  'Jaggar Museum': {'lat': 19.4203,
-                                    'lon': -155.2881,
+                  'Jaggar Museum': {'lat': 19.410000,
+                                    'lon': -155.286389,
                                     'alt': 1123}}
 
 PLUME_SOURCES = {'Visitor Center',
@@ -124,8 +132,10 @@ def getData():
     ''' Get the json data from the hawaiiso2network website and store it
     '''
     try:
-        response = urllib2.urlopen(RAW_DATA_URL)
-        return json.load(response)
+        request = requests.get(RAW_DATA_URL, timeout=30)
+        return request.json()
+#         response = urllib2.urlopen(RAW_DATA_URL)
+#         return json.load(response)
     except:
         return None
 
@@ -149,10 +159,10 @@ def getConditions():
     met = getDataValue('MET')
     CONDITIONS['WIND_SPEED'] = int(met['WS'])
     CONDITIONS['WIND_SPEED_METRIC'] = int(met['WS-metric'])
-    CONDITIONS['WIND_DIRECTION'] = int(met['WD'])
+    CONDITIONS['WIND_DIRECTION'] = int(met['WD']) - 180
     CONDITIONS['TEMPERATURE'] = int(met['AT'])
     CONDITIONS['TEMPERATURE_METRIC'] = int(met['AT-metric'])
-    CONDITIONS['LOW_WIND'] = CONDITIONS['WIND_SPEED'] <= int(met['WS-threshold'])
+    CONDITIONS['LOW_WIND'] = CONDITIONS['WIND_SPEED_METRIC'] <= int(met['WS-threshold'])
     CONDITIONS['HUMIDITY'] = int(met['RH'])
     CONDITIONS['PARKWIDE'] = {'SO2': getDataValue('PARKWIDE.SO2.AQItext'),
                               'PM25': getDataValue('PARKWIDE.PM25.AQItext')}
@@ -283,7 +293,6 @@ def buildWedge(location, heading, name):
     coords = [(centerPoint.lon.decimal_degree, centerPoint.lat.decimal_degree),
               (point1.lon.decimal_degree, point1.lat.decimal_degree),
               (point2.lon.decimal_degree, point2.lat.decimal_degree)]
-    print coords
     wedgeShape = Polygon(coords)
     kmlGeometry = geometry.Geometry(NAME_SPACE, id=wedgeID, geometry=wedgeShape, extrude=False, tessellate=False, altitude_mode='clampToGround')
     return kmlGeometry
