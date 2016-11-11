@@ -28,6 +28,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.contrib import messages 
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 
 from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm, SearchBasaltNoteForm
 from models import *
@@ -41,11 +42,12 @@ from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
 from xgds_planner2.models import Vehicle
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
-from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink
+from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink, djangoResponse
 from xgds_instrument.views import lookupImportFunctionByName, editInstrumentDataPosition
 
 from geocamUtil.TimeUtil import utcToTimeZone, timeZoneToUtc
 from apps.geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
+from apps.basaltApp.hvnp_air_quality import hvnp_kml_generator
 
 
 def editEV(request, pk=None):
@@ -536,4 +538,13 @@ def getTimezoneFromFlightName(flightName):
             return flight.timezone
         except:
             return settings.TIME_ZONE
-        
+
+def getHvnpKml(request):
+    document = hvnp_kml_generator.getCurrentStateKml(request.scheme + '://' + request.META['HTTP_HOST'])
+    response = djangoResponse(document)
+    response['Content-disposition'] = 'attachment; filename=%s' % 'hvnp_so2.kml'
+    return response
+
+def getHvnpNetworkLink(request):
+    return wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
+
