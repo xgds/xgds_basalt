@@ -49,7 +49,8 @@ PLUME_SOURCES = {'Visitor Center',
                  'Jaggar Museum'}
 
 #KML colors are aabbggrr in hex binary; colors in this map do not include transparency
-ADVISORY_SCALE = {'Good':'57C700',
+ADVISORY_SCALE = {'Unknown':'FFFFFF',
+                  'Good':'57C700',
                   'Moderate':'00DEFF',
                   'Unhealthy for Sensitive Groups':'318FF5',
                   'Unhealthy':'2601FF',
@@ -181,6 +182,8 @@ def makeKey(word):
 
 def getDotIconId(level):
     ''' Get the clean id for a dot icon and style '''
+    if level not in ADVISORY_SCALE:
+        level = 'Unknown'
     return makeKey(level) + '_dot'
 
 
@@ -190,6 +193,8 @@ def buildDotIconUrl(level):
 
 
 def getPolyStyleId(level):
+    if level not in ADVISORY_SCALE:
+        level = 'Unknown'
     ''' Get the clean id for a polygon style '''
     return makeKey(level) + '_poly'
 
