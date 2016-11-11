@@ -1,0 +1,5 @@
+pyproj==1.9.5.1
+LatLon==1.0.2
+fastkml==0.11
+shapely==1.6a1
+polycircles==0.3.7
