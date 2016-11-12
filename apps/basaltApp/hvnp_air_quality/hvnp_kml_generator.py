@@ -19,6 +19,8 @@
 # This Python script will generate a KML network link and a KML file which renders 
 # placemarks for the air quality at Hawai'i Volcanoes National Park.
 
+import datetime
+import pytz
 import requests
 import json
 from xml.sax.saxutils import escape
@@ -28,10 +30,7 @@ from polycircles import polycircles
 from LatLon import LatLon
 
 USE_MEMCACHE = True
-if USE_MEMCACHE:
-    import memcache
-    _cache = memcache.Client(['127.0.0.1:11211'], debug=0)
-
+CACHE_KEY = 'HVNP_AIR'
 
 SERVER_URL = None
 RAW_DATA_URL = "http://www.hawaiiso2network.com/havo_json.txt" # source of the json for the data
@@ -134,16 +133,54 @@ def buildNetworkLink(url, name, interval=900):
            url=escape(url))
 
 
-def getData():
+def getRawData():
     ''' Get the json data from the hawaiiso2network website and store it
     '''
     try:
         request = requests.get(RAW_DATA_URL, timeout=30)
         return request.json()
-#         response = urllib2.urlopen(RAW_DATA_URL)
-#         return json.load(response)
     except:
         return None
+
+def getCachedMinutesAgo(datadate):
+    try:
+        hst = pytz.timezone('US/Hawaii')
+        splits = datadate.split()
+        lasttime = datetime.datetime.strptime(splits[1] + ' ' + splits[2], '%m/%d/%Y %H:%M')
+        lasttime = hst.localize(lasttime)
+        now = datetime.datetime.now(hst)
+        delta = now - lasttime
+        return delta.seconds / 60
+    except:
+        return 60 #force refresh
+
+def getData():
+    ''' Get the json data from cache or raw.
+    '''
+    if USE_MEMCACHE:
+        import memcache
+        _cache = memcache.Client(['127.0.0.1:11211'], debug=0)
+        cachedData = _cache.get(CACHE_KEY)
+        # If there is no cached data at all
+        if not cachedData:
+            newData = getRawData()
+            if newData:
+                _cache.set(CACHE_KEY, newData)
+            return newData
+        else:
+            ago = getCachedMinutesAgo(cachedData['datadate'])
+            if ago > 15:
+                newData = getRawData()
+                if newData:
+                    _cache.set(CACHE_KEY, newData)
+                    return newData
+                else:
+                    if ago > 30:
+                        _cache.set(CACHE_KEY, None)
+                        return None
+            return cachedData
+    else:
+        return getRawData()
 
 
 def getDataValue(keys, dictionary=None):
