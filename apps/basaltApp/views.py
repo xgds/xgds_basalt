@@ -546,5 +546,6 @@ def getHvnpKml(request):
     return response
 
 def getHvnpNetworkLink(request):
-    return wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
+    response = wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
+    return response
 

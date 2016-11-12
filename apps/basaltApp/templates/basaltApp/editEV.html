@@ -32,6 +32,18 @@ For Sextant to calculate a traverse we have to specify the mass of the crewmembe
 </table>
 {% endif %}
 
-
-
 {% endblock content %}
+
+{% block scripts %}
+	{{ block.super }}
+	<!--  form media -->
+	{{ form.media }}
+	<!--  end form media -->
+	 
+{% endblock scripts %}
+
+{# block cssExtras #}
+	{{ block.super }}
+	<link rel="stylesheet" type="text/css" href="{{ EXTERNAL_URL }}bootstrap-tagsinput/dist/bootstrap-tagsinput.css"></link>
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_core/css/typeahead.css"></link>
+{# endblock cssExtras #}

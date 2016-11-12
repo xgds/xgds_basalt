@@ -21,6 +21,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import DateTimeField
 from django.utils.functional import lazy
+
+from dal import autocomplete
 from geocamUtil.extFileField import ExtFileField
 from geocamUtil.loader import LazyGetModelByName
 from geocamUtil.forms.AbstractImportForm import getTimezoneChoices
@@ -32,6 +34,7 @@ from xgds_instrument.models import ScienceInstrument
 from xgds_sample.forms import SearchSampleForm
 from xgds_notes2.forms import SearchNoteForm
 from xgds_planner2.models import Vehicle
+from xgds_core.models import XgdsUser
 
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
@@ -64,9 +67,11 @@ class EmailFeedbackForm(forms.Form):
 
 
 class EVForm(ModelForm):
+    user = forms.ModelChoiceField(XgdsUser.objects.all(), 
+                                  widget=autocomplete.ModelSelect2(url='select2_model_user'))
     class Meta:
         model = EV
-        fields = ['mass', 'user']
+        fields = ['mass', 'user',]
 
 
 class BasaltInstrumentDataForm(ImportInstrumentDataForm):
@@ -123,7 +128,10 @@ class SearchFTIRDataForm(SearchInstrumentDataForm):
 
 
 class SearchBasaltNoteForm(SearchNoteForm):
-    flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), label=settings.XGDS_PLANNER2_FLIGHT_MONIKER, required=False)
+    flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), 
+                                           label=settings.XGDS_PLANNER2_FLIGHT_MONIKER, 
+                                           required=False,
+                                           widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
     flight__vehicle = forms.ModelChoiceField(Vehicle.objects.all(), label='Resource', required=False)
     
     
