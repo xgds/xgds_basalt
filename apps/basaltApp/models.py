@@ -50,7 +50,6 @@ from xgds_data.introspection import verbose_name
 from xgds_video.models import *
 from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, startRecording, stopRecording
 from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, stopFlightRecording
-from xgds_status_board import utils as statusUtils
 from xgds_status_board.models import *
 from xgds_instrument.models import getNewDataFileName
 
