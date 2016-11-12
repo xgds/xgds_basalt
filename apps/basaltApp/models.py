@@ -184,9 +184,6 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
     @property
     def flights(self):
         return self.basaltflight_set.all()
-    
-    def __unicode__(self):
-        return '%s %s' % (self.__class__.__name__, self.name)
 
 
 
@@ -577,10 +574,10 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         self.save()
 
     def __unicode__(self):
-        if self.pk:
-            return 'basaltSample id=%d' % self.pk
-        else: 
-            return ''
+        if self.name:
+            return u'%s' % (self.name)
+        else:
+            return u'Basalt Sample %d' % (self.pk)
 
 
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
