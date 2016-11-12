@@ -114,12 +114,12 @@ def callPextantAjax(request, planId, clear=0):
             status = 200
         else:
             optimize = str(request.POST['optimize'])
-            resolution = float(request.POST['resolution'])
+
             maxSlope = float(request.POST['slope'])
             post_extent = request.POST['extent']
             if post_extent:
                 extent = [float(val) for val in (str(post_extent).split(','))]
-            plan = pextantHarness.callPextant(request, plan, optimize, resolution, maxSlope, extent)
+            plan = pextantHarness.callPextant(request, plan, optimize, maxSlope, extent)
             response["plan"]= plan.jsonPlan
             response["msg"]= "Sextant has calculated a new route."
             response["status"] = True

@@ -38,7 +38,7 @@ def getCornersForMap(extent, zone, zoneLetter):
         return nw_corner, se_corner
     return None, None
     
-def getMap(site, desiredRes=0.5, maxSlope=15, extent=None):
+def getMap(site, maxSlope=15, extent=None):
     site_frame = site['name']
     dem_name = site_frame.replace(' ', '_')+'.tif'
     fullPath = os.path.join(settings.STATIC_ROOT, 'basaltApp', 'dem', dem_name)
@@ -51,9 +51,9 @@ def getMap(site, desiredRes=0.5, maxSlope=15, extent=None):
         else:
             nw_corner = None
             se_corner = None
-	cartesian = Cartesian(nw_corner, desiredRes)
-	nw_corner_pad, se_corner_pad = GeoEnvelope(nw_corner, se_corner).addMargin(cartesian, 30).getBounds()
-	dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner_pad, se_corner=se_corner_pad, desired_res=desiredRes)
+        cartesian = Cartesian(nw_corner, 0.5)
+        nw_corner_pad, se_corner_pad = GeoEnvelope(nw_corner, se_corner).addMargin(cartesian, 30).getBounds()
+        dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner_pad, se_corner=se_corner_pad)
         return dem
     return None
 
@@ -91,7 +91,7 @@ def clearSegmentGeometry(plan):
     plan.save()
     return plan
     
-def callPextant(request, plan, optimize=None, desiredRes=0.5, maxSlope=15, extent=None):
+def callPextant(request, plan, optimize=None, maxSlope=15, extent=None):
     executions = plan.executions
     if not executions:
         msg = 'Plan %s not scheduled; could not call Sextant' % plan.name
@@ -107,7 +107,7 @@ def callPextant(request, plan, optimize=None, desiredRes=0.5, maxSlope=15, exten
     
     site = plan.jsonPlan['site']
 
-    dem = getMap(site, desiredRes, maxSlope, extent)
+    dem = getMap(site, maxSlope, extent)
     if not dem:
         raise Exception('Could not load DEM while calling Pextant for ' + site['name'])
 #      
