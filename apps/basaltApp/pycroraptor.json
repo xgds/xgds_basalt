@@ -4,25 +4,36 @@
     "LOG_FILE":"pyraptord_${unique}.txt",
 
     "SERVICES": {
-
         "EV1_vlc": {
-            "command": " "
+            "command": " ",
+	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV1"
+        },
+        "EV1_segmenter": {
+            "command": " ",
+	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV1"
         },
         "EV2_vlc": {
-            "command": " "
+            "command": " ",
+	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV2"
+        },
+        "EV2_segmenter": {
+            "command": " ",
+	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV2"
         },
         "SA_vlc": {
-            "command": " "
+            "command": " ",
+	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SA"
         },
-
+        "SA_segmenter": {
+            "command": " ",
+	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SA"
+        },
 		"zmqCentral": {
 		    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
         },
-	
 		"EV1TrackListener": {
 		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
-	
 		"EV2TrackListener": {
 		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
@@ -32,7 +43,6 @@
 		"evaTrackTelemetryCleanup": {
 		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackTelemetryCleanup.py"
         },
-        
 	    "gpsController1": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController1"
 	    },
@@ -45,42 +55,39 @@
 	    "redCamera": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redCamera"
 	    },
-	    "redMipCamera": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redMipCamera"
-	    },
-	    "FTIR": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n FTIR"
-	    },
 	    "video1": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video1"
 	    },
 	    "video2": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video2"
 	    },
+	    "ev1Backpack": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n ev1Backpack"
+	    },
+	    "ev2Backpack": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n ev2Backpack"
+	    },
 	    "fieldLoadAvg": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n field"
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n fieldLoadAverage"
 	    },
 	    "basecampLoadAvg": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecamp"
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecampLoadAverage"
+	    }, 
+	    "shoreTungstenReplicator": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateReplicatorStatus.py -n shoreTungstenReplicator"
 	    },
-	    "physioTablet1": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n physioTablet1"
+	    "boatTungstenReplicator": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateReplicatorStatus.py -n boatTungstenReplicator"
 	    },
-	    "physioTablet2": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n physioTablet2"
-	    },
-	    "wrist1": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n wrist1"
-	    },
-	    "wrist2": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n wrist2"
-	    },
-	    "photoImportScript": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/autorunPhotoImportScript.py -n 10.10.21.78"
-	    } 
+	    "groundVideoRecorder": {
+	    	"command": "/home/irg/xgds_basalt/apps/xgds_video/updateVideoRecorderStatus.py -n 'EV1_Ground_Video_Recorder, EV2_Ground_Video_Recorder, SA_Ground_Video_Recorder'"
+	    }, 
+	    "fieldVideoRecorder": {
+	    	"command": "/home/irg/xgds_basalt/apps/xgds_video/updateVideoRecorderStatus.py -n 'EV1_Field_Video_Recorder, EV2_Field_Video_Recorder, SA_Field_Video_Recorder'"
+	    }
 	},
     "GROUPS": {
-        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", 
-        			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg", "physioTablet1", "physioTablet2", "wrist1", "wrist2"]
+            "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "video1", "video2", "redCamera", "fieldLoadAvg", "basecampLoadAvg", "ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "groundVideoRecorder", "fieldVideoRecorder"]
+        
     }
 }

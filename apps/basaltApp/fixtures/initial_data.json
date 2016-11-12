@@ -348,6 +348,28 @@
     	}
     },
     {
+    	"pk": 12,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK1_IP",
+    		"units":"n/a",
+    		"notes":"IP of voicebox on backpack 1",
+    		"dataType":"string",
+    		"value":"10.10.24.35"
+    	}
+    },
+    {
+    	"pk": 13,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK2_IP",
+    		"units":"n/a",
+    		"notes":"IP of voicebox on backpack2",
+    		"dataType":"string",
+    		"value":"10.10.24.45"
+    	}
+    },
+    {
     	"pk": 21,
     	"model": "xgds_core.Constant",
     	"fields": {
@@ -399,7 +421,7 @@
     		"units":"n/a",
     		"notes":"IP of EV1 Video Camera",
     		"dataType":"string",
-    		"value":"10.10.24.32"
+    		"value":"10.10.24.72"
     	}
     },
     {
@@ -410,7 +432,7 @@
     		"units":"n/a",
     		"notes":"IP of EV2 Video Camera",
     		"dataType":"string",
-    		"value":"10.10.24.42"
+    		"value":"10.10.24.73"
     	}
     },
     {
@@ -421,7 +443,7 @@
     		"units":"n/a",
     		"notes":"IP of SA Camera",
     		"dataType":"string",
-    		"value":"10.10.24.80"
+    		"value":"10.10.24.74"
     	}
     },
     {
@@ -924,12 +946,13 @@
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "gpsController1",
-			"displayName": "GPS Controller",
+			"displayName": "Backpack GPS",
 			"group": 1,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/gpsController1_latest.txt",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "EV1_TRACKING_IP"
+			"constantName": "EV1_TRACKING_IP",
+			"active": 1
 		}
 	},
 	{
@@ -937,12 +960,13 @@
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "gpsController2",
-			"displayName": "GPS Controller",
+			"displayName": "Backpack GPS",
 			"group": 2,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/gpsController2_latest.txt",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "EV2_TRACKING_IP"
+			"constantName": "EV2_TRACKING_IP",
+			"active": 1
 		}
 	}, 
 	{
@@ -954,7 +978,8 @@
 			"group": 1,
 			"logFileUrl": "",
 			"warningThreshold": 10,
-			"failureThreshold": 20
+			"failureThreshold": 20,
+			"active": 1
 		}
 	}, 
 	{
@@ -966,7 +991,8 @@
 			"group": 2,
 			"logFileUrl": "",
 			"warningThreshold": 10,
-			"failureThreshold": 20
+			"failureThreshold": 20,
+			"active": 1
 		}
 	},
 	{
@@ -978,7 +1004,8 @@
 			"group": 1,
 			"logFileUrl": "",
 			"warningThreshold": 10,
-			"failureThreshold": 20
+			"failureThreshold": 20,
+			"active": 1
 		}
 	}, 
 	{
@@ -990,48 +1017,26 @@
 			"group": 2,
 			"logFileUrl": "",
 			"warningThreshold": 10,
-			"failureThreshold": 20
+			"failureThreshold": 20,
+			"active": 1
 		}
 	},
 	{
 		"pk": 7, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "basecampVideoRecorder",
-			"displayName": "VideoRecorder",
-			"group": 3,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20
-		}
-	}, 
-	{
-		"pk": 8, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "fieldVideoRecorder",
-			"displayName": "VideoRecorder",
-			"group": 4,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20
-		}
-	},
-	{
-		"pk": 9, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
 			"name": "FTIR",
 			"displayName": "FTIR",
 			"group": 1,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/FTIR_latest.txt",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "FTIR_IP"
+			"constantName": "FTIR_IP",
+			"active": 0
 		}
 	},	
 	{
-		"pk": 10, 
+		"pk": 8, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "ASD",
@@ -1039,75 +1044,81 @@
 			"group": 2,
 			"logFileUrl": "",
 			"warningThreshold": 10,
-			"failureThreshold": 20
+			"failureThreshold": 20,
+			"active": 0
 		}
 	}, 
 	{
-		"pk": 11, 
+		"pk": 9, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "redCamera",
 			"displayName": "Red Camera",
 			"group": 2,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/redCamera_latest.txt",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "RED_CAMERA_IP"
+			"constantName": "RED_CAMERA_IP",
+			"active": 1
 		}
 	},
+	{
+		"pk": 10, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "saCamera",
+			"displayName": "SA Td Transcoder",
+			"group": 4,
+			"logFileUrl": "/data/pyraptord/saCamera_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "SA_CAMERA_IP",
+			"active": 1
+		}
+	},
+	{
+		"pk": 11, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "video1",
+			"displayName": "EV1 Td Transcoder",
+			"group": 1,
+			"logFileUrl": "/data/pyraptord/video1_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "EV1_CAMERA_IP",
+			"active": 1
+		}
+	}, 
 	{
 		"pk": 12, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "saCamera",
-			"displayName": "SA Camera",
-			"group": 4,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"constantName": "SA_CAMERA_IP"
-		}
-	},
-	{
-		"pk": 13, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "video1",
-			"displayName": "Video 1",
-			"group": 1,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"constantName": "EV1_CAMERA_IP"
-		}
-	}, 
-	{
-		"pk": 14, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
 			"name": "video2",
-			"displayName": "Video 2",
+			"displayName": "EV2 Td Transcoder",
 			"group": 2,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/video2_latest.txt",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "EV2_CAMERA_IP"
+			"constantName": "EV2_CAMERA_IP",
+			"active": 1
 		}
 	}, 	
 	{
-		"pk": 15, 
+		"pk": 13, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "telemetryCleanup",
 			"displayName": "Telemetry Cleanup",
 			"group": 1,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
 			"warningThreshold": 10,
-			"failureThreshold": 20
+			"failureThreshold": 20,
+			"active": 1
 		}
 	}, 
 	{
-		"pk": 17, 
+		"pk": 14, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "fieldDataReplication",
@@ -1115,11 +1126,12 @@
 			"group": 4,
 			"logFileUrl": "",
 			"warningThreshold": 120,
-			"failureThreshold": 180
+			"failureThreshold": 180,
+			"active": 0
 		}
 	}, 
 	{
-		"pk": 18, 
+		"pk": 15, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "basecampDataReplication",
@@ -1127,35 +1139,40 @@
 			"group": 3,
 			"logFileUrl": "",
 			"warningThreshold": 120,
-			"failureThreshold": 180
+			"failureThreshold": 180,
+			"active": 0
 		}
 	},
 	{
-		"pk": 19, 
+		"pk": 16, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "fieldLoadAverage",
 			"displayName": "Load Average",
 			"group": 4,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/fieldLoadAvg_latest.txt",
 			"warningThreshold": 120,
-			"failureThreshold": 180
+			"failureThreshold": 180,
+			"refreshRate": 60,
+			"active": 1
 		}
 	},
 	{
-		"pk": 20, 
+		"pk": 17, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "basecampLoadAverage",
 			"displayName": "Load Average",
 			"group": 3,
-			"logFileUrl": "",
+			"logFileUrl": "/data/pyraptord/basecampLoadAvg_latest.txt",
 			"warningThreshold": 120,
-			"failureThreshold": 180
+			"failureThreshold": 180,
+			"refreshRate": 60,
+			"active": 1
 		}
 	},
 	{
-		"pk": 21, 
+		"pk": 18, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "physioTablet1",
@@ -1164,11 +1181,12 @@
 			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "PHYSIO_TABLET_1_IP"
+			"constantName": "PHYSIO_TABLET_1_IP",
+			"active": 0
 		}
 	},
 	{
-		"pk": 22, 
+		"pk": 19, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "physioTablet2",
@@ -1177,11 +1195,12 @@
 			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "PHYSIO_TABLET_2_IP"
+			"constantName": "PHYSIO_TABLET_2_IP",
+			"active": 0
 		}
 	},
 	{
-		"pk": 23, 
+		"pk": 20, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "wrist1",
@@ -1190,11 +1209,12 @@
 			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "WRIST_1_IP"
+			"constantName": "WRIST_1_IP",
+			"active": 0
 		}
 	},
 	{
-		"pk": 24, 
+		"pk": 21, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "wrist2",
@@ -1203,20 +1223,156 @@
 			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "WRIST_2_IP"
+			"constantName": "WRIST_2_IP",
+			"active": 0
 		}
 	},
 	{
-		"pk": 25, 
+		"pk": 22, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
 			"name": "redMipCamera",
 			"displayName": "Mip Red Camera",
 			"group": 2,
+			"logFileUrl": "/data/pyraptord/redMipCamera_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "RED_MIP_CAMERA_IP",
+			"active": 0
+		}
+	}, 
+	{
+		"pk": 23, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "EV1_Ground_Video_Recorder",
+			"displayName": "EV1 Ground Video Recorder",
+			"group": 3,
 			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "RED_MIP_CAMERA_IP"
+			"active": 1
 		}
-	}
+	}, 
+	{
+		"pk": 24, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "EV2_Ground_Video_Recorder",
+			"displayName": "EV2 Ground Video Recorder",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 25, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "SA_Ground_Video_Recorder",
+			"displayName": "SA Ground Video Recorder",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 	
+	{
+		"pk": 26, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "EV1_Field_Video_Recorder",
+			"displayName": "EV1 Field Video Recorder",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 	
+	{
+		"pk": 27, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "EV2_Field_Video_Recorder",
+			"displayName": "EV2 Field Video Recorder",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 			
+	{
+		"pk": 28, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "SA_Field_Video_Recorder",
+			"displayName": "SA Field Video Recorder",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	},
+	{
+		"pk": 28, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "ev1Backpack",
+			"displayName": "Backpack Voice",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "BACKPACK1_IP",
+			"active": 0
+		}
+	},
+	{
+		"pk": 29, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "ev2Backpack",
+			"displayName": "Backpack Voice",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "BACKPACK2_IP",
+			"active": 0
+		}
+	},
+	{
+		"pk": 30, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "shoreTungstenReplicator",
+			"displayName": "Tungsten Replicator",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"refreshRate": 60,
+			"active": 1
+		}
+	},
+	{
+		"pk": 31, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "boatTungstenReplicator",
+			"displayName": "Tungsten Replicator",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"refreshRate": 60,
+			"active": 1
+		}
+	}	
 ]
