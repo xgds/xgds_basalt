@@ -5,37 +5,44 @@ import time
 import memcache
 import logging
 import json
+import dateutil.parser
 
 import django
 django.setup()
 
-from xgds_status_board.models import Subsystem
-_cache = memcache.Client(['127.0.0.1:11211'], debug=0)
-    
-        
+from xgds_status_board.models import Subsystem, SubsystemStatus
+
+
 def setSubsystemStatus(opts):
     """
     Pings each subsystem for a response at every "interval_sec" seconds.
     """
-    while True:
-        time.sleep(5)
+    subsystemName = opts.subsystemName
+    try: 
+        subsystemStatus = SubsystemStatus(subsystemName)
+    except:
+        logging.error('invalid subsystem name')
+        return 
+    hostname = subsystemStatus.subsystem.getHostname()
+    while hostname:
+        status = subsystemStatus.getStatus()
+        lastUpdated = dateutil.parser.parse(status['lastUpdated'])
+        statusColor = subsystemStatus.getColorLevel(lastUpdated)
+        elapsedTime = subsystemStatus.getElapsedTimeString(lastUpdated)
+        status['statusColor'] = statusColor
+        status['elapsedTime'] = elapsedTime
+
+        seconds = subsystemStatus.subsystem.refreshRate
         logging.info('pinging %s' % opts.subsystemName)
-        subsystemName = opts.subsystemName
-        try: 
-            subsystem = Subsystem.objects.get(name=subsystemName)
-        except: 
-            logging.error('cannot get IP of %s' % subsystemName)
-            continue
-        hostname = subsystem.getHostname()
+        
         response = os.system("ping -c 1 " + hostname)
         if response != 0: # cannot ping host
             # try pinging again.
             response = os.system("ping -c 1 " + hostname)
         if response == 0: # hostname is up
-            myKey = subsystemName
-            status = {"lastUpdated": datetime.datetime.utcnow().isoformat()}
-            _cache.set(myKey, json.dumps(status))
-        
+            status['lastUpdated'] = datetime.datetime.utcnow().isoformat()
+        subsystemStatus.setStatus(status)
+        time.sleep(seconds)
 
 def main():
     import optparse
