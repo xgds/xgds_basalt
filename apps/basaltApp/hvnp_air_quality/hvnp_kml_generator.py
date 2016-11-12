@@ -83,8 +83,6 @@ def getCurrentStateKml(serverUrl):
     # Try to get data
     global CURRENT_DATA
     CURRENT_DATA = getData()
-    if not CURRENT_DATA:
-        return None
     
     global SERVER_URL
     SERVER_URL = serverUrl
@@ -99,6 +97,9 @@ def getCurrentStateKml(serverUrl):
                             styles=buildStyles())
 
     topKml.append(document)
+    if not CURRENT_DATA:
+        document.description = "NO DATA; Cannot reach server"
+        return document.to_string(prettyprint=True)
     
     # Read and interpret the current conditions
     getConditions()
