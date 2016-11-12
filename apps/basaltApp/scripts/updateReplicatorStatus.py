@@ -39,14 +39,14 @@ def setReplicatorStatus(opts):
             for line in result:
                 if "state" in line: 
                     state = line.replace(" ", "").split(':')[1]
-                    if "ONLINE" in state:
+                    if not ("ONLINE" in state):
                         statusColor = subsystemStatus.ERROR
-                        break
+                        continue
         else: # result is empty
             statusColor = subsystemStatus.NO_DATA
 
         status = subsystemStatus.getStatus()
-        lastUpdated = status['lastUpdated']
+        lastUpdated = dateutil.parser.parse(status['lastUpdated'])
         elapsedTimeString = subsystemStatus.getElapsedTimeString(lastUpdated)
         status['statusColor'] = statusColor
         status['elapsedTime'] = elapsedTimeString
