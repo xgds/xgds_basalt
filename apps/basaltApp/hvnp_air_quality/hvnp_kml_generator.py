@@ -27,6 +27,12 @@ from shapely.geometry import Point, Polygon
 from polycircles import polycircles
 from LatLon import LatLon
 
+USE_MEMCACHE = True
+if USE_MEMCACHE:
+    import memcache
+    _cache = memcache.Client(['127.0.0.1:11211'], debug=0)
+
+
 SERVER_URL = None
 RAW_DATA_URL = "http://www.hawaiiso2network.com/havo_json.txt" # source of the json for the data
 ADVISORY_SUMMARY_URL = 'http://www.hawaiiso2network.com/summary.html'
@@ -39,22 +45,21 @@ NAME_SPACE = '{http://www.opengis.net/kml/2.2}'
 # Global variables
 CURRENT_DATA = None
 CONDITIONS = {}
-# SITE_POSITIONS = {'Visitor Center': {'lat': 19.4308,
-#                                      'lon': -155.2578,
-#                                      'alt': 1215},
-#                     'Jaggar Museum': {'lat': 19.4203,
-#                                     'lon': -155.2881,
-#                                     'alt': 1123}}
-
-SITE_POSITIONS = {'Visitor Center': {'lat': 19.387979,
-                                     'lon': -155.107504,
+SITE_POSITIONS = {'Visitor Center': {'lat': 19.4308,
+                                     'lon': -155.2578,
                                      'alt': 1215},
-                  'Jaggar Museum': {'lat': 19.410000,
-                                    'lon': -155.286389,
+                    'Jaggar Museum': {'lat': 19.4203,
+                                    'lon': -155.2881,
                                     'alt': 1123}}
 
-PLUME_SOURCES = {'Visitor Center',
-                 'Jaggar Museum'}
+WEDGE_POSITIONS = {"Pu'U O'o Crater": {'lat': 19.387979,
+                                       'lon': -155.107504,
+                                       'alt': 1215},
+                  'Halemaumau Crater': {'lat': 19.410000,
+                                        'lon': -155.286389,
+                                        'alt': 1123}}
+
+PLUME_SOURCE = 'Jaggar Museum'  # update to which is the source of the plume data
 
 #KML colors are aabbggrr in hex binary; colors in this map do not include transparency
 ADVISORY_SCALE = {'Unknown':'FFFFFF',
@@ -128,6 +133,7 @@ def buildNetworkLink(url, name, interval=900):
            interval=interval,
            url=escape(url))
 
+
 def getData():
     ''' Get the json data from the hawaiiso2network website and store it
     '''
@@ -154,6 +160,14 @@ def getDataValue(keys, dictionary=None):
         return None
 
 
+def getPlumeSourceData():
+    ''' Get the data map for the current plume source '''
+    for key in CURRENT_DATA:
+        data = CURRENT_DATA[key]
+        if data['name'] == PLUME_SOURCE:
+            return data
+            
+    
 def getConditions():
     ''' Interpret the MET block '''
     met = getDataValue('MET')
@@ -199,7 +213,7 @@ def getDotIconId(level):
 
 def buildDotIconUrl(level):
     ''' Build the URL to get the image for a dot icon '''
-    return ('%s%s%s.png') % (SERVER_URL, ICON_PATH, getDotIconId(level))
+    return ('%s%s/%s.png') % (SERVER_URL, ICON_PATH, getDotIconId(level))
 
 
 def getPolyStyleId(level):
@@ -214,7 +228,7 @@ def buildStyles():
     kmlStyles = []
     for level in ADVISORY_SCALE:
         # build the dot style
-        innerIconStyle = styles.IconStyle(NAME_SPACE, scale=1.0, icon_href=buildDotIconUrl(level))
+        innerIconStyle = styles.IconStyle(NAME_SPACE, scale=.7, icon_href=buildDotIconUrl(level))
         iconStyle = styles.Style(NAME_SPACE, id=getDotIconId(level), styles=[innerIconStyle])
         kmlStyles.append(iconStyle)
         
@@ -247,17 +261,21 @@ def buildPlacemarkForSite(folder, siteData):
     '''
     siteName = siteData['name']
     if siteName in SITE_POSITIONS:
-        placemark = kml.Placemark(NAME_SPACE, siteName, siteName, getSiteDescription(siteData))
-        if siteName in PLUME_SOURCES:
-            placemark.styleUrl = '#' + getPolyStyleId(getDataValue('SO2.AQItext', siteData))
-            if CONDITIONS['LOW_WIND']:
-                placemark.geometry = buildCircle(SITE_POSITIONS[siteName], siteName)
-            else:
-                placemark.geometry = buildWedge(SITE_POSITIONS[siteName], CONDITIONS['WIND_DIRECTION'], siteName)
-        else:
-            placemark.styleUrl = '#' + getDotIconId(getDataValue('SO2.AQItext', siteData))
-            placemark.geometry = buildPoint(SITE_POSITIONS[siteName], siteName)
-        folder.append(placemark)
+        dotPlacemark = kml.Placemark(NAME_SPACE, siteName, siteName, getSiteDescription(siteData))
+        dotPlacemark.styleUrl = '#' + getDotIconId(getDataValue('SO2.AQItext', siteData))
+        dotPlacemark.geometry = buildPoint(SITE_POSITIONS[siteName], siteName)
+        folder.append(dotPlacemark)
+        
+        if siteName == PLUME_SOURCE:
+            plumeData = getPlumeSourceData()
+            for crater in WEDGE_POSITIONS:
+                craterPlacemark = kml.Placemark(NAME_SPACE, makeKey(crater), crater, getCraterDescription(plumeData))
+                craterPlacemark.styleUrl = '#' + getPolyStyleId(getDataValue('SO2.AQItext', plumeData))
+                if CONDITIONS['LOW_WIND']:
+                    craterPlacemark.geometry = buildCircle(WEDGE_POSITIONS[crater], crater)
+                else:
+                    craterPlacemark.geometry = buildWedge(WEDGE_POSITIONS[crater], CONDITIONS['WIND_DIRECTION'], crater)
+                folder.append(craterPlacemark);
 
 
 def getSiteDescription(siteData):
@@ -269,7 +287,30 @@ def getSiteDescription(siteData):
         result += ('PM25: %d %sg/m3\n') % (int(getDataValue('PM25.average15', siteData)), unichr(956))
     return result
 
-    
+
+def getCraterDescription(siteData):
+    ''' Get printable string of the plume conditions '''
+    result = ('%s\nWind Speed: %d mph (%d m/s)\nWind Direction: %d\nTemperature: %d %sF (%d %sC)\nHumidity: %d %%\n%s SO2: %s ppm (%s)\n%s PM25: %s %sg/m3 (%s)')\
+        % (getDataValue('datadate'),
+           CONDITIONS['WIND_SPEED'],
+           CONDITIONS['WIND_SPEED_METRIC'],
+           CONDITIONS['WIND_DIRECTION'],
+           CONDITIONS['TEMPERATURE'],
+           DEGREE_SYMBOL,
+           CONDITIONS['TEMPERATURE_METRIC'],
+           DEGREE_SYMBOL,
+           CONDITIONS['HUMIDITY'],
+           PLUME_SOURCE,
+           siteData['SO2']['average15'],
+           siteData['SO2']['AQItext'],
+           PLUME_SOURCE,
+           siteData['PM25']['average15'],
+           unichr(956),
+           siteData['PM25']['AQItext'],
+           )
+    return result
+
+
 def buildPoint(location, name):
     pointID = makeKey(name) + '_point'
     pointShape =  Point([(location['lon'], location['lat'], location['alt'])])
