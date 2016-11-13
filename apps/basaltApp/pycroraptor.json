@@ -4,33 +4,21 @@
     "LOG_FILE":"pyraptord_${unique}.txt",
 
     "SERVICES": {
+
         "EV1_vlc": {
-            "command": " ",
-	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV1"
-        },
-        "EV1_segmenter": {
-            "command": " ",
-	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV1"
+            "command": " "
         },
         "EV2_vlc": {
-            "command": " ",
-	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV2"
-        },
-        "EV2_segmenter": {
-            "command": " ",
-	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_EV2"
+            "command": " "
         },
         "SA_vlc": {
-            "command": " ",
-	    	"stdout": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SA"
+            "command": " "
         },
-        "SA_segmenter": {
-            "command": " ",
-	    	"stdin": "/home/irg/xgds_basalt/var/run/xgds_video/fifo_SA"
-        },
+
 		"zmqCentral": {
 		    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
         },
+	
 		"EV1TrackListener": {
 		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
@@ -55,6 +43,12 @@
 	    "redCamera": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redCamera"
 	    },
+	    "redMipCamera": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redMipCamera"
+	    },
+	    "FTIR": {
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n FTIR"
+	    },
 	    "video1": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video1"
 	    },
@@ -68,7 +62,7 @@
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n ev2Backpack"
 	    },
 	    "fieldLoadAvg": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n fieldLoadAverage"
+	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n field"
 	    },
 	    "basecampLoadAvg": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecampLoadAverage"
@@ -87,7 +81,8 @@
 	    }
 	},
     "GROUPS": {
-            "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", "video1", "video2", "redCamera", "fieldLoadAvg", "basecampLoadAvg", "ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "groundVideoRecorder", "fieldVideoRecorder"]
-        
+        "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", 
+        			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg", "physioTablet1", "physioTablet2", "wrist1", "wrist2",
+        			"ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "groundVideoRecorder", "fieldVideoRecorder"]
     }
 }
