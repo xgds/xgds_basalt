@@ -80,8 +80,6 @@ $.extend(xgds_sample,{
 	},
 	
 	updateAdvancedInputFields: function() {
-//		this.advancedInputFields.push('#id_resource');
-//		this.advancedInputFields.push('#id_flight');
 	},
 	
 	updateNonEditableFields: function() {
