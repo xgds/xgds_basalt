@@ -73,16 +73,13 @@
 	    "boatTungstenReplicator": {
 	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateReplicatorStatus.py -n boatTungstenReplicator"
 	    },
-	    "groundVideoRecorder": {
-	    	"command": "/home/irg/xgds_basalt/apps/xgds_video/updateVideoRecorderStatus.py -n 'EV1_Ground_Video_Recorder, EV2_Ground_Video_Recorder, SA_Ground_Video_Recorder'"
-	    }, 
-	    "fieldVideoRecorder": {
-	    	"command": "/home/irg/xgds_basalt/apps/xgds_video/updateVideoRecorderStatus.py -n 'EV1_Field_Video_Recorder, EV2_Field_Video_Recorder, SA_Field_Video_Recorder'"
+	    "videoRecorder": {
+	    	"command": "/home/irg/xgds_basalt/apps/xgds_video/updateVideoRecorderStatus.py -n 'EV1, EV2, SA'"
 	    }
 	},
     "GROUPS": {
         "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", 
-        			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg", "physioTablet1", "physioTablet2", "wrist1", "wrist2",
-        			"ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "groundVideoRecorder", "fieldVideoRecorder"]
+        			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg",
+        			"ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "videoRecorder"]
     }
 }
