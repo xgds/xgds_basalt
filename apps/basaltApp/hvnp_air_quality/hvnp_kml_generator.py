@@ -117,8 +117,9 @@ def getCurrentStateKml(serverUrl):
     return document.to_string(prettyprint=True)
 
 
-def buildNetworkLink(url, name, interval=900):
+def buildNetworkLink(url, name, interval=300):
     ''' Build a Network link to refresh an url every interval seconds
+        Right now we are defaulting to 5 minute refreshes as the user may not have opened this close to a quarter hour.
     '''
     return '''
 <NetworkLink>
