@@ -365,7 +365,8 @@ def stringToDateTime(datetimeStr, timezone):
     return datetimeObj
 
 
-def saveNewInstrumentData(request, instrumentName):
+def saveNewInstrumentData(request, instrumentName, jsonResult=False):
+    errors = None
     if request.method == 'POST':
         form = BasaltInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
@@ -374,30 +375,44 @@ def saveNewInstrumentData(request, instrumentName):
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
                                                    instrument.dataImportFunctionName)
             
-            return importFxn(instrument, 
-                             request.FILES["portableDataFile"],
-                             request.FILES.get("manufacturerDataFile", None),
-                             form.cleaned_data["dataCollectionTime"], 
-                             form.getTimezone(), 
-                             form.getResource(),
-                             form.cleaned_data['name'],
-                             form.cleaned_data['description'],
-                             form.cleaned_data['minerals'],
-                             request.user,
-                             form.cleaned_data['lat'],
-                             form.cleaned_data['lon'],
-                             form.cleaned_data['alt'])
-        else: 
-            messages.error(request, 'Form errors %s' % form.errors)
-        return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
-                          RequestContext(request, {'form': form,
-                                                   'errors': form.errors,
-                                                   'instrumentDataImportUrl': reverse('save_instrument_data', kwargs={'instrumentName': instrumentName}),
-                                                   'instrumentType': instrumentName})
-                          )      
+            result = importFxn(instrument, 
+                               request.FILES["portableDataFile"],
+                               request.FILES.get("manufacturerDataFile", None),
+                               form.cleaned_data["dataCollectionTime"], 
+                               form.getTimezone(), 
+                               form.getResource(),
+                               form.cleaned_data['name'],
+                               form.cleaned_data['description'],
+                               form.cleaned_data['minerals'],
+                               request.user,
+                               form.cleaned_data['lat'],
+                               form.cleaned_data['lon'],
+                               form.cleaned_data['alt'])
+            if result['status'] == 'success':
+                if jsonResult:
+                    return HttpResponse(json.dumps(result), content_type='application/json')
+                else:
+                    return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':result['pk'],
+                                                                                            'modelName':result['modelName']}))
+            else:
+                errors = result['message']
+        else:
+            errors = str(form.errors)
+        
+        if jsonResult:
+            return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=406)
+        else:
+            messages.error(request, 'Errors %s' % errors)
+            return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
+                                      RequestContext(request, {'form': form,
+                                                               'errors': form.errors,
+                                                               'instrumentDataImportUrl': reverse('save_instrument_data', kwargs={'instrumentName': instrumentName}),
+                                                               'instrumentType': instrumentName})
+                                      )      
 
 
-def saveNewPxrfData(request):
+def saveNewPxrfData(request, jsonResult=True):
+    errors = None
     if request.method == 'POST':
         form = PxrfInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
@@ -406,28 +421,42 @@ def saveNewPxrfData(request):
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
                                                    instrument.dataImportFunctionName)
             
-            return importFxn(instrument, 
-                             request.FILES["portableDataFile"],
-                             request.FILES.get("manufacturerDataFile", None),
-                             request.FILES.get("elementResultsCsvFile", None),
-                             form.cleaned_data["dataCollectionTime"], 
-                             form.getTimezone(), 
-                             form.getResource(),
-                             form.cleaned_data['name'],
-                             form.cleaned_data['description'],
-                             form.cleaned_data['minerals'],
-                             request.user,
-                             form.cleaned_data['lat'],
-                             form.cleaned_data['lon'],
-                             form.cleaned_data['alt'])
-        else: 
-            messages.error(request, 'Form errors %s' % form.errors)
-        return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
-                          RequestContext(request, {'form': form,
-                                                   'errors': form.errors,
-                                                   'instrumentDataImportUrl': reverse('save_pxrf_data'),
-                                                   'instrumentType': 'pxrf'})
-                          )      
+            result = importFxn(instrument, 
+                               request.FILES.get("portableDataFile", None),
+                               request.FILES.get("manufacturerDataFile", None),
+                               request.FILES.get("elementResultsCsvFile", None),
+                               form.cleaned_data["dataCollectionTime"], 
+                               form.getTimezone(), 
+                               form.getResource(),
+                               form.cleaned_data['name'],
+                               form.cleaned_data['description'],
+                               form.cleaned_data['minerals'],
+                               request.user,
+                               form.cleaned_data['lat'],
+                               form.cleaned_data['lon'],
+                               form.cleaned_data['alt'])
+            
+            if result['status'] == 'success':
+                if jsonResult:
+                    return HttpResponse(json.dumps(result), content_type='application/json')
+                else:
+                    return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':result['pk'],
+                                                                                            'modelName': result['modelName']}))
+            else:
+                errors = result['message']
+        else:
+            errors = str(form.errors)
+        
+        if jsonResult:
+            return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=406)
+        else:
+            messages.error(request, 'Errors %s' % errors)
+            return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
+                                      RequestContext(request, {'form': form,
+                                                               'errors': form.errors,
+                                                               'instrumentDataImportUrl': reverse('save_pxrf_data'),
+                                                               'instrumentType': 'pxrf'})
+                                                    )      
 
 def saveUpdatedInstrumentData(request, instrument_name, pk):
     """

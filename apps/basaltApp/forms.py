@@ -84,6 +84,9 @@ class BasaltInstrumentDataForm(ImportInstrumentDataForm):
 
 class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
     minerals = forms.CharField(widget=forms.Textarea, label="Elements", required=False)
+    portableDataFile = ExtFileField(ext_whitelist=(".csv",),
+                                    required=False,
+                                    label="Portable Data File")
     elementResultsCsvFile = ExtFileField(ext_whitelist=(".csv",),
                                          required=True,
                                          label="Results Csv File")
