@@ -1,6 +1,27 @@
 dirRoot = "/DCIM/101OLYMP"
 snapshotFile = "/filesnapshot.txt"
 
+local function waitWlanConnect()
+    while 1 do
+        local res = fa.ReadStatusReg()
+        local a = string.sub(res, 13, 16)
+        a = tonumber(a, 16)
+        if (bit32.extract(a, 15) == 1) then
+            print("connect")
+            break
+        end
+        if (bit32.extract(a, 0) == 1) then
+            print("mode Bridge")
+            break
+        end
+        if (bit32.extract(a, 12) == 1) then
+            print("mode AP")
+            break
+        end
+        sleep(2000)
+    end
+end
+
 local function maxModTime(dirRoot)
   maxMod = 0
   for aFile in lfs.dir(dirRoot) do
@@ -56,21 +77,21 @@ local function getFileDiffs(dirRoot, fileSet)
 end
 
 local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
-    local boundary = '--bnfDxpKY69NKk'
+    local boundary = 'bnfDxpKY69NKk'
     local headers = {}
     local place_holder = '<!--WLANSDFILE-->'
 
     headers['Connection'] = 'close'
     headers['Content-Type'] = 'multipart/form-data; boundary="'..boundary..'"'
 
-    local body = '--'..boundary..'\r\n'
+    local body = '--' .. boundary..'\r\n'
         ..'Content-Disposition: form-data; name="username"\r\n\r\n'..'ev1'
-        .. '--' .. boundary .. '--\r\n'
+        .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="resource"\r\n\r\n'..'1'
-        .. '--' .. boundary .. '--\r\n'
+        .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="timezone"\r\n\r\n'
-        .. 'America/Boise'
-        .. '--' .. boundary .. '--\r\n'
+        .. 'US/Hawaii'
+        .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="file"; filename="'
         ..fileName..'"\r\n'
         ..'Content-Type: image/jpeg\r\n\r\n'
@@ -81,7 +102,6 @@ local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
         lfs.attributes(dirPath.."/"..fileName, 'size')
         + string.len(body)
         - string.len(place_holder)
-
     local args = {}
     args["url"] = uploadUrl
     args["method"] = "POST"
