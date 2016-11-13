@@ -13,7 +13,8 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-
+import pydevd
+import traceback
 import json
 import datetime
 import csv
@@ -67,6 +68,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                      utcStamp, timezone, resource, name, description, minerals=None, user=None,
                      latitude=None, longitude=None, altitude=None, collector=None):
     try:
+        pydevd.settrace('10.10.21.206')
         instrument = ScienceInstrument.getInstrument(PXRF)
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
         
@@ -90,36 +92,14 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                     'elements':minerals}
     
         dataProduct = PxrfDataProduct(**metadata)
-        dataProduct.save()
+        
         if latitude or longitude or altitude:
             editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
     
-        if portableDataFile:
-            csvreader = csv.reader(portableDataFile, delimiter=',')
-            for row in csvreader:
-                if len(row) == 2:
-                    label, value = row
-                    label = label.replace(' ','')
-                    label = label[:1].lower() + label[1:]
-                    try:
-                        value = int(value)
-                        metadata[label] = value
-                    except ValueError:
-                        try:
-                            value = float(value)
-                            metadata[label]=value
-                        except:
-                            # string case
-                            if label == 'label':
-                                metadata[label]=value
-                            if label == 'channel#':
-                                break
+        dataProduct.save()
         
-            for row in csvreader:
-                if len(row) == 2:
-                    sample = PxrfSample(dataProduct=dataProduct, channelNumber=int(row[0]), intensity=int(row[1]))
-                    sample.save()
-            portableDataFile.close()
+        pxrfLoadPortableSampleData(portableDataFile, dataProduct)
+            
         
         return {'status': 'success', 
                 'pk': dataProduct.pk,
@@ -129,13 +109,52 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
 
         
 
+def pxrfLoadPortableSampleData(portableDataFile, dataProduct):
+    """ Read the portable sample data, create records and set attributes
+        Clears out and overrides any old data.
+    """
+    metadata = {}
+    
+    # clear out any old data
+    samples = PxrfSample.objects.filter(dataProduct=dataProduct)
+    samples.all().delete()
+
+    csvreader = csv.reader(portableDataFile, delimiter=',')
+    for row in csvreader:
+        if len(row) == 2:
+            label, value = row
+            label = label.replace(' ','')
+            label = label[:1].lower() + label[1:]
+            try:
+                value = int(value)
+                metadata[label] = value
+            except ValueError:
+                try:
+                    value = float(value)
+                    metadata[label]=value
+                except:
+                    # string case
+                    if label == 'label':
+                        metadata[label]=value
+                    if label == 'channel#':
+                        break
+
+    for row in csvreader:
+        if len(row) == 2:
+            sample = PxrfSample(dataProduct=dataProduct, channelNumber=int(row[0]), intensity=int(row[1]))
+            sample.save()
+    portableDataFile.close()
+    
+    for key, value in metadata.iteritems():
+        setattr(portableDataFile, key, value)
+    dataProduct.save()
+
+
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None,
                     latitude=None, longitude=None, altitude=None, collector=None):
+    pydevd.settrace('10.10.21.206')
     try:
-        instrumentData = spc.File(portableDataFile)
-        # Take slice b/c data has trailing tab
-        dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
         instrument = ScienceInstrument.getInstrument(ASD)
     
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
@@ -159,16 +178,12 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
             description = description,
             minerals = minerals
         )
-        dataProduct.save()
+        
         if latitude or longitude or altitude:
             editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
-    
-        for wl, ab in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
-            sample = AsdSample(
-                dataProduct = dataProduct,
-                wavelength = wl,
-                absorbance = ab)
-            sample.save()
+        
+        dataProduct.save()
+        asdLoadPortableSampleData(portableDataFile, dataProduct)
 
         return {'status': 'success', 
                 'pk': dataProduct.pk,
@@ -176,6 +191,24 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
     except Exception, e:
         return {'status': 'error', 'message': str(e)}
 
+
+def asdLoadPortableSampleData(portableDataFile, dataProduct):
+    # clear out any old data
+    samples = AsdSample.objects.filter(dataProduct=dataProduct)
+    samples.all().delete()
+        
+    if portableDataFile:
+        instrumentData = spc.File(portableDataFile)
+        # Take slice b/c data has trailing tab
+        dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
+        
+        for wl, ab in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
+            sample = AsdSample(
+                dataProduct = dataProduct,
+                wavelength = wl,
+                absorbance = ab)
+            sample.save()
+    
 def readAsciiFtirData(aspFile):
     pointCount = int(aspFile.readline().rstrip())
     pointCountM1 = pointCount - 1
@@ -200,23 +233,34 @@ def readSpcFtirData(spcFile):
     dataTable = dataTable[1:]
     return dataTable
 
-def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
-                     utcStamp, timezone, resource, name, description, minerals,
-                     user=None, latitude=None, longitude=None, altitude=None,
-                     collector=None):
-    try:
+def loadPortableFtirData(portableDataFile, dataProduct):
+    if portableDataFile:
         if (portableDataFile.name.lower().endswith(".spc")):
             dataTable = readSpcFtirData(portableDataFile)
             portableFileFormat = "SPC"
         if (portableDataFile.name.lower().endswith(".asp")):
             dataTable = readAsciiFtirData(portableDataFile)
             portableFileFormat = "ASP"
+        for wn, rf in dataTable:
+            sample = FtirSample(
+                dataProduct = dataProduct,
+                wavenumber = wn,
+                reflectance = rf)
+            sample.save()
+        dataProduct.portable_file_format_name = portableFileFormat
+        dataProduct.save()
+
+def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
+                     utcStamp, timezone, resource, name, description, minerals,
+                     user=None, latitude=None, longitude=None, altitude=None,
+                     collector=None):
+    try:
+        pydevd.settrace('10.10.21.206')
         instrument = ScienceInstrument.getInstrument(FTIR)
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
         
         dataProduct = FtirDataProduct(
             portable_data_file = portableDataFile,
-            portable_file_format_name = portableFileFormat,
             portable_mime_type = "application/octet-stream",
             acquisition_time = utcStamp,
             acquisition_timezone = timezone.zone,
@@ -237,16 +281,12 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         if latitude or longitude or altitude:
             editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
         
-        for wn, rf in dataTable:
-            sample = FtirSample(
-                dataProduct = dataProduct,
-                wavenumber = wn,
-                reflectance = rf)
-            sample.save()
+        loadPortableFtirData(portableDataFile, dataProduct)
 
         return {'status': 'success', 
                 'pk': dataProduct.pk,
                 'modelName': 'FTIR'}
     except Exception, e:
+        traceback.print_exc()
         return {'status': 'error', 'message': str(e)}
 
