@@ -36,25 +36,21 @@ from xgds_core.couchDbStorage import CouchDbStorage
 
 from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
+from xgds_status_board import models as statusBoardModels
 from geocamUtil.loader import LazyGetModelByName
 from xgds_core.models import Constant
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin, HierarchichalTag
-
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
 from xgds_planner2.models import AbstractActiveFlight
 from xgds_planner2.views import getActiveFlights
 from xgds_instrument.models import ScienceInstrument, AbstractInstrumentDataProduct
-
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
 from xgds_data.introspection import verbose_name
-
 from xgds_video.models import *
 from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, startRecording, stopRecording
 from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, stopFlightRecording
-
 from xgds_status_board.models import *
-
 from xgds_instrument.models import getNewDataFileName
 
 from subprocess import Popen
@@ -114,12 +110,6 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
 
     def getTimezone(self):
         return pytz.timezone(self.timezone)
-    
-#     def toMapDict(self):
-#         result = geocamTrackModels.AbstractTrack.toMapDict(self)
-#         if result:
-#             result['type'] = settings.GEOCAM_TRACK_TRACK_MONIKIER
-#         return result
     
     @classmethod
     def getSearchFormFields(cls):

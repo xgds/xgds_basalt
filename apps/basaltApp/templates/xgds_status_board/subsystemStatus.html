@@ -5,5 +5,16 @@
 {% block preDashboard %}
 DELAY: {% constant_value 'delay' %} s</br>
 REMOTE DELAY: {% constant_value 'remoteDelay' %} s
-
 {% endblock preDashboard %}
+
+{% block preLayout %}
+	constructSubsystemMonitorView({{subsystemStatusJson|safe}});
+{% endblock %}
+
+{% block jsInit %}
+  {{ block.super }}
+  $(function() {
+      var widget = new xgds_status_board.SubsystemStatusWidget($('#subsystemStatus'));
+      widget.update();
+  });
+{% endblock %}
