@@ -411,7 +411,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                       )      
 
 
-def saveNewPxrfData(request, jsonResult=True):
+def saveNewPxrfData(request, jsonResult=False):
     errors = None
     if request.method == 'POST':
         form = PxrfInstrumentDataForm(request.POST, request.FILES)
