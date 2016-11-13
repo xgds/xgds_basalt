@@ -575,9 +575,11 @@ class BasaltSample(xgds_sample_models.AbstractSample):
 
     def __unicode__(self):
         if self.name:
-            return u'%s' % (self.name)
+            return u'%s' % self.name
         else:
-            return u'Basalt Sample %d' % (self.pk)
+            if self.label:
+                return u'Label %d' % self.label.number
+            return u'Sample PK: %d' % self.pk
 
 
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
@@ -952,13 +954,12 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
                 'author',
                 'camera',
                 'resource',
-                'flight'
                 ]
     
     @classmethod
     def getSearchFieldOrder(cls):
         return ['resource',
-                'flight',
+                'flight__group',
                 'author',
                 'name',
                 'description',

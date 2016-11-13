@@ -32,6 +32,7 @@ from basaltApp.models import *
 from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField, SearchInstrumentDataForm
 from xgds_instrument.models import ScienceInstrument
 from xgds_sample.forms import SearchSampleForm
+from xgds_image.forms import SearchImageSetForm
 from xgds_notes2.forms import SearchNoteForm
 from xgds_planner2.models import Vehicle
 from xgds_core.models import XgdsUser
@@ -125,6 +126,13 @@ class SearchFTIRDataForm(SearchInstrumentDataForm):
     class Meta:
         model = FtirDataProduct
         fields = FtirDataProduct.getSearchFormFields()
+
+
+class SearchBasaltImageSetForm(SearchImageSetForm):
+    flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), 
+                                           label=settings.XGDS_PLANNER2_FLIGHT_MONIKER, 
+                                           required=False,
+                                           widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
 
 
 class SearchBasaltNoteForm(SearchNoteForm):
