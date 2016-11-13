@@ -1,3 +1,20 @@
+#__BEGIN_LICENSE__
+# Copyright (c) 2015, United States Government, as represented by the
+# Administrator of the National Aeronautics and Space Administration.
+# All rights reserved.
+#
+# The xGDS platform is licensed under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# http://www.apache.org/licenses/LICENSE-2.0.
+#
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+#__END_LICENSE__
+
+import json
 import datetime
 import csv
 from django.http import HttpResponse, HttpResponseRedirect
@@ -49,104 +66,113 @@ def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, elementResultsCsvFile,
                      utcStamp, timezone, resource, name, description, minerals=None, user=None,
                      latitude=None, longitude=None, altitude=None):
-    instrument = ScienceInstrument.getInstrument(PXRF)
-    (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
+    try:
+        instrument = ScienceInstrument.getInstrument(PXRF)
+        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
+        
+        metadata = {'portable_data_file':portableDataFile,
+                    'elementResultsCsvFile': elementResultsCsvFile,
+                    'portable_file_format_name':"csv",
+                    'portable_mime_type':"application/csv",
+                    'acquisition_time':utcStamp,
+                    'acquisition_timezone':timezone.zone,
+                    'creation_time':datetime.datetime.now(pytz.utc),
+                    'manufacturer_data_file':manufacturerDataFile,
+                    'manufacturer_mime_type':"application/octet-stream",
+                    'instrument':instrument,
+                    'track_position':sampleLocation,
+                    'flight':flight,
+                    'resource':resource,
+                    'creator':user,
+                    'name':name,
+                    'description':description,
+                    'elements':minerals}
     
-    metadata = {'portable_data_file':portableDataFile,
-                'elementResultsCsvFile': elementResultsCsvFile,
-                'portable_file_format_name':"csv",
-                'portable_mime_type':"application/csv",
-                'acquisition_time':utcStamp,
-                'acquisition_timezone':timezone.zone,
-                'creation_time':datetime.datetime.now(pytz.utc),
-                'manufacturer_data_file':manufacturerDataFile,
-                'manufacturer_mime_type':"application/octet-stream",
-                'instrument':instrument,
-                'track_position':sampleLocation,
-                'flight':flight,
-                'resource':resource,
-                'creator':user,
-                'name':name,
-                'description':description,
-                'elements':minerals}
-#     csvfile = open(portableDataFile, 'rU')
-    csvreader = csv.reader(portableDataFile, delimiter=',')
-    for row in csvreader:
-        if len(row) == 2:
-            label, value = row
-            label = label.replace(' ','')
-            label = label[:1].lower() + label[1:]
-            try:
-                value = int(value)
-                metadata[label] = value
-            except ValueError:
-                try:
-                    value = float(value)
-                    metadata[label]=value
-                except:
-                    # string case
-                    if label == 'label':
-                        metadata[label]=value
-                    if label == 'channel#':
-                        break
+        dataProduct = PxrfDataProduct(**metadata)
+        dataProduct.save()
+        if latitude or longitude or altitude:
+            editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
     
-    
-    dataProduct = PxrfDataProduct(**metadata)
-    dataProduct.save()
-    if latitude or longitude or altitude:
-        editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
+        if portableDataFile:
+            csvreader = csv.reader(portableDataFile, delimiter=',')
+            for row in csvreader:
+                if len(row) == 2:
+                    label, value = row
+                    label = label.replace(' ','')
+                    label = label[:1].lower() + label[1:]
+                    try:
+                        value = int(value)
+                        metadata[label] = value
+                    except ValueError:
+                        try:
+                            value = float(value)
+                            metadata[label]=value
+                        except:
+                            # string case
+                            if label == 'label':
+                                metadata[label]=value
+                            if label == 'channel#':
+                                break
+        
+            for row in csvreader:
+                if len(row) == 2:
+                    sample = PxrfSample(dataProduct=dataProduct, channelNumber=int(row[0]), intensity=int(row[1]))
+                    sample.save()
+            portableDataFile.close()
+        
+        return {'status': 'success', 
+                'pk': dataProduct.pk,
+                'modelName': 'pXRF'}
+    except Exception, e:
+        return {'status': 'error', 'message': str(e)}
 
-    for row in csvreader:
-        if len(row) == 2:
-            sample = PxrfSample(dataProduct=dataProduct, channelNumber=int(row[0]), intensity=int(row[1]))
-            sample.save()
-    portableDataFile.close()
-    
-    return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
-                                                                            'modelName':'pXRF'}))
         
 
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None,
                     latitude=None, longitude=None, altitude=None):
-    instrumentData = spc.File(portableDataFile)
-    # Take slice b/c data has trailing tab
-    dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
-    instrument = ScienceInstrument.getInstrument(ASD)
-
-    (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
+    try:
+        instrumentData = spc.File(portableDataFile)
+        # Take slice b/c data has trailing tab
+        dataTable = [r.split("\t")[0:2] for r in instrumentData.data_txt().split("\n") if r != '']
+        instrument = ScienceInstrument.getInstrument(ASD)
     
-    dataProduct = AsdDataProduct(
-        portable_data_file = portableDataFile,
-        portable_file_format_name = "SPC",
-        portable_mime_type = "application/octet-stream",
-        acquisition_time = utcStamp,
-        acquisition_timezone = timezone.zone,
-        creation_time = datetime.datetime.now(pytz.utc),
-        manufacturer_data_file = manufacturerDataFile,
-        manufacturer_mime_type = "application/octet-stream",
-        instrument = instrument,
-        track_position = sampleLocation,
-        flight = flight,
-        resource = resource,
-        creator=user,
-        name = name,
-        description = description,
-        minerals = minerals
-    )
-    dataProduct.save()
-    if latitude or longitude or altitude:
-        editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
+        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
+        
+        dataProduct = AsdDataProduct(
+            portable_data_file = portableDataFile,
+            portable_file_format_name = "SPC",
+            portable_mime_type = "application/octet-stream",
+            acquisition_time = utcStamp,
+            acquisition_timezone = timezone.zone,
+            creation_time = datetime.datetime.now(pytz.utc),
+            manufacturer_data_file = manufacturerDataFile,
+            manufacturer_mime_type = "application/octet-stream",
+            instrument = instrument,
+            track_position = sampleLocation,
+            flight = flight,
+            resource = resource,
+            creator=user,
+            name = name,
+            description = description,
+            minerals = minerals
+        )
+        dataProduct.save()
+        if latitude or longitude or altitude:
+            editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
+    
+        for wl, ab in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
+            sample = AsdSample(
+                dataProduct = dataProduct,
+                wavelength = wl,
+                absorbance = ab)
+            sample.save()
 
-    for wl, ab in dataTable[1:]:  # Slice starting @ 1 because 1 line is header
-        sample = AsdSample(
-            dataProduct = dataProduct,
-            wavelength = wl,
-            absorbance = ab)
-        sample.save()
-
-    return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
-                                                                            'modelName':'ASD'}))
+        return {'status': 'success', 
+                'pk': dataProduct.pk,
+                'modelName': 'ASD'}
+    except Exception, e:
+        return {'status': 'error', 'message': str(e)}
 
 def readAsciiFtirData(aspFile):
     pointCount = int(aspFile.readline().rstrip())
@@ -175,44 +201,48 @@ def readSpcFtirData(spcFile):
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      utcStamp, timezone, resource, name, description, minerals,
                      user=None, latitude=None, longitude=None, altitude=None):
-    if (portableDataFile.name.lower().endswith(".spc")):
-        dataTable = readSpcFtirData(portableDataFile)
-        portableFileFormat = "SPC"
-    if (portableDataFile.name.lower().endswith(".asp")):
-        dataTable = readAsciiFtirData(portableDataFile)
-        portableFileFormat = "ASP"
-    instrument = ScienceInstrument.getInstrument(FTIR)
-    (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
-    
-    dataProduct = FtirDataProduct(
-        portable_data_file = portableDataFile,
-        portable_file_format_name = portableFileFormat,
-        portable_mime_type = "application/octet-stream",
-        acquisition_time = utcStamp,
-        acquisition_timezone = timezone.zone,
-        creation_time = datetime.datetime.now(pytz.utc),
-        manufacturer_data_file = manufacturerDataFile,
-        manufacturer_mime_type = "application/octet-stream",
-        instrument = instrument,
-        track_position = sampleLocation,
-        flight = flight,
-        resource = resource,
-        creator=user,
-        name = name,
-        description = description,
-        minerals = minerals
-    )
-    dataProduct.save()
-    if latitude or longitude or altitude:
-        editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
-    
-    for wn, rf in dataTable:
-        sample = FtirSample(
-            dataProduct = dataProduct,
-            wavenumber = wn,
-            reflectance = rf)
-        sample.save()
+    try:
+        if (portableDataFile.name.lower().endswith(".spc")):
+            dataTable = readSpcFtirData(portableDataFile)
+            portableFileFormat = "SPC"
+        if (portableDataFile.name.lower().endswith(".asp")):
+            dataTable = readAsciiFtirData(portableDataFile)
+            portableFileFormat = "ASP"
+        instrument = ScienceInstrument.getInstrument(FTIR)
+        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
+        
+        dataProduct = FtirDataProduct(
+            portable_data_file = portableDataFile,
+            portable_file_format_name = portableFileFormat,
+            portable_mime_type = "application/octet-stream",
+            acquisition_time = utcStamp,
+            acquisition_timezone = timezone.zone,
+            creation_time = datetime.datetime.now(pytz.utc),
+            manufacturer_data_file = manufacturerDataFile,
+            manufacturer_mime_type = "application/octet-stream",
+            instrument = instrument,
+            track_position = sampleLocation,
+            flight = flight,
+            resource = resource,
+            creator=user,
+            name = name,
+            description = description,
+            minerals = minerals
+        )
+        dataProduct.save()
+        if latitude or longitude or altitude:
+            editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
+        
+        for wn, rf in dataTable:
+            sample = FtirSample(
+                dataProduct = dataProduct,
+                wavenumber = wn,
+                reflectance = rf)
+            sample.save()
 
-    return HttpResponseRedirect(reverse('search_map_single_object', kwargs={'modelPK':dataProduct.pk,
-                                                                            'modelName':'FTIR'}))
+        return {'status': 'success', 
+                'pk': dataProduct.pk,
+                'modelName': 'FTIR'}
+    except Exception, e:
+        return {'status': 'error', 'message': str(e)}
 

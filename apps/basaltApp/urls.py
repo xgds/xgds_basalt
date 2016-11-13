@@ -42,6 +42,7 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                # save newly imported instrument data
                url(r'^saveInstrumentData/(?P<instrumentName>\w*)$', views.saveNewInstrumentData, name='save_instrument_data'),
                url(r'^savePxrfData/$', views.saveNewPxrfData, name='save_pxrf_data'),
+               url(r'^savePxrfDataLUA/$', views.saveNewPxrfData, {'loginRequired':False, 'jsonResult':True}, name='save_pxrf_data_LUA'),
                #get instrument edit page
                url(r'^edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.editInstrumentData, name="instrument_data_edit"),
                # update instrument data
