@@ -50,6 +50,12 @@
 			<td>{{ev_name}}</td>
 		</tr>
 		{{/if}}
+		{{#if collector_name}}
+		<tr>
+			<th><label for="id_ev_name">Collector:</label></th>
+			<td>{{collector_name}}</td>
+		</tr>
+		{{/if}}
 		{{#if manufacturer_data_file_url}}
 		<tr>
 			<th><label for="id_manufacturer_data_file">Manufacturer data file (.pdz):</label></th>
