@@ -79,7 +79,7 @@
 	},
     "GROUPS": {
         "startup": ["zmqCentral", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", 
-        			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg", "physioTablet1", "physioTablet2", "wrist1", "wrist2",
+        			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg",
         			"ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "videoRecorder"]
     }
 }
