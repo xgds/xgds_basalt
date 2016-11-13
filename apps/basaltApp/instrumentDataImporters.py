@@ -65,7 +65,7 @@ def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
 
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, elementResultsCsvFile,
                      utcStamp, timezone, resource, name, description, minerals=None, user=None,
-                     latitude=None, longitude=None, altitude=None):
+                     latitude=None, longitude=None, altitude=None, collector=None):
     try:
         instrument = ScienceInstrument.getInstrument(PXRF)
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
@@ -84,6 +84,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                     'flight':flight,
                     'resource':resource,
                     'creator':user,
+                    'collector': collector,
                     'name':name,
                     'description':description,
                     'elements':minerals}
@@ -130,7 +131,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
 
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None,
-                    latitude=None, longitude=None, altitude=None):
+                    latitude=None, longitude=None, altitude=None, collector=None):
     try:
         instrumentData = spc.File(portableDataFile)
         # Take slice b/c data has trailing tab
@@ -153,6 +154,7 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
             flight = flight,
             resource = resource,
             creator=user,
+            collector=collector,
             name = name,
             description = description,
             minerals = minerals
@@ -200,7 +202,8 @@ def readSpcFtirData(spcFile):
 
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      utcStamp, timezone, resource, name, description, minerals,
-                     user=None, latitude=None, longitude=None, altitude=None):
+                     user=None, latitude=None, longitude=None, altitude=None,
+                     collector=None):
     try:
         if (portableDataFile.name.lower().endswith(".spc")):
             dataTable = readSpcFtirData(portableDataFile)
@@ -225,6 +228,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
             flight = flight,
             resource = resource,
             creator=user,
+            collector=collector,
             name = name,
             description = description,
             minerals = minerals

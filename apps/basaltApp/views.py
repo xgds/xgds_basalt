@@ -13,6 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
+
 import traceback
 import json
 import datetime
@@ -387,7 +388,8 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                request.user,
                                form.cleaned_data['lat'],
                                form.cleaned_data['lon'],
-                               form.cleaned_data['alt'])
+                               form.cleaned_data['alt'],
+                               form.cleaned_data['collector'])
             if result['status'] == 'success':
                 if jsonResult:
                     return HttpResponse(json.dumps(result), content_type='application/json')
@@ -412,6 +414,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
 
 
 def saveNewPxrfData(request, jsonResult=False):
+    
     errors = None
     if request.method == 'POST':
         form = PxrfInstrumentDataForm(request.POST, request.FILES)
@@ -434,7 +437,8 @@ def saveNewPxrfData(request, jsonResult=False):
                                request.user,
                                form.cleaned_data['lat'],
                                form.cleaned_data['lon'],
-                               form.cleaned_data['alt'])
+                               form.cleaned_data['alt'],
+                               form.cleaned_data['collector'])
             
             if result['status'] == 'success':
                 if jsonResult:
@@ -459,6 +463,7 @@ def saveNewPxrfData(request, jsonResult=False):
                                                     )      
 
 def saveUpdatedInstrumentData(request, instrument_name, pk):
+    
     """
     Updates instrument data on save.
     """
