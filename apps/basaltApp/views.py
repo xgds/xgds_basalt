@@ -428,9 +428,7 @@ def savePxrfMfgFile(request):
             if len(splits) > 1:
                 ending = splits[1].split('.')
                 seekNumber = int(ending[0])
-                localtimezone = request.POST['timezone']
-                timezone = pytz.timezone(localtimezone)
-                mintime = timezone.localize(datetime.datetime.utcnow()) - datetime.timedelta(hours=12)
+                mintime = pytz.utc.localize(datetime.datetime.utcnow()) - datetime.timedelta(hours=12)
                 found = PxrfDataProduct.objects.filter(fileNumber=seekNumber, acquisition_time__gte=mintime)
                 if found:
                     dataProduct = found.last()
