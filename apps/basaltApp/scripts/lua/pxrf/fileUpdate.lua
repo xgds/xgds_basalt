@@ -1,4 +1,4 @@
-dirRoot = "/DCIM/101OLYMP"
+dirRoot = "/Data"
 snapshotFile = "/filesnapshot.txt"
 
 local function waitWlanConnect()
@@ -76,7 +76,7 @@ local function getFileDiffs(dirRoot, fileSet)
   return newFileList
 end
 
-local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
+local function uploadFile(dirPath, fileName, fileLabel, mimeType, uploadUrl, snapshotFile)
     local boundary = 'bnfDxpKY69NKk'
     local headers = {}
     local place_holder = '<!--WLANSDFILE-->'
@@ -85,16 +85,18 @@ local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
     headers['Content-Type'] = 'multipart/form-data; boundary="'..boundary..'"'
 
     local body = '--' .. boundary..'\r\n'
-        ..'Content-Disposition: form-data; name="username"\r\n\r\n'..'ev1'
+        ..'Content-Disposition: form-data; name="collector"\r\n\r\n'..'20372'
         .. '\r\n--' .. boundary .. '\r\n'
-        ..'Content-Disposition: form-data; name="resource"\r\n\r\n'..'1'
+        ..'Content-Disposition: form-data; name="resource"\r\n\r\n'..'2'
+        .. '\r\n--' .. boundary .. '\r\n'
+        ..'Content-Disposition: form-data; name="instrument"\r\n\r\n'..'3'
         .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="timezone"\r\n\r\n'
         .. 'US/Hawaii'
         .. '\r\n--' .. boundary .. '\r\n'
-        ..'Content-Disposition: form-data; name="file"; filename="'
+        ..'Content-Disposition: form-data; name='..fileLabel..'; filename="'
         ..fileName..'"\r\n'
-        ..'Content-Type: image/jpeg\r\n\r\n'
+        ..'Content-Type: '..mimeType..'\r\n\r\n'
         ..'<!--WLANSDFILE-->\r\n'
         .. '--' .. boundary .. '--\r\n'
 
@@ -132,8 +134,10 @@ else
 end
   
 
+c = uploadFile(dirRoot, "Results.csv", "elementResultsCsvFile", "text/csv", "http://10.10.24.71/basaltApp/savePxrfElementFile/", snapshotFile)
+
 for index, file in ipairs(newFileList) do
-  c = uploadFile(dirRoot, file, "http://10.10.24.71/xgds_image/saveImage/", snapshotFile)
+  c = uploadFile(dirRoot, file, "manufacturerDataFile", "application/octet-stream", "http://10.10.24.71/basaltApp/savePxrfMfgFile/", snapshotFile)
   if c == 200 then
     appendCurrentFileList(snapshotFile, file)
 --    writeCurrentFileList(dirRoot, snapshotFile)
