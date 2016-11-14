@@ -111,41 +111,42 @@ def pxrfLoadPortableSampleData(portableDataFile, dataProduct):
     """ Read the portable sample data, create records and set attributes
         Clears out and overrides any old data.
     """
-    metadata = {}
+    if portableDataFile:
+        metadata = {}
+        
+        # clear out any old data
+        samples = PxrfSample.objects.filter(dataProduct=dataProduct)
+        samples.all().delete()
     
-    # clear out any old data
-    samples = PxrfSample.objects.filter(dataProduct=dataProduct)
-    samples.all().delete()
-
-    csvreader = csv.reader(portableDataFile, delimiter=',')
-    for row in csvreader:
-        if len(row) == 2:
-            label, value = row
-            label = label.replace(' ','')
-            label = label[:1].lower() + label[1:]
-            try:
-                value = int(value)
-                metadata[label] = value
-            except ValueError:
+        csvreader = csv.reader(portableDataFile, delimiter=',')
+        for row in csvreader:
+            if len(row) == 2:
+                label, value = row
+                label = label.replace(' ','')
+                label = label[:1].lower() + label[1:]
                 try:
-                    value = float(value)
-                    metadata[label]=value
-                except:
-                    # string case
-                    if label == 'label':
+                    value = int(value)
+                    metadata[label] = value
+                except ValueError:
+                    try:
+                        value = float(value)
                         metadata[label]=value
-                    if label == 'channel#':
-                        break
-
-    for row in csvreader:
-        if len(row) == 2:
-            sample = PxrfSample(dataProduct=dataProduct, channelNumber=int(row[0]), intensity=int(row[1]))
-            sample.save()
-    portableDataFile.close()
+                    except:
+                        # string case
+                        if label == 'label':
+                            metadata[label]=value
+                        if label == 'channel#':
+                            break
     
-    for key, value in metadata.iteritems():
-        setattr(portableDataFile, key, value)
-    dataProduct.save()
+        for row in csvreader:
+            if len(row) == 2:
+                sample = PxrfSample(dataProduct=dataProduct, channelNumber=int(row[0]), intensity=int(row[1]))
+                sample.save()
+        portableDataFile.close()
+        
+        for key, value in metadata.iteritems():
+            setattr(portableDataFile, key, value)
+        dataProduct.save()
 
 
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
