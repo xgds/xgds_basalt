@@ -19,7 +19,7 @@ import datetime
 import time
 import pytz
 from django.conf import settings
-from django.shortcuts import render_to_response, redirect, render
+from django.shortcuts import render_to_response, redirect, render, get_object_or_404
 from django import forms
 
 from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
@@ -573,6 +573,12 @@ def editInstrumentData(request, instrument_name, pk):
             'portable_data_file_url': jsonDict['portable_data_file_url']
         },
     )
+
+def getPxrfDataJson(request, pk):
+    dataProduct = get_object_or_404(PxrfDataProduct, pk=pk)
+    sampleList = dataProduct.samples
+    elementPercentList = dataProduct.element_percents
+    return HttpResponse(json.dumps({'samples':sampleList, 'elements':elementPercentList}), content_type='application/json')
 
 def check_forward(request, *args, **kwargs):
     return HttpResponse(request.META.get('HTTP_X_FORWARDED_FOR', 'None: ' + request.META['REMOTE_ADDR']))
