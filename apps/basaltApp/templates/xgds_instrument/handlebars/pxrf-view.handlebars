@@ -7,7 +7,23 @@
  </style>
 
 <div> <strong>{{instrument_name}}</strong> 
-<a id="edit_instrument_button" href="/xgds_instrument/edit/{{instrument_name}}/{{pk}}" class="mybutton small" target="_blank">Edit</a></div>
+	  <a id="edit_instrument_button" href="/xgds_instrument/edit/{{instrument_name}}/{{pk}}" class="mybutton small" target="_blank">Edit</a>
+</div>
+
+{{#if has_element_percents }}
+<div id="pxrf_element_div" style="padding-top: 8px;">
+	<table id="pxrf_element_table">
+		<thead>
+  			<tr>
+     			<th>Element</th>
+     			<th>Percent</th>
+     			<th>Error</th>
+  			</tr>
+ 		</thead>
+	</table>
+</div>
+{{/if}}
+
 	<table>
 		{{#if name}}
 		<tr>
@@ -172,30 +188,30 @@
 			<td>{{pulsePeriod}}</td>
 		</tr>
 		{{/if}}
-		{{#if filter}}
+		{{#ifunequal filter -1}}
 		<tr>
 			<th><label for="id_filter">Filter:</label></th>
 			<td>{{filter}}</td>
 		</tr>
-		{{/if}}
-		{{#if eVperchannel}}
+		{{/ifunequal}}
+		{{#ifunequal eVperchannel -1}}
 		<tr>
 			<th><label for="id_eVperchannel">EV Per Channel:</label></th>
 			<td>{{eVperchannel}}</td>
 		</tr>
-		{{/if}}
-		{{#if numberofChannels}}
+		{{/ifunequal}}
+		{{#ifunequal numberofChannels -1}}
 		<tr>
 			<th><label for="id_numberofChannels"># Channels:</label></th>
 			<td>{{numberofChannels}}</td>
 		</tr>
-		{{/if}}
-		{{#if vacuum}}
+		{{/ifunequal}}
+		{{#ifunequal vacuum -1}}
 		<tr>
 			<th><label for="id_vacuum">Vacuum:</label></th>
 			<td>{{vacuum}}</td>
 		</tr>
-		{{/if}}
+		{{/ifunequal}}
 		
 		<div class="plot-container">
 			<span class="alert" id="instrument_message"><br/><br/></span>
