@@ -749,10 +749,23 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
         return 'pXRF'
     
     @property
+    def jsonDataUrl(self):
+        return reverse('pxrf_instrument_data_json',  kwargs={'pk': str(self.pk)})
+
+    @property
     def samples(self):
         samples = [(s.channelNumber, s.intensity) for s in self.pxrfsample_set.all()]
         return samples
 
+    @property
+    def element_percents(self):
+        element_percents = [(e.element.symbol, e.percent, e.error) for e in self.pxrfelement_set.all()]
+        return element_percents
+
+    @property
+    def has_element_percents(self):
+        return self.pxrfelement_set.exists()
+    
     @property
     def element_results_csv_file_url(self):
         if self.elementResultsCsvFile:
@@ -809,7 +822,10 @@ class PxrfElement(models.Model):
     error = models.FloatField(db_index=True)
     
     def __unicode__(self):
-        return '%s: %f %f' % (self.element.symbol, self.percent, self.error) 
+        return '%s: %f %f' % (self.element.symbol, self.percent, self.error)
+    
+    class Meta:
+        ordering = ['-percent']
 
 
 class FtirSample(models.Model):
