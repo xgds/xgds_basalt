@@ -17,6 +17,7 @@ import traceback
 import json
 import datetime
 import csv
+from collections import deque
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
@@ -27,7 +28,7 @@ import spc  # library for reading SPC format spectra
 from geocamUtil.TimeUtil import timeZoneToUtc
 from geocamTrack.utils import getClosestPosition
 from xgds_planner2.utils import getFlight
-from basaltApp.models import FtirDataProduct, AsdDataProduct, PxrfDataProduct, PxrfSample, FtirSample, ScienceInstrument, BasaltTrack, AsdSample
+from basaltApp.models import FtirDataProduct, AsdDataProduct, Element, PxrfDataProduct, PxrfSample, PxrfElement, FtirSample, ScienceInstrument, BasaltTrack, AsdSample
 from xgds_instrument.views import editInstrumentDataPosition
 
 FTIR = "ftir"
@@ -97,7 +98,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
         dataProduct.save()
         
         pxrfLoadPortableSampleData(portableDataFile, dataProduct)
-            
+        pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone)
         
         return {'status': 'success', 
                 'pk': dataProduct.pk,
@@ -149,6 +150,65 @@ def pxrfLoadPortableSampleData(portableDataFile, dataProduct):
         dataProduct.save()
 
 
+def getLastRow(reader):
+        try:
+            lastrow = deque(reader, 1)[0]
+        except IndexError:  # empty file
+            lastrow = None
+        
+        return lastrow
+    
+def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
+    """ Read the element results.  For now, just read the latest time.
+    """
+    if elementResultsCsvFile:
+        try:
+            reader = csv.reader(elementResultsCsvFile, delimiter=',')
+            firstrow = next(reader)
+            lastrow = getLastRow(reader)
+            elementResultsCsvFile.close()
+            if firstrow and lastrow:
+                dictionary = dict(zip([f.strip() for f in firstrow], lastrow))
+                try:
+                    if not dataProduct.acquisition_time:
+                        # 12-15-2015 17:05
+                        readDateTime = datetime.datetime.strptime(dictionary['DateTime'], '%m-%d-%Y %H:%M')
+                        dataProduct.acquisition_time = timezone.localize(readDateTime)
+    
+                    dataProduct.fileNumber = dictionary['File #']
+                    dataProduct.mode = dictionary['Mode']
+                    dataProduct.pxrfType = dictionary['Type']
+                    dataProduct.elapsedTime = dictionary['ElapsedTime']
+                    dataProduct.alloy1 = dictionary['Alloy 1']
+                    dataProduct.matchQuality1 = dictionary['Match Qual 1']
+                    dataProduct.alloy2 = dictionary['Alloy 2']
+                    dataProduct.matchQuality2 = dictionary['Match Qual 2']
+                    dataProduct.alloy3 = dictionary['Alloy 3']
+                    dataProduct.matchQuality3 = dictionary['Match Qual 3']
+                except:
+                    pass
+                dataProduct.save()
+                
+                for key in firstrow[15:]:
+                    elementPercent = dictionary[key]
+                    if elementPercent:
+                        errorKey = key + ' Err'
+                        if errorKey in dictionary:
+                            elementError = dictionary[errorKey]
+                            try:
+                                pe = PxrfElement(dataProduct=dataProduct, 
+                                                 element=Element.objects.get(symbol=key), 
+                                                 percent=elementPercent, 
+                                                 error=elementError)
+                                pe.save()
+                            except Exception, e:
+                                traceback.print_exc()
+                                pass
+        except:
+            pass
+        elementResultsCsvFile.close()
+        
+            
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None,
                     latitude=None, longitude=None, altitude=None, collector=None):

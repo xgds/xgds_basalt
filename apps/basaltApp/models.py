@@ -708,25 +708,37 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
     
     elements = models.CharField(max_length=2048, blank=True)
     label = models.CharField(max_length=128, default='', blank=True, null=True, db_index=True)
-    durationTime = models.FloatField(default=0, verbose_name='Duration Time (seconds')
-    ambientTemperature = models.FloatField(null=True, verbose_name='Ambient Temperature')
-    detectorTemperature = models.FloatField(null=True, verbose_name='Detector Temperature')
-    temperatureUnits = models.CharField(max_length=1, default='F', verbose_name='Temperature Units')
-    validAccumulatedCounts = models.IntegerField(default=0, verbose_name='Valid Accumulated Counts')
-    rawAccumulatedCounts = models.IntegerField(default=0, verbose_name='Raw Accumulated Counts')
-    validCountLastPacket = models.IntegerField(default=0, verbose_name='Valid Counts Last Packet')
-    rawCountLastPacket = models.IntegerField(default=0, verbose_name='Raw Counts Last Packet')
-    liveTime = models.FloatField(default=0, verbose_name='Live Time (seconds)')
-    hVDAC = models.IntegerField(default=0)
-    hVADC = models.IntegerField(default=0)
-    filamentDAC = models.IntegerField(default=0)
-    filamentADC = models.IntegerField(default=0)
-    pulseLength = models.IntegerField(default=0, verbose_name='Pulse Length')
-    pulsePeriod = models.IntegerField(default=0, verbose_name='Pulse Period')
-    filter = models.IntegerField(default=-1, verbose_name='Filter #')
-    eVperchannel = models.FloatField(default=-1, verbose_name='eV Per Channel')
-    numberofChannels = models.IntegerField(default=0, verbose_name='# of Channels')
-    vacuum = models.FloatField(default=-1)
+    
+    durationTime = models.FloatField(default=0, verbose_name='Duration Time (seconds)', db_index=True)
+    ambientTemperature = models.FloatField(null=True, verbose_name='Ambient Temperature', db_index=True)
+    detectorTemperature = models.FloatField(null=True, verbose_name='Detector Temperature', db_index=True)
+    temperatureUnits = models.CharField(max_length=1, default='F', verbose_name='Temperature Units', db_index=True)
+    validAccumulatedCounts = models.IntegerField(default=0, verbose_name='Valid Accumulated Counts', db_index=True)
+    rawAccumulatedCounts = models.IntegerField(default=0, verbose_name='Raw Accumulated Counts', db_index=True)
+    validCountLastPacket = models.IntegerField(default=0, verbose_name='Valid Counts Last Packet', db_index=True)
+    rawCountLastPacket = models.IntegerField(default=0, verbose_name='Raw Counts Last Packet', db_index=True)
+    liveTime = models.FloatField(default=0, verbose_name='Live Time (seconds)', db_index=True)
+    hVDAC = models.IntegerField(default=0, db_index=True)
+    hVADC = models.IntegerField(default=0, db_index=True)
+    filamentDAC = models.IntegerField(default=0, db_index=True)
+    filamentADC = models.IntegerField(default=0, db_index=True)
+    pulseLength = models.IntegerField(default=0, verbose_name='Pulse Length', db_index=True)
+    pulsePeriod = models.IntegerField(default=0, verbose_name='Pulse Period', db_index=True)
+    filter = models.IntegerField(default=-1, verbose_name='Filter #', db_index=True)
+    eVperchannel = models.FloatField(default=-1, verbose_name='eV Per Channel', db_index=True)
+    numberofChannels = models.IntegerField(default=0, verbose_name='# of Channels', db_index=True)
+    vacuum = models.FloatField(default=-1, db_index=True)
+
+    fileNumber = models.IntegerField(default=-1, db_index=True)    
+    mode = models.CharField(max_length=16, blank=True, null=True, db_index=True)
+    pxrfType = models.CharField(max_length=32, blank=True, null=True, db_index=True)
+    elapsedTime = models.FloatField(default=0, db_index=True)
+    alloy1 = models.CharField(max_length=16, blank=True, null=True, db_index=True)
+    matchQuality1 = models.FloatField(default=0, db_index=True)
+    alloy2 = models.CharField(max_length=16, blank=True, null=True, db_index=True)
+    matchQuality2 = models.FloatField(default=0, db_index=True)
+    alloy3 = models.CharField(max_length=16, blank=True, null=True, db_index=True)
+    matchQuality3 = models.FloatField(default=0, db_index=True)
     
     @classmethod
     def getSearchableFields(self):
@@ -781,7 +793,24 @@ class PxrfSample(models.Model):
     def __unicode__(self):
         return "%s: (%f, %f)" % (self.dataProduct.name,
                                  self.channelNumber, self.intensity)
-        
+
+class Element(models.Model):
+    name = models.CharField(max_length=32, db_index=True)
+    symbol = models.CharField(max_length=3, db_index=True)
+
+    def __unicode__(self):
+        return self.symbol
+
+
+class PxrfElement(models.Model):
+    dataProduct = models.ForeignKey(PxrfDataProduct)
+    element = models.ForeignKey(Element)
+    percent = models.FloatField(db_index=True)
+    error = models.FloatField(db_index=True)
+    
+    def __unicode__(self):
+        return '%s: %f %f' % (self.element.symbol, self.percent, self.error) 
+
 
 class FtirSample(models.Model):
     dataProduct = models.ForeignKey(FtirDataProduct)
@@ -1010,3 +1039,4 @@ class BasaltStillFrame(AbstractStillFrame):
 
     def __unicode__(self):
         return "%s - %s" % (self.flight.name, self.name)
+

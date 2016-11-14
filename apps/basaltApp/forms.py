@@ -83,6 +83,11 @@ class BasaltInstrumentDataForm(ImportInstrumentDataForm):
     minerals = forms.CharField(widget=forms.Textarea, label="Minerals", required=False)
 
 class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
+    date_formats = list(forms.DateTimeField.input_formats) + [
+        '%Y/%m/%d %H:%M:%S',
+        '%Y-%m-%d %H:%M:%S',
+        '%m/%d/%Y %H:%M'
+        ]
     minerals = forms.CharField(widget=forms.Textarea, label="Elements", required=False)
     portableDataFile = ExtFileField(ext_whitelist=(".csv",),
                                     required=False,
@@ -90,7 +95,10 @@ class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
     elementResultsCsvFile = ExtFileField(ext_whitelist=(".csv",),
                                          required=True,
                                          label="Results Csv File")
-    
+    dataCollectionTime = DateTimeField(label="Collection Time",
+                                       input_formats=date_formats,
+                                       required=False,
+                                       )
     field_order = ['timezone', 'resource', 'dataCollectionTime', 'portableDataFile', 'manufacturerDataFile', 'elementResultsCsvFile',
                    'lat', 'lon', 'alt', 'name', 'description', 'minerals']
 
