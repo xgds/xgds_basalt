@@ -416,6 +416,32 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                       )      
 
 
+def savePxrfMfgFile(request):
+    # coming from the LUA on pxrf, look up the pxrfData with the same fileNumber
+    try:
+        #'ANALYZE_EMP-47.pdz'
+        mdf = request.FILES.get('manufacturerDataFile', None)
+        if mdf:
+            splits = mdf.name.split('-')
+            if len(splits) > 1:
+                ending = splits[1].split('.')
+                number = int(ending[0])
+                localtimezone = request.POST['timezone']
+                timezone = pytz.timezone(localtimezone)
+                mintime = timezone.localize(datetime.datetime.utcnow()) - datetime.timedelta(hours=12)
+                found = PxrfDataProduct.objects.filter(fileNumber=number, acquisition_time__gte=mintime)
+                if found:
+                    dataProduct = found.last()
+                    dataProduct.manufacturer_data_file = mdf
+                    dataProduct.save()
+                    return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
+    except Exception, e:
+        return HttpResponse(json.dumps({'status': 'error', 'message': str(e)}), content_type='application/json', status=406)
+    
+    return HttpResponse(json.dumps({'status': 'error', 'message': 'Something was missing'}), content_type='application/json', status=406)
+                
+    
+    
 def saveNewPxrfData(request, jsonResult=False):
     
     errors = None
