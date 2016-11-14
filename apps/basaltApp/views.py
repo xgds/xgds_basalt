@@ -370,6 +370,10 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
     if request.method == 'POST':
         form = BasaltInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
+            if not request.user.is_anonymous:
+                user = request.user
+            else:
+                user = User.objects.get(pk=20131)
             instrument = form.cleaned_data["instrument"]
             messages.success(request, 'Instrument data is successfully saved.' )
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
@@ -384,7 +388,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                form.cleaned_data['name'],
                                form.cleaned_data['description'],
                                form.cleaned_data['minerals'],
-                               request.user,
+                               user,
                                form.cleaned_data['lat'],
                                form.cleaned_data['lon'],
                                form.cleaned_data['alt'],
@@ -418,6 +422,10 @@ def saveNewPxrfData(request, jsonResult=False):
     if request.method == 'POST':
         form = PxrfInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
+            if not request.user.is_anonymous:
+                user = request.user
+            else:
+                user = User.objects.get(username='pxrf')
             instrument = form.cleaned_data["instrument"]
             messages.success(request, 'Instrument data is successfully saved.' )
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
@@ -433,7 +441,7 @@ def saveNewPxrfData(request, jsonResult=False):
                                form.cleaned_data['name'],
                                form.cleaned_data['description'],
                                form.cleaned_data['minerals'],
-                               request.user,
+                               user,
                                form.cleaned_data['lat'],
                                form.cleaned_data['lon'],
                                form.cleaned_data['alt'],
