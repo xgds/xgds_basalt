@@ -16,8 +16,9 @@
 
 var xgds_instrument = xgds_instrument || {};
 $.extend(xgds_instrument,{
+	dataRenderers: {},
 	clearMessage: function(msg){
-        $('#instrument_message').html('<br/><br/>');
+        $('#instrument_message').html('');
     },
     setMessage: function(msg){
         $('#instrument_message').html(msg);
@@ -25,6 +26,13 @@ $.extend(xgds_instrument,{
     showValue: function(x, y){
     	var str = this.labels[0] + ": "+ x + "<br/>" + this.labels[1] + ": " + y;
 		xgds_instrument.setMessage(str);
+    },
+    renderInstrumentData(dataProductJson, data){
+    	if (dataProductJson.type in this.dataRenderers){
+    		this.dataRenderers[dataProductJson.type](dataProductJson, data);
+    	} else {
+    		this.renderInstrumentPlot(dataProductJson, data);
+    	}
     },
 	getData: function(dataProductJson){
 		if (this.plot != undefined){
@@ -40,14 +48,13 @@ $.extend(xgds_instrument,{
                     this.setMessage("None found.");
                 } else {
                 	this.clearMessage();
-                    this.renderInstrumentPlot(dataProductJson, data);
+                    this.renderInstrumentData(dataProductJson, data);
                 }
             }, this),
             error: $.proxy(function(data){
                 this.setMessage("Search failed.");
             }, this)
           });
-		
 	},
 	renderInstrumentPlot: function(dataProductJson, instrumentData){
 		this.labels = app.options.searchModels[dataProductJson.instrument_name].plotLabels;
