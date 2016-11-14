@@ -157,7 +157,6 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
         
         dataProduct = AsdDataProduct(
-            portable_data_file = portableDataFile,
             portable_file_format_name = "SPC",
             portable_mime_type = "application/octet-stream",
             acquisition_time = utcStamp,
@@ -180,7 +179,10 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
             editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
         
         dataProduct.save()
-        asdLoadPortableSampleData(portableDataFile, dataProduct)
+        if portableDataFile:
+            asdLoadPortableSampleData(portableDataFile, dataProduct)
+            dataProduct.portable_data_file = portableDataFile
+            dataProduct.save()
 
         return {'status': 'success', 
                 'pk': dataProduct.pk,
@@ -256,7 +258,6 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
         
         dataProduct = FtirDataProduct(
-            portable_data_file = portableDataFile,
             portable_mime_type = "application/octet-stream",
             acquisition_time = utcStamp,
             acquisition_timezone = timezone.zone,
@@ -277,7 +278,10 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         if latitude or longitude or altitude:
             editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
         
-        loadPortableFtirData(portableDataFile, dataProduct)
+        if portableDataFile:
+            loadPortableFtirData(portableDataFile, dataProduct)
+            dataProduct.portable_data_file = portableDataFile
+            dataProduct.save()
 
         return {'status': 'success', 
                 'pk': dataProduct.pk,
