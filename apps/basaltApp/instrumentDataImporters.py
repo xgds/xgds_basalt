@@ -13,7 +13,6 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-import pydevd
 import traceback
 import json
 import datetime
@@ -68,7 +67,6 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                      utcStamp, timezone, resource, name, description, minerals=None, user=None,
                      latitude=None, longitude=None, altitude=None, collector=None):
     try:
-        pydevd.settrace('10.10.21.206')
         instrument = ScienceInstrument.getInstrument(PXRF)
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
         
@@ -153,7 +151,6 @@ def pxrfLoadPortableSampleData(portableDataFile, dataProduct):
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None,
                     latitude=None, longitude=None, altitude=None, collector=None):
-    pydevd.settrace('10.10.21.206')
     try:
         instrument = ScienceInstrument.getInstrument(ASD)
     
@@ -255,7 +252,6 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      user=None, latitude=None, longitude=None, altitude=None,
                      collector=None):
     try:
-        pydevd.settrace('10.10.21.206')
         instrument = ScienceInstrument.getInstrument(FTIR)
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
         

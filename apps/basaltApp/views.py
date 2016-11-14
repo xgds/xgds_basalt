@@ -13,7 +13,6 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-import pydevd
 import traceback
 import json
 import datetime
@@ -367,7 +366,6 @@ def stringToDateTime(datetimeStr, timezone):
 
 
 def saveNewInstrumentData(request, instrumentName, jsonResult=False):
-    pydevd.settrace('10.10.21.206')
     errors = None
     if request.method == 'POST':
         form = BasaltInstrumentDataForm(request.POST, request.FILES)
