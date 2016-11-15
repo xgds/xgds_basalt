@@ -770,7 +770,7 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
             for pe in self.pxrfelement_set.all():
                 self.elementPercentsTotal += pe.percent
             self.save()
-        return self.elementPercentsTotal
+        return round(self.elementPercentsTotal, 2)
             
             
     @property
