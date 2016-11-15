@@ -29,21 +29,13 @@ $.extend(xgds_instrument,{
 													ordering: true,
 													info: false,
 													paging: false,
-													searching: false
-//													columns.render: function( data, type, row, meta ) {
-//														if $.isNumeric(data){
-//															return data.toFixed(2);
-//														}
-//														return data;
-//													}
-//													columnDefs: [ {
-//													    "targets": 1, 2,
-//													    "render": function ( data, type, full, meta ) {
-//													    	debugger;
-//													      return data.toFixed(2);
-//													    }
-//													  } ]
-//													columns.render: $.fn.dataTable.render.number( ',', '.', 2, '$' )
+													searching: false,
+													columnDefs: [ {
+													    "targets": [1,2],
+													    "render": function ( data, type, full, meta ) {
+													      return data.toFixed(2);
+													    }
+													  } ]
 													});
 		} else {
 			elementsDataTable = theTable.DataTable();
