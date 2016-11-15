@@ -13,6 +13,8 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
+
+import csv
 import traceback
 import json
 import datetime
@@ -48,7 +50,7 @@ from xgds_instrument.views import lookupImportFunctionByName, editInstrumentData
 from geocamUtil.TimeUtil import utcToTimeZone, timeZoneToUtc
 from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 from basaltApp.hvnp_air_quality import hvnp_kml_generator
-from basaltApp.instrumentDataImporters import extractPxrfMfgFileNumber
+from basaltApp.instrumentDataImporters import extractPxrfMfgFileNumber, pxrfProcessElementResultsRow, lookupFlightInfo
 
 
 def editEV(request, pk=None):
@@ -433,10 +435,69 @@ def savePxrfMfgFile(request):
                     dataProduct.manufacturer_data_file = mdf
                     dataProduct.save()
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
+                else:
+                    return HttpResponse(json.dumps({'status': 'error', 'message': 'No PXRF record for ' + str(seekNumber), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     except Exception, e:
         return HttpResponse(json.dumps({'status': 'error', 'message': str(e), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     
     return HttpResponse(json.dumps({'status': 'error', 'message': 'Something was missing', 'seekNumber': seekNumber, 'mintime': str(mintime)}), content_type='application/json', status=406)
+
+
+def buildPxrfMetadata(request):
+    
+    if not request.user.is_anonymous:
+        user = request.user
+    else:
+        user = User.objects.get(username='pxrf')
+    
+    metadata = {'elementResultsCsvFile': request.FILES.get('elementResultsCsvFile', None),
+                'portable_file_format_name':"csv",
+                'portable_mime_type':"application/csv",
+                'acquisition_timezone':request.POST.get('timezone', settings.TIME_ZONE),
+                'creation_time':datetime.datetime.now(pytz.utc),
+                'manufacturer_data_file':request.FILES.get('manufacturerDataFile', None),
+                'manufacturer_mime_type':"application/octet-stream",
+                'instrument':ScienceInstrument.getInstrument('pXRF'),
+                'creator':user,
+                'resource_id':request.POST.get('resource',1),
+                'name':request.POST.get('name',None),
+                }
+    return metadata
+
+def buildPxrfDataProductsFromResultsFile(request):
+    # coming from the LUA on pxrf, read through all the results and build dataproduct records
+    updatedRecords = []
+    status=406
+    try:
+        elementResultsCsvFile = request.FILES.get('elementResultsCsvFile', None)
+        metadata = buildPxrfMetadata(request)
+        timezone = pytz.timezone(metadata['acquisition_timezone'])
+    except:
+        result= {'status': 'error', 
+                 'message': 'Did not receive element results csv file' }
+        return HttpResponse(json.dumps(result), content_type='application/json', status=status)
+    
+    try:
+        if elementResultsCsvFile:
+            reader = csv.reader(elementResultsCsvFile, delimiter=',')
+            firstrow = next(reader)
+            for row in reader:
+                #call function in instrument data importers
+                fileNumber = pxrfProcessElementResultsRow(firstrow, row, dataProduct=None, timezone=timezone, metadata=metadata)
+                if fileNumber:
+                    updatedRecords.append(fileNumber)
+            result= {'status': 'success', 
+                     'updated': updatedRecords,
+                     'modelName': 'pXRF'}
+            status=200
+    except:
+        result= {'status': 'error', 
+                 'updated': updatedRecords,
+                 'message': 'Problem with csv file' }
+    finally:
+        elementResultsCsvFile.close()
+
+    return HttpResponse(json.dumps(result), content_type='application/json', status=status)
 
 
 def saveNewPxrfData(request, jsonResult=False):
