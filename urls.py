@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(url=settings.SCRIPT_NAME + 'basaltApp/'), {}),
     url(r'^accounts/', include('basaltApp.registerUrls')),
     url(r'^basaltApp/', include('basaltApp.urls')),
-    url(r'^favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL + 'basaltApp/icons/favicon.ico'), {'readOnly': True}),
+    url(r'^favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL + settings.FAVICON_PATH), {'readOnly': True}),
     url(r'^xgds_sample/', include('xgds_sample.urls')),
     url(r'^pycroraptor/', include('geocamPycroraptor2.urls')),
     url(r'^track/', include('geocamTrack.urls')),
