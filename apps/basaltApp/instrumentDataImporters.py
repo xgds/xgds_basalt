@@ -92,6 +92,9 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
     
         dataProduct = PxrfDataProduct(**metadata)
         
+        if manufacturerDataFile:
+            dataProduct.fileNumber = extractPxrfMfgFileNumber(manufacturerDataFile)
+        
         if latitude or longitude or altitude:
             editInstrumentDataPosition(dataProduct, latitude, longitude, altitude)
     
@@ -158,6 +161,31 @@ def getLastRow(reader):
         
         return lastrow
     
+def getRowByFileNumber(reader, fileNumber):
+    for row in reader:
+        try:
+            if int(row[0]) == fileNumber:
+                return row
+        except:
+            pass
+        
+    return getLastRow(reader)
+
+
+def extractPxrfMfgFileNumber(mdf):
+    #'ANALYZE_EMP-47.pdz'
+    try:
+        if mdf:
+            splits = mdf.name.split('-')
+            if len(splits) > 1:
+                ending = splits[1].split('.')
+                seekNumber = int(ending[0])
+                return seekNumber
+    except:
+        pass
+    return None
+    
+
 def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
     """ Read the element results.  For now, just read the latest time.
     """
@@ -165,9 +193,14 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
         try:
             reader = csv.reader(elementResultsCsvFile, delimiter=',')
             firstrow = next(reader)
-            lastrow = getLastRow(reader)
+            if dataProduct.fileNumber >= 0:
+                lastrow = getRowByFileNumber(reader, dataProduct.fileNumber)
+            else:
+                lastrow = getLastRow(reader)
             elementResultsCsvFile.close()
             if firstrow and lastrow:
+                if dataProduct.pxrfelement_set.exists():
+                    dataProduct.pxrfelement_set.all().delete()
                 dictionary = dict(zip([f.strip() for f in firstrow], lastrow))
                 try:
                     if not dataProduct.acquisition_time:

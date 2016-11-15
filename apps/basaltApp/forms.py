@@ -39,6 +39,8 @@ from xgds_core.models import XgdsUser
 
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
+from basaltApp.instrumentDataImporters import pxrfLoadPortableSampleData, pxrfParseElementResults
+
 GROUP_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_GROUP_FLIGHT_MODEL)
 
 class UserRegistrationForm(UserCreationForm):
@@ -101,6 +103,17 @@ class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
                                        )
     field_order = ['timezone', 'resource', 'dataCollectionTime', 'portableDataFile', 'manufacturerDataFile', 'elementResultsCsvFile',
                    'lat', 'lon', 'alt', 'name', 'description', 'minerals']
+    
+    def editingSetup(self, dataProduct):
+        self.fields['portableDataFile'].initial = dataProduct.portable_data_file
+        self.fields['manufacturerDataFile'].initial = dataProduct.manufacturer_data_file
+        self.fields['elementResultsCsvFile'].initial = dataProduct.elementResultsCsvFile
+    
+    def handleFileUpdate(self, dataProduct, key):
+        if key == 'portableDataFile':
+            pxrfLoadPortableSampleData(self.cleaned_data[key], dataProduct)
+        elif key == 'elementResultsCsvFile':
+            pxrfParseElementResults(self.cleaned_data[key], dataProduct)
 
 class SearchPXRFDataForm(SearchInstrumentDataForm):
      
