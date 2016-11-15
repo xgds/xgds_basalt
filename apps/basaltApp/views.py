@@ -508,6 +508,11 @@ def saveUpdatedInstrumentData(request, instrument_name, pk):
         else:
             form = BasaltInstrumentDataForm(request.POST, request.FILES)
     
+        try:
+            form.is_valid()
+        except:
+            pass
+        
         for key in form.changed_data:
             value = form.cleaned_data[key]
             if not hasattr(value, 'read'):
