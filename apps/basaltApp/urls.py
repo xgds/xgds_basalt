@@ -42,7 +42,7 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                # save newly imported instrument data
                url(r'^saveInstrumentData/(?P<instrumentName>\w*)$', views.saveNewInstrumentData, name='save_instrument_data'),
                url(r'^savePxrfData/$', views.saveNewPxrfData, name='save_pxrf_data'),
-               url(r'^savePxrfElementFile/$', views.saveNewPxrfData, {'loginRequired':False, 'jsonResult':True}, name='save_pxrf_element_LUA'),
+               url(r'^savePxrfElementFile/$', views.buildPxrfDataProductsFromResultsFile, {'loginRequired':False}, name='save_pxrf_element_LUA'),
                url(r'^savePxrfMfgFile/$', views.savePxrfMfgFile, {'loginRequired':False}, name='save_pxrf_mfg_LUA'),
                url(r'^getPxrfInstrumentDataJson/(?P<pk>[\d]+)$', views.getPxrfDataJson, name='pxrf_instrument_data_json'),
     

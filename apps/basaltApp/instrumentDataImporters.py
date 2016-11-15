@@ -25,6 +25,7 @@ from cStringIO import StringIO
 import pytz
 
 import spc  # library for reading SPC format spectra
+from django.conf import settings
 from geocamUtil.TimeUtil import timeZoneToUtc
 from geocamTrack.utils import getClosestPosition
 from xgds_planner2.utils import getFlight
@@ -186,6 +187,77 @@ def extractPxrfMfgFileNumber(mdf):
     return None
     
 
+def pxrfProcessElementResultsRow(firstrow, lastrow, dataProduct=None, timezone=settings.TIME_ZONE, metadata=None, clearFound=False):
+    if firstrow and lastrow:
+        dictionary = dict(zip([f.strip() for f in firstrow], lastrow))
+        fileNumber = int(dictionary['File #'])
+        readDateTime = datetime.datetime.strptime(dictionary['DateTime'], '%m-%d-%Y %H:%M')
+        localRowTime = timezone.localize(readDateTime)
+        newDataProduct = False
+        try:
+            if not dataProduct:
+                # look it up
+                mintime = localRowTime - datetime.timedelta(hours=12)
+                foundProducts = PxrfDataProduct.objects.filter(fileNumber=fileNumber, acquisition_time__gte=mintime)
+                if foundProducts:
+                    if clearFound:
+                        dataProduct = foundProducts.last()
+                    else:
+                        return None
+                else:
+                    metadata['fileNumber'] = fileNumber
+                    dataProduct = PxrfDataProduct(**metadata)
+                    dataProduct.save()
+                    newDataProduct = True
+
+            if dataProduct:
+                if dataProduct.pxrfelement_set.exists():
+                    dataProduct.pxrfelement_set.all().delete()
+                    dataProduct.elementPercentsTotal = 0
+                if not dataProduct.acquisition_time:
+                    dataProduct.acquisition_time = localRowTime
+        
+                dataProduct.fileNumber = fileNumber
+                dataProduct.mode = dictionary['Mode']
+                dataProduct.pxrfType = dictionary['Type']
+                dataProduct.elapsedTime = dictionary['ElapsedTime']
+                dataProduct.alloy1 = dictionary['Alloy 1']
+                dataProduct.matchQuality1 = dictionary['Match Qual 1']
+                dataProduct.alloy2 = dictionary['Alloy 2']
+                dataProduct.matchQuality2 = dictionary['Match Qual 2']
+                dataProduct.alloy3 = dictionary['Alloy 3']
+                dataProduct.matchQuality3 = dictionary['Match Qual 3']
+        except:
+            pass
+        
+        percentTotal = 0
+        for key in firstrow[15:]:
+            elementPercent = dictionary[key]
+            if elementPercent:
+                errorKey = key + ' Err'
+                try:
+                    percentTotal += float(elementPercent)
+                except:
+                    pass
+                if errorKey in dictionary:
+                    elementError = dictionary[errorKey]
+                    try:
+                        pe = PxrfElement(dataProduct=dataProduct, 
+                                         element=Element.objects.get(symbol=key), 
+                                         percent=elementPercent, 
+                                         error=elementError)
+                        pe.save()
+                    except Exception, e:
+                        traceback.print_exc()
+                        pass
+        dataProduct.elementPercentsTotal = percentTotal
+        if newDataProduct:
+            (flight, sampleLocation) = lookupFlightInfo(dataProduct.acquisition_time, timezone, dataProduct.resource, PXRF)
+            dataProduct.flight = flight
+            dataProduct.track_position = sampleLocation
+        dataProduct.save()
+        return fileNumber
+
 def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
     """ Read the element results.  For now, just read the latest time.
     """
@@ -198,52 +270,8 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
             else:
                 lastrow = getLastRow(reader)
             elementResultsCsvFile.close()
-            if firstrow and lastrow:
-                if dataProduct.pxrfelement_set.exists():
-                    dataProduct.pxrfelement_set.all().delete()
-                    dataProduct.elementPercentsTotal = 0
-                dictionary = dict(zip([f.strip() for f in firstrow], lastrow))
-                try:
-                    if not dataProduct.acquisition_time:
-                        # 12-15-2015 17:05
-                        readDateTime = datetime.datetime.strptime(dictionary['DateTime'], '%m-%d-%Y %H:%M')
-                        dataProduct.acquisition_time = timezone.localize(readDateTime)
-    
-                    dataProduct.fileNumber = dictionary['File #']
-                    dataProduct.mode = dictionary['Mode']
-                    dataProduct.pxrfType = dictionary['Type']
-                    dataProduct.elapsedTime = dictionary['ElapsedTime']
-                    dataProduct.alloy1 = dictionary['Alloy 1']
-                    dataProduct.matchQuality1 = dictionary['Match Qual 1']
-                    dataProduct.alloy2 = dictionary['Alloy 2']
-                    dataProduct.matchQuality2 = dictionary['Match Qual 2']
-                    dataProduct.alloy3 = dictionary['Alloy 3']
-                    dataProduct.matchQuality3 = dictionary['Match Qual 3']
-                except:
-                    pass
-                
-                percentTotal = 0
-                for key in firstrow[15:]:
-                    elementPercent = dictionary[key]
-                    if elementPercent:
-                        errorKey = key + ' Err'
-                        try:
-                            percentTotal += float(elementPercent)
-                        except:
-                            pass
-                        if errorKey in dictionary:
-                            elementError = dictionary[errorKey]
-                            try:
-                                pe = PxrfElement(dataProduct=dataProduct, 
-                                                 element=Element.objects.get(symbol=key), 
-                                                 percent=elementPercent, 
-                                                 error=elementError)
-                                pe.save()
-                            except Exception, e:
-                                traceback.print_exc()
-                                pass
-                dataProduct.elementPercentsTotal = percentTotal
-                dataProduct.save()
+            
+            pxrfProcessElementResultsRow(firstrow, lastrow, dataProduct, timezone)
                 
         except:
             pass
