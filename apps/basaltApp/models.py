@@ -763,6 +763,12 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
         return element_percents
 
     @property
+    def pretty_fileNumber(self):
+        if self.fileNumber >= 0:
+            return self.fileNumber
+        return None
+
+    @property
     def has_element_percents(self):
         return self.pxrfelement_set.exists()
     
