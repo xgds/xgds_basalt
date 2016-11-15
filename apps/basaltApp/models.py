@@ -17,6 +17,7 @@ import time
 import pytz
 import traceback
 import os
+import json
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
@@ -494,6 +495,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
             return self.resource.name
         return None
     
+    @classmethod
     def getCurrentNumber(self):
         allSamples = BasaltSample.objects.all()
         numbers = [sample.number for sample in allSamples]
@@ -562,7 +564,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 defaultFlight = foundActiveFlights[0].flight
                 self.flight = defaultFlight
         self.save()
-
+        
     def __unicode__(self):
         if self.name:
             return u'%s' % self.name
