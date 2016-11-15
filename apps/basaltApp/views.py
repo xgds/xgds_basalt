@@ -33,7 +33,7 @@ from django.http import HttpResponse
 from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm, SearchBasaltNoteForm
 from models import *
 import pextantHarness
-from geocamUtil.loader import LazyGetModelByName
+from geocamUtil.loader import LazyGetModelByName, getFormByName
 from xgds_core.models import Constant
 
 from xgds_notes2 import views as xgds_notes2_views
@@ -46,8 +46,9 @@ from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink, djangoRespo
 from xgds_instrument.views import lookupImportFunctionByName, editInstrumentDataPosition
 
 from geocamUtil.TimeUtil import utcToTimeZone, timeZoneToUtc
-from apps.geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
-from apps.basaltApp.hvnp_air_quality import hvnp_kml_generator
+from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
+from basaltApp.hvnp_air_quality import hvnp_kml_generator
+from basaltApp.instrumentDataImporters import extractPxrfMfgFileNumber
 
 
 def editEV(request, pk=None):
@@ -421,13 +422,10 @@ def savePxrfMfgFile(request):
     mintime = None
     # coming from the LUA on pxrf, look up the pxrfData with the same fileNumber
     try:
-        #'ANALYZE_EMP-47.pdz'
         mdf = request.FILES.get('manufacturerDataFile', None)
         if mdf:
-            splits = mdf.name.split('-')
-            if len(splits) > 1:
-                ending = splits[1].split('.')
-                seekNumber = int(ending[0])
+            seekNumber = extractPxrfMfgFileNumber(mdf)
+            if seekNumber:
                 mintime = pytz.utc.localize(datetime.datetime.utcnow()) - datetime.timedelta(hours=12)
                 found = PxrfDataProduct.objects.filter(fileNumber=seekNumber, acquisition_time__gte=mintime)
                 if found:
@@ -439,9 +437,8 @@ def savePxrfMfgFile(request):
         return HttpResponse(json.dumps({'status': 'error', 'message': str(e), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     
     return HttpResponse(json.dumps({'status': 'error', 'message': 'Something was missing', 'seekNumber': seekNumber, 'mintime': str(mintime)}), content_type='application/json', status=406)
-                
-    
-    
+
+
 def saveNewPxrfData(request, jsonResult=False):
     
     errors = None
@@ -496,37 +493,42 @@ def saveNewPxrfData(request, jsonResult=False):
                                                     )      
 
 def saveUpdatedInstrumentData(request, instrument_name, pk):
-    
     """
     Updates instrument data on save.
     """
-    InstrumentDataProductModel = BasaltInstrumentDataProduct.getDataForm(instrument_name)
-    dataProduct = InstrumentDataProductModel.objects.get(pk = pk)
+    
     if request.method == 'POST':
+        mapDict = settings.XGDS_MAP_SERVER_JS_MAP[instrument_name]
+        INSTRUMENT_MODEL = LazyGetModelByName(mapDict['model'])
+        dataProduct = INSTRUMENT_MODEL.get().objects.get(pk=pk)
+        
+        # get existing data. 
+        if 'edit_form_class' in mapDict:
+            form = getFormByName(mapDict['edit_form_class'])(request.POST, request.FILES)
+        else:
+            form = BasaltInstrumentDataForm(request.POST, request.FILES)
+    
+        for key in form.changed_data:
+            value = form.cleaned_data[key]
+            if not hasattr(value, 'read'):
+                if not isinstance(value, datetime.datetime):
+                    setattr(dataProduct, key, value)
+            else:
+                form.handleFileUpdate(dataProduct, key)
         # save the update info into the model.
-        postDict = request.POST.dict()
-        dataProduct.name = postDict['name'] 
-        dataProduct.description = postDict['description']
-        dataProduct.minerals = postDict['minerals']
-        resourceId = postDict['resource']
-        if resourceId:
-            resource = BasaltResource.objects.get(id=resourceId)
-            dataProduct.resource = resource
+#         postDict = request.POST.dict()
+#         dataProduct.name = postDict['name'] 
+#         dataProduct.description = postDict['description']
+#         dataProduct.minerals = postDict['minerals']
+#         resourceId = postDict['resource']
+#         if resourceId:
+#             resource = BasaltResource.objects.get(id=resourceId)
+#             dataProduct.resource = resource
         
-        # get timezone
-        dataProduct.acquisition_timezone = postDict['timezone']
-        tz = pytz.timezone(postDict['timezone'])
+        dataProduct.acquisition_time = form.cleaned_data['dataCollectionTime']
         
-        # convert to timezone-aware datetime
-        timezoneTimeStr = postDict['dataCollectionTime']
-        timezoneTime = stringToDateTime(timezoneTimeStr, tz)        
-        
-        # convert to utc time
-        utcTime = timeZoneToUtc(timezoneTime)
-        dataProduct.acquisition_time = utcTime
-        
-        if (('lat' in postDict) and ('lon' in postDict)) or ('alt' in postDict):
-            editInstrumentDataPosition(dataProduct, postDict['lat'], postDict['lon'], postDict['alt'])
+        if (('lat' in form.cleaned_data) and ('lon' in form.cleaned_data)) or ('alt' in form.cleaned_data):
+            editInstrumentDataPosition(dataProduct, form.cleaned_data['lat'], form.cleaned_data['lon'], form.cleaned_data['alt'])
         dataProduct.save()
         
         messages.success(request, 'Instrument data successfully saved!')
@@ -537,29 +539,38 @@ def saveUpdatedInstrumentData(request, instrument_name, pk):
         
         
 def editInstrumentData(request, instrument_name, pk):
+    
     """
     Renders instrument data edit page -- if data exists, displays the existing data.
     """
-    InstrumentDataProductModel = BasaltInstrumentDataProduct.getDataForm(instrument_name)
-    dataProduct = InstrumentDataProductModel.objects.get(pk = pk)
+    mapDict = settings.XGDS_MAP_SERVER_JS_MAP[instrument_name]
+    INSTRUMENT_MODEL = LazyGetModelByName(mapDict['model'])
+    dataProduct = INSTRUMENT_MODEL.get().objects.get(pk=pk)
     jsonDict = dataProduct.toMapDict()
     
     # get existing data. 
-    form = BasaltInstrumentDataForm(initial=jsonDict)
+    if 'edit_form_class' in mapDict:
+        form = getFormByName(mapDict['edit_form_class'])(initial=jsonDict)
+    else:
+        form = BasaltInstrumentDataForm(initial=jsonDict)
+    
+    form.editingSetup(dataProduct)
     
     # convert to local time. 
     utcTime = dataProduct.acquisition_time
     timezone = dataProduct.acquisition_timezone
     acquisitionTime = utcToTimeZone(utcTime, timezone)
     acquisitionTime = acquisitionTime.strftime('%m/%d/%Y %H:%M')
-    
+     
     form.fields['dataCollectionTime'].initial = acquisitionTime
     form.fields['timezone'].initial = timezone
     
-    # hide the two file fields
-    form.fields['portableDataFile'].widget = forms.HiddenInput()
-    form.fields['manufacturerDataFile'].widget = forms.HiddenInput()
     
+    
+    # hide the two file fields
+#     form.fields['portableDataFile'].widget = forms.HiddenInput()
+#     form.fields['manufacturerDataFile'].widget = forms.HiddenInput()
+#     
     updateInstrumentDataUrl = reverse('instrument_data_update', kwargs={'instrument_name': instrument_name, 'pk': pk})
     return render(
         request,
@@ -569,8 +580,8 @@ def editInstrumentData(request, instrument_name, pk):
             'instrument_name': instrument_name,
             'dataProductJson': json.dumps(jsonDict, cls=DatetimeJsonEncoder), 
             'updateInstrumentDataUrl': updateInstrumentDataUrl, 
-            'manufacturer_data_file_url': jsonDict['manufacturer_data_file_url'],
-            'portable_data_file_url': jsonDict['portable_data_file_url']
+            'manufacturer_data_file_url': dataProduct.manufacturer_data_file_url,
+            'portable_data_file_url': dataProduct.portable_data_file_url
         },
     )
 
