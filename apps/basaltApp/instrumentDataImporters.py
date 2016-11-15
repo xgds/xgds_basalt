@@ -201,6 +201,7 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
             if firstrow and lastrow:
                 if dataProduct.pxrfelement_set.exists():
                     dataProduct.pxrfelement_set.all().delete()
+                    dataProduct.elementPercentsTotal = 0
                 dictionary = dict(zip([f.strip() for f in firstrow], lastrow))
                 try:
                     if not dataProduct.acquisition_time:
@@ -220,12 +221,16 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
                     dataProduct.matchQuality3 = dictionary['Match Qual 3']
                 except:
                     pass
-                dataProduct.save()
                 
+                percentTotal = 0
                 for key in firstrow[15:]:
                     elementPercent = dictionary[key]
                     if elementPercent:
                         errorKey = key + ' Err'
+                        try:
+                            percentTotal += float(elementPercent)
+                        except:
+                            pass
                         if errorKey in dictionary:
                             elementError = dictionary[errorKey]
                             try:
@@ -237,6 +242,9 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
                             except Exception, e:
                                 traceback.print_exc()
                                 pass
+                dataProduct.elementPercentsTotal = percentTotal
+                dataProduct.save()
+                
         except:
             pass
         elementResultsCsvFile.close()

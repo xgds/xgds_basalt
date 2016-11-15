@@ -739,6 +739,7 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
     matchQuality2 = models.FloatField(default=0, db_index=True)
     alloy3 = models.CharField(max_length=16, blank=True, null=True, db_index=True)
     matchQuality3 = models.FloatField(default=0, db_index=True)
+    elementPercentsTotal = models.FloatField(default=0, db_index=True)
     
     @classmethod
     def getSearchableFields(self):
@@ -762,6 +763,16 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
         element_percents = [(e.element.symbol, e.percent, e.error) for e in self.pxrfelement_set.all()]
         return element_percents
 
+    @property
+    def fillin_total_percent(self):
+        #TODO remove this after 11/15
+        if self.has_element_percents and self.elementPercentsTotal == 0:
+            for pe in self.pxrfelement_set.all():
+                self.elementPercentsTotal += pe.percent
+            self.save()
+        return self.elementPercentsTotal
+            
+            
     @property
     def pretty_fileNumber(self):
         if self.fileNumber >= 0:

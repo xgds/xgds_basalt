@@ -21,6 +21,7 @@
   			</tr>
  		</thead>
 	</table>
+	<strong>Total %:&nbsp;</strong>{{prettyDecimal fillin_total_percent}}
 </div>
 {{/if}}
 
@@ -75,19 +76,19 @@
 		{{#if manufacturer_data_file_url}}
 		<tr>
 			<th><label for="id_manufacturer_data_file">Manufacturer data file (.pdz):</label></th>
-			<td><a href="{{manufacturer_data_file_url}}">{{manufacturer_data_file_url}}</a></td>
+			<td><a href="{{manufacturer_data_file_url}}">{{filename manufacturer_data_file_url}}</a></td>
 		</tr>
 		{{/if}}
 		{{#if portable_data_file_url}}
 		<tr>
 			<th><label for="id_portable_data_file">Portable data file (.csv):</label></th>
-			<td><a href="{{portable_data_file_url}}">{{portable_data_file_url}}</a></td>
+			<td><a href="{{portable_data_file_url}}">{{filename portable_data_file_url}}</a></td>
 		</tr>
 		{{/if}}
 		{{#if element_results_csv_file_url}}
 		<tr>
 			<th><label for="id_element_results_csv_file_url">Element Results File (.csv):</label></th>
-			<td><a href="{{element_results_csv_file_url}}">{{element_results_csv_file_url}}</a></td>
+			<td><a href="{{element_results_csv_file_url}}">{{filename element_results_csv_file_url}}</a></td>
 		</tr>
 		{{/if}}
 		<tr>
