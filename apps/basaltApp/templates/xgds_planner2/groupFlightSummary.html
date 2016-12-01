@@ -32,7 +32,6 @@
 {% if flight.basaltsample_set.exists %}
 <tr>
 <td>Samples</td>
-<td>{{flight.basaltsample_set.count}}</td>
 <td><a href="{% url 'search_map_object_filter' 'Sample' theFilter %}" target="_blank">{{flight.basaltsample_set.count}}</a></td>
 </tr>
 {% endif %}
