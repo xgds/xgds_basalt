@@ -172,6 +172,10 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
     def view_url(self):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
     
+    def summary_url(self):
+        return reverse('group_flight_summary', kwargs={'groupFlightName':self.name})
+
+    
     @property
     def flights(self):
         return self.basaltflight_set.all()
@@ -203,6 +207,14 @@ class BasaltFlight(plannerModels.AbstractFlight):
     
     def view_url(self):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
+    
+
+    def hasVideo(self):
+        if self.group.videoEpisode:
+            foundSegments = self.group.videoEpisode.videosegment_set.filter(source_id = self.getVideoSource().id)
+            return foundSegments.exists()
+        return False
+    
     
     def getVideoSource(self):
         if self.videoSource:

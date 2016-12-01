@@ -1,0 +1,59 @@
+{% extends 'xgds_planner2/groupFlightSummary_base.html' %}
+
+{% block groupFlightContents %}
+{% if groupFlight.videoEpisode %}
+<br/><a href="{{ groupFlight.view_url }}" target="">Video</a>
+{% endif %}
+{% with 'flight__group:'|add:group_pk as evaFilter %}
+<br/><a href="{% url 'search_xgds_notes_map_filter' evaFilter %}" target="_blank">Notes</a>
+{% endwith %}
+{% endblock groupFlightContents %}
+
+{% block flightContents %}
+{% if flight.hasVideo %}
+<tr>
+<td>Video
+</td>
+<td><a href="{{ flight.view_url }}" target="">Video</a></td>
+</tr>
+{% endif %}
+{% if flight.basaltimageset_set.exists %}
+<tr>
+<td>Photos</td>
+<td><a href="{% url 'search_map_object_filter' 'Photo' theFilter %}" target="_blank">{{flight.basaltimageset_set.count}}</a></td>
+</tr>
+{% endif %}
+{% if flight.basaltnote_set.exists %}
+<tr>
+<td>Notes</td>
+<td><a href="{% url 'search_xgds_notes_map_filter' theFilter %}" target="_blank">{{flight.basaltnote_set.count}}</a></td>
+</tr>
+{% endif %}
+{% if flight.basaltsample_set.exists %}
+<tr>
+<td>Samples</td>
+<td>{{flight.basaltsample_set.count}}</td>
+<td><a href="{% url 'search_map_object_filter' 'Sample' theFilter %}" target="_blank">{{flight.basaltsample_set.count}}</a></td>
+</tr>
+{% endif %}
+{% if flight.pxrfdataproduct_set.exists %}
+<tr>
+<td>pXRF Readings</td>
+<td><a href="{% url 'search_map_object_filter' 'pXRF' theFilter %}" target="_blank">{{flight.pxrfdataproduct_set.count}}</a></td>
+</tr>
+{% endif %}
+{% if flight.asddataproduct_set.exists %}
+<tr>
+<td>ASD Readings</td>
+<td><a href="{% url 'search_map_object_filter' 'ASD' theFilter %}" target="_blank">{{flight.asddataproduct_set.count}}</a></td>
+</tr>
+{% endif %}
+{% if flight.ftirdataproduct_set.exists %}
+<tr>
+<td>FTIR Readings</td>
+<td><a href="{% url 'search_map_object_filter' 'FTIR' theFilter %}" target="_blank">{{flight.ftirdataproduct_set.count}}</a></td>
+</tr>
+{% endif %}
+{% endblock flightContents %}
+
+
