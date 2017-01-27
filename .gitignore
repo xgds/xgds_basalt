@@ -22,3 +22,6 @@ media/css/*.r*.css
 migrations/
 test.txt
 /apps/basaltApp/migrations/
+/apps/basaltApp/hvnp_air_quality.zip
+/apps/basaltApp/hvnp_air_quality/icons
+/apps/basaltApp/hvnp_air_quality/test_output/
