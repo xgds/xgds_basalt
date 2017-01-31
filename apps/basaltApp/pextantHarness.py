@@ -41,7 +41,7 @@ def getCornersForMap(extent, zone, zoneLetter):
 def getMap(site, maxSlope=15, extent=None):
     site_frame = site['name']
     dem_name = site_frame.replace(' ', '_')+'.tif'
-    fullPath = os.path.join(settings.STATIC_ROOT, 'basaltApp', 'dem', dem_name)
+    fullPath = os.path.join(settings.DATA_ROOT, 'dem', dem_name)
     if os.path.isfile(fullPath): 
         zone=site['alternateCrs']['properties']['zone']
         zoneLetter=site['alternateCrs']['properties']['zoneLetter']
