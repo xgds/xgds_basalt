@@ -44,12 +44,12 @@ SECRET_KEY = '***REMOVED***'
 INSTALLED_APPS = ['basaltApp',
 
                   # TODO uncomment the submodules that you are including
+                  'xgds_sample',
                   'xgds_instrument',
                   'xgds_notes2',
                   'xgds_planner2',
                   'xgds_map_server',
                   'xgds_data',
-                  'xgds_sample',
                   'xgds_image',
                   'xgds_video',
                   'xgds_plot',
