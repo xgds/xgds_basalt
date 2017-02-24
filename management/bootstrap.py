@@ -251,7 +251,7 @@ def doit(opts, args):
 
     if not opts.puppet:
         print '\nnow "source sourceme.sh" before running manage.py again'
-    sys.exit(1)
+    sys.exit(0)
 
 
 def main():
