@@ -37,6 +37,8 @@ from geocamUtil.SettingsUtil import getOrCreateDict, getOrCreateArray
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '***REMOVED***'
 
+XGDS_BROWSERIFY = getOrCreateArray('XGDS_BROWSERIFY')
+
 # from apps.basaltApp.instrumentDataImporters import *
 # apps should be listed from "most specific" to "most general".  that
 # way, templates in more specific apps override ones from more general
