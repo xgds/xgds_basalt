@@ -10,6 +10,34 @@
     "segmentIdFormat": "{plan.site.id}{plan.platform.id}{plan.planNumber:03d}_{plan.planVersion}_SEG{stationIndex:02d}",
     "commandIdFormat": "{parent.id}_{commandIndex:01d}_{command.presetCode}",
     
+    "unitSpecs": [
+	    {
+	      "type": "UnitSpec",
+	      "name": "length",
+	      "units": {
+	        "meters": 1.0,
+	        "mm": 0.001,
+	        "inches": 0.0254
+	      }
+	    },
+	    {
+	      "type": "UnitSpec",
+	      "name": "duration",
+	      "units": {
+	        "seconds": 1.0,
+	        "minutes": 60
+	      }
+	    },
+	    {
+	      "type": "UnitSpec",
+	      "name": "speed",
+	      "units": {
+	        "m/s": 1.0,
+	        "mph": 2.2369363
+	      }
+	    }
+	  ],
+	  
     "paramSpecs": [
         {
             "type": "ParamSpec",
@@ -81,7 +109,7 @@
 	    "type": "ParamSpec",
 	    "id": "defaultSpeed",
 	    "valueType": "number",
-        "unit": "meters/sec",
+        "unit": "m/s",
 	    "notes": "The default speed for traverses",
 	    "required": false,
 	    "name": "Default Speed",

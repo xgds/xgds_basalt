@@ -20,7 +20,8 @@ var DEBUG_SEGMENTS = false;  // Turn on labels for segments
 $(function() {
     app.views = app.views || {};    
     
-    app.views.SegmentLineView = Backbone.View.extend({
+    app.views.SegmentLineView = Marionette.View.extend({
+    	template: false,
         initialize: function(options) {
             this.options = options || {};
             var options = this.options;
@@ -151,7 +152,7 @@ $(function() {
         	}
             }
         },
-        render: function() {
+        onRender: function() {
             this.updateCoords();
             this.geometry = new ol.geom.LineString(this.coords, 'XY');
             this.feature = new ol.Feature({geometry: this.geometry,

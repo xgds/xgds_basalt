@@ -16,20 +16,19 @@
 
 app.views = app.views || {};
 
-app.views.PlanLinksView = Backbone.View.extend({
+app.views.PlanLinksView = Marionette.View.extend({
     template: '#template-plan-links',
     initialize: function() {
-	Handlebars.registerHelper('optimizeSelected', function (input, optimize) {
+    	Handlebars.registerHelper('optimizeSelected', function (input, optimize) {
             return input === optimize ? 'selected' : '';
         });
-        var source = $(this.template).html();
-        if (_.isUndefined(source)) {
-            this.template = function() {
-                return '';
-            };
-        } else {
-            this.template = Handlebars.compile(source);
+    },
+    onAttach: function() {
+    	var callback = app.options.XGDS_PLANNER2_LINKS_LOADED_CALLBACK;
+        if (!_.isEmpty(callback) && callback !== "null") {
+        	$.executeFunctionByName(callback, window, [this.$el]);
         }
+        this.hookButtons();
     },
     getBoundingExtent: function() {
     	var extent = app.map.planView.getPlanExtens();
@@ -43,17 +42,24 @@ app.views.PlanLinksView = Backbone.View.extend({
         var result =  [firstCoords[0], firstCoords[1], lastCoords[0], lastCoords[1]];
         return result;
     },
-    render: function() {
-        this.$el.html(this.template({
-            planLinks: app.planLinks,
-            planUuid: app.currentPlan.get('uuid'),
-            planId: app.currentPlan.get('serverId'),
-            optimization: app.currentPlan.get('optimization')
-        }));
-        var callback = app.options.XGDS_PLANNER2_LINKS_LOADED_CALLBACK;
-        if (callback != null) {
-            callback(this.$el);
-        }
+    templateContext: function() {
+    	var planUuid = '';
+    	var planId = '';
+    	if (app.currentPlan !== undefined){
+    		planUuid = app.currentPlan.get('uuid');
+    		planId = app.currentPlan.get('serverId');
+    		optimization = app.currentPlan.get('optimization');
+    	}
+    	var data = {
+    	planLinks: app.planLinks,
+    	planNamedURLs: app.planNamedURLs,
+    	planUuid: planUuid,
+    	planId: planId,
+    	optimization: optimization
+    	}
+    	return data;
+    },
+    hookButtons: function() {
         var context = this;
         this.$el.find('#pextantButton').click(function(event) {
             event.preventDefault();
