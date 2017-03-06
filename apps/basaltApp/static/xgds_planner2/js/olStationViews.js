@@ -21,6 +21,7 @@ $(function() {
     
     // This view class manages the map point for a single Station model
     app.views.StationPointView = Marionette.View.extend({
+    		editingStations: false,
     		template: false,
             initialize: function(options) {
                 this.options = options || {};
@@ -42,6 +43,8 @@ $(function() {
                 this.initTextStyle();
                 this.render();
 
+                this.listenTo(app.vent, 'station:modifyStart', function() {this.editingStations = true;}, this);
+                this.listenTo(app.vent, 'station:modifyEnd', function() {this.editingStations = false}, this);
                 this.listenTo(this.model, 'change', this.redraw);
                 this.listenTo(this.model, 'add:sequence remove:sequence',
                               function(command, collection, event) {
@@ -116,17 +119,18 @@ $(function() {
                                                model: this.model,
                                                iconStyle: this.iconStyle,
                                                selectedIconStyle: this.selectedIconStyle,
-                                               textStyle: this.textStyle,
-                                               style: this.getStationStyles
-                                            })]
-            	this.features[0].setStyle(this.getStationStyles);
+                                               textStyle: this.textStyle
+                                            })];
+                var context = this;
+            	this.features[0].setStyle(function(feature, resolution) { return context.getStationStyles(feature, resolution);});
                 this.features[0].set('selectedIconStyle', this.selectedIconStyle);
                 this.features[0].set('iconStyle', this.iconStyle);
                 this.features[0].set('textStyle', this.textStyle);
+                this.features[0].xgds_id = this.model.attributes['id'];
                 
                 // draw the tolerance circle
                 this.toleranceGeometry = this.getToleranceGeometry();
-                if (this.toleranceGeometry != null){
+                if (this.toleranceGeometry != undefined){
     	            this.toleranceFeature = new ol.Feature({geometry: this.toleranceGeometry,
     	                id: this.model.attributes['id'] + '_stn_tolerance',
     	                name: this.model.attributes['id'] + '_stn_tolerance',
@@ -139,7 +143,7 @@ $(function() {
                 
              // draw the boundary circle
                 this.boundaryGeometry = this.getBoundaryGeometry();
-                if (this.boundaryGeometry != null){
+                if (this.boundaryGeometry != undefined){
     	            this.boundaryFeature = new ol.Feature({geometry: this.boundaryGeometry,
     	                id: this.model.attributes['id'] + '_stn_boundary',
     	                name: this.model.attributes['id'] + '_stn_boundary',
@@ -166,12 +170,14 @@ $(function() {
                          lat: coords[1]
                      });
 //            	 }
-                 this.redrawTolerance();
             },
             
             redraw: function() {
                 if (_.isUndefined(this.geometry)){
                     return;
+                }
+                if (this.editingStations){
+                	return;
                 }
                 // redraw code. To be invoked when relevant model attributes change.
                 app.Actions.disable();
@@ -198,7 +204,6 @@ $(function() {
                         commandView.update();
                     });
                 }
-                this.redrawTolerance();
                 this.features[0].changed();
                 app.Actions.enable();
             },
