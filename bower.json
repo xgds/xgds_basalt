@@ -18,7 +18,7 @@
     "bootstrap": "v4.0.0-alpha.2",
     "datatables-fixedcolumns": "^3.2.2",
     "backbone.radio": "2.0.0",
-    "backbone-forms": "^0.14.1",
+    "backbone-forms": "master",
     "bootstrap-tagsinput": "^0.8.0",
     "dropzone": "^4.3.0",
     "datatables-select": "^1.2.0",
@@ -34,7 +34,6 @@
     "handlebars": "git://github.com/components/handlebars.js.git#^4.0.5",
     "jquery-migrate": "http://code.jquery.com/jquery-migrate-1.2.1.js",
     "jquery-mobile": "^1.4.5",
-    "jquery-ui": "^1.12.1",
     "jquery-ui-contextmenu": "https://github.com/mar10/jquery-ui-contextmenu.git#^1.13.0",
     "fancytree": "^2.19.0",
     "jquery": "2.1.4",
@@ -68,14 +67,16 @@
     "string-format": "git://github.com/tamarmot/string-format.git#^0.2.1"
   },
   "resolutions": {
-    "backbone": "^1.3.3",
-    "jquery-ui": ">= 1.12.0",
-    "jquery": "2.1.4",
-    "lodash": "3.10.0",
+    "backbone": "1.3.3",
+    "backbone-forms": "master",
+    "jquery-ui": "^1.12.1",
+    "jquery": "3.1.1",
+    "lodash": ">= 4.14.2",
     "get-size": "^2.0.2",
     "outlayer": "^2.0.0",
     "fizzy-ui-utils": "^2.0.0",
-    "marionette": "3.2",
-    "moment-range": "^3.0.1"
+    "marionette": "3.2.0",
+    "moment-range": "^2.2.0",
+    "jquery-form": "^3.46.0"
   }
 }
