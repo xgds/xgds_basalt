@@ -160,7 +160,8 @@ $(function() {
                                            name: this.fromStation.attributes['id'],
                                            model: this.model
                                                  });
-            this.feature.setStyle(this.getSegmentStyles);
+            var context = this;
+            this.feature.setStyle(function(feature, resolution) {return context.getSegmentStyles(feature, resolution);});
             this.feature.set('textStyle', this.textStyle);
             
          // draw the path from sextant
