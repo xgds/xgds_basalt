@@ -46,6 +46,8 @@ $(function() {
                 this.listenTo(app.vent, 'station:modifyStart', function() {this.editingStations = true;}, this);
                 this.listenTo(app.vent, 'station:modifyEnd', function() {this.editingStations = false}, this);
                 this.listenTo(this.model, 'change', this.redraw);
+                this.listenTo(this.model, 'change', this.drawTolerance);
+                this.listenTo(this.model, 'change', this.drawBoundary);
                 this.listenTo(this.model, 'add:sequence remove:sequence',
                               function(command, collection, event) {
                                   if (command.hasParam('showWedge')) {
@@ -61,8 +63,6 @@ $(function() {
                 	}
                 }, this);
                 
-                this.listenTo(this.model, 'change', this.redrawTolerance);
-                this.listenTo(this.model, 'change', this.redrawBoundary);
 
             },
             getToleranceGeometry: function() {
@@ -72,11 +72,20 @@ $(function() {
             	}
             	return undefined;
             },
-            redrawTolerance: function() {
+            drawTolerance: function() {
             	this.toleranceGeometry = this.getToleranceGeometry();
-                if (this.toleranceGeometry != null){
-                	if (this.toleranceFeature != null){
+                if (this.toleranceGeometry != undefined){
+                	if (this.toleranceFeature != undefined){
                 		this.toleranceFeature.setGeometry(this.toleranceGeometry);
+                	} else {
+        	            this.toleranceFeature = new ol.Feature({geometry: this.toleranceGeometry,
+        	                id: this.model.attributes['id'] + '_stn_tolerance',
+        	                name: this.model.attributes['id'] + '_stn_tolerance',
+        	                model: this.model,
+        	                style: olStyles.styles['tolerance']});
+        	            this.toleranceFeature.setStyle(olStyles.styles['tolerance']);
+        	            this.features.push(this.toleranceFeature);
+                		this.stationsDecoratorsVector.addFeature(this.toleranceFeature);
                 	}
                 }
             },
@@ -94,17 +103,22 @@ $(function() {
             	}
             	return undefined;
             },
-            redrawBoundary: function() {
+            drawBoundary: function() {
             	this.boundaryGeometry = this.getBoundaryGeometry();
                 if (this.boundaryGeometry != undefined){
-                	if (this.boundaryFeature != null){
+                	if (this.boundaryFeature != undefined){
                 		this.boundaryFeature.setGeometry(this.boundaryGeometry);
+                	} else {
+        	            this.boundaryFeature = new ol.Feature({geometry: this.boundaryGeometry,
+        	                id: this.model.attributes['id'] + '_stn_boundary',
+        	                name: this.model.attributes['id'] + '_stn_boundary',
+        	                model: this.model,
+        	                style: olStyles.styles['boundary']});
+        	            this.boundaryFeature.setStyle(olStyles.styles['boundary']);
+        	            this.features.push(this.boundaryFeature);
+                		this.stationsDecoratorsVector.addFeature(this.boundaryFeature);
                 	}
                 }
-//                if (!_.isUndefined(this.boundaryGeometry)) {
-//                	this.boundaryGeometry.setCenter(this.point);
-//                	this.boundaryGeometry.setRadius(this.model.get('boundary'));
-//                }
             },
             
             redrawPolygons: function() {
@@ -127,36 +141,16 @@ $(function() {
                 this.features[0].set('iconStyle', this.iconStyle);
                 this.features[0].set('textStyle', this.textStyle);
                 this.features[0].xgds_id = this.model.attributes['id'];
+                this.model['feature'] = this.features[0];
                 
                 // draw the tolerance circle
-                this.toleranceGeometry = this.getToleranceGeometry();
-                if (this.toleranceGeometry != undefined){
-    	            this.toleranceFeature = new ol.Feature({geometry: this.toleranceGeometry,
-    	                id: this.model.attributes['id'] + '_stn_tolerance',
-    	                name: this.model.attributes['id'] + '_stn_tolerance',
-    	                model: this.model,
-    	                style: olStyles.styles['tolerance']});
-    	            this.toleranceFeature.setStyle(olStyles.styles['tolerance']);
-    	            this.features.push(this.toleranceFeature);
-            		this.stationsDecoratorsVector.addFeature(this.toleranceFeature);
-                }
+                this.drawTolerance();
                 
-             // draw the boundary circle
-                this.boundaryGeometry = this.getBoundaryGeometry();
-                if (this.boundaryGeometry != undefined){
-    	            this.boundaryFeature = new ol.Feature({geometry: this.boundaryGeometry,
-    	                id: this.model.attributes['id'] + '_stn_boundary',
-    	                name: this.model.attributes['id'] + '_stn_boundary',
-    	                model: this.model,
-    	                style: olStyles.styles['boundary']});
-    	            this.boundaryFeature.setStyle(olStyles.styles['boundary']);
-    	            this.features.push(this.boundaryFeature);
-            		this.stationsDecoratorsVector.addFeature(this.boundaryFeature);
-                }
+                // draw the boundary circle
+                this.drawBoundary();
 
                 this.geometry.on('change', this.geometryChanged, this);
 
-                this.model['feature'] = this.features[0];
                 this.stationsVector.addFeature(this.features[0]);
             },
             
