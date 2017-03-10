@@ -135,7 +135,7 @@ def evaBackpackGenerator(opts):
                             lon, lat = getFakePosition(now)
                         lon = formatDM(lon, "EW")
                         lat = formatDM(lat, "NS")
-                        newLinePreChecksum = ",".join(("GPMRC",
+                        newLinePreChecksum = ",".join(("GPRMC",
                                                        timeStr+".00", "A",
                                                        lat, lon, "","",
                                                        dateStr, "0.0,E,A"))
