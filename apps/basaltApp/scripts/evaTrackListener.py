@@ -70,9 +70,9 @@ def socketListenUdp(opts, q):
         q.put(data)
 
 def socketListen(opts, q):
-    if DATA_DELIVERY_PROTOCOL == "UDP":
+    if opts.proto == "UDP":
         socketListenUdp(opts, q)
-    if DATA_DELIVERY_PROTOCOL == "TCP":
+    if opts.proto == "TCP":
         socketListenTcp(opts, q)
 
 
@@ -105,10 +105,13 @@ def main():
     ZmqPublisher.addOptions(parser, 'tracLinkListener')
     parser.add_option('-p', '--port',
                       default=DEFAULT_PORT,
-                      help='TCP port where EVA track server listens [%default]')
+                      help='TCP or UDP port where EVA track server listens [%default]')
     parser.add_option('-o', '--host',
                       default=DEFAULT_HOST,
                       help='TCP host where EVA track server listens [%default]')
+    parser.add_option('--proto',
+                      default=DATA_DELIVERY_PROTOCOL,
+                      help='UDP or TCP. Use default of UDP in field. [%default]')
     parser.add_option('-n', '--evaNumber',
                       default=1,
                       help=\
