@@ -27,9 +27,8 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from pextant.api import Pathfinder
 from pextant.ExplorerModel import Astronaut
-from pextant.geoshapely import GeoPoint, LAT_LONG
-from pextant.ExplorationObjective import *
-from pextant.EnvironmentalModel import EnvironmentalModel, loadElevationMap
+from pextant.lib.geoshapely import GeoPoint, Cartesian, GeoEnvelope, LAT_LONG
+from pextant.EnvironmentalModel import loadElevationMap
 
 def getCornersForMap(extent, zone, zoneLetter):
     if extent:
