@@ -11,19 +11,19 @@
 ```
 
 3. Access xGDS server
-    * <a href="http://localhost/" target="_blank">http://localhost</a>
-    * username and password are both xgds
+   * (http://localhost)
+   * username and password are both xgds
 
 4. Log into the docker container
-    * password is xgds
+   * password is xgds
 ```
   ssh -p 222 xgds@localhost
 ```
 
 5. Get SEXTANT DEM:
-    * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
-<a href="https://basalt.xgds.org/data/dem/" target="_blank">https://basalt.xgds.org/data/dem/</a>
-    * Copy from your computer to the data directory in the docker container:
+   * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
+(https://basalt.xgds.org/data/dem)
+   * Copy from your computer to the data directory in the docker container:
 ```
   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
 ```
@@ -36,25 +36,23 @@
 ```
 
 7. Create an EVA in xGDS and start it.
-  * <a href="http://localhost/xgds_planner2/addGroupFlight/" target="_blank">http://localhost/xgds_planner2/addGroupFlight/</a>
-  * Uncheck EV2 and SA
-  * Click Create
-  * For the newly created EVA, click the green 'start' button on this page: <a href="http://localhost/xgds_planner2/manage/" target="_blank">http://localhost/xgds_planner2/manage/</a>
+   * (http://localhost/xgds_planner2/addGroupFlight)
+   * Uncheck EV2 and SA
+   * Click Create
+   * For the newly created EVA, click the green 'start' button on this page: (http://localhost/xgds_planner2/manage/)
      * Once started that row should turn light green.
      * In the terminal running the evaTrackGenerator you should see position data
 
 8. View the generated track in Google Earth
-  * <a href="http://localhost/xgds_map_server/feedPage/" target="_blank">http://localhost/xgds_map_server/feedPage/</a>
-  * Click on “Open in Google Earth” button  (note you only have to do this once; next time just open Google Earth)
-    * Expand xGDS Maps on the left sidebar
-    * Check and expand Live Position tracks
-    * You should see a Today folder, expand that and turn on the flight that is running
-      * Note that this is rerunning that 20161114A_EV2_trunc.csv file.  If you want to work with other data you can create analogous csv files as pass them as parameters to the track generator
+   * (http://localhost/xgds_map_server/feedPage/)
+   * Click on “Open in Google Earth” button  (note you only have to do this once; next time just open Google Earth)
+     * Expand xGDS Maps on the left sidebar
+     * Check and expand Live Position tracks
+     * You should see a Today folder, expand that and turn on the flight that is running
+       * Note that this is rerunning that 20161114A_EV2_trunc.csv file.  If you want to work with other data you can create analogous csv files as pass them as parameters to the track generator
     
 9. Stop the EVA:
-  * For active EVA, click the red 'stop' button on this page: <a href="http://localhost/xgds_planner2/manage/" target="_blank">http://localhost/xgds_planner2/manage/</a>
+   * For active EVA, click the red 'stop' button on this page: (http://localhost/xgds_planner2/manage/)
      * Once stopped that row should no longer be light green.
      * In the terminal running the evaTrackGenerator you should stop seeing position data
-    
- 
- 
+
