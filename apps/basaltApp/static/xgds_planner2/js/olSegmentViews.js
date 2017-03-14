@@ -120,37 +120,37 @@ $(function() {
         	return result;
         },
         updateCoords: function() {
-            this.coords = _.map([this.fromStation, this.toStation],
-                    function(station) {
-                return transform(station.get('geometry').coordinates);
-            });
+        	this.coords = _.map([this.fromStation, this.toStation],
+        			function(station) {
+        				return transform(station.get('geometry').coordinates);
+        	});
         },
         updatePathCoords: function() {
-            var geometry = this.model.get('geometry');
-            if (geometry != undefined) {
-        	// get the geometry out of the segment, and update its endpoints
-        	var coords = transformList(geometry['coordinates'])
-        	// make sure first and last match stations
-        	coords.splice(0, 0, this.coords[0]);
-        	coords.push(this.coords[1]);
-        	this.pathCoords = coords;
-            } else {
-        	this.pathCoords = null;
-            }
-            return this.pathCoords;
+        	var geometry = this.model.get('geometry');
+        	if (geometry != undefined) {
+        		// get the geometry out of the segment, and update its endpoints
+        		var coords = transformList(geometry['coordinates'])
+        		// make sure first and last match stations
+        		coords.splice(0, 0, this.coords[0]);
+        		coords.push(this.coords[1]);
+        		this.pathCoords = coords;
+        	} else {
+        		this.pathCoords = null;
+        	}
+        	return this.pathCoords;
         },
         getPathGeometry: function() {
-            if (this.updatePathCoords() != null){
-        	return new ol.geom.LineString(this.pathCoords, 'XY');
-            }
-            return undefined;
+        	if (this.updatePathCoords() != null){
+        		return new ol.geom.LineString(this.pathCoords, 'XY');
+        	}
+        	return undefined;
         },
         redrawPath: function() {
-            if (this.updatePathCoords() != null){
-        	if (this.pathGeometry != undefined){
-        	    this.pathGeometry.setCoordinates(this.pathCoords);
+        	if (this.updatePathCoords() != null){
+        		if (this.pathGeometry != undefined){
+        			this.pathGeometry.setCoordinates(this.pathCoords);
+        		}
         	}
-            }
         },
         onRender: function() {
             this.updateCoords();
