@@ -1,32 +1,33 @@
 #!/bin/bash
-#
-# pyraptord        Startup script for pyraptord
-#
-# chkconfig: 2345 92 8
-# description: Pyraptord is a process manager
-# processname: pyraptord
-# config: /home/irg/xgds_basalt/apps/basaltApp/pycroraptorConfig.py
-# config: /home/irg/xgds_basalt/apps/basaltApp/ports.json
-# pidfile: /var/log/pyraptord/pyraptord.pid
+### BEGIN INIT INFO
+# Provides:          pyraptord
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     true
+# Short-Description: Start/stop pycroraptor process manager
+# Description:       Starts and stops pycrraptor process manager.
+#  processname: pyraptord
+#  config example: /home/irg/xgds_basalt/apps/basaltApp/pycroraptorConfig.py
+#  config example: /home/irg/xgds_basalt/apps/basaltApp/ports.json
+#  pidfile: /var/log/pyraptord/pyraptord.pid
+### END INIT INFO
 
-# This boot script was tested under RedHat Enterprise Linux 6. To use:
-# * Edit paths to match your deployment configuration.
+# This boot script is setup for Ubuntu's update-rc.d. To use:
+# * Edit paths to match your deployment configuration if needed.
 # * Install this file as /etc/init.d/pyraptord
-# * You may need to install chkconfig: 'yum install chkconfig'.
-# * Run 'chkconfig --add pyraptord'
+# * Run 'update-rc.d pyraptord defaults'
 
-# Source function library.
-#. /etc/rc.d/init.d/functions
-
-projdir=/home/vagrant/xgds_basalt
+projdir=/home/xgds/xgds_basalt
 pyraptord=$projdir/apps/geocamPycroraptor2/bin/pyraptord.py
 config_dir=$projdir/apps/basaltApp
 python_dir=/usr/bin
-user=vagrant
+user=xgds
 
 sudo -H -u $user bash -s <<EOF
 export PATH=${python_dir}:$PATH  # run the correct python, if not first in default PATH
 source $projdir/sourceme.sh  # further environment setup, if needed
 cd $config_dir
-$pyraptord -c $config_dir/pycroraptor.json $1
+$pyraptord -c $config_dir/pycroraptor_dev.json $1
 EOF
