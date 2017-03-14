@@ -27,7 +27,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 
 from pextant.api import Pathfinder
 from pextant.ExplorerModel import Astronaut
-from pextant.lib.geoshapely import GeoPoint, Cartesian, GeoEnvelope, LAT_LONG
+from pextant.lib.geoshapely import GeoPoint, GeoEnvelope, LAT_LONG
 from pextant.EnvironmentalModel import loadElevationMap
 
 def getCornersForMap(extent, zone, zoneLetter):
@@ -50,8 +50,7 @@ def getMap(site, maxSlope=15, extent=None):
         else:
             nw_corner = None
             se_corner = None
-        cartesian = Cartesian(nw_corner, 0.5)
-        nw_corner_pad, se_corner_pad = GeoEnvelope(nw_corner, se_corner).addMargin(cartesian, 30).getBounds()
+        nw_corner_pad, se_corner_pad = GeoEnvelope(nw_corner, se_corner).addMargin(0.5, 30).getBounds()
         dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner_pad, se_corner=se_corner_pad)
         return dem
     return None
