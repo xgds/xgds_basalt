@@ -28,11 +28,11 @@
 			aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<a href="{% url 'live_index' %}" title="xGDS BASALT" class="navbar-brand">
-     		<img src="{{STATIC_URL}}basaltApp/css/logo.png" class="logo" alt="BASALT logo" width="200" height="64" >
-     	</a>
 		<div class="collapse navbar-collapse" id="mainNavbar">
-			<ul class="navbar-nav mr-auto">
+			<a href="{% url 'live_index' %}" title="xGDS BASALT" class="navbar-brand">
+     			<img src="{{STATIC_URL}}basaltApp/css/logo.png" class="logo" alt="BASALT logo" width="150" height="48" >
+     		</a>
+			<ul class="navbar-nav mr-auto mt-20">
 				<li class='nav-item {% currentnav map* xgds_map_server* %}'>
 					<a class="nav-link {% currentnav map* xgds_map_server* %}" href="{% url 'map' %}" title="Map">Map</a>
 				</li>
@@ -56,7 +56,7 @@
 	            	<a class="nav-link {% currentnav *tatus* %}" href="{% url 'xgds_status_board_showSubsystemStatus' %}">Status</a>
 	            </li>
 	            {% endif %}
-	            </ul>
+	        </ul>
 	            
 	            <span class="navbar-text">
 	            {% if user.is_authenticated %}
