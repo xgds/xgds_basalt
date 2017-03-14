@@ -1,6 +1,6 @@
 {
-    "PORTS": "/home/irg/xgds_basalt/apps/basaltApp/ports.json",
-    "LOG_DIR": "/home/irg/xgds_basalt/data/pyraptord",
+    "PORTS": "/home/xgds/xgds_basalt/apps/basaltApp/ports.json",
+    "LOG_DIR": "/home/xgds/xgds_basalt/data/pyraptord",
     "LOG_FILE":"pyraptord_${unique}.txt",
 
     "SERVICES": {
@@ -16,65 +16,65 @@
         },
 
 		"zmqCentral": {
-		    "command": "/home/irg/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
+		    "command": "/home/xgds/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
         },
 	
 		"EV1TrackListener": {
-		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
+		    "command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
 		"EV2TrackListener": {
-		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
+		    "command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
 		"SATrackListener": {
-	            "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
+	            "command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/evaTrackListener.py"
         },
 		"evaTrackTelemetryCleanup": {
-		    "command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/evaTrackTelemetryCleanup.py"
+		    "command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/evaTrackTelemetryCleanup.py"
         },
 	    "gpsController1": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController1"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController1"
 	    },
 	    "gpsController2": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController2"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n gpsController2"
 	    },
 	    "saCamera": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n saCamera"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n saCamera"
 	    },
 	    "redCamera": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redCamera"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redCamera"
 	    },
 	    "redMipCamera": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redMipCamera"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n redMipCamera"
 	    },
 	    "FTIR": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n FTIR"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n FTIR"
 	    },
 	    "video1": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video1"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video1"
 	    },
 	    "video2": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video2"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n video2"
 	    },
 	    "ev1Backpack": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n ev1Backpack"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n ev1Backpack"
 	    },
 	    "ev2Backpack": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n ev2Backpack"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateSubsystemStatus.py -n ev2Backpack"
 	    },
 	    "fieldLoadAvg": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n field"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n field"
 	    },
 	    "basecampLoadAvg": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecampLoadAverage"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateLoadAverage.py -n basecampLoadAverage"
 	    }, 
 	    "shoreTungstenReplicator": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateReplicatorStatus.py -n shoreTungstenReplicator"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateReplicatorStatus.py -n shoreTungstenReplicator"
 	    },
 	    "boatTungstenReplicator": {
-	    	"command": "/home/irg/xgds_basalt/apps/basaltApp/scripts/updateReplicatorStatus.py -n boatTungstenReplicator"
+	    	"command": "/home/xgds/xgds_basalt/apps/basaltApp/scripts/updateReplicatorStatus.py -n boatTungstenReplicator"
 	    },
 	    "videoRecorder": {
-	    	"command": "/home/irg/xgds_basalt/apps/xgds_video/updateVideoRecorderStatus.py -n 'EV1, EV2, SA'"
+	    	"command": "/home/xgds/xgds_basalt/apps/xgds_video/updateVideoRecorderStatus.py -n 'EV1, EV2, SA'"
 	    }
 	},
     "GROUPS": {
