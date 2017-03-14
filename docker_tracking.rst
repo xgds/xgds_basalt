@@ -9,7 +9,7 @@ Instructions for running xGDS in docker and simulating EVA tracks.
   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
 
 3. Access xGDS server
-  - localhost_
+  - <a href="http://localhost/" target="_blank">http://localhost</a>
   - username and password are both xgds
 
 4. Log into the docker container
@@ -19,7 +19,7 @@ Instructions for running xGDS in docker and simulating EVA tracks.
 
 5. Get SEXTANT DEM:
   - Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
-basalt_dem_
+<a href="https://basalt.xgds.org/data/dem/" target="_blank">https://basalt.xgds.org/data/dem/</a>
   - Copy from your computer to the data directory in the docker container:
 ::
   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
@@ -30,15 +30,15 @@ basalt_dem_
   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20161114A_EV2_trunc.csv
 
 7. Create an EVA in xGDS and start it.
-  - add_group_flight_
+  - <a href="http://localhost/xgds_planner2/addGroupFlight/" target="_blank">http://localhost/xgds_planner2/addGroupFlight/</a>
   - Uncheck EV2 and SA
   - Click Create
-  - For the newly created EVA, click the green 'start' button on this page: manage_flight_
+  - For the newly created EVA, click the green 'start' button on this page: <a href="http://localhost/xgds_planner2/manage/" target="_blank">http://localhost/xgds_planner2/manage/</a>
     - Once started that row should turn light green.
     - In the terminal running the evaTrackGenerator you should see position data
 
 8. View the generated track in Google Earth
-  - google_earth_feed_
+  - <a href="http://localhost/xgds_map_server/feedPage/" target="_blank">http://localhost/xgds_map_server/feedPage/</a>
   - Click on “Open in Google Earth” button  (note you only have to do this once; next time just open Google Earth)
   - Expand xGDS Maps on the left sidebar
   - Check and expand Live Position tracks
