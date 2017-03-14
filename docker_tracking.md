@@ -32,6 +32,7 @@
 ```
   cd xgds_basalt/apps/basaltApp/scripts
   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20161114A_EV2_trunc.csv
+  ctrl-c to stop track generation
 ```
 
 7. Create an EVA in xGDS and start it.
@@ -49,5 +50,11 @@
   ..* Check and expand Live Position tracks
   ..* You should see a Today folder, expand that and turn on the flight that is running
     ..* Note that this is rerunning that 20161114A_EV2_trunc.csv file.  If you want to work with other data you can create analogous csv files as pass them as parameters to the track generator
+    
+9. Stop the EVA:
+..* For active EVA, click the red 'stop' button on this page: <a href="http://localhost/xgds_planner2/manage/" target="_blank">http://localhost/xgds_planner2/manage/</a>
+   ..* Once stopped that row should no longer be light green.
+   ..* In the terminal running the evaTrackGenerator you should stop seeing position data
+    
  
  
