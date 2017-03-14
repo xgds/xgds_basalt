@@ -11,7 +11,7 @@
 ```
 
 3. Access xGDS server
-   * (http://localhost)
+   * http://localhost
    * username and password are both xgds
 
 4. Log into the docker container
@@ -22,7 +22,7 @@
 
 5. Get SEXTANT DEM:
    * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
-(https://basalt.xgds.org/data/dem)
+https://basalt.xgds.org/data/dem
    * Copy from your computer to the data directory in the docker container:
 ```
   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
@@ -36,15 +36,15 @@
 ```
 
 7. Create an EVA in xGDS and start it.
-   * (http://localhost/xgds_planner2/addGroupFlight)
+   * http://localhost/xgds_planner2/addGroupFlight
    * Uncheck EV2 and SA
    * Click Create
-   * For the newly created EVA, click the green 'start' button on this page: (http://localhost/xgds_planner2/manage/)
+   * For the newly created EVA, click the green 'start' button on this page: http://localhost/xgds_planner2/manage/
      * Once started that row should turn light green.
      * In the terminal running the evaTrackGenerator you should see position data
 
 8. View the generated track in Google Earth
-   * (http://localhost/xgds_map_server/feedPage/)
+   * http://localhost/xgds_map_server/feedPage/
    * Click on “Open in Google Earth” button  (note you only have to do this once; next time just open Google Earth)
      * Expand xGDS Maps on the left sidebar
      * Check and expand Live Position tracks
@@ -52,7 +52,7 @@
        * Note that this is rerunning that 20161114A_EV2_trunc.csv file.  If you want to work with other data you can create analogous csv files as pass them as parameters to the track generator
     
 9. Stop the EVA:
-   * For active EVA, click the red 'stop' button on this page: (http://localhost/xgds_planner2/manage/)
+   * For active EVA, click the red 'stop' button on this page: http://localhost/xgds_planner2/manage/
      * Once stopped that row should no longer be light green.
      * In the terminal running the evaTrackGenerator you should stop seeing position data
 
