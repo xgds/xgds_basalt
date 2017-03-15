@@ -30,14 +30,14 @@
    
 ##### Running and using your Docker container 
 1. Check if your Docker container is running:
-```
+   ```
   docker ps -a
-```
+   ```
 
 1. If basalt-container is not already in the list, run it:
-```
+   ```
   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
-```
+   ```
 
 1. If it is there, but *status* shows "exited" , start it:  
    ```
@@ -50,29 +50,29 @@
 
 1. Log into the docker container
    * password is xgds
-```
+   ```
   ssh -p 222 xgds@localhost
-```
+   ```
 
 1. Get SEXTANT DEM:
    * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
 https://basalt.xgds.org/data/dem
    * Copy from your computer to the data directory in the docker container:
-```
+   ```
   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
-```
+   ```
 
 1. Start the track generator
    * Log into Docker container per step #4.  
-```
+   ```
   cd xgds_basalt/apps/basaltApp/scripts
-```
-```
+   ```
+   ```
   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20161114A_EV2_trunc.csv
-```
-```
+   ```
+   ```
   ctrl-c to stop track generation
-```
+   ```
 
 1. Create an EVA in xGDS and start it.
    * http://localhost/xgds_planner2/addGroupFlight
