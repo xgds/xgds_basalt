@@ -36,13 +36,13 @@
 1. Check if your Docker container is running:  
 
    ```
-  docker ps -a
+   docker ps -a
    ```
 
 1. If basalt-container is not already in the list, run it:  
 
    ```
-  docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
+   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
    ```
 
 1. If it is there, but *status* shows "exited" , start it:  
@@ -59,7 +59,7 @@
    * password is xgds
 
    ```
-  ssh -p 222 xgds@localhost
+   ssh -p 222 xgds@localhost
    ```
 
 1. Get SEXTANT DEM:
@@ -68,20 +68,20 @@ https://basalt.xgds.org/data/dem
    * Copy from your computer to the data directory in the docker container:
 
    ```
-  scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
+   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
    ```
 
 1. Start the track generator
    * Log into Docker container per step #4.  
 
    ```
-  cd xgds_basalt/apps/basaltApp/scripts
+   cd xgds_basalt/apps/basaltApp/scripts
    ```
    ```
-  ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20161114A_EV2_trunc.csv
+   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20161114A_EV2_trunc.csv
    ```
    ```
-  ctrl-c to stop track generation
+   ctrl-c to stop track generation
    ```
 
 1. Create an EVA in xGDS and start it.
@@ -123,6 +123,7 @@ https://basalt.xgds.org/data/dem
 
 1. Bing Maps Key  
     We use Bing Maps for our xGDS map base layers.  If you want to enable the maps for testing traverse plans, you need to get a Bing Map API key from Microsoft:
+    
     * Go to: https://www.bingmapsportal.com
     * Log in with (or create) a Microsoft Account and generate a map API key.
     * ssh into your running BASALT Docker container.
