@@ -17,29 +17,36 @@
    * unzip basalt-docker-container.tar.zip
 
 1. Load container data into Docker  
+
 	```
 	docker load -i basalt-docker-container.tar
 	```  
+
 	Once you have loaded it into Docker, it is safe to delete basalt-docker-container.tar.
 	
 1. Create Docker data storage container/volume
+
    ```
    docker create -v /var -v /home/xgds --name basalt-data-store xgds-basalt /bin/true
    ```  
+
    *Note:* This creates a persistent docker container for the xGDS home directory and database storage.  You generally do *not* want to delete this container unless things are so messed up that you need to start over.
    
 ##### Running and using your Docker container 
-1. Check if your Docker container is running:
+1. Check if your Docker container is running:  
+
    ```
   docker ps -a
    ```
 
-1. If basalt-container is not already in the list, run it:
+1. If basalt-container is not already in the list, run it:  
+
    ```
   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
    ```
 
 1. If it is there, but *status* shows "exited" , start it:  
+
    ```
    docker start basalt-container
    ```
@@ -50,6 +57,7 @@
 
 1. Log into the docker container
    * password is xgds
+
    ```
   ssh -p 222 xgds@localhost
    ```
@@ -58,12 +66,14 @@
    * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
 https://basalt.xgds.org/data/dem
    * Copy from your computer to the data directory in the docker container:
+
    ```
   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
    ```
 
 1. Start the track generator
    * Log into Docker container per step #4.  
+
    ```
   cd xgds_basalt/apps/basaltApp/scripts
    ```
@@ -97,16 +107,20 @@ https://basalt.xgds.org/data/dem
 
 1. Stop Docker container:
    * Docker containers are fairly lightweight but if you need to stop it, just:
+
    ```
    docker stop basalt-container
    ```
+
    * If you need to change the parameters the container is running with, you'll want to delete it (to save space) and run again per step #2:   
+
    ```
    docker rm basalt-container
    ```  
    ```
    docker run...
    ```
+
 1. Bing Maps Key  
     We use Bing Maps for our xGDS map base layers.  If you want to enable the maps for testing traverse plans, you need to get a Bing Map API key from Microsoft:
     * Go to: https://www.bingmapsportal.com
