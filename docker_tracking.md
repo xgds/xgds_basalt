@@ -129,3 +129,36 @@ https://basalt.xgds.org/data/dem
     * ssh into your running BASALT Docker container.
     * Edit ~/xgds_basalt/settings.py (both emacs and vi are available in the container)
     * Insert your API key between the empty quotes in the line setting the XGDS\_MAP\_SERVER\_MAP\_API\_KEY.
+
+##### Hosting xGDS Source on your host system
+If you are doing intensive developemnt connected to the xGDS codebase (e.g. for SEXTANT) you may want to store the xGDS source directory on your host machine's file system instead of inside the docker container. This might help to make changes and debugging easier, depending on your development environment.
+
+Here is the procedure:
+
+   * ssh into your docker container (ssh -p 222 xgds@localhost)
+   * create a tar file of the xgds_basalt directory:  
+     ```
+     tar cvfz ./xgds_basalt.tgz ./xgds_basalt
+     ```
+     * *note:* on windows you can use 7Zip to manage tar files.
+   * Log out of docker and copy the tar file to your host system:
+     ```
+     scp -P 222 localhost:xgds_basalt.tgz .
+     ```
+     * Uncompress the tar file in the location of your choice.
+   * Stop the docker container:  
+     ```
+     docker stop basalt-container
+     ```
+   * Delete it:  
+     ```
+     docker rm basalt-container
+     ```
+   * Run the docker image like this:
+     ```
+     docker run -t -d -v <path to xgds_basalt on host>:/home/xgds/xgds_basalt --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
+     ```
+     
+     This will hide the xgds_basalt directory in the docker data volume and use the copy on your host system instead.  Any changes you make to the code on the host side will be refelected in the docker container.
+     
+     **Note:** If you do make changes to xGDS code you will need to follow the same procedure as when you update from git to prepare the new code and restart Apache.
