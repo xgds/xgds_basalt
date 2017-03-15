@@ -1,15 +1,49 @@
 ## Instructions for running xGDS in docker and simulating EVA tracks.
 
-1. Check if docker is running:
+##### Initial Installation
+1. Install Docker
+   * Docker for Mac is here: https://docs.docker.com/docker-for-mac/install/
+   * Docker for Windows is here: https://docs.docker.com/docker-for-windows/install/
+
+    *System Requirements*  
+    
+      * Mac: OSX 10.11 or newer.
+      * Windows: Windows 10.
+      * Linux: Not tested, but current versions should work.
+      * **Note**: We tested with the "stable" release of Docker
+
+1. Download xGDS BASALT Docker Container and Unzip it  
+   * https://xgds.org/downloads/basalt-docker-container.tar.zip
+   * unzip basalt-docker-container.tar.zip
+
+1. Load container data into Docker  
+	```
+	docker load -i basalt-docker-container.tar
+	```  
+	Once you have loaded it into Docker, it is safe to delete basalt-docker-container.tar.
+	
+1. Create Docker data storage container/volume
+   ```
+   docker create -v /var -v /home/xgds --name basalt-data-store xgds-basalt /bin/true
+   ```  
+   *Note:* This creates a persistent docker container for the xGDS home directory and database storage.  You generally do *not* want to delete this container unless things are so messed up that you need to start over.
+   
+##### Running and using your Docker container 
+1. Check if your Docker container is running:
 ```
-  docker ps
+  docker ps -a
 ```
 
-2. If basalt-container is not in the list, start it:
+2. If basalt-container is not already in the list, run it:
 ```
   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
 ```
 
+1. If it is there, but *status* is shows "exited" , start it:  
+   ```
+   docker start basalt-container
+   ```
+   
 3. Access xGDS server
    * http://localhost
    * username and password are both xgds
@@ -29,9 +63,14 @@ https://basalt.xgds.org/data/dem
 ```
 
 6. Start the track generator
+   * Log into Docker container per step #4.  
 ```
   cd xgds_basalt/apps/basaltApp/scripts
+```
+```
   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20161114A_EV2_trunc.csv
+```
+```
   ctrl-c to stop track generation
 ```
 
@@ -56,3 +95,22 @@ https://basalt.xgds.org/data/dem
      * Once stopped that row should no longer be light green.
      * In the terminal running the evaTrackGenerator you should stop seeing position data
 
+10. Stop Docker container:
+   * Docker containers are fairly lightweight but if you need to stop it, just:
+   ```
+   docker stop basalt-container
+   ```
+   * If you need to change the parameters the container is running with, you'll want to delete it (to save space) and run again per step #2:   
+   ```
+   docker rm basalt-container
+   ```  
+   ```
+   docker run...
+   ```
+11. Bing Maps Key  
+    We use Bing Maps for our xGDS map base layers.  If you want to enable the maps for testing traverse plans, you need to get a Bing Map API key from Microsoft:
+    * Go to: https://www.bingmapsportal.com
+    * Log in with (or create) a Microsoft Account and generate a map API key.
+    * ssh into your running BASALT Docker container.
+    * Edit ~/xgds_basalt/settings.py (both emacs and vi are available in the container)
+    * Insert your API key between the empty quotes in the line setting the XGDS\_MAP\_SERVER\_MAP\_API\_KEY.
