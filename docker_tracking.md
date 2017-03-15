@@ -34,7 +34,7 @@
   docker ps -a
 ```
 
-2. If basalt-container is not already in the list, run it:
+1. If basalt-container is not already in the list, run it:
 ```
   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
 ```
@@ -44,17 +44,17 @@
    docker start basalt-container
    ```
    
-3. Access xGDS server
+1. Access xGDS server
    * http://localhost
    * username and password are both xgds
 
-4. Log into the docker container
+1. Log into the docker container
    * password is xgds
 ```
   ssh -p 222 xgds@localhost
 ```
 
-5. Get SEXTANT DEM:
+1. Get SEXTANT DEM:
    * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
 https://basalt.xgds.org/data/dem
    * Copy from your computer to the data directory in the docker container:
@@ -62,7 +62,7 @@ https://basalt.xgds.org/data/dem
   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
 ```
 
-6. Start the track generator
+1. Start the track generator
    * Log into Docker container per step #4.  
 ```
   cd xgds_basalt/apps/basaltApp/scripts
@@ -74,7 +74,7 @@ https://basalt.xgds.org/data/dem
   ctrl-c to stop track generation
 ```
 
-7. Create an EVA in xGDS and start it.
+1. Create an EVA in xGDS and start it.
    * http://localhost/xgds_planner2/addGroupFlight
    * Uncheck EV2 and SA
    * Click Create
@@ -82,7 +82,7 @@ https://basalt.xgds.org/data/dem
      * Once started that row should turn light green.
      * In the terminal running the evaTrackGenerator you should see position data
 
-8. View the generated track in Google Earth
+1. View the generated track in Google Earth
    * http://localhost/xgds_map_server/feedPage/
    * Click on “Open in Google Earth” button  (note you only have to do this once; next time just open Google Earth)
      * Expand xGDS Maps on the left sidebar
@@ -90,12 +90,12 @@ https://basalt.xgds.org/data/dem
      * You should see a Today folder, expand that and turn on the flight that is running
        * Note that this is rerunning that 20161114A_EV2_trunc.csv file.  If you want to work with other data you can create analogous csv files as pass them as parameters to the track generator
     
-9. Stop the EVA:
+1. Stop the EVA:
    * For active EVA, click the red 'stop' button on this page: http://localhost/xgds_planner2/manage/
      * Once stopped that row should no longer be light green.
      * In the terminal running the evaTrackGenerator you should stop seeing position data
 
-10. Stop Docker container:
+1. Stop Docker container:
    * Docker containers are fairly lightweight but if you need to stop it, just:
    ```
    docker stop basalt-container
@@ -107,7 +107,7 @@ https://basalt.xgds.org/data/dem
    ```
    docker run...
    ```
-11. Bing Maps Key  
+1. Bing Maps Key  
     We use Bing Maps for our xGDS map base layers.  If you want to enable the maps for testing traverse plans, you need to get a Bing Map API key from Microsoft:
     * Go to: https://www.bingmapsportal.com
     * Log in with (or create) a Microsoft Account and generate a map API key.
