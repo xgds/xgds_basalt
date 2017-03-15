@@ -143,7 +143,7 @@ Here is the procedure:
      * *note:* on windows you can use 7Zip to manage tar files.
    * Log out of docker and copy the tar file to your host system:
      ```
-     scp -P 222 localhost:xgds_basalt.tgz .
+     scp -P 222 xgds@localhost:xgds_basalt.tgz .
      ```
      * Uncompress the tar file in the location of your choice.
    * Stop the docker container:  
