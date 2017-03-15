@@ -710,7 +710,7 @@ USE_TZ = True
 
 # turn this on when we are live field broadcasting
 GEOCAM_UTIL_LIVE_MODE = False
-GEOCAM_UTIL_DATATABLES_EDITOR = True
+GEOCAM_UTIL_DATATABLES_EDITOR = False
 
 XGDS_CORE_TEMPLATE_DIRS = getOrCreateDict('XGDS_CORE_TEMPLATE_DIRS')
 XGDS_CORE_TEMPLATE_DIRS[XGDS_SAMPLE_SAMPLE_MODEL] = [os.path.join('xgds_sample', 'templates', 'handlebars')]
