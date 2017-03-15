@@ -94,7 +94,8 @@ https://basalt.xgds.org/data/dem
 
 1. View the generated track in Google Earth
    * http://localhost/xgds_map_server/feedPage/
-   * Click on “Open in Google Earth” button  (note you only have to do this once; next time just open Google Earth)
+   * Click on “Open in Google Earth” button to download the KML network link file with tracking data (note you only have to do this once; next time just open Google Earth).
+   * Double-click the downloaded KML file to open it in Google Earth.
      * Expand xGDS Maps on the left sidebar
      * Check and expand Live Position tracks
      * You should see a Today folder, expand that and turn on the flight that is running
