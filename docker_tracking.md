@@ -39,7 +39,7 @@
   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
 ```
 
-1. If it is there, but *status* is shows "exited" , start it:  
+1. If it is there, but *status* shows "exited" , start it:  
    ```
    docker start basalt-container
    ```
