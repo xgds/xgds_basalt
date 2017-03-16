@@ -125,6 +125,10 @@ https://basalt.xgds.org/data/dem
      * Once stopped that row should no longer be light green.
      * In the terminal running the evaTrackGenerator you should stop seeing position data
 
+1. Restart web server (from within docker container):
+  * sudo apachectl restart
+    * sudo password will be xgds
+
 1. Stop Docker container:
    * Docker containers are fairly lightweight but if you need to stop it, just:
 
