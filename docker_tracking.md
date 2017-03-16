@@ -129,6 +129,10 @@ https://basalt.xgds.org/data/dem
   * sudo apachectl restart
     * sudo password will be xgds
 
+1. Seeing apache log (from within docker container):
+  * sudo tail -f -n 100 /var/log/apache2/error.log
+    * ctrl-c to stop
+
 1. Stop Docker container:
    * Docker containers are fairly lightweight but if you need to stop it, just:
 
