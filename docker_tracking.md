@@ -70,8 +70,10 @@
    Windows with PUTTY installed (make sure it is on your PATH):
   
    ```
-   pscp -P 222 xgds@localhost
+   putty -ssh -P 222 xgds@localhost
    ```
+   
+   This should open a new terminal where you are successfully ssh-ed in
    
 1. Get SEXTANT DEM:
    * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
