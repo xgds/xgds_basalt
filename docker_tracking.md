@@ -15,13 +15,19 @@
 1. Download xGDS BASALT Docker Container and Unzip it  
    * https://xgds.org/downloads/basalt-docker-container.tar.zip
    * unzip basalt-docker-container.tar.zip
+   * OR, download https://xgds.org/downloads/basalt-docker-container.tar.gz, don't unzip it, and
 
 1. Load container data into Docker  
 
 	```
 	docker load -i basalt-docker-container.tar
 	```  
-
+	If you downloaded tar.gz version, instead type:
+	
+	```
+	docker load < basalt-docker-container.tar.gz
+	```  
+	
 	Once you have loaded it into Docker, it is safe to delete basalt-docker-container.tar.
 	
 1. Create Docker data storage container/volume
@@ -61,7 +67,12 @@
    ```
    ssh -p 222 xgds@localhost
    ```
-
+   Windows with PUTTY installed (make sure it is on your PATH):
+  
+   ```
+   pscp -P 222 xgds@localhost
+   ```
+   
 1. Get SEXTANT DEM:
    * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
 https://basalt.xgds.org/data/dem
@@ -69,6 +80,12 @@ https://basalt.xgds.org/data/dem
 
    ```
    scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
+   ```
+   
+   Windows with PUTTY installed (make sure it is on your PATH):
+   
+   ```
+   pscp -P 222 Hawaii_Lava_Flows.tif xgds@localhost:xgds_basalt/data/dem
    ```
 
 1. Start the track generator
