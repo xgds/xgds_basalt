@@ -28,3 +28,4 @@ test.txt
 /apps/basaltApp/pycroraptor_dev.json
 /apps/basaltApp/pycroraptor.json
 pyraptord
+.classpath
