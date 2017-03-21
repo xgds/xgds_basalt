@@ -126,12 +126,12 @@ https://basalt.xgds.org/data/dem
      * In the terminal running the evaTrackGenerator you should stop seeing position data
 
 1. Restart web server (from within docker container):
-  * sudo apachectl restart
-    * sudo password will be xgds
+   * sudo apachectl restart
+     * sudo password will be xgds
 
 1. Seeing apache log (from within docker container):
-  * sudo tail -f -n 100 /var/log/apache2/error.log
-    * ctrl-c to stop
+   * sudo tail -f -n 100 /var/log/apache2/error.log
+     * ctrl-c to stop
 
 1. Stop Docker container:
    * Docker containers are fairly lightweight but if you need to stop it, just:
@@ -163,26 +163,31 @@ If you are doing intensive developemnt connected to the xGDS codebase (e.g. for 
 
 Here is the procedure:
 
-   * ssh into your docker container (ssh -p 222 xgds@localhost)
-   * create a tar file of the xgds_basalt directory:  
+   1. ssh into your docker container (ssh -p 222 xgds@localhost)
+   
+   1. create a tar file of the xgds_basalt directory:  
      ```
      tar cvfz ./xgds_basalt.tgz ./xgds_basalt
      ```
-     * *note:* on windows you can use 7Zip to manage tar files.
-   * Log out of docker and copy the tar file to your host system:
+      * *note:* on windows you can use 7Zip to manage tar files.
+   
+   1. Log out of docker and copy the tar file to your host system:
      ```
      scp -P 222 xgds@localhost:xgds_basalt.tgz .
      ```
-     * Uncompress the tar file in the location of your choice.
-   * Stop the docker container:  
+      * Uncompress the tar file in the location of your choice.
+   
+   1. Stop the docker container:  
      ```
      docker stop basalt-container
      ```
-   * Delete it:  
+   
+   1. Delete it:  
      ```
      docker rm basalt-container
      ```
-   * Run the docker image like this:
+   
+   1. Run the docker image like this:
      ```
      docker run -t -d -v <path to xgds_basalt on host>:/home/xgds/xgds_basalt --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
      ```
@@ -190,3 +195,38 @@ Here is the procedure:
      This will hide the xgds_basalt directory in the docker data volume and use the copy on your host system instead.  Any changes you make to the code on the host side will be reflected in the docker container.
      
      **Note:** If you do make changes to xGDS code you will need to follow the same procedure as when you update from git to prepare the new code and restart Apache.
+
+##### Updating source code
+If you already have your docker container set up but need to pull new source code, follow these steps:
+
+1. Log into the docker container (see above)
+
+1. Change to the main git directory
+   ```
+   cd xgds_basalt
+   ```
+ 
+1. Pull the latest changes from the top level repository
+   ```
+   git pull origin master
+   ```
+   
+1. Update the submodules
+   ```
+   git submodule update --rebase
+   ```
+    
+1. Optionally update javascript libraries (only if you are told you need to)
+   ```
+   ./manage.py bower update
+   ```
+
+1. Prepare any changes
+   ```
+   ./manage.py prep
+   ```
+ 
+1. Restart apache
+   ```
+   sudo apachectl restart
+   ```  
