@@ -5,9 +5,11 @@
 
 {% block content %}
 <p>
-<strong>Add Crew Mass</strong><br/>
+<h6>Add Crew Mass</h6>
+<p>
 For Sextant to calculate a traverse we have to specify the mass of the crewmember executing the EVA.<br/>
 <i>Mass in kg</i>
+</p>
 <form action="{% if pk %}{% url 'planner2_re_save_ev' pk %}{% else %}{% url 'planner2_save_ev' %}{% endif %}" method="post">
 <table class="table-striped">
 {{ form.as_table }}
@@ -18,10 +20,10 @@ For Sextant to calculate a traverse we have to specify the mass of the crewmembe
 </p>
 
 {% if evList %}
-<strong>Existing Crew Mass</strong>
-<table>
-<thead>
-<th>User</th>
+<h6>Existing Crew Mass</h6>
+<table class="table-striped">
+<thead class="bg-primary text-white">
+<th>Person</th>
 <th>Mass (kg)</th>
 </thead>
 {% for ev in evList %}
