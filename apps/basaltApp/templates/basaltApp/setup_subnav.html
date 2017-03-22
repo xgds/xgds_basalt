@@ -1,13 +1,9 @@
 {% block sitemenu-content-secondary %}
 {% load nav %}
-{% load help_button %}
-<div class="sitemenu-nav-secondary">
 	<nav class="subnav">
-	{% help_button help_content_path title %}
-	<ul>
-		<li {% currentnav xgds_notes_edit_tags %}><a href="{% url 'xgds_notes_edit_tags' %}">Note Tags</a></li>
-		<li{% currentnav planner2_edit_ev %}><a href="{% url 'planner2_edit_ev' %}">Crew Mass</a></li>
+	<ul class="nav nav-pills">
+		<li class='nav-item {% currentnav xgds_notes_edit_tags %}'><a class='nav-link {% currentnav xgds_notes_edit_tags %}' href="{% url 'xgds_notes_edit_tags' %}">Note Tags</a></li>
+		<li class='nav-item {% currentnav planner2_edit_ev %}'><a class='nav-link {% currentnav planner2_edit_ev %}' href="{% url 'planner2_edit_ev' %}">Crew Mass</a></li>
   	</ul>
   	</nav>
-</div>
 {% endblock %}
