@@ -62,7 +62,7 @@
 	<i class="fa fa-unlock-alt pinDiv"></i><br />
 	<div id="save-status"> {{status}} </div>
 	
-	<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="{% url 'xgds_sample_record_update' sample.label.number %}" class="btn btn-primary small">Edit</a> </div>
+	<div> <strong> Viewing sample</strong> <a id="edit_sample_button" href="{% url 'xgds_sample_record_update' sample.label.number %}" class="btn btn-primary ">Edit</a> </div>
 	<input type=hidden name=sampleId value="{{ sample.pk }}">
 	<table class="table-striped">
 		<tr>
@@ -150,7 +150,7 @@
 				</tr>
 			</table>
 			{% csrf_token %}
-			<input id="record_sample_submit_btn btn-primary" type="submit" class="small" value="Open"/> 
+			<input id="record_sample_submit_button" type="submit" class="btn btn-primary" value="Open"/> 
 		</form>
 	</div>
 </div>
