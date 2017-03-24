@@ -143,7 +143,7 @@ class EV(models.Model):
     An EV is a user who can execute a plan.  Information must be provided to Pextant
     about the user to correctly model the path
     ''' 
-    mass = models.FloatField(db_index=True)
+    mass = models.FloatField(db_index=True, verbose_name="Mass (kg)")
     user = models.OneToOneField(User)
     
     def toSimpleDict(self):
