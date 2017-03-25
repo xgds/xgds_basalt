@@ -12,23 +12,21 @@
       * Linux: Not tested, but current versions should work.
       * **Note**: We tested with the "stable" release of Docker
 
-1. Download xGDS BASALT Docker Container and Unzip it  
-   * https://xgds.org/downloads/basalt-docker-container.tar.zip
-   * unzip basalt-docker-container.tar.zip
-   * OR, download https://xgds.org/downloads/basalt-docker-container.tar.gz, don't unzip it, and
+1. Download xGDS BASALT Docker Container and Load it
+   * download https://xgds.org/downloads/xgds-basalt.tar.bz2, don't unzip it, and
 
 1. Load container data into Docker  
 
 	```
-	docker load -i basalt-docker-container.tar
+	docker load -i xgds-basalt.tar.bz2
 	```  
-	If you downloaded tar.gz version, instead type:
+	Or just load from stdin:
 	
 	```
-	docker load < basalt-docker-container.tar.gz
+	docker load < xgds-basalt.tar.bz2
 	```  
 	
-	Once you have loaded it into Docker, it is safe to delete basalt-docker-container.tar.
+	Once you have loaded it into Docker, it is safe to delete xgds-basalt.tar.bz2.
 	
 1. Create Docker data storage container/volume
 
