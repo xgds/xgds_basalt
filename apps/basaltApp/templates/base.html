@@ -69,13 +69,16 @@
 	            </div>
             </div>
             
-            {% block sitemenu-content-secondary %}
-            <ul class="navbar-nav flex-row mb-2">
+            <div class="subnav">
+				<ul class="nav nav-pills">
+				{% block sitemenu-content-secondary %}
+				
                 <li class="nav-item">
                     &nbsp;
                 </li>
-            </ul>
-  			{% endblock sitemenu-content-secondary %}
+                {% endblock sitemenu-content-secondary %}
+            	</ul>
+            </div>
             
         </div>
     </div>

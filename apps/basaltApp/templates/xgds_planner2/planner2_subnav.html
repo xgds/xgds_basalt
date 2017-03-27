@@ -1,7 +1,5 @@
 {% block sitemenu-content-secondary %}
 {% load nav %}
-<div class="subnav">
-	<ul class="nav nav-pills">
 		<li class='nav-item '>
 			<a class="nav-link {% currentnav planner2_index %} " href="{% url 'planner2_index' %}"> {{settings.XGDS_PLANNER2_PLAN_MONIKER}}s </a>
 		</li>
@@ -15,6 +13,4 @@
 		{% if plan_json %}
 			<li class='nav-item ' ><a class="nav-link {% currentnav planner2_edit %}"> Edit {{ plan_name }}</a></li>
 		{% endif %}
-	</ul>
-</div>
 {% endblock %}
