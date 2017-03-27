@@ -70,7 +70,7 @@
             </div>
             
             <div class="subnav">
-				<ul class="nav nav-pills">
+				<ul class="nav nav-tabs">
 				{% block sitemenu-content-secondary %}
 				
                 <li class="nav-item">
@@ -83,62 +83,6 @@
         </div>
     </div>
 </nav>
-
-  	<!--  old -->
-  	<!-- 
-	<nav class="navbar navbar-toggleable-md navbar-inverse bg-primary">
-		<button class="navbar-toggler navbar-toggler-right" type="button"
-			data-toggle="collapse" data-target="#mainNavbar"
-			aria-controls="mainNavbar" aria-expanded="false"
-			aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="mainNavbar">
-			<a href="{% url 'live_index' %}" title="xGDS BASALT" class="navbar-brand">
-     			<img src="{{STATIC_URL}}basaltApp/css/logo.png" class="logo" alt="BASALT logo" width="150" height="48" >
-     		</a>
-			<ul class="navbar-nav mr-auto mt-20">
-				<li class='nav-item {% currentnav map* xgds_map_server* %}'>
-					<a class="nav-link {% currentnav map* xgds_map_server* %}" href="{% url 'map' %}" title="Map">Map</a>
-				</li>
-				<li class='nav-item {% currentnav planner2* *video* %}'>
-					<a class="nav-link {% currentnav planner2* *video* %}" href="{% url 'planner2_flownFlights' %}" title="{{ settings.XGDS_PLANNER2_FLIGHT_MONIKER }}">{{ settings.XGDS_PLANNER2_FLIGHT_MONIKER }}</a>
-				</li>
-				<li class='nav-item {% currentnav *note* %}'>
-					<a class="nav-link {% currentnav *note* %}" href="{% url 'search_xgds_notes_map' %}" title="{{ settings.XGDS_NOTES_MONIKER }}">{{ settings.XGDS_NOTES_MONIKER }}</a>
-				</li>
-				<li class='nav-item {% currentnav *xgds_sample* %}' >
-					<a class="nav-link {% currentnav *xgds_sample* %}" href="{% url 'xgds_sample_record_edit' %}" title="Sample">Sample</a>
-				</li>
-				<li class='nav-item {% currentnav search_map* basalt_live_objects%}'>
-					<a class="nav-link {% currentnav search_map* basalt_live_objects%}" href="/xgds_map_server/search/Photo" title="Search">Search</a>
-				</li>
-				<li class='nav-item {% currentnav xgds_data_import %}'>
-					<a class="nav-link {% currentnav xgds_data_import %}" href="{% url 'xgds_data_import' %}" title="Import">Import</a>
-				</li>
-				{% if settings.GEOCAM_UTIL_LIVE_MODE %}
-				<li class='nav-item {% currentnav *tatus* %}'>
-	            	<a class="nav-link {% currentnav *tatus* %}" href="{% url 'xgds_status_board_showSubsystemStatus' %}">Status</a>
-	            </li>
-	            {% endif %}
-	        </ul>
-	            
-	        <span class="navbar-text">
-	            {% if user.is_authenticated %}
-	                 <a class="btn btn-primary btn btn-primary-secondary btn btn-primary-sm" href="{{ logout_url }}" title="Logout">Logout&nbsp;&nbsp;{{ user.first_name }}</a>
-	            {% else %} 
-	                <a class="btn btn-primary btn btn-primary-secondary btn btn-primary-sm" href="{{ login_url_with_next }}"title="Login">Login</a>
-	            {% endif %} 
-	            {% help_button help_content_path title %}
-	        </span>
-	            
-		</div>
-	</nav>
-	
-	{# block sitemenu-content-secondary #}
-  	{# endblock sitemenu-content-secondary #} -->
-  	<!--  end old -->
-	
 	{% endblock nav %}
   
   <div class="container-fluid">
