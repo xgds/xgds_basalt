@@ -1,9 +1,5 @@
 {% block sitemenu-content-secondary %}
 {% load nav %}
-	<nav class="subnav">
-	<ul class="nav nav-pills">
 		<li class='nav-item {% currentnav xgds_notes_edit_tags %}'><a class='nav-link {% currentnav xgds_notes_edit_tags %}' href="{% url 'xgds_notes_edit_tags' %}">Note Tags</a></li>
 		<li class='nav-item {% currentnav planner2_edit_ev %}'><a class='nav-link {% currentnav planner2_edit_ev %}' href="{% url 'planner2_edit_ev' %}">Crew Mass</a></li>
-  	</ul>
-  	</nav>
 {% endblock %}
