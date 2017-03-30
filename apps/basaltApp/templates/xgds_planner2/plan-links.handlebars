@@ -1,22 +1,25 @@
 <div class="plan-link" id="links-plan">
   <div class="tool-entry">
+  	<h6>File Downloads</h6>
     <a href="/xgds_planner2/plan/bearingDistance/{{planId}}" target="_blank">Summary</a><br/>
 	<a href="/xgds_planner2/plan/bearingDistanceTop/{{planId}}" target="_blank">Summary (Top only)</a><br/>
 	{{#each planLinks}}
       	<a href="{{this}}" target="_new">{{@key}}</a><br/>
 	{{/each}}
 	<p>
-	<h6>Call Sextant</h6>
-	Save changes BEFORE calling<br/> 
-	the Sextant path planner.<br/>
+	<h6>Call SEXTANT</h6>
+	<p>
+	<span class="text-danger font-weight-bold">Save changes BEFORE calling<br/> the SEXTANT path planner.</span><br/>
 	This will calculate a path if your EVA is within an expected DEM<br/>
 	and update the EVA with a detailed route.<br/>
 	You can control how it is optimized on the Meta tab.<br/>
 	You <strong>MUST</strong> choose an EV person and schedule<br/>
-	the plan before you can call Sextant, use the Schedule tab.<br/>
-	Note that running Sextant can take a few minutes.
-	<br/>
+	the plan before you can call SEXTANT, use the Schedule tab.<br/>
+	Note that running SEXTANT can take a few minutes.
+	</p>
+	
 	<form name='pextantForm' id="pextantForm" action="#" method="post">
+		<div class="d-flex flex-column">
 		<input type="hidden" name="planId" id="id_planId" value="{{planId}}"></input>
 		<table>
 		<tr>
@@ -41,8 +44,12 @@
 		    </td>
 		</tr>
 		</table>
-		<input class="btn btn-primary" id="pextantButton"  type="submit" value="Call Sextant">
-		<input class="btn btn-primary" id="clearPextantButton"  type="submit" value="Clear Sextant Path">
+		<div>
+		<input class="btn btn-primary" id="pextantButton"  type="submit" value="Call SEXTANT">
+		<input class="btn btn-primary" id="clearPextantButton"  type="submit" value="Clear Path">
+		</div>
+		</div>
+		
 	</form>
 	</p>
 	<div id="pextantMessage" style="color:red;"><br/></div>
