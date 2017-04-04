@@ -46,8 +46,11 @@ When you are told there are active EVAs, please click on the BASALT logo in the 
   </tr>
 </table>
 </p>
+{% endblock content %}
+
+{% block footer %}
 <div class="fixed-bottom container-fluid bg-primary d-flex justify-content-between py-2 ">
-<a href="https://ti.arc.nasa.gov/tech/asr/intelligent-robotics/" target="_blank" title="IRG" >
+			<a href="https://ti.arc.nasa.gov/tech/asr/intelligent-robotics/" target="_blank" title="IRG" >
     			<img src="{{STATIC_URL}}bootstrap/img/irg.png" alt="IRG logo" />
     		</a>
     		<div class="d-flex align-items-center">
@@ -58,8 +61,8 @@ When you are told there are active EVAs, please click on the BASALT logo in the 
     		</h5>
     		</div>
     		
-<a href="http://www.nasa.gov" title="NASA" target="_blank">
+			<a href="http://www.nasa.gov" title="NASA" target="_blank">
     			<img src="{{STATIC_URL}}bootstrap/img/meatball.png"  alt="NASA logo" />
     		</a>
 </div>
-{% endblock content %}
+{% endblock footer %}

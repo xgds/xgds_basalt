@@ -90,6 +90,24 @@
   {% block content %}
   {% endblock content %}
   {% endblock contents %}
+  
+  {% block footer %}
+  <div class="fixed-bottom container-fluid bg-primary d-flex justify-content-between py-2 ">
+  			<a href="https://ti.arc.nasa.gov/tech/asr/intelligent-robotics/" target="_blank" title="IRG" >
+    			<img src="{{STATIC_URL}}bootstrap/img/irg.png" alt="IRG logo" height="30px"/>
+    		</a>
+    		<div class="d-flex align-items-center">
+	    		<strong class="text-primary-inverse ">
+	    			<a href="https:/www.xgds.org" target="_blank" title="xGDS" class="text-primary-inverse">
+	    				<strong>Powered by xGDS</strong>
+	    			</a>
+	    		</strong>
+	    	</div>
+    		<a href="http://www.nasa.gov" title="NASA" target="_blank">
+    			<img src="{{STATIC_URL}}bootstrap/img/meatball.png"  alt="NASA logo" height="30px" />
+    		</a>
+	</div>
+  {% endblock footer %}
   </div>
   
   {% block prescripts %}
