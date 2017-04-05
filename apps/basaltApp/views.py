@@ -13,7 +13,6 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
-
 import csv
 import traceback
 import json
@@ -35,8 +34,9 @@ from django.http import HttpResponse
 from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm, SearchBasaltNoteForm
 from models import *
 import pextantHarness
-from geocamUtil.loader import LazyGetModelByName, getFormByName
+from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName
 from xgds_core.models import Constant
+from xgds_core.views import addRelayFiles
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
@@ -532,6 +532,12 @@ def saveNewPxrfData(request, jsonResult=False):
                                form.cleaned_data['collector'])
             
             if result['status'] == 'success':
+                # relay if needed
+                if 'relay' in form.cleaned_data:
+                    theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
+                    theInstance = theModel.objects.get(pk=result['pk'])
+                    addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
+                    
                 if jsonResult:
                     return HttpResponse(json.dumps(result), content_type='application/json')
                 else:

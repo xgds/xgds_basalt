@@ -147,7 +147,7 @@ def pxrfLoadPortableSampleData(portableDataFile, dataProduct):
             if len(row) == 2:
                 sample = PxrfSample(dataProduct=dataProduct, channelNumber=int(row[0]), intensity=int(row[1]))
                 sample.save()
-        portableDataFile.close()
+#         portableDataFile.close()
         
         for key, value in metadata.iteritems():
             setattr(portableDataFile, key, value)
@@ -269,13 +269,13 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
                 lastrow = getRowByFileNumber(reader, dataProduct.fileNumber)
             else:
                 lastrow = getLastRow(reader)
-            elementResultsCsvFile.close()
+#             elementResultsCsvFile.close()
             
             pxrfProcessElementResultsRow(firstrow, lastrow, dataProduct, timezone)
                 
         except:
             pass
-        elementResultsCsvFile.close()
+#         elementResultsCsvFile.close()
         
             
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
