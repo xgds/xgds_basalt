@@ -397,6 +397,11 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                form.cleaned_data['alt'],
                                form.cleaned_data['collector'])
             if result['status'] == 'success':
+                if 'relay' in form.cleaned_data:
+                    theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
+                    theInstance = theModel.objects.get(pk=result['pk'])
+                    addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
+
                 if jsonResult:
                     return HttpResponse(json.dumps(result), content_type='application/json')
                 else:
