@@ -439,6 +439,10 @@ def savePxrfMfgFile(request):
                     dataProduct = found.last()
                     dataProduct.manufacturer_data_file = mdf
                     dataProduct.save()
+                    
+                    # this method is only called by data push from instrument / lua script
+                    broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
+                    addRelayFiles(dataProduct, request.FILES, broadcast=broadcast)
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'No PXRF record for ' + str(seekNumber), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
@@ -488,9 +492,12 @@ def buildPxrfDataProductsFromResultsFile(request):
             firstrow = next(reader)
             for row in reader:
                 #call function in instrument data importers
-                fileNumber = pxrfProcessElementResultsRow(firstrow, row, dataProduct=None, timezone=timezone, metadata=metadata)
-                if fileNumber:
-                    updatedRecords.append(fileNumber)
+                foundProduct = pxrfProcessElementResultsRow(firstrow, row, dataProduct=None, timezone=timezone, metadata=metadata)
+                if foundProduct:
+                    updatedRecords.append(foundProduct.fileNumber)
+                    # this method is only called by data push from instrument / lua script
+                    broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
+                    addRelayFiles(foundProduct, request.FILES, broadcast=broadcast)
             result= {'status': 'success', 
                      'updated': updatedRecords,
                      'modelName': 'pXRF'}
@@ -499,8 +506,8 @@ def buildPxrfDataProductsFromResultsFile(request):
         result= {'status': 'error', 
                  'updated': updatedRecords,
                  'message': 'Problem with csv file' }
-    finally:
-        elementResultsCsvFile.close()
+#     finally:
+#         elementResultsCsvFile.close()
 
     return HttpResponse(json.dumps(result), content_type='application/json', status=status)
 

@@ -256,7 +256,7 @@ def pxrfProcessElementResultsRow(firstrow, lastrow, dataProduct=None, timezone=s
             dataProduct.flight = flight
             dataProduct.track_position = sampleLocation
         dataProduct.save()
-        return fileNumber
+        return dataProduct
 
 def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
     """ Read the element results.  For now, just read the latest time.
