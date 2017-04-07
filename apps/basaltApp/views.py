@@ -381,21 +381,24 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
             messages.success(request, 'Instrument data is successfully saved.' )
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
                                                    instrument.dataImportFunctionName)
-            
-            result = importFxn(instrument, 
-                               request.FILES.get("portableDataFile", None),
-                               request.FILES.get("manufacturerDataFile", None),
-                               form.cleaned_data["dataCollectionTime"], 
-                               form.getTimezone(), 
-                               form.getResource(),
-                               form.cleaned_data['name'],
-                               form.cleaned_data['description'],
-                               form.cleaned_data['minerals'],
-                               user,
-                               form.cleaned_data['lat'],
-                               form.cleaned_data['lon'],
-                               form.cleaned_data['alt'],
-                               form.cleaned_data['collector'])
+            object_id = None
+            if 'object_id' in form.cleaned_data:
+                object_id = int(form.cleaned_data['object_id'])
+            result = importFxn(instrument=instrument, 
+                               portableDataFile=request.FILES.get("portableDataFile", None),
+                               manufacturerDataFile=request.FILES.get("manufacturerDataFile", None),
+                               utcStamp=form.cleaned_data["dataCollectionTime"], 
+                               timezone=form.getTimezone(), 
+                               resource=form.getResource(),
+                               name=form.cleaned_data['name'],
+                               description=form.cleaned_data['description'],
+                               minerals=form.cleaned_data['minerals'],
+                               user=user,
+                               latitude=form.cleaned_data['lat'],
+                               longitude=form.cleaned_data['lon'],
+                               altitude=form.cleaned_data['alt'],
+                               collector=form.cleaned_data['collector'],
+                               object_id=object_id)
             if result['status'] == 'success':
                 if 'relay' in form.cleaned_data:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])

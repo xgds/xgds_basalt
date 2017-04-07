@@ -67,7 +67,7 @@ def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
 
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, elementResultsCsvFile,
                      utcStamp, timezone, resource, name, description, minerals=None, user=None,
-                     latitude=None, longitude=None, altitude=None, collector=None):
+                     latitude=None, longitude=None, altitude=None, collector=None, object_id=None):
     try:
         instrument = ScienceInstrument.getInstrument(PXRF)
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
@@ -89,7 +89,8 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                     'collector': collector,
                     'name':name,
                     'description':description,
-                    'elements':minerals}
+                    'elements':minerals,
+                    'pk':object_id}
     
         dataProduct = PxrfDataProduct(**metadata)
         
@@ -280,7 +281,7 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
             
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
                     timezone, resource, name, description, minerals, user=None,
-                    latitude=None, longitude=None, altitude=None, collector=None):
+                    latitude=None, longitude=None, altitude=None, collector=None, object_id=None):
     try:
         instrument = ScienceInstrument.getInstrument(ASD)
     
@@ -302,7 +303,8 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
             collector=collector,
             name = name,
             description = description,
-            minerals = minerals
+            minerals = minerals,
+            pk=object_id
         )
         
         if latitude or longitude or altitude:
@@ -382,7 +384,7 @@ def loadPortableFtirData(portableDataFile, dataProduct):
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      utcStamp, timezone, resource, name, description, minerals,
                      user=None, latitude=None, longitude=None, altitude=None,
-                     collector=None):
+                     collector=None, object_id=None):
     try:
         instrument = ScienceInstrument.getInstrument(FTIR)
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
@@ -402,7 +404,8 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
             collector=collector,
             name = name,
             description = description,
-            minerals = minerals
+            minerals = minerals,
+            pk=object_id
         )
         dataProduct.save()
         if latitude or longitude or altitude:
