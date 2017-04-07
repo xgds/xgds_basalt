@@ -2,10 +2,10 @@
 
 {% block groupFlightContents %}
 {% if groupFlight.videoEpisode %}
-<br/><a href="{{ groupFlight.view_url }}" target="">Video</a>
+<a href="{{ groupFlight.view_url }}" target="" class="font-weight-bold">Video</a>
 {% endif %}
 {% with 'flight__group:'|add:group_pk as evaFilter %}
-<br/><a href="{% url 'search_xgds_notes_map_filter' evaFilter %}" target="_blank">Notes</a>
+<a href="{% url 'search_xgds_notes_map_filter' evaFilter %}" target="_blank" class="font-weight-bold mb-2">All Notes</a>
 {% endwith %}
 {% endblock groupFlightContents %}
 
