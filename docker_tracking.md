@@ -228,3 +228,22 @@ If you already have your docker container set up but need to pull new source cod
    ```
    sudo apachectl restart
    ```  
+
+##### Updating docker container
+1. If you have anything you want to save in the xgds home directory in the docker container, be sure to back it up!  It will be erased as part of this process. You can scp or rsync to a different system and copy back after the new container is running. 
+
+1. Stop current container:
+   ```
+   docker stop basalt-container
+   ```
+   
+1. Delete existing containers and storage to save space:
+   ```
+   docker rm basalt-container
+   docker rm basalt-data-store
+   docker rmi xgds-basalt
+   docker volume prune
+   ```
+   Confirm that you *do* want to prune unused volumes 
+   
+1. Follow instructions on how to load new container from step 3 onwards. 
