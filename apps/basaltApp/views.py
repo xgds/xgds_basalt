@@ -377,7 +377,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
             if not request.user.is_anonymous:
                 user = request.user
             else:
-                user = User.objects.get(pk=20131)
+                user = None
             instrument = form.cleaned_data["instrument"]
             messages.success(request, 'Instrument data is successfully saved.' )
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
