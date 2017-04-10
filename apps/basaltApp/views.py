@@ -370,6 +370,8 @@ def stringToDateTime(datetimeStr, timezone):
 
 
 def saveNewInstrumentData(request, instrumentName, jsonResult=False):
+    print 'in save new instrument data'
+    print instrumentName
     errors = None
     if request.method == 'POST':
         form = BasaltInstrumentDataForm(request.POST, request.FILES)
