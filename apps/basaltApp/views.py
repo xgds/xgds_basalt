@@ -19,7 +19,7 @@ import json
 import datetime
 import time
 import pytz
-import httplib2
+import httplib
 from django.conf import settings
 from django.shortcuts import render_to_response, redirect, render, get_object_or_404
 from django import forms
@@ -374,10 +374,10 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
     if request.method == 'POST':
         form = BasaltInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
-            if not request.user.is_anonymous:
+            if request.user.is_authenticated():
                 user = request.user
             else:
-                user = User.objects.get(pk=20131)
+                user = None
             instrument = form.cleaned_data["instrument"]
             messages.success(request, 'Instrument data is successfully saved.' )
             importFxn = lookupImportFunctionByName(settings.XGDS_INSTRUMENT_IMPORT_MODULE_PATH, 
@@ -417,9 +417,10 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                 errors = result['message']
         else:
             errors = str(form.errors)
+            print 'form errors in receiving instrument data'
         
         if jsonResult:
-            return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=406)
+            return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=httplib.NOT_ACCEPTABLE)
         else:
             messages.error(request, 'Errors %s' % errors)
             return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
@@ -427,7 +428,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                                                'errors': form.errors,
                                                                'instrumentDataImportUrl': reverse('save_instrument_data', kwargs={'instrumentName': instrumentName}),
                                                                'instrumentType': instrumentName}),
-                                      status=httplib2.NOT_ACCEPTABLE)      
+                                      status=httplib.NOT_ACCEPTABLE)      
 
 
 def savePxrfMfgFile(request):
@@ -460,7 +461,7 @@ def savePxrfMfgFile(request):
 
 def buildPxrfMetadata(request):
     
-    if not request.user.is_anonymous:
+    if request.user.is_authenticated():
         user = request.user
     else:
         user = User.objects.get(username='pxrf')
@@ -523,7 +524,7 @@ def saveNewPxrfData(request, jsonResult=False):
     if request.method == 'POST':
         form = PxrfInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
-            if not request.user.is_anonymous:
+            if request.user.is_authenticated():
                 user = request.user
             else:
                 user = User.objects.get(username='pxrf')
