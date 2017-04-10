@@ -19,6 +19,7 @@ import json
 import datetime
 import time
 import pytz
+import httplib2
 from django.conf import settings
 from django.shortcuts import render_to_response, redirect, render, get_object_or_404
 from django import forms
@@ -425,8 +426,8 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                       RequestContext(request, {'form': form,
                                                                'errors': form.errors,
                                                                'instrumentDataImportUrl': reverse('save_instrument_data', kwargs={'instrumentName': instrumentName}),
-                                                               'instrumentType': instrumentName})
-                                      )      
+                                                               'instrumentType': instrumentName}),
+                                      status=httplib2.NOT_ACCEPTABLE)      
 
 
 def savePxrfMfgFile(request):
