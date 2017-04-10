@@ -74,7 +74,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
         
         if not user:
-            user = User.objects.get(name='pxrf')
+            user = User.objects.get(username='pxrf')
         metadata = {'portable_data_file':portableDataFile,
                     'elementResultsCsvFile': elementResultsCsvFile,
                     'portable_file_format_name':"csv",
@@ -299,7 +299,7 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
         
         if not user:
-            user = User.objects.get(name='asd')
+            user = User.objects.get(username='asd')
 
         dataProduct = AsdDataProduct(
             portable_file_format_name = "SPC",
@@ -334,6 +334,7 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
                 'pk': dataProduct.pk,
                 'modelName': 'ASD'}
     except Exception, e:
+        traceback.print_exc()
         return {'status': 'error', 'message': str(e)}
 
 
@@ -404,7 +405,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
         
         if not user:
-            user = User.objects.get(name='ftir')
+            user = User.objects.get(username='ftir')
 
         dataProduct = FtirDataProduct(
             portable_mime_type = "application/octet-stream",
