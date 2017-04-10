@@ -111,6 +111,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                 'pk': dataProduct.pk,
                 'modelName': 'pXRF'}
     except Exception, e:
+        traceback.print_exc()
         return {'status': 'error', 'message': str(e)}
 
         
@@ -188,10 +189,11 @@ def extractPxrfMfgFileNumber(mdf):
                 except:
                     # might have django file duplication stuff, eg
                     # ANALYZE_EMP-2_gsN7BQx.pdz
-                    substring = ending.split('_')
+                    substring = ending[0].split('_')
                     seekNumber = int(substring[0])
                 return seekNumber
     except:
+        traceback.print_exc()
         pass
     return None
     
