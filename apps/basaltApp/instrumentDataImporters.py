@@ -20,6 +20,7 @@ import csv
 from collections import deque
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from cStringIO import StringIO
 import pytz
@@ -73,8 +74,8 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
         
         if not user:
-           user = User.objects.get(name='pxrf')
-	metadata = {'portable_data_file':portableDataFile,
+            user = User.objects.get(name='pxrf')
+        metadata = {'portable_data_file':portableDataFile,
                     'elementResultsCsvFile': elementResultsCsvFile,
                     'portable_file_format_name':"csv",
                     'portable_mime_type':"application/csv",
@@ -298,7 +299,7 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
         
         if not user:
-           user = User.objects.get(name='asd')
+            user = User.objects.get(name='asd')
 
         dataProduct = AsdDataProduct(
             portable_file_format_name = "SPC",
@@ -403,7 +404,7 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
         (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
         
         if not user:
-           user = User.objects.get(name='ftir')
+            user = User.objects.get(name='ftir')
 
         dataProduct = FtirDataProduct(
             portable_mime_type = "application/octet-stream",

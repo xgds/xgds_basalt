@@ -374,7 +374,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
     if request.method == 'POST':
         form = BasaltInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
-            if not request.user.is_anonymous:
+            if request.user.is_authenticated():
                 user = request.user
             else:
                 user = None
@@ -419,7 +419,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
             errors = str(form.errors)
         
         if jsonResult:
-            return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=406)
+            return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=httplib.NOT_ACCEPTABLE)
         else:
             messages.error(request, 'Errors %s' % errors)
             return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
@@ -460,7 +460,7 @@ def savePxrfMfgFile(request):
 
 def buildPxrfMetadata(request):
     
-    if not request.user.is_anonymous:
+    if request.user.is_authenticated():
         user = request.user
     else:
         user = User.objects.get(username='pxrf')
@@ -523,7 +523,7 @@ def saveNewPxrfData(request, jsonResult=False):
     if request.method == 'POST':
         form = PxrfInstrumentDataForm(request.POST, request.FILES)
         if form.is_valid():
-            if not request.user.is_anonymous:
+            if request.user.is_authenticated():
                 user = request.user
             else:
                 user = User.objects.get(username='pxrf')
