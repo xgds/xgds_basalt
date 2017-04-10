@@ -181,7 +181,13 @@ def extractPxrfMfgFileNumber(mdf):
             splits = mdf.name.split('-')
             if len(splits) > 1:
                 ending = splits[1].split('.')
-                seekNumber = int(ending[0])
+                try:
+                    seekNumber = int(ending[0])
+                except:
+                    # might have django file duplication stuff, eg
+                    # ANALYZE_EMP-2_gsN7BQx.pdz
+                    substring = ending.split('_')
+                    seekNumber = int(substring[0])
                 return seekNumber
     except:
         pass
