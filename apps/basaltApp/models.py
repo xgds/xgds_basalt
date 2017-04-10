@@ -173,7 +173,7 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
     
     def summary_url(self):
-        return reverse('group_flight_summary', kwargs={'groupFlightName':self.name})
+        return reverse('planner2_group_flight_summary', kwargs={'groupFlightName':self.name})
 
     
     @property
