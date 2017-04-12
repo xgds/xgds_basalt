@@ -746,5 +746,59 @@
             "first_name": "FTIR",
             "last_name": " "
         }
+    },
+	{
+        "pk": 10003,
+        "model": "auth.User",
+        "fields": {
+            "username": "pxrf",
+            "first_name": "PXRF",
+            "last_name": " "
+        }
+    },
+	{
+        "pk": 10004,
+        "model": "auth.User",
+        "fields": {
+            "username": "asd",
+            "first_name": "ASD",
+            "last_name": " "
+        }
+    },
+	{
+        "pk": 10005,
+        "model": "auth.User",
+        "fields": {
+            "username": "flir",
+            "first_name": "FLIR",
+            "last_name": " "
+        }
+    },
+		{
+        "pk": 10006,
+        "model": "auth.User",
+        "fields": {
+            "username": "ev1",
+            "first_name": "EV1",
+            "last_name": " "
+        }
+    },
+		{
+        "pk": 10007,
+        "model": "auth.User",
+        "fields": {
+            "username": "ev2",
+            "first_name": "EV2",
+            "last_name": " "
+        }
+    },
+		{
+        "pk": 10008,
+        "model": "auth.User",
+        "fields": {
+            "username": "sa",
+            "first_name": "SA",
+            "last_name": "Camera"
+        }
     }
 ]
