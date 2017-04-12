@@ -401,9 +401,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                collector=form.cleaned_data['collector'],
                                object_id=object_id)
             if result['status'] == 'success':
-#                if 'relay' in request.POST:
-# TODO uncomment above
-                if True:
+                if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
                     addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
@@ -554,7 +552,7 @@ def saveNewPxrfData(request, jsonResult=False):
                                object_id=object_id)
             if result['status'] == 'success':
                 # relay if needed
-                if 'relay' in request.POST:
+                if 'relay' in request.POST:                                                                                                                                   
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
                     addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
