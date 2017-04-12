@@ -29,12 +29,16 @@ management/appCommands/prep.py command for each app (if it exists).
 """
 
 from django.core.management.base import NoArgsCommand
+from django.core import management
 
 from geocamUtil.management import commandUtil
 
 
 class Command(NoArgsCommand):
     help = 'Prep basaltApp'
+
+    def handle(self, *args, **options):
+        management.call_command('prepelements')
 
     def handle_noargs(self, **options):
         # put your code here
