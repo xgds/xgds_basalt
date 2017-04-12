@@ -13,10 +13,8 @@
 <table>
 <tr><td>{{ form.username.label_tag }}</td><td>{{ form.username }}</td></tr>
 <tr><td>{{ form.password.label_tag }}</td><td>{{ form.password }}</td></tr>
+<tr><td></td><td><a href="{% url 'user-registration' %}" class="btn btn-primary mr-1">register</a><input type="submit" value="login" /></td></tr>
 </table>
-
-<br/>
-<input type="submit" value="login" /> or <a href="{% url 'user-registration' %}">register</a>
 <input type="hidden" name="next" value="{{ next }}" />
 {% csrf_token %}
 </form>

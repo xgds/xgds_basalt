@@ -43,14 +43,21 @@
 <form id="instrument_data_edit_form" action="{{ updateInstrumentDataUrl }}" method="post" enctype="multipart/form-data">
 	<table>
     {{ form.as_table }}
+    <tr>
+    	<td></td>
+    	<td id="buttons">
+    		<input id="save" class="btn btn-primary" type="submit" value="Save">
+    	</td>
+    </tr>
+
     </table>
-    <div id="buttons" >
-        <input id="save" class="btn btn-primary" type="submit" value="Save">
-    </div>
 </form>
 
 
 {% endblock content %}
+
+{% block footer %}
+{% endblock footer %}
 
 {% block scripts %}
   {{ block.super }}
