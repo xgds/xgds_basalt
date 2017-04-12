@@ -64,7 +64,7 @@ table.planIndex td.exportFormat a {
 {% for plan in plans %}
   <tr id={{ plan.id }}>
   	<td><input type="checkbox" id="pick_{{plan.id}}" name="picks" value="{{plan.id}}" class="check"/></td>
-  	<td>{% if plan.readOnly %}<img src="{{ STATIC_URL }}xgds_planner2/images/lock.png" alt="Read Only">{% endif %}</td>
+  	<td>{% if plan.readOnly %}<i class="fa fa-lock fa-lg ml-2" alt="Read Only"></i>{% endif %}</td>
   	<td ><label for="pick_{{plan.id}}"><a href="{% url 'planner2_edit' plan.id %}" id="edit_{{plan.id}}">{{ plan.name }}</a></label></td>
   	<td>{{ plan.creator }}</td>
     <td>{% timezone TIME_ZONE %}{{ plan.dateModified|date:"Y-m-d H:i e" }}{% endtimezone %}</td>
