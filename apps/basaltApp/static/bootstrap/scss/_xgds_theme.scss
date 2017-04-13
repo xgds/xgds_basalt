@@ -1,6 +1,6 @@
-$color-primary-bg: #848487; //#9a9a9d; //#838386; //#646466;	// primary background color for headers, buttons, etc	
-$color-secondary-bg: #005c8e; //#42A5DA; // secondary background color for subnav
-$color-tertiary-bg: #8b9ba3; // tertiary background color
+$color-primary-bg: #DBDBCE; //#848487; //#9a9a9d; //#838386; //#646466;	// primary background color for headers, buttons, etc	
+$color-secondary-bg: #004489; //#005c8e; //#42A5DA; // secondary background color for subnav
+$color-tertiary-bg: #CCCC99; //#8b9ba3; // tertiary background color
 
 $color-primary: white;	// primary foreground color	
 $color-secondary: white; // secondary foreground color
@@ -17,6 +17,9 @@ $dashboard-bgcolor: #e8e8e8;
 $note-tag-bgcolor: #de9e5b;
 $note-tag-color: $white;
 
+$color-table-th-bg: $color-secondary-bg;
+$color-table-th: $color-secondary;
+
 // Body
 //
 // Settings for the `<body>` element.
@@ -30,7 +33,7 @@ $inverse-color: $gray-lighter;
 	color: $gray-light;
 }
 
-$navbar-inverse-color:                 rgba($white,.7);
-$navbar-inverse-hover-color:           rgba($white,.8);
-$navbar-inverse-active-color:          rgba($white,1);
-$navbar-inverse-disabled-color:        rgba($white,.2);
+$navbar-inverse-color:                 rgba($color-secondary-bg,.7);
+$navbar-inverse-hover-color:           rgba($color-secondary-bg,.8);
+$navbar-inverse-active-color:          rgba($color-secondary-bg,1);
+$navbar-inverse-disabled-color:        rgba($color-secondary-bg,.2);

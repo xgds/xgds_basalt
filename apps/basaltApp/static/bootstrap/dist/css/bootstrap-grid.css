@@ -24,6 +24,7 @@ html {
 .navbar-nav .nav-link {
   font-size: 0.9rem;
   font-variant: small-caps;
+  font-weight: 500;
 }
 
 .navbar-nav .nav-link.active {
@@ -31,19 +32,19 @@ html {
 }
 
 .nav-pills .nav-link.active {
-  background-color: #8b9ba3 !important;
+  background-color: #CCCC99 !important;
   color: white;
 }
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
   font-weight: bold;
-  color: #005c8e !important;
+  color: #004489 !important;
 }
 
 .nav-tabs > .nav-link.active,
 .nav-tabs > .nav-item.show .nav-link {
   font-weight: bold;
-  color: #005c8e;
+  color: #004489;
 }
 
 .nav .fa {
@@ -56,15 +57,15 @@ html {
 }
 
 .subnav a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(0, 68, 137, 0.7);
 }
 
 .subnav a:hover {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 68, 137, 0.8);
 }
 
 .subnav .nav-tabs {
-  border-bottom-color: #848487 !important;
+  border-bottom-color: #DBDBCE !important;
 }
 
 .navbar-collapse {
