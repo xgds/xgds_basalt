@@ -8,7 +8,10 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <title>
+    {% block title %}{% block siteSection %}{% endblock siteSection%} {% block siteTitle %}BASALT{% endblock siteTitle%}{% endblock title%}
+    </title>
+    
 	{% block cssMain %}
     <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
@@ -19,8 +22,8 @@
   	{% block headExtras %}
   	{% endblock headExtras%}
   </head>
+ 
   <body>
-  
   {% load nav %}
   {% block nav %}
   	<nav class="navbar navbar-toggleable-md navbar-inverse bg-primary ">
@@ -55,6 +58,13 @@
 				{% if settings.GEOCAM_UTIL_LIVE_MODE %}
 				<li class='nav-item {% currentnav *tatus* %}'>
 	            	<a class="nav-link {% currentnav *tatus* %}" href="{% url 'xgds_status_board_showSubsystemStatus' %}">Status</a>
+	            </li>
+	            {% endif %}
+	            {% if settings.NOTEBOOK_URL %}
+	            <li class='nav-item'>
+	              <a href="{{ settings.NOTEBOOK_URL }}"
+	                 title="Notebook" target="_notebook" class="nav-link">
+	                Notebook</a>
 	            </li>
 	            {% endif %}
             </ul>

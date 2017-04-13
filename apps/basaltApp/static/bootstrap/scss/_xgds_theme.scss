@@ -1,0 +1,36 @@
+$color-primary-bg: #848487; //#9a9a9d; //#838386; //#646466;	// primary background color for headers, buttons, etc	
+$color-secondary-bg: #005c8e; //#42A5DA; // secondary background color for subnav
+$color-tertiary-bg: #8b9ba3; // tertiary background color
+
+$color-primary: white;	// primary foreground color	
+$color-secondary: white; // secondary foreground color
+$color-tertiary: white;	//tertiary foreground color
+
+$color-primary-inverse: $color-primary-bg;
+$color-primary-inverse-bg: $color-primary;
+
+$color-secondary-inverse: $color-secondary-bg;
+$color-secondary-inverse-bg: $color-secondary;
+
+$dashboard-bgcolor: #e8e8e8;
+
+$note-tag-bgcolor: #de9e5b;
+$note-tag-color: $white;
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg:       $white;
+$body-color:    $gray-dark;
+$inverse-bg:    $gray-dark;
+$inverse-color: $gray-lighter;
+
+.gray-light {
+	color: $gray-light;
+}
+
+$navbar-inverse-color:                 rgba($white,.7);
+$navbar-inverse-hover-color:           rgba($white,.8);
+$navbar-inverse-active-color:          rgba($white,1);
+$navbar-inverse-disabled-color:        rgba($white,.2);
