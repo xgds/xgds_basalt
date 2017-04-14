@@ -2594,6 +2594,16 @@ form.bbf-form ul textarea {
   width: auto;
 }
 
+.form-check-input, form > p > input[type="checkbox"], form > p > input[type="radio"] {
+  position: absolute;
+  margin-top: 0.25rem;
+  margin-left: -1.25rem;
+}
+
+.form-check-input:only-child, form > p > input[type="checkbox"]:only-child, form > p > input[type="radio"]:only-child {
+  position: absolute;
+}
+
 .btn, form input[type="submit"], form input[type="button"], .ui-dialog .ui-dialog-buttonpane button {
   display: inline-block;
   font-weight: normal;
