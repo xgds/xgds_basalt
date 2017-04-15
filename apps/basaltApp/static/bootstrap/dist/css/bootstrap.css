@@ -2601,7 +2601,18 @@ form.bbf-form ul textarea {
 }
 
 .form-check-input:only-child, form > p > input[type="checkbox"]:only-child, form > p > input[type="radio"]:only-child {
-  position: absolute;
+  position: inherit;
+  margin-left: -3px;
+}
+
+form > p > input[type="checkbox"], form > p > input[type="radio"] {
+  position: inherit;
+  margin-left: -3px;
+  margin-top: 0.7rem;
+}
+
+label checkbox:only-child {
+  position: inherit;
 }
 
 .btn, form input[type="submit"], form input[type="button"], .ui-dialog .ui-dialog-buttonpane button {
