@@ -39,7 +39,7 @@ from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
 from xgds_status_board import models as statusBoardModels
 from geocamUtil.loader import LazyGetModelByName
-from xgds_core.models import Constant
+from xgds_core.models import Constant, AbstractCondition, AbstractConditionHistory
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin, HierarchichalTag
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
@@ -1088,3 +1088,18 @@ class BasaltStillFrame(AbstractStillFrame):
     def __unicode__(self):
         return "%s - %s" % (self.flight.name, self.name)
 
+
+class ActivityStatus(AbstractEnumModel):
+    def __unicode__(self):
+        return u'%s' % (self.display_name)
+
+
+class BasaltCondition(AbstractCondition):
+    assignment = plannerModels.DEFAULT_VEHICLE_FIELD()
+    source_group_name = models.CharField(null=True, blank=True, max_length=64) 
+    flight = models.ForeignKey(BasaltFlight, blank=True)
+    
+
+class BasaltConditionHistory(AbstractConditionHistory):
+    condition = models.ForeignKey(BasaltCondition)
+    activity_status = models.ForeignKey(ActivityStatus)

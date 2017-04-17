@@ -800,5 +800,45 @@
             "first_name": "SA",
             "last_name": "Camera"
         }
+    },
+    {	
+        "pk": 1,
+        "model": "basaltApp.ActivityStatus",
+        "fields": {
+            "value": "scheduled",
+            "display_name": "Scheduled"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "basaltApp.ActivityStatus",
+        "fields": {
+            "value": "started",
+            "display_name": "Started"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "basaltApp.ActivityStatus",
+        "fields": {
+            "value": "in_progress",
+            "display_name": "In Progress"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "basaltApp.ActivityStatus",
+        "fields": {
+            "value": "completed",
+            "display_name": "Completed"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "basaltApp.ActivityStatus",
+        "fields": {
+            "value": "aborted",
+            "display_name": "Aborted"
+        }
     }
 ]
