@@ -716,6 +716,10 @@ XGDS_CORE_TEMPLATE_DIRS = getOrCreateDict('XGDS_CORE_TEMPLATE_DIRS')
 XGDS_CORE_TEMPLATE_DIRS[XGDS_SAMPLE_SAMPLE_MODEL] = [os.path.join('xgds_sample', 'templates', 'handlebars')]
 XGDS_CORE_TEMPLATE_DIRS[XGDS_IMAGE_IMAGE_SET_MODEL] = [os.path.join('xgds_image', 'templates', 'handlebars')]
 
+XGDS_CORE_CONDITION_MODEL = "basaltApp.BasaltCondition"
+XGDS_CORE_CONDITION_HISTORY_MODEL = "basaltApp.BasaltConditionHistory"
+
+
 XGDS_CORE_TEMPLATE_DEBUG = False
 
 COUCHDB_FILESTORE_NAME = "basalt-file-store"
@@ -725,4 +729,3 @@ JWPLAYER_KEY = '***REMOVED***'
 IMAGE_CAPTURE_DIR = os.path.join(DATA_ROOT, 'xgds_video_stills')
 
 FAVICON_PATH = 'basaltApp/icons/favicon.ico'
-

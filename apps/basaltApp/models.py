@@ -61,6 +61,7 @@ from django.core.cache import caches
 _cache = caches['default']
 
 RESOURCE_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_RESOURCE_MODEL)
+VEHICLE_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_VEHICLE_MODEL)
 ACTIVE_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL)
 
 couchStore = CouchDbStorage()
@@ -1095,11 +1096,34 @@ class ActivityStatus(AbstractEnumModel):
 
 
 class BasaltCondition(AbstractCondition):
-    assignment = plannerModels.DEFAULT_VEHICLE_FIELD()
+    vehicle = plannerModels.DEFAULT_VEHICLE_FIELD()
     source_group_name = models.CharField(null=True, blank=True, max_length=64) 
     flight = models.ForeignKey(BasaltFlight, blank=True)
+    
+    def populate(self, source_time, condition_data):
+        result = super(BasaltCondition, self).populate(source_time, condition_data)
+        if 'assignment' in self.jsonData:
+            try:
+                self.vehicle = VEHICLE_MODEL.get().objects.get(name=self.jsonData.assignment)
+                
+                # look up the current flight
+                activeFlights = getActiveFlights(vehicle = self.vehicle)
+                # there should really be just one, take the last to be sure
+                if activeFlights:
+                    self.flight = activeFlights.last().flight
+            except:
+                pass
+        if 'group_name' in self.jsonData:
+            self.source_group_name = self.jsonData.group_name
+        self.save()
+        return result
     
 
 class BasaltConditionHistory(AbstractConditionHistory):
     condition = models.ForeignKey(BasaltCondition)
     activity_status = models.ForeignKey(ActivityStatus)
+    
+    def populate(self, condition_data_dict):
+        super(BasaltConditionHistory, self).populate(condition_data_dict)
+        
+        self.save()
