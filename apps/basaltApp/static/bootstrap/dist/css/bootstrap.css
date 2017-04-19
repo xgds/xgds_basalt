@@ -91,7 +91,7 @@ a > i {
 }
 
 .text-primary-inverse a, .text-primary-inverse a:hover, .text-primary-inverse a:active, .text-primary-inverse a:visited {
-  color: white;
+  color: #004489;
   text-decoration: none;
 }
 
@@ -2602,7 +2602,6 @@ form.bbf-form ul textarea {
 
 .form-check-input:only-child, form > p > input[type="checkbox"]:only-child, form > p > input[type="radio"]:only-child {
   position: inherit;
-  margin-left: -3px;
 }
 
 form > p > input[type="checkbox"], form > p > input[type="radio"] {
@@ -8745,11 +8744,19 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 }
 
 .text-primary-inverse {
-  color: white !important;
+  color: #004489 !important;
 }
 
 a.text-primary-inverse:focus, a.text-primary-inverse:hover {
-  color: #e6e6e6 !important;
+  color: #002b56 !important;
+}
+
+.text-secondary {
+  color: #004489 !important;
+}
+
+a.text-secondary:focus, a.text-secondary:hover {
+  color: #002b56 !important;
 }
 
 .btn, form input[type="submit"], form input[type="button"], .ui-dialog .ui-dialog-buttonpane button {

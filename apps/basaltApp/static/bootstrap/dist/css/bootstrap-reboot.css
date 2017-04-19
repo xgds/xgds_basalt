@@ -85,7 +85,7 @@ a > i {
 }
 
 .text-primary-inverse a, .text-primary-inverse a:hover, .text-primary-inverse a:active, .text-primary-inverse a:visited {
-  color: white;
+  color: #004489;
   text-decoration: none;
 }
 
