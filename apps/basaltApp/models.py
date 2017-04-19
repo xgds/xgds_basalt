@@ -1102,9 +1102,10 @@ class BasaltCondition(AbstractCondition):
     
     def populate(self, source_time, condition_data):
         result = super(BasaltCondition, self).populate(source_time, condition_data)
-        if 'assignment' in result.jsonData:
+        condition_data_dict = json.loads(condition_data)
+        if 'assignment' in condition_data_dict:
             try:
-                self.vehicle = VEHICLE_MODEL.get().objects.get(name=result.jsonData['assignment'])
+                self.vehicle = VEHICLE_MODEL.get().objects.get(name=condition_data_dict['assignment'])
                 
                 # look up the current flight
                 activeFlights = getActiveFlights(vehicle = self.vehicle)
@@ -1113,14 +1114,14 @@ class BasaltCondition(AbstractCondition):
                     self.flight = activeFlights.last().flight
             except:
                 pass
-        if 'group_name' in result.jsonData:
-            self.source_group_name = result.jsonData.group_name
+        if 'group_name' in condition_data_dict:
+            self.source_group_name = condition_data_dict['group_name']
         self.save()
         return result
     
 
 class BasaltConditionHistory(AbstractConditionHistory):
-    condition = models.ForeignKey(BasaltCondition)
+    condition = models.ForeignKey(BasaltCondition, related_name=settings.XGDS_CORE_CONDITION_HISTORY_MODEL.replace('.','_'))
     activity_status = models.ForeignKey(ActivityStatus, null=True, blank=True)
     
     def populate(self, condition_data_dict, save=False):
