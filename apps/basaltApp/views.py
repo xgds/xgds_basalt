@@ -724,30 +724,3 @@ def getHvnpNetworkLink(request):
     response = wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
     return response
 
-CONDITION_MODEL = LazyGetModelByName(settings.XGDS_CORE_CONDITION_MODEL)
-CONDITION_HISTORY_MODEL = LazyGetModelByName(settings.XGDS_CORE_CONDITION_HISTORY_MODEL)
-
-def basaltSetCondition(request):
-    ''' read information from request.POST and use it to set or update a stored condition
-    '''
-    try:
-        condition_source = request.POST.get('source')
-        condition_source_id = request.POST.get('id', None)
-        if condition_source_id:
-            condition = CONDITION_MODEL.get().objects.get_or_create(source=condition_source, source_id=condition_source_id)
-        else:
-            condition = CONDITION_MODEL.get()(source=condition_source)
-        
-        raw_source_time = request.POST.get('time')
-        condition_data = request.POST.get('data', '{}')
-        condition_history = populateCondition(condition, raw_source_time, condition_data)
-        
-        json_condition_history = serialize('json', condition_history, cls=DjangoJSONEncoder)
-        return JsonResponse(json.dumps({'success': 'Saved',
-                                        'data': json_condition_history}),
-                            status=httplib.ACCEPTED)
-    except Exception as e:
-        return JsonResponse(json.dumps({'error': {'message': str(e)}
-                                        }),
-                            status=httplib.NOT_ACCEPTABLE)
-    

@@ -1096,15 +1096,15 @@ class ActivityStatus(AbstractEnumModel):
 
 
 class BasaltCondition(AbstractCondition):
-    vehicle = plannerModels.DEFAULT_VEHICLE_FIELD()
+    vehicle = models.ForeignKey(settings.XGDS_PLANNER2_VEHICLE_MODEL, null=True, blank=True)
     source_group_name = models.CharField(null=True, blank=True, max_length=64) 
-    flight = models.ForeignKey(BasaltFlight, blank=True)
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def populate(self, source_time, condition_data):
         result = super(BasaltCondition, self).populate(source_time, condition_data)
-        if 'assignment' in self.jsonData:
+        if 'assignment' in result.jsonData:
             try:
-                self.vehicle = VEHICLE_MODEL.get().objects.get(name=self.jsonData.assignment)
+                self.vehicle = VEHICLE_MODEL.get().objects.get(name=result.jsonData['assignment'])
                 
                 # look up the current flight
                 activeFlights = getActiveFlights(vehicle = self.vehicle)
@@ -1113,17 +1113,23 @@ class BasaltCondition(AbstractCondition):
                     self.flight = activeFlights.last().flight
             except:
                 pass
-        if 'group_name' in self.jsonData:
-            self.source_group_name = self.jsonData.group_name
+        if 'group_name' in result.jsonData:
+            self.source_group_name = result.jsonData.group_name
         self.save()
         return result
     
 
 class BasaltConditionHistory(AbstractConditionHistory):
     condition = models.ForeignKey(BasaltCondition)
-    activity_status = models.ForeignKey(ActivityStatus)
+    activity_status = models.ForeignKey(ActivityStatus, null=True, blank=True)
     
-    def populate(self, condition_data_dict):
-        super(BasaltConditionHistory, self).populate(condition_data_dict)
+    def populate(self, condition_data_dict, save=False):
+        super(BasaltConditionHistory, self).populate(condition_data_dict, save)
         
+        if self.status:
+            try: 
+                activity_status = ActivityStatus.objects.get(value=self.status)
+                self.activity_status = activity_status
+            except:
+                pass
         self.save()
