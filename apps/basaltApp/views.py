@@ -21,7 +21,7 @@ import time
 import pytz
 import httplib
 from django.conf import settings
-from django.shortcuts import render_to_response, redirect, render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django import forms
 
 from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
@@ -213,9 +213,10 @@ def getTodaysPlans(request):
 
 def wrist(request):
     found = getTodaysPlans(request)
-    return render_to_response("basaltApp/kmlWrist.html",
-                              {'letter_plans': found},
-                              context_instance=RequestContext(request))
+    return render(request,
+                  "basaltApp/kmlWrist.html",
+                  {'letter_plans': found},
+                  )
 
 
 def wristKmlTrack(request):
@@ -328,12 +329,12 @@ def getInstrumentDataImportPage(request, instrumentName):
     errors = ""
          
     instrumentDataImportUrl = reverse('save_instrument_data', kwargs={'instrumentName': instrumentName})
-    return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
-                              RequestContext(request, {'form': form,
-                                                       'errors': errors,
-                                                       'instrumentDataImportUrl': instrumentDataImportUrl,
-                                                       'instrumentType': instrumentName})
-                              )      
+    return render(request,
+                  'xgds_instrument/importBasaltInstrumentData.html',
+                  {'form': form,
+                   'errors': errors,
+                   'instrumentDataImportUrl': instrumentDataImportUrl,
+                   'instrumentType': instrumentName})
 
 def getPxrfDataImportPage(request):
     form = PxrfInstrumentDataForm()
@@ -343,13 +344,12 @@ def getPxrfDataImportPage(request):
     errors = ""
          
     instrumentDataImportUrl = reverse('save_pxrf_data')
-    return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
-                              RequestContext(request, {'form': form,
-                                                       'errors': errors,
-                                                       'instrumentDataImportUrl': instrumentDataImportUrl,
-                                                       'instrumentType': instrumentName})
-                              )      
-    
+    return render(request,
+                  'xgds_instrument/importBasaltInstrumentData.html',
+                   {'form': form,
+                    'errors': errors,
+                    'instrumentDataImportUrl': instrumentDataImportUrl,
+                    'instrumentType': instrumentName})
     
 def stringToDateTime(datetimeStr, timezone):
     date_formats = list(forms.DateTimeField.input_formats) + [
@@ -421,12 +421,13 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
             return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=httplib.NOT_ACCEPTABLE)
         else:
             messages.error(request, 'Errors %s' % errors)
-            return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
-                                      RequestContext(request, {'form': form,
-                                                               'errors': form.errors,
-                                                               'instrumentDataImportUrl': reverse('save_instrument_data', kwargs={'instrumentName': instrumentName}),
-                                                               'instrumentType': instrumentName}),
-                                      status=httplib.NOT_ACCEPTABLE)      
+            return render(request,
+                          'xgds_instrument/importBasaltInstrumentData.html',
+                          {'form': form,
+                           'errors': form.errors,
+                           'instrumentDataImportUrl': reverse('save_instrument_data', kwargs={'instrumentName': instrumentName}),
+                           'instrumentType': instrumentName},
+                          status=httplib.NOT_ACCEPTABLE)      
 
 
 def savePxrfMfgFile(request):
@@ -571,12 +572,12 @@ def saveNewPxrfData(request, jsonResult=False):
             return HttpResponse(json.dumps({'status': 'error', 'message': errors}), content_type='application/json', status=406)
         else:
             messages.error(request, 'Errors %s' % errors)
-            return render_to_response('xgds_instrument/importBasaltInstrumentData.html',
-                                      RequestContext(request, {'form': form,
-                                                               'errors': form.errors,
-                                                               'instrumentDataImportUrl': reverse('save_pxrf_data'),
-                                                               'instrumentType': 'pxrf'})
-                                                    )      
+            return render(request,
+                          'xgds_instrument/importBasaltInstrumentData.html',
+                          {'form': form,
+                           'errors': form.errors,
+                           'instrumentDataImportUrl': reverse('save_pxrf_data'),
+                           'instrumentType': 'pxrf'})
 
 def saveUpdatedInstrumentData(request, instrument_name, pk):
     """

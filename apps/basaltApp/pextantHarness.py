@@ -18,12 +18,7 @@ import logging
 import json
 import os
 from django.conf import settings
-from django.shortcuts import render_to_response, redirect, render
-from django.core.urlresolvers import reverse
 
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
-from django.template import RequestContext
-from django.utils.translation import ugettext, ugettext_lazy as _
 
 from pextant.api import Pathfinder
 from pextant.ExplorerModel import Astronaut

@@ -18,7 +18,7 @@ import logging
 from uuid import uuid4
 import string
 
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, permission_required
@@ -55,18 +55,19 @@ def registerUser(request):
     #    #return HttpResponseRedirect('/')
     #    return HttpResponse("You are already logged in.")
     if request.method == "GET":
-        return render_to_response("registration/register.html",
-                                  {'register_form': UserRegistrationForm()},
-                                  context_instance=RequestContext(request))
+        return render(request,
+                      "registration/register.html",
+                      {'register_form': UserRegistrationForm()}
+                      )
     else:
         form = UserRegistrationForm(request.POST)
 
         if not form.is_valid():
             # FAIL
             logging.info("Create form validation failed.")
-            return render_to_response("registration/register.html",
-                                      {'register_form': form},
-                                      context_instance=RequestContext(request))
+            return render(request,
+                          "registration/register.html",
+                          {'register_form': form})
         else:
             logging.info("Creating a new user")
             user_data = form.cleaned_data
@@ -87,19 +88,21 @@ def registerUser(request):
                     'referrer': request.META['HTTP_REFERER'],
                 }),
             )
-            return render_to_response("registration/simple_message.html",
-                                      {'message': "You have successfully registered.  Please notify an xGDS developer to activate your account."},  
-                                      #You will receive an email notification at %s after a site manager approves your request." % user.email},
-                                      context_instance=RequestContext(request))
+            return render(request,
+                          "registration/simple_message.html",
+                          {'message': "You have successfully registered.  Please notify an xGDS developer to activate your account."},  
+                          #You will receive an email notification at %s after a site manager approves your request." % user.email},
+                          )
 
 
 @permission_required('add_user')
 def activateUser(request, user_id):
 
     def render_message(msg):
-        return render_to_response("registration/simple_message.html",
-                                  {'message': msg},
-                                  context_instance=RequestContext(request))
+        return render(request,
+                      "registration/simple_message.html",
+                      {'message': msg},
+                      )
 
     try:
         user = User.objects.get(id=user_id)
@@ -153,7 +156,8 @@ def email_feedback(request):
         if hasattr(request.user, 'email'):
             email = request.user.email
         form = EmailFeedbackForm(initial={'reply_to': email})
-    return render_to_response('registration/email_feedback.html',
-                              {'form': form,
-                               'mail_sent': mail_sent},
-                              context_instance=RequestContext(request))
+    return render(request,
+                  'registration/email_feedback.html',
+                  {'form': form,
+                   'mail_sent': mail_sent},
+                  )
