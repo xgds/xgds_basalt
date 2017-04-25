@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block sitemenu-content-secondary %}
 {% include "xgds_planner2/planner2_subnav.html" %}
 {% endblock %}
@@ -45,5 +46,5 @@ For Sextant to calculate a traverse we have to specify the mass of the crewmembe
 {# block cssExtras #}
 	{{ block.super }}
 	<link rel="stylesheet" type="text/css" href="{{ EXTERNAL_URL }}bootstrap-tagsinput/dist/bootstrap-tagsinput.css"></link>
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}xgds_core/css/typeahead.css"></link>
+	<link rel="stylesheet" type="text/css" href="{% static 'xgds_core/css/typeahead.css' %}"></link>
 {# endblock cssExtras #}

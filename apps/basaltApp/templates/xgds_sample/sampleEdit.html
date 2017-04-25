@@ -1,8 +1,9 @@
 {% extends 'xgds_sample/sampleEdit_base.html' %}
+{% load static %}
 
 {% block scripts %}
 {{block.super}}
-	<script type="text/javascript" src='{{ STATIC_URL }}xgds_sample/js/basaltSampleEdit.js'></script>
+	<script type="text/javascript" src="{% static 'xgds_sample/js/basaltSampleEdit.js'%}"></script>
 {% endblock scripts %}
 
 

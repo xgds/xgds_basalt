@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load nav %}
+{% load static %}
 {% block siteSection %}Video{% endblock %}
 
 {% block nav %}
@@ -20,10 +21,10 @@
 {% block scripts %}
 {{block.super}}
 	{% include "xgds_notes2/NoteJS.html" %}
-	{% include "xgds_video/VideoJS.html" with JWPLAYER_KEY=settings.JWPLAYER_KEY STATIC_URL=STATIC_URL %}
+	{% include "xgds_video/VideoJS.html" with JWPLAYER_KEY=settings.JWPLAYER_KEY %}
 	
 	{% block myscripts %}
-	<script type="text/javascript" src='{{STATIC_URL}}xgds_notes2/js/recordedNotesTable.js'></script>
+	<script type="text/javascript" src="{% static 'xgds_notes2/js/recordedNotesTable.js'%}"></script>
     {% endblock myscripts %}
 {% endblock %}
  
@@ -104,7 +105,7 @@
 	                 {% endwith %}
 	            </div>
 				<section id="{{source.shortName}}_noteInput">
-             		{% include "xgds_video/video_notes.html" with data=source.form source=source.shortName STATIC_URL=STATIC_URL %}
+             		{% include "xgds_video/video_notes.html" with data=source.form source=source.shortName %}
              	</section>
              	<!--embed the video-->
              	<section>

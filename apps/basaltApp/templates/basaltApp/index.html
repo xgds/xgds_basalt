@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 {% if settings.GEOCAM_UTIL_LIVE_MODE %}
 <strong style="color:red">There are not currently any active EVAs.</strong><br/>
@@ -47,7 +47,7 @@ When you are told there are active EVAs, please click on the BASALT logo in the 
 {% block footer %}
 <div class="fixed-bottom container-fluid bg-primary d-flex justify-content-between py-2 ">
 			<a href="https://ti.arc.nasa.gov/tech/asr/intelligent-robotics/" target="_blank" title="IRG" >
-    			<img src="{{STATIC_URL}}bootstrap/img/irg.png" alt="IRG logo" />
+    			<img src="{% static 'bootstrap/img/irg.png' %}" alt="IRG logo" />
     		</a>
     		<div class="d-flex align-items-center">
     		<h5 class="text-primary-inverse ">
@@ -58,7 +58,7 @@ When you are told there are active EVAs, please click on the BASALT logo in the 
     		</div>
     		
 			<a href="http://www.nasa.gov" title="NASA" target="_blank">
-    			<img src="{{STATIC_URL}}bootstrap/img/meatball.png"  alt="NASA logo" />
+    			<img src="{% static 'bootstrap/img/meatball.png' %}"  alt="NASA logo" />
     		</a>
 </div>
 {% endblock footer %}

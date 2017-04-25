@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load pipeline %}
-{% load staticfiles %}
+{% load static %}
 {% load help_button %}
 
 <html lang="en">
@@ -32,7 +32,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <a href="{% url 'live_index' %}" title="xGDS BASALT" class="navbar-brand">
-     			<img src="{{STATIC_URL}}basaltApp/css/logo.png" class="logo" alt="BASALT logo" width="188" height="60"/> <!-- width="150" height="48" > -->
+     			<img src="{% static 'basaltApp/css/logo.png' %}" class="logo" alt="BASALT logo" width="188" height="60"/> <!-- width="150" height="48" > -->
      		</a>
         <div class="collapse navbar-collapse flex-column ml-lg-0 ml-3" id="navbarCollapse">
         	<div class="d-flex flex-row justify-content-between">
@@ -105,7 +105,7 @@
   {% block footer %}
   <div class="fixed-bottom container-fluid bg-primary d-flex justify-content-between py-2 ">
   			<a href="https://ti.arc.nasa.gov/tech/asr/intelligent-robotics/" target="_blank" title="IRG" >
-    			<img src="{{STATIC_URL}}bootstrap/img/irg.png" alt="IRG logo" height="30px"/>
+    			<img src="{% static 'bootstrap/img/irg.png'%}" alt="IRG logo" height="30px"/>
     		</a>
     		<div class="d-flex align-items-center">
 	    		<strong class="text-primary-inverse ">
@@ -115,7 +115,7 @@
 	    		</strong>
 	    	</div>
     		<a href="http://www.nasa.gov" title="NASA" target="_blank">
-    			<img src="{{STATIC_URL}}bootstrap/img/meatball.png"  alt="NASA logo" height="30px" />
+    			<img src="{% static 'bootstrap/img/meatball.png' %}"  alt="NASA logo" height="30px" />
     		</a>
 	</div>
   {% endblock footer %}
@@ -128,8 +128,8 @@
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="{{ EXTERNAL_URL }}underscore/underscore-min.js"></script>
 	<script src="{{ EXTERNAL_URL }}jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript" src="{{ STATIC_URL }}xgds_core/js/jqueryUtils.js"></script>
-	<script src="{{ STATIC_URL }}xgds_core/js/helpPopup.js"></script>
+	<script type="text/javascript" src="{% static 'xgds_core/js/jqueryUtils.js' %}"></script>
+	<script src="{% static 'xgds_core/js/helpPopup.js' %}"></script>
 	<script src="{{ EXTERNAL_URL }}tether/dist/js/tether.min.js"></script>
 	<script src="{{ EXTERNAL_URL }}bootstrap/dist/js/bootstrap.min.js"></script>
     {% endblock scripts %}
