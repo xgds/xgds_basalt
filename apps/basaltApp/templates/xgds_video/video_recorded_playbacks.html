@@ -223,7 +223,7 @@ var indexFileUrl = null;
     {% block myNotesSetup %}
     var minHeight = 200;
 	{% if segmentsJson %}
-	{% if sources|length = 1 %}
+	{% if sources|length == 1 %}
 	{% with filter="flight__name"|add:":"|add:episode.shortName|add:"_"|add:sources.0.shortName%}
 		var thefilter = '{{filter}}';
 		var recordedNotesURL = "{% url 'xgds_map_server_objectsJson_force' 'XGDS_NOTES_NOTE_MODEL' filter %}";
