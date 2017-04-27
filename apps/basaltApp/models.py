@@ -1100,6 +1100,12 @@ class BasaltCondition(AbstractCondition):
     source_group_name = models.CharField(null=True, blank=True, max_length=64) 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
+    def getRedisSSEChannel(self):
+        if self.vehicle:
+            return self.vehicle.name
+        else:
+            return 'condition'
+
     def populate(self, source_time, condition_data):
         result = super(BasaltCondition, self).populate(source_time, condition_data)
         condition_data_dict = json.loads(condition_data)

@@ -77,6 +77,9 @@
 	            {% endif %} 
 	            <a href="{% url 'email_feedback' %}" class='btn btn-primary fa fa-envelope' role='button'></a>
 	            {% help_button help_content_path title %}
+	            <span href="#" class='btn alert-danger' id="connected_div" alt="Connection">
+	            	<span class="fa fa-spinner" id="connected"></span>
+	            </span>
 	            </div>
             </div>
             
@@ -132,6 +135,7 @@
 	<script src="{% static 'xgds_core/js/helpPopup.js' %}"></script>
 	<script src="{{ EXTERNAL_URL }}tether/dist/js/tether.min.js"></script>
 	<script src="{{ EXTERNAL_URL }}bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="{% static 'xgds_core/js/sseUtils.js' %}"></script>
     {% endblock scripts %}
     
     {% block postscripts %}
@@ -142,7 +146,7 @@
       {% endblock jsSetVars %}
 
       {% block jsInit %}
-
+			sse.initialize();
       {% endblock jsInit %}
     </script>
 	

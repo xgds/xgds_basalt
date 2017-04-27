@@ -40,8 +40,8 @@ class basaltAppConditionSetTest(TestCase):
                             'timezone': settings.TIME_ZONE,
                             'name': 'test_set_condition',
                             'extra': 'Start time should be set',
-                            'assignment': 'EV1',
-                            'group_name': '20170418A',
+                            'assignment': 'EV2',
+                            'group_name': '20170426B',
                             'xgds_id': 'HIL13_A_WAY0_0_PXO'
                             }
         data = {'time': isonow,
@@ -62,15 +62,15 @@ class basaltAppConditionSetTest(TestCase):
         self.assertEqual(condition_dict['name'], 'test_set_condition')
         self.assertEqual(condition_dict['xgds_id'], 'HIL13_A_WAY0_0_PXO')
         self.assertEqual(condition_dict['timezone'], settings.TIME_ZONE)
-        self.assertEqual(condition_dict['vehicle'], 1)
-        self.assertEqual(condition_dict['source_group_name'], '20170418A')
-        self.assertEqual(condition_dict['flight'], 1474)
+        self.assertEqual(condition_dict['vehicle'], 2)
+        self.assertEqual(condition_dict['source_group_name'], '20170426B')
+        self.assertEqual(condition_dict['flight'], 1481)
         
         self.assertEqual(condition_history_dict['source_time'], timestring)
 #         self.assertEqual(condition_history_dict['jsonData'], json.dumps(data['data']))
         self.assertEqual(condition_history_jsonData['extra'], 'Start time should be set')
-        self.assertEqual(condition_history_jsonData['assignment'], 'EV1')
-        self.assertEqual(condition_history_jsonData['group_name'], '20170418A')
+        self.assertEqual(condition_history_jsonData['assignment'], 'EV2')
+        self.assertEqual(condition_history_jsonData['group_name'], '20170426B')
         self.assertEqual(condition_dict['start_time'], timestring)
         self.assertEqual(condition_dict['source_id'], 'PB1')
         self.assertEqual(condition_dict['source'], 'playbook')
@@ -84,8 +84,8 @@ class basaltAppConditionUpdateTest(TestCase):
         nested_data_dict = {'end_time': isonow,
                             'status': 'in_progress',
                             'extra': 'In progress for this',
-                            'assignment': 'EV1',
-                            'group_name': '20170418A',
+                            'assignment': 'EV2',
+                            'group_name': '20170426B',
                             'xgds_id': 'HIL13_A_WAY0_0_PXO'
                             }
         data = {'time': isonow,
@@ -110,8 +110,8 @@ class basaltAppConditionUpdateTest(TestCase):
         self.assertEqual(condition_history_dict['source_time'], timestring)
 #         self.assertEqual(condition_history_dict['jsonData'], json.dumps(data['data']))
         self.assertEqual(condition_history_jsonData['extra'], 'In progress for this')
-        self.assertEqual(condition_history_jsonData['assignment'], 'EV1')
-        self.assertEqual(condition_history_jsonData['group_name'], '20170418A')
+        self.assertEqual(condition_history_jsonData['assignment'], 'EV2')
+        self.assertEqual(condition_history_jsonData['group_name'], '20170426B')
         self.assertEqual(condition_dict['source_id'], 'PB1')
         self.assertEqual(condition_dict['source'], 'playbook')
 

@@ -33,6 +33,14 @@ import os
 import math
 import calendar
 
+REDIS = False
+if REDIS:
+    import redis
+    import json
+    from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
+    REDIS_CHANNEL = 'EV2'
+
+
 # pylint: disable=E1101
 
 EARTH_RADIUS_METERS = 6371010
@@ -114,6 +122,10 @@ def evaBackpackGenerator(opts):
     s.bind((host, port))
     s.listen(backlog)
 
+    if REDIS:
+        rs = redis.Redis(host='localhost', port=6379)
+#         redis_pubsub = rs.pubsub()
+        
     while True:
         client, _address = s.accept()
         logging.info('connection established')
@@ -144,6 +156,21 @@ def evaBackpackGenerator(opts):
                                                checkSum)
                         logging.info(newLine)
                         client.send(newLine + "\n")
+                        
+                        if REDIS:
+                            data_dict = {'altitude': 0,
+                                         'heading': 0,
+                                         'id': 0,
+                                         'latitude': lat,
+                                         'longitude': lon,
+                                         'precisionMeters': None,
+                                         'serverTimestamp': None,
+                                         'timestamp': now,
+                                         'track_id': None,
+                                         'type': 'position'}
+                            payload_string = json.dumps(data_dict, cls=DatetimeJsonEncoder)
+                            message_string = json.dumps({'type':'position', 'data': payload_string})
+                            rs.publish(REDIS_CHANNEL, message_string)
                         time.sleep(opts.interval)
         except socket.error:
             logging.warning('socket error. broken pipe? will try to accept another connection')

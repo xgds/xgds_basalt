@@ -1,0 +1,68 @@
+{% extends "MapViewBase.html" %}
+{% load siteFrames %}
+{% load static %}
+
+{% block contents %}
+<script type="x-template/underscore" id="application_contents">
+  <div id="toolbar" class="row">
+	</div>
+ <div id="conditionDiv" class="alert alert-info mx-2">
+	Waiting for status ...
+ </div>
+ <div class="grid-stack" id="container">
+    	<div id="map-gridstack-item" class="grid-stack-item"  data-gs-x="0" data-gs-y="0" data-gs-width="10" data-gs-height="8" >
+			<div id="map-gridstack-item-content"  class="grid-stack-item-content" >
+				<ul class="nav justify-content-end">
+					<i class="fa fa-lock pinDiv gray-light"></i>
+				</ul>
+    			<div id="overmap" class="mb-1 mt-negative-1rem"><form>{% siteframe_form %}</form></div>
+    			<div id="map"></div>
+    			<div id="postmap" ></div>
+    			<div id="postpostmap" ></div>
+    		</div>
+    	</div>
+    	<div id="layers-gridstack-item" class="grid-stack-item"  data-gs-x="10" data-gs-y="0" data-gs-width="2" data-gs-height="8" >
+    		<div id="layers-gridstack-item-content" class="grid-stack-item-content" >
+				<ul class="nav justify-content-end">
+    				<i class="fa fa-unlock-alt pinDiv gray-light"></i>
+				</ul>
+	        	<div id="overlayers" class="mt-negative-1rem"></div>
+	        	<div id="layers"></div>
+	    	</div>
+		</div>
+    </div>
+</script>
+
+<div id="application">
+</div>
+
+{% endblock %}
+
+{% block jsInit %}
+	sse.initialize();
+	{% block jsInitPreApp %}
+	{% endblock jsInitPreApp %}
+	
+	$(function(){
+		siteFrames = {% siteframes_dict %};
+    	app.start(appOptions);
+    	app.vent.on("mapSearch:drewFeatures", function(e) {
+        	app.vent.trigger('mapSearch:fit');
+            });
+        {% block preLayout %}
+		{% endblock preLayout %}
+		
+    	xgds_gridstack.initializeGridstack({width:12});
+    	condition.subscribe();
+    	
+    	{% block otherJSInit %}
+		{% endblock otherJSInit %}
+	});
+	
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+	<script type="text/javascript" src="{% static 'xgds_core/js/conditionUtils.js' %}"></script>
+{% endblock scripts %}
+    

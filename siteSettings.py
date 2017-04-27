@@ -674,7 +674,7 @@ XGDS_MAP_SERVER_JS_MAP['pXRF'] = {'ol': 'xgds_instrument/js/olPxrfDataProduct.js
 
 BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 
-PYRAPTORD_SERVICE = False
+PYRAPTORD_SERVICE = True
 
 XGDS_CURRENT_SITEFRAME_ID = 2
 XGDS_CURRENT_REGION_ID = 2
@@ -729,3 +729,7 @@ JWPLAYER_KEY = '***REMOVED***'
 IMAGE_CAPTURE_DIR = os.path.join(DATA_ROOT, 'xgds_video_stills')
 
 FAVICON_PATH = 'basaltApp/icons/favicon.ico'
+
+ALLOWED_HOSTS = ['*']
+
+XGDS_SSE_CHANNELS = ['sse', 'EV1', 'EV2']

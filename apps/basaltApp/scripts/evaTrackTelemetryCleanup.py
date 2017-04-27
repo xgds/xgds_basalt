@@ -31,10 +31,16 @@ from django.core.exceptions import ObjectDoesNotExist
 import django
 django.setup()
 
+from django.conf import settings
+
 from geocamUtil.zmqUtil.subscriber import ZmqSubscriber
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
 from geocamTrack.models import (IconStyle, LineStyle)
+from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
+
+if settings.XGDS_CORE_REDIS:
+    from xgds_core.util import publishRedisSSE
 
 from basaltApp.models import (BasaltActiveFlight,
                               BasaltResource,
@@ -241,6 +247,18 @@ class GpsTelemetryCleanup(object):
 
         cpos = CurrentPosition(**params)
         cpos.saveCurrent()
+        
+        if settings.XGDS_SSE and settings.XGDS_CORE_REDIS:
+            # broadcast the data
+            params['pk'] = pos.pk
+            params['track_name'] = track.name
+            del params['track']
+            try:
+                json_string = json.dumps(params, cls=DatetimeJsonEncoder)
+                publishRedisSSE(track.resource_name, 'position', json_string)
+            except:
+                traceback.print_exc()
+                
         self.publisher.sendDjango(cpos)
 
 
