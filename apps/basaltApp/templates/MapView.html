@@ -53,7 +53,8 @@
 		{% endblock preLayout %}
 		
     	xgds_gridstack.initializeGridstack({width:12});
-    	condition.subscribe();
+    	condition.initialize();
+    	trackSse.initialize();
     	
     	{% block otherJSInit %}
 		{% endblock otherJSInit %}
@@ -63,9 +64,10 @@
 
 {% block scripts %}
 {{ block.super }}
-	<script type="text/javascript" src="{% static 'xgds_core/js/conditionUtils.js' %}"></script>
-	<script type="text/javascript" src="{% static 'basaltApp/js/basaltConditionUtils.js' %}"></script>
 	{% load sse %}
 	{% setup_sse %}
+	<script type="text/javascript" src="{% static 'xgds_core/js/conditionUtils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'basaltApp/js/basaltConditionUtils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'geocamTrack/js/trackSseUtils.js' %}"></script>
 {% endblock scripts %}
     

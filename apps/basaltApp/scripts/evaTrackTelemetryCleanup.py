@@ -254,7 +254,8 @@ class GpsTelemetryCleanup(object):
             params['track_name'] = track.name
             del params['track']
             try:
-                json_string = json.dumps(params, cls=DatetimeJsonEncoder)
+#                 json_string = json.dumps(params, cls=DatetimeJsonEncoder)
+                json_string = json.dumps(pos.toMapDict(), cls=DatetimeJsonEncoder)
                 publishRedisSSE(track.resource_name, 'position', json_string)
             except:
                 traceback.print_exc()
