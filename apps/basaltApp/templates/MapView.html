@@ -6,9 +6,11 @@
 <script type="x-template/underscore" id="application_contents">
   <div id="toolbar" class="row">
 	</div>
+ {% if settings.XGDS_SSE %}
  <div id="conditionDiv" class="alert alert-info mx-2">
 	Waiting for status ...
  </div>
+{% endif %}
  <div class="grid-stack" id="container">
     	<div id="map-gridstack-item" class="grid-stack-item"  data-gs-x="0" data-gs-y="0" data-gs-width="10" data-gs-height="8" >
 			<div id="map-gridstack-item-content"  class="grid-stack-item-content" >
@@ -53,8 +55,10 @@
 		{% endblock preLayout %}
 		
     	xgds_gridstack.initializeGridstack({width:12});
+    	{% if settings.XGDS_SSE %}
     	condition.initialize();
     	trackSse.initialize();
+    	{% endif %}
     	
     	{% block otherJSInit %}
 		{% endblock otherJSInit %}
@@ -69,5 +73,7 @@
 	<script type="text/javascript" src="{% static 'xgds_core/js/conditionUtils.js' %}"></script>
 	<script type="text/javascript" src="{% static 'basaltApp/js/basaltConditionUtils.js' %}"></script>
 	<script type="text/javascript" src="{% static 'geocamTrack/js/trackSseUtils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'geocamTrack/js/olTrackSseUtils.js' %}"></script>
+	<script type="text/javascript" src="{% static 'basaltApp/js/basaltTrackSseUtils.js' %}"></script>
 {% endblock scripts %}
     
