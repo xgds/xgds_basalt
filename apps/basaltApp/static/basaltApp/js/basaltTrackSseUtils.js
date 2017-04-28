@@ -16,6 +16,9 @@
 
 
 $.extend(trackSse, {
+	getTrackModel: function() {
+		return app.options.searchModels['Actual_Traverse'].model;
+	},
 	setupPositionIcon: function(channel){
 		Position.initStyles();
 		if (!(channel in Position.styles)){

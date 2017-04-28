@@ -250,12 +250,11 @@ class GpsTelemetryCleanup(object):
         
         if settings.XGDS_SSE and settings.XGDS_CORE_REDIS:
             # broadcast the data
-            params['pk'] = pos.pk
-            params['track_name'] = track.name
-            del params['track']
+            result = pos.toMapDict()
+            result['track_name'] = track.name
+            result['track_pk'] = track.pk
             try:
-#                 json_string = json.dumps(params, cls=DatetimeJsonEncoder)
-                json_string = json.dumps(pos.toMapDict(), cls=DatetimeJsonEncoder)
+                json_string = json.dumps(result, cls=DatetimeJsonEncoder)
                 publishRedisSSE(track.resource_name, 'position', json_string)
             except:
                 traceback.print_exc()
