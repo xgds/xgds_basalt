@@ -81,8 +81,7 @@ class basaltAppConditionUpdateTest(TestCase):
         url = "http://%s%s" % ('localhost', '/xgds_core/condition/set/')
         nowtime = datetime.datetime.now(pytz.utc)
         isonow = nowtime.isoformat()
-        nested_data_dict = {'end_time': isonow,
-                            'status': 'in_progress',
+        nested_data_dict = {'status': 'in_progress',
                             'extra': 'In progress for this',
                             'assignment': 'EV2',
                             'group_name': '20170426B',
@@ -115,6 +114,47 @@ class basaltAppConditionUpdateTest(TestCase):
         self.assertEqual(condition_dict['source_id'], 'PB1')
         self.assertEqual(condition_dict['source'], 'playbook')
 
+class basaltAppConditionEndTest(TestCase):
+
+    def test_update_condition(self):
+        url = "http://%s%s" % ('localhost', '/xgds_core/condition/set/')
+        nowtime = datetime.datetime.now(pytz.utc)
+        isonow = nowtime.isoformat()
+        nested_data_dict = {'end_time': isonow,
+                            'status': 'completed',
+                            'extra': 'Done done done',
+                            'assignment': 'EV2',
+                            'group_name': '20170426B',
+                            'xgds_id': 'HIL13_A_WAY0_0_PXO'
+                            }
+        data = {'time': isonow,
+                'source': 'playbook',
+                'id': 'PB1',
+                'data': json.dumps(nested_data_dict)
+                }
+        response = requests.post(url, data=data)
+        json_response = response.json()
+        self.assertEqual(json_response['status'], 'success')
+        condition_history_json = json_response['data']
+        result_list = json.loads(condition_history_json)
+        condition_dict = result_list[0]['fields']
+        condition_history_dict = result_list[1]['fields']
+        timestring = '%s.%3dZ' % (nowtime.strftime('%Y-%m-%dT%H:%M:%S'), nowtime.microsecond/1000)
+        condition_history_jsonData = json.loads(condition_history_dict['jsonData'])
+        
+        self.assertEqual(condition_history_dict['status'], 'completed')
+        self.assertEqual(condition_dict['name'], 'test_set_condition')
+        self.assertEqual(condition_dict['xgds_id'], 'HIL13_A_WAY0_0_PXO')
+        self.assertEqual(condition_dict['timezone'], settings.TIME_ZONE)
+        self.assertEqual(condition_history_dict['source_time'], timestring)
+#         self.assertEqual(condition_history_dict['jsonData'], json.dumps(data['data']))
+        self.assertEqual(condition_history_jsonData['extra'], 'In progress for this')
+        self.assertEqual(condition_history_jsonData['assignment'], 'EV2')
+        self.assertEqual(condition_history_jsonData['group_name'], '20170426B')
+        self.assertEqual(condition_dict['source_id'], 'PB1')
+        self.assertEqual(condition_dict['source'], 'playbook')
+        self.assertEqual(condition_dict['end_time'], timestring)
+        
 
 
         
