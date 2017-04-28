@@ -26,7 +26,7 @@ from dal import autocomplete
 from geocamUtil.extFileField import ExtFileField
 from geocamUtil.loader import LazyGetModelByName
 from geocamUtil.forms.AbstractImportForm import getTimezoneChoices
-from geocamTrack.forms import SearchTrackForm
+from geocamTrack.forms import SearchTrackForm, SearchPositionForm
 
 from basaltApp.models import *
 from xgds_instrument.forms import ImportInstrumentDataForm, InstrumentModelChoiceField, SearchInstrumentDataForm
@@ -173,5 +173,10 @@ class SearchBasaltSampleForm(SearchSampleForm):
     
 
 class SearchBasaltTrackForm(SearchTrackForm):
+    timezone = forms.ChoiceField(required=False, choices=lazy(getTimezoneChoices, list)(empty=True), 
+                                label='Time Zone', help_text='Required for Min/Max Time')
+
+
+class SearchBasaltPositionForm(SearchPositionForm):
     timezone = forms.ChoiceField(required=False, choices=lazy(getTimezoneChoices, list)(empty=True), 
                                 label='Time Zone', help_text='Required for Min/Max Time')

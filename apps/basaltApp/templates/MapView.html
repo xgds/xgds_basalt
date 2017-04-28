@@ -39,7 +39,7 @@
 {% endblock %}
 
 {% block jsInit %}
-	sse.initialize();
+	
 	{% block jsInitPreApp %}
 	{% endblock jsInitPreApp %}
 	
@@ -65,5 +65,7 @@
 {{ block.super }}
 	<script type="text/javascript" src="{% static 'xgds_core/js/conditionUtils.js' %}"></script>
 	<script type="text/javascript" src="{% static 'basaltApp/js/basaltConditionUtils.js' %}"></script>
+	{% load sse %}
+	{% setup_sse %}
 {% endblock scripts %}
     

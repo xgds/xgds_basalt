@@ -42,5 +42,5 @@ $.extend(condition, {
 		result += ' <strong>' + ch.activity_status[1] + '</strong>';
 		return result;
 		
-	},
+	}
 });
