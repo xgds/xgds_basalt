@@ -53,4 +53,6 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^hvnp_so2.kml$', views.getHvnpKml, {'loginRequired': False}, name="hvnp_so2"),
                url(r'^hvnp_so2_link.kml$', views.getHvnpNetworkLink, {'loginRequired': False}, name="hvnp_so2_link"),
                url(r'^condition/set/$',views.setCondition, {'loginRequired': False}, 'basalt_set_condition'),
+               url(r'^pextantTest/$', TemplateView.as_view(template_name='basaltApp/pextantTest.html'), {}, 'index'),
+               
            ]

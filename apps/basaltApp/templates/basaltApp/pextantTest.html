@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+This is pextant test 
+
+{% block jsInit %}
+    function sextant_api() {
+        json_data = {
+            waypoints: [
+                [  19.36479555, -155.20178273],
+                [  19.3660102 , -155.2002431 ],
+                [  19.36612641, -155.20061863],
+                [  19.36670636, -155.20098881]
+            ],
+            time: "2pm"
+        };
+
+        $.post("https://xgds-local.xgds.org/pextant/", JSON.stringify(json_data))
+            .done(function (data) {
+                alert("Data Loaded: " + data);
+            });
+    }
+    
+    sextant_api();
+{% endblock jsInit %}
