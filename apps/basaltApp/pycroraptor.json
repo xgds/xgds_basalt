@@ -82,11 +82,15 @@
 	    },
 	    "sseHeartbeat": {
 	    	"command": "/home/xgds/xgds_basalt/apps/xgds_core/sse/sse-heartbeat.py"
+	    },
+	   	"pextant": {
+	    	"command": "gunicorn sextant:app --worker-class gevent --bind 127.0.0.1:5000",
+	    	"cwd": "/home/xgds/xgds_basalt/apps/pextant/"
 	    }
 	},
     "GROUPS": {
         "startup": ["zmqCentral", "sse", "sseHeartbeat", "evaTrackTelemetryCleanup", "gpsController1", "gpsController2", "saCamera", 
         			"redCamera", "FTIR", "video1", "video2", "fieldLoadAvg", "basecampLoadAvg",
-        			"ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "videoRecorder"]
+        			"ev1Backpack", "ev2Backpack", "shoreTungstenReplicator", "boatTungstenReplicator", "videoRecorder", "pextant"]
     }
 }

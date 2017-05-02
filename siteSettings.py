@@ -125,16 +125,16 @@ ADMINS = (
 MANAGERS = ADMINS
 
 # Databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.mysql', # django.db.backends.mysql',
-        'NAME': 'xgds_basalt',
-        'USER': 'vagrant',
-        'PASSWORD': 'vagrant',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.mysql', # django.db.backends.mysql',
+#         'NAME': 'xgds_basalt',
+#         'USER': 'root',
+#         'PASSWORD': 'xgds',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#     }
+# }
 
 #
 # If you want to use Bing Maps for a baselayer instead of open street map,

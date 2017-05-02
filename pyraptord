@@ -9,8 +9,8 @@
 # Short-Description: Start/stop pycroraptor process manager
 # Description:       Starts and stops pycrraptor process manager.
 #  processname: pyraptord
-#  config example: /home/irg/xgds_basalt/apps/basaltApp/pycroraptorConfig.py
-#  config example: /home/irg/xgds_basalt/apps/basaltApp/ports.json
+#  config example: /home/xgds/xgds_basalt/apps/basaltApp/pycroraptorConfig.py
+#  config example: /home/xgds/xgds_basalt/apps/basaltApp/ports.json
 #  pidfile: /var/log/pyraptord/pyraptord.pid
 ### END INIT INFO
 
