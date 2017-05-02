@@ -21,6 +21,8 @@ from django.conf import settings
 
 from django.test import TestCase
 
+HTTP_PREFIX = 'https'
+URL_PREFIX = 'xgds-local.xgds.org'
 
 class basaltAppTest(TestCase):
     """
@@ -32,7 +34,7 @@ class basaltAppTest(TestCase):
 class basaltAppConditionSetTest(TestCase):
     
     def test_set_condition(self):
-        url = "http://%s%s" % ('localhost', '/xgds_core/condition/set/')
+        url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
         nowtime = datetime.datetime.now(pytz.utc)
         isonow = nowtime.isoformat()
         nested_data_dict = {'start_time': isonow,
@@ -78,7 +80,7 @@ class basaltAppConditionSetTest(TestCase):
 class basaltAppConditionUpdateTest(TestCase):
 
     def test_update_condition(self):
-        url = "http://%s%s" % ('localhost', '/xgds_core/condition/set/')
+        url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
         nowtime = datetime.datetime.now(pytz.utc)
         isonow = nowtime.isoformat()
         nested_data_dict = {'status': 'in_progress',
@@ -117,7 +119,7 @@ class basaltAppConditionUpdateTest(TestCase):
 class basaltAppConditionEndTest(TestCase):
 
     def test_update_condition(self):
-        url = "http://%s%s" % ('localhost', '/xgds_core/condition/set/')
+        url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
         nowtime = datetime.datetime.now(pytz.utc)
         isonow = nowtime.isoformat()
         nested_data_dict = {'end_time': isonow,
