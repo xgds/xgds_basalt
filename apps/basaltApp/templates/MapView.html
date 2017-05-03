@@ -43,6 +43,7 @@
 {% block jsInit %}
 	
 	{% block jsInitPreApp %}
+	trackSse.preloadedIcons = $.preloadImages(["{% static 'basaltApp/icons/ev1_pointer.png' %}", "{% static 'basaltApp/icons/ev2_pointer.png' %}"]);
 	{% endblock jsInitPreApp %}
 	
 	$(function(){
