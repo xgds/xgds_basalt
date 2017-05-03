@@ -18,8 +18,8 @@
 if [ -z ${1+present} ]; then
   echo "Starting *without* mapping host source tree to docker."
   echo "If you want to do that, pass one argument with path to source on host"
-  docker run -t -d -v --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 443:443 -p 3306:3306 -p 5984:5984 -p 8080:8080 -p 9090:9090 -p 8181:8181 -p 9191:9191 -p 5000:5000 -p 222:22
+  docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 443:443 -p 3306:3306 -p 5984:5984 -p 8080:8080 -p 9090:9090 -p 8181:8181 -p 9191:9191 -p 5000:5000 -p 222:22 xgds-basalt
 else
-  echo "Starting with host source tree at $1 mapped to docker."
-  docker run -t -d -v $1:/home/xgds/xgds_basalt --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 443:443 -p 3306:3306 -p 5984:5984 -p 8080:8080 -p 9090:9090 -p 8181:8181 -p 9191:9191 -p 5000:5000 -p 222:22
+  echo "Starting with host source tree at $1 mapped into docker."
+  docker run -t -d -v $1:/home/xgds/xgds_basalt --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 443:443 -p 3306:3306 -p 5984:5984 -p 8080:8080 -p 9090:9090 -p 8181:8181 -p 9191:9191 -p 5000:5000 -p 222:22 xgds-basalt
 fi
