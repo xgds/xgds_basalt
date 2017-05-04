@@ -16,35 +16,15 @@
 
 
 $.extend(trackSse, {
+	staticIconPrefix: '/static/basaltApp/icons/',
 	getTrackModel: function() {
 		return app.options.searchModels['Actual_Traverse'].model;
 	},
-	lookupImage: function(url){
-		var result = undefined;
-		$.each(trackSse.preloadedIcons, function(index, theImg){
-			if (theImg.src == url){
-				result = theImg;
-			}
-		});
-		return result;
-		
-	},
-	setupPositionIcon: function(channel){
-		Position.initStyles();
-		if (!(channel in Position.styles)){
-			var pointerPath = '/static/basaltApp/icons/' + channel.toLowerCase() + '_pointer.png';
-			var theImg = trackSse.lookupImage(pointerPath);
-			// these were preloaded in MapView.html
-			var theIcon = new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-                src: pointerPath,
-                img: theImg,  // this is for preload to fix Chrome.
-                scale: 0.5
-                }));
-
-			var newStyle = new ol.style.Style({
-                image: theIcon
-            });
-			Position.styles[channel] = newStyle;
-		}
+	renderTrack: function(channel, data) {
+		var elements = Actual_Traverse.constructElements([data]);
+		trackSse.tracksGroup.getLayers().push(elements);
+		trackSse.olTracks[channel] = elements;
 	}
+	
 });
+

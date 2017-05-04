@@ -253,6 +253,7 @@ class GpsTelemetryCleanup(object):
             result = pos.toMapDict()
             result['track_name'] = track.name
             result['track_pk'] = track.pk
+            result['displayName'] = track.resource_name
             try:
                 json_string = json.dumps(result, cls=DatetimeJsonEncoder)
                 publishRedisSSE(track.resource_name, 'position', json_string)
