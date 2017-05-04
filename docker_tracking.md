@@ -31,7 +31,7 @@
 1. Create Docker data storage container/volume
 
    ```
-   docker create -v /var -v /home/xgds --name basalt-data-store xgds-basalt /bin/true
+   docker create -v /var -v /home/xgds -v /etc -v /usr/local --name basalt-data-store xgds-basalt /bin/true
    ```  
 
    *Note:* This creates a persistent docker container for the xGDS home directory and database storage.  You generally do *not* want to delete this container unless things are so messed up that you need to start over.
