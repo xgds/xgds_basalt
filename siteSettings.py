@@ -268,7 +268,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'reversion.middleware.RevisionMiddleware',
+#    'reversion.middleware.RevisionMiddleware',
     'geocamUtil.middleware.SecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
