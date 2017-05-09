@@ -21,11 +21,15 @@ $.extend(condition, {
 		cdiv.removeClass (function (index, className) {
 		    return (className.match (/(^|\s)alert-\S+/g) || []).join(' ');
 		});
-		var status = ch.activity_status[0];
-		if (status == 'in_progress' || status == 'started'){
-			cdiv.addClass('alert-success');
-		} else if (status == 'completed' || status == 'aborted'){
-			cdiv.addClass('alert-danger');
+		if (!_.isEmpty(ch.activity_status)) {
+			var status = ch.activity_status[0];
+			if (status == 'in_progress' || status == 'started'){
+				cdiv.addClass('alert-success');
+			} else if (status == 'completed' || status == 'aborted'){
+				cdiv.addClass('alert-danger');
+			} else {
+				cdiv.addClass('alert-info');
+			}
 		} else {
 			cdiv.addClass('alert-info');
 		}
@@ -39,8 +43,22 @@ $.extend(condition, {
 		result += ' (' + condition.getPrintableTime(ch.source_time, c.timezone) + '): '; // todo convert to the timezone
 		result += c.name;
 		result += ' ' + c.xgds_id;
-		result += ' <strong>' + ch.activity_status[1] + '</strong>';
+		if (!_.isEmpty(ch.activity_status)){
+			result += ' <strong>' + ch.activity_status[1] + '</strong>';
+		}
 		return result;
-		
+	},
+	getCurrentConditions: function() {
+		$.ajax({
+            url: '/basaltApp/condition/activeJSON',
+            dataType: 'json',
+            success: $.proxy(function(data) {
+            	var fakeEvent = {data: data};
+            	condition.handleConditionEvent(fakeEvent);
+            }, this),
+            error: function(data){
+            	$('#conditionDiv').html('No active EVAs.');
+            }
+          });
 	}
 });

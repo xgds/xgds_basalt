@@ -37,11 +37,11 @@ from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName
 from xgds_core.models import Constant
-from xgds_core.views import addRelayFiles, setCondition
+from xgds_core.views import addRelayFiles, getConditionActiveJSON
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
-from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
+from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights, getActiveFlightFlights
 from xgds_planner2.models import Vehicle
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
@@ -725,3 +725,8 @@ def getHvnpNetworkLink(request):
     response = wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
     return response
 
+
+def getActiveFlightConditionJSON(request):
+    activeFlights = getActiveFlightFlights()
+    filterDict = {'condition__flight__in': activeFlights}
+    return getConditionActiveJSON(request, filterDict=filterDict)
