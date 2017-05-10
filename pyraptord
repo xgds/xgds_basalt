@@ -19,11 +19,11 @@
 # * Install this file as /etc/init.d/pyraptord
 # * Run 'update-rc.d pyraptord defaults'
 
-projdir=/home/xgds/xgds_basalt
+projdir=/home/irg/xgds_basalt
 pyraptord=$projdir/apps/geocamPycroraptor2/bin/pyraptord.py
 config_dir=$projdir/apps/basaltApp
 python_dir=/usr/bin
-user=xgds
+user=irg
 
 sudo -H -u $user bash -s <<EOF
 export PATH=${python_dir}:$PATH  # run the correct python, if not first in default PATH
