@@ -23,7 +23,7 @@ import json
 import pytz
 
 HTTP_PREFIX = 'https'
-URL_PREFIX = 'localhost'
+URL_PREFIX = 'ksc-field1.xgds.org'
 
 def test_set_condition():
     url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
