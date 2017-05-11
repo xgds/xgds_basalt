@@ -126,6 +126,12 @@ class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
     track = models.ForeignKey(BasaltTrack, db_index=True, null=True, blank=True)
 
     serverTimestamp = models.DateTimeField(db_index=True)
+    
+    @property
+    def displayName(self):
+        if self.track:
+            return self.track.resource_name
+        return None
 
     class Meta:
         abstract = True
