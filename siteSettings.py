@@ -556,10 +556,10 @@ except:
     pass
 XGDS_MAP_SERVER_JS_MAP['Position'] = {'ol': 'geocamTrack/js/olPositionMap.js',
                                       'model': GEOCAM_TRACK_PAST_POSITION_MODEL,
-                                      'columns': ['timestamp', 'displayName', 'type', 'lat', 'lon', 'altitude', 'heading', 'pk', 'app_label', 'model_type', 'DT_RowId'],
-                                      'hiddenColumns': ['type', 'pk', 'app_label', 'model_type', 'DT_RowId'],
-                                      'columnTitles': ['Time', 'TZ', 'Name', 'Latitude', 'Longitude', 'Altitude', 'Heading', ''],
-                                      'searchableColumns': ['displayName', 'timestamp', 'lat', 'lon', 'altitude', 'heading'],
+                                      'columns': ['timestamp', 'displayName', 'type', 'lat', 'lon', 'altitude', 'heading', 'pk', 'app_label', 'model_type', 'track_name', 'track_pk', 'displayName', 'DT_RowId'],
+                                      'hiddenColumns': ['type', 'pk', 'app_label', 'model_type', 'track_pk', 'displayName', 'DT_RowId'],
+                                      'columnTitles': ['Time', 'TZ', 'Name', 'Latitude', 'Longitude', 'Altitude', 'Heading', 'EVA', ''],
+                                      'searchableColumns': ['displayName', 'timestamp', 'lat', 'lon', 'altitude', 'heading', 'track_name'],
                                       'search_form_class': 'basaltApp.forms.SearchBasaltPositionForm'}
 
 XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
