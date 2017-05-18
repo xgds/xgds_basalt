@@ -239,6 +239,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
     def startTracking(self):
         resource=self.getResource()
         
+        protocol = None
         #Create the track if it does not exist
         if not self.track:
             TRACK_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_TRACK_MODEL)
