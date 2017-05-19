@@ -239,12 +239,19 @@ class BasaltFlight(plannerModels.AbstractFlight):
     def startTracking(self):
         resource=self.getResource()
         
+        protocol = None
         #Create the track if it does not exist
         if not self.track:
             TRACK_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_TRACK_MODEL)
             try:
                 track = TRACK_MODEL.get().objects.get(name=self.name)
             except ObjectDoesNotExist:
+                try:
+                    protocol = Constant.objects.get(name=resource.name + "_TRACKING_PROTO")
+                except:
+                    # if there is no protocol, there should be no track.
+                    return
+            
                 timezone = settings.TIME_ZONE
                 if self.plans:
                     timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
@@ -267,7 +274,6 @@ class BasaltFlight(plannerModels.AbstractFlight):
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
             ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
-            protocol = Constant.objects.get(name=resource.name + "_TRACKING_PROTO")
             scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
             command = "%s -o %s -p %d -n %s --proto=%s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], protocol.value, self.name)
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
