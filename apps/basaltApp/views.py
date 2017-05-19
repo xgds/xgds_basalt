@@ -730,3 +730,11 @@ def getActiveFlightConditionJSON(request):
     activeFlights = getActiveFlightFlights()
     filterDict = {'condition__flight__in': activeFlights}
     return getConditionActiveJSON(request, filterDict=filterDict)
+
+def noteFilterFunction(episode, sourceShortName):
+    group = BasaltGroupFlight.objects.get(name=episode.shortName)
+    #filter = {'flight__group_name':episode.shortName} # this does not work.  Register a function to be able to look up a more useful pk
+    theFilter = {'flight__group': group.pk}
+    if sourceShortName:
+        theFilter['vehicle__name'] = sourceShortName
+    return theFilter
