@@ -43,12 +43,16 @@
    docker ps -a
    ```
 
-1. If basalt-container is not already in the list, run it:  
+1. If basalt-container is not already in the list, and you do *not* have source code checked out on your host, just run it:  
 
    ```
-   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
+   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 443:443 -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
    ```
 
+1. If basalt-container is not already in the list, and you *do* have source code checked out on your host, do the following:
+   * cd <path to xgds_basalt source on your host>
+   * ./run-new-container.sh <path to xgds_basalt on your host>
+   
 1. If it is there, but *status* shows "exited" or "created" rather than "Up..." , start it:  
 
    ```
