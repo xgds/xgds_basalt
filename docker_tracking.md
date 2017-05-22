@@ -50,8 +50,8 @@
    ```
 
 1. If basalt-container is not already in the list, and you *do* have source code checked out on your host, do the following:
-   * cd <path to xgds_basalt source on your host>
-   * ./run-new-container.sh <path to xgds_basalt on your host>
+   * cd \<path to xgds_basalt source on your host\>
+   * ./run-new-container.sh \<path to xgds_basalt on your host\>
    
 1. If it is there, but *status* shows "exited" or "created" rather than "Up..." , start it:  
 
