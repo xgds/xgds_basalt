@@ -13,7 +13,7 @@
       * **Note**: We tested with the "stable" release of Docker
 
 1. Download xGDS BASALT Docker Container and Load it
-   * download https://xgds.org/downloads/xgds-basalt.tar.bz2, don't unzip it, and
+   * download https://xgds.org/downloads/xgds-basalt-sse.tar.bz2, don't unzip it, and
 
 1. Load container data into Docker  
 
