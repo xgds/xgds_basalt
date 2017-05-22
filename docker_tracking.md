@@ -13,7 +13,7 @@
       * **Note**: We tested with the "stable" release of Docker
 
 1. Download xGDS BASALT Docker Container and Load it
-   * download https://xgds.org/downloads/xgds-basalt.tar.bz2, don't unzip it, and
+   * download https://xgds.org/downloads/xgds-basalt-sse.tar.bz2, don't unzip it, and
 
 1. Load container data into Docker  
 
@@ -31,7 +31,7 @@
 1. Create Docker data storage container/volume
 
    ```
-   docker create -v /var -v /home/xgds -v /etc -v /usr/local --name basalt-data-store xgds-basalt /bin/true
+   docker create -v /var -v /home/xgds -v /etc -v /usr/local --name basalt-data-store xgds-basalt-sse /bin/true
    ```  
 
    *Note:* This creates a persistent docker container for the xGDS home directory and database storage.  You generally do *not* want to delete this container unless things are so messed up that you need to start over.
@@ -43,12 +43,16 @@
    docker ps -a
    ```
 
-1. If basalt-container is not already in the list, run it:  
+1. If basalt-container is not already in the list, and you do *not* have source code checked out on your host, just run it:  
 
    ```
-   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
+   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 443:443 -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
    ```
 
+1. If basalt-container is not already in the list, and you *do* have source code checked out on your host, do the following:
+   * cd \<path to xgds_basalt source on your host\>
+   * ./run-new-container.sh \<path to xgds_basalt on your host\>
+   
 1. If it is there, but *status* shows "exited" or "created" rather than "Up..." , start it:  
 
    ```
