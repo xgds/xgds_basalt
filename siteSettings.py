@@ -736,3 +736,7 @@ FAVICON_PATH = 'basaltApp/icons/favicon.ico'
 ALLOWED_HOSTS = ['*']
 
 XGDS_SSE_CHANNELS = ['sse', 'EV1', 'EV2']
+
+# Setup support for proxy headers
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
