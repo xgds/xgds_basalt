@@ -270,7 +270,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 self.delaySeconds = int(delayConstant.value)
                 self.save()
     
-        if settings.PYRAPTORD_SERVICE is True:
+        if settings.PYRAPTORD_SERVICE is True and protocol:
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
             ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
