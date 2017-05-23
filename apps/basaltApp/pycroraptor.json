@@ -5,16 +5,16 @@
 
     "SERVICES": {
 
-        "EV1_vlc": {
+        "EV1_recorder": {
             "command": " "
         },
-        "EV2_vlc": {
+        "EV2_recorder": {
             "command": " "
         },
-        "SA_vlc": {
+        "SA_recorder": {
             "command": " "
         },
-
+        
 		"zmqCentral": {
 		    "command": "/home/xgds/xgds_basalt/apps/geocamUtil/zmqUtil/zmqCentral.py -m none -c none -f"
         },

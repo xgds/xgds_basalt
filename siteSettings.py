@@ -531,6 +531,8 @@ XGDS_VIDEO_GET_TIMEZONE_FROM_NAME = 'basaltApp.views.getTimezoneFromFlightName'
 XGDS_VIDEO_INDEX_FILE_METHOD = 'basaltApp.views.getIndexFileSuffix'
 XGDS_VIDEO_DELAY_AMOUNT_METHOD = 'basaltApp.views.getDelaySeconds'
 XGDS_VIDEO_NOTE_EXTRAS_FUNCTION = 'basaltApp.views.getNoteExtras'
+XGDS_VIDEO_NOTE_FILTER_FUNCTION = 'basaltApp.views.noteFilterFunction'
+
 
 
 RECORDED_VIDEO_DIR_BASE = DATA_ROOT
