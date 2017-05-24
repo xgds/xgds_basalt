@@ -38,6 +38,7 @@ import pextantHarness
 from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName
 from xgds_core.models import Constant
 from xgds_core.views import addRelayFiles, getConditionActiveJSON
+from xgds_core.util import addPort
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
@@ -220,6 +221,7 @@ def wrist(request):
 
 
 def wristKmlTrack(request):
+    
     found = {}
     activeFlights = getActiveFlights()
     for af in activeFlights:
@@ -231,6 +233,7 @@ def wristKmlTrack(request):
 
     kmlContent = ''
     for name, url in found.iteritems():
+        url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
         kmlContent += buildNetworkLink(url, name)
     return wrapKmlForDownload(kmlContent)
     
