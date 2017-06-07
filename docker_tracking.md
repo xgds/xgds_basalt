@@ -11,9 +11,11 @@
       * Windows: Windows 10.
       * Linux: Not tested, but current versions should work.
       * **Note**: We tested with the "stable" release of Docker
+      
+   Strongly recommend installing and using kitematic to allow easy management of docker containers, ports and volumes.
 
 1. Download xGDS BASALT Docker Container and Load it
-   * download https://xgds.org/downloads/xgds-basalt-sse.tar.bz2, don't unzip it, and
+   * download https://xgds.org/downloads/xgds-basalt.tar.bz2, don't unzip it, and
 
 1. Load container data into Docker  
 
@@ -31,7 +33,7 @@
 1. Create Docker data storage container/volume
 
    ```
-   docker create -v /var -v /home/xgds -v /etc -v /usr/local --name basalt-data-store xgds-basalt-sse /bin/true
+   docker create -v /var -v /home/xgds -v /etc -v /usr/local --name basalt-data-store xgds-basalt /bin/true
    ```  
 
    *Note:* This creates a persistent docker container for the xGDS home directory and database storage.  You generally do *not* want to delete this container unless things are so messed up that you need to start over.
@@ -46,12 +48,12 @@
 1. If basalt-container is not already in the list, and you do *not* have source code checked out on your host, just run it:  
 
    ```
-   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 443:443 -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
+   docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22 -p 443:443 -p 3001:3001 -p 5000:5000 -p 5984:5984 -p 8080:8080 -p 8181:8181 -p 9090:9090 -p 9191:9191 xgds-basalt
    ```
 
 1. If basalt-container is not already in the list, and you *do* have source code checked out on your host, do the following:
-   * cd \<path to xgds_basalt source on your host\>
-   * ./run-new-container.sh \<path to xgds_basalt on your host\>
+   * cd \<path to xgds_basalt source on your host\
+   * ./run-new-container.sh \<path to xgds_basalt on your host\> \<path to sextantwebapp source on your host\>
    
 1. If it is there, but *status* shows "exited" or "created" rather than "Up..." , start it:  
 
@@ -91,6 +93,18 @@ https://basalt.xgds.org/data/dem
    ```
    pscp -P 222 Hawaii_Lava_Flows.tif xgds@localhost:xgds_basalt/data/dem
    ```
+
+1. Run Sextantwebapp
+   * Log into Docker container per step #4.
+   
+   ```
+   cd sextantwebapp
+   babel-node server.js babel-node index.js --presets es2015,stage-2
+   ```
+   
+   Hit the sextantweb app in a browser:  https://localhost/wristApp
+   
+   See more instructions here: https://github.com/xgds/sextantwebapp/blob/master/tutorial.md
 
 1. Start the track generator
    * Log into Docker container per step #4.  
@@ -159,9 +173,11 @@ https://basalt.xgds.org/data/dem
     * ssh into your running BASALT Docker container.
     * Edit ~/xgds_basalt/settings.py (both emacs and vi are available in the container)
     * Insert your API key between the empty quotes in the line setting the XGDS\_MAP\_SERVER\_MAP\_API\_KEY.
+    * Also edit ~/sextantwebapp/config/xgds_config.js and replace the key in there with your key. 
 
 ##### Storing xGDS code on your host system
 If you are doing intensive developemnt connected to the xGDS codebase (e.g. for SEXTANT) you may want to store the xGDS source directory on your host machine's file system instead of inside the docker container. This might help to make changes and debugging easier, depending on your development environment.
+Do the analagous step for the sextantwebapp project as well.
 
 Here is the procedure:
 
@@ -191,12 +207,17 @@ Here is the procedure:
    
    1. Run the docker image like this:
      ```
-     docker run -t -d -v <path to xgds_basalt on host>:/home/xgds/xgds_basalt --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22  xgds-basalt
+     docker run -t -d -v <path to xgds_basalt on host>:/home/xgds/xgds_basalt --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22 -p 443:443 -p 3001:3001 -p 5000:5000 -p 5984:5984 -p 8080:8080 -p 8181:8181 -p 9090:9090 -p 9191:9191 xgds-basalt
      ```
      
      This will hide the xgds_basalt directory in the docker data volume and use the copy on your host system instead.  Any changes you make to the code on the host side will be reflected in the docker container.
      
      **Note:** If you do make changes to xGDS code you will need to follow the same procedure as when you update from git to prepare the new code and restart Apache.
+     
+     If you are also editing sextant web app, you'll want a command like this:
+     ```
+     docker run -t -d -v <path to xgds_basalt on host>:/home/xgds/xgds_basalt -v <path to sextantwebapp on host>:/home/xgds/sextantwebapp --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22 -p 443:443 -p 3001:3001 -p 5000:5000 -p 5984:5984 -p 8080:8080 -p 8181:8181 -p 9090:9090 -p 9191:9191 xgds-basalt
+     ```
 
 ##### Updating source code
 If you already have your docker container set up but need to pull new source code, follow these steps:
