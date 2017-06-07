@@ -24,7 +24,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from django import forms
 
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse, JsonResponse
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.urlresolvers import reverse
@@ -42,7 +42,7 @@ from xgds_core.util import addPort
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
-from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights, getActiveFlightFlights
+from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights, getActiveFlightFlights, getTodaysPlans, getTodaysPlanFiles
 from xgds_planner2.models import Vehicle
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
@@ -189,31 +189,10 @@ def getActivePlan(request, vehicleName, wrist=True):
         return redirect(reverse('error'))
     else:
         return redirect(reverse('wrist'))
-    
-    
-def getTodaysPlans(request):
-    letters = []
-    plankmls = []
-    groupFlights = getTodaysGroupFlights()
-    if groupFlights:
-        for gf in groupFlights.all():
-            letter = gf.name[-1]
-            for flight in gf.flights.all():
-                if flight.plans:
-                    plan = flight.plans.last().plan
-                    if letter not in letters:
-                        letters.append(letter)
-                        plankmls.append(plan.getExportUrl('.kml') )
+
         
-    if not letters:
-        messages.error(request, "No Planned Traverses found for today. Tell team to schedule in xGDS.")
-        return None
-    else:
-        return zip(letters, plankmls)
-
-
-def wrist(request):
-    found = getTodaysPlans(request)
+def wrist(request, fileFormat):
+    found = getTodaysPlanFiles(request, fileFormat)
     return render(request,
                   "basaltApp/kmlWrist.html",
                   {'letter_plans': found},

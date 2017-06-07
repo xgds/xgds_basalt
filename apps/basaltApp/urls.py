@@ -34,7 +34,7 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^live', views.getLiveIndex, {}, 'basalt_live'),
                url(r'^objectsLive', views.getLiveObjects, {}, 'basalt_live_objects'),
                url(r'^activePlan/(?P<vehicleName>\w*)$', views.getActivePlan, {'loginRequired':False}, 'basalt_live_objects'),
-               url(r'^wrist$', views.wrist, {'loginRequired':False}, 'wrist'),
+               url(r'^wrist$', views.wrist, {'loginRequired':False, 'fileFormat':'.kml'}, 'wrist'),
                url(r'^wrist.kml$', views.wristKmlTrack, {'loginRequired':False}, 'kmlwrist'),
                # get instrument import page
                url(r'^instrumentDataImport/(?P<instrumentName>\w*)$', views.getInstrumentDataImportPage, name="get_instrument_data_import_page"),
