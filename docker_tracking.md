@@ -141,6 +141,15 @@ https://basalt.xgds.org/data/dem
      * Once stopped that row should no longer be light green.
      * In the terminal running the evaTrackGenerator you should stop seeing position data
 
+1. Schedule a plan
+   * In order to see the plan in the sextant web app, it has to be the last plan scheduled for today.  To do that, go to the planned traverses page:
+     * https://localhost/xgds_planner2/index/
+     * Check on the planned traverse you want to schedule (if you don't have any planned traverses, create one in the region you are working in)
+     * Select a crew (you have to have set up the crew with mass on the crew mass tab)
+     * Select the EVA (it will be one of the last ones)
+     * Click the 'when' and just click now
+     * Click schedule.
+
 1. Restart web server (from within docker container):
    * sudo apachectl restart
      * sudo password will be xgds
@@ -148,6 +157,11 @@ https://basalt.xgds.org/data/dem
 1. Seeing apache log (from within docker container):
    * sudo tail -f -n 100 /var/log/apache2/error.log
      * ctrl-c to stop
+
+1. Restart nginx server (from within docker container):
+   * sudo /etc/init.d/nginx stop
+   * sudo /etc/init.d/nginx start
+     * sudo password will be xgds
 
 1. Stop Docker container:
    * Docker containers are fairly lightweight but if you need to stop it, just:
@@ -272,3 +286,12 @@ If you already have your docker container set up but need to pull new source cod
    Confirm that you *do* want to prune unused volumes 
    
 1. Follow instructions on how to load new container from step 3 onwards. 
+
+
+##### Troubleshooting
+1. If you can't get to the wrist app or xGDS, the problem is nginx.  Follow the steps above to restart nginx.
+
+1. If you can't get to just xGDS, the problem is apache.  Follow the steps above to restart apache.
+
+1. If you've made a change to some node code in the wrist app, it will automatically compile.  If the compilation fails, you will see the output in the terminal where you are running babel-node.
+ 
