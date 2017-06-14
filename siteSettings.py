@@ -528,7 +528,7 @@ XGDS_DATA_EXPAND_RELATED['basaltApp'] = {'BasaltSample': [('region', 'zone', 'Zo
 XGDS_VIDEO_GET_ACTIVE_EPISODE = 'basaltApp.views.getActiveEpisode'
 XGDS_VIDEO_GET_EPISODE_FROM_NAME = 'basaltApp.views.getEpisodeFromName'
 XGDS_VIDEO_GET_TIMEZONE_FROM_NAME = 'basaltApp.views.getTimezoneFromFlightName'
-XGDS_VIDEO_INDEX_FILE_METHOD = 'basaltApp.views.getIndexFileSuffix'
+#XGDS_VIDEO_INDEX_FILE_METHOD = 'basaltApp.views.getIndexFileSuffix'
 XGDS_VIDEO_DELAY_AMOUNT_METHOD = 'basaltApp.views.getDelaySeconds'
 XGDS_VIDEO_NOTE_EXTRAS_FUNCTION = 'basaltApp.views.getNoteExtras'
 XGDS_VIDEO_NOTE_FILTER_FUNCTION = 'basaltApp.views.noteFilterFunction'
@@ -737,6 +737,10 @@ FAVICON_PATH = 'basaltApp/icons/favicon.ico'
 ALLOWED_HOSTS = ['*']
 
 XGDS_SSE_CHANNELS = ['sse', 'EV1', 'EV2']
+XGDS_CORE_REBROADCAST_MAP = getOrCreateDict('XGDS_CORE_REBROADCAST_MAP')
+XGDS_CORE_REBROADCAST_MAP['basaltApp_basaltconditionhistory'] = 'basaltApp.BasaltConditionHistory'
+XGDS_CORE_REBROADCAST_MAP['basaltApp_pastposition'] = 'basaltApp.PastPosition'
+
 
 # Setup support for proxy headers
 USE_X_FORWARDED_HOST = True

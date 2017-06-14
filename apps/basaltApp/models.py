@@ -39,7 +39,7 @@ from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
 from xgds_status_board import models as statusBoardModels
 from geocamUtil.loader import LazyGetModelByName
-from xgds_core.models import Constant, AbstractCondition, AbstractConditionHistory, NameManager
+from xgds_core.models import Constant, AbstractCondition, AbstractConditionHistory, NameManager, BroadcastMixin
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin, HierarchichalTag
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
@@ -121,11 +121,17 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
         return '%s %s' % (self.__class__.__name__, self.name)
 
 
-class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid, BroadcastMixin):
     # set foreign key fields required by parent model to correct types for this site
     track = models.ForeignKey(BasaltTrack, db_index=True, null=True, blank=True)
-
     serverTimestamp = models.DateTimeField(db_index=True)
+    
+    
+    def getBroadcastChannel(self):
+        result =  self.displayName
+        if not result:
+            return 'sse'
+        return result
     
     @property
     def displayName(self):
@@ -1140,10 +1146,17 @@ class BasaltCondition(AbstractCondition):
         return result
     
 
-class BasaltConditionHistory(AbstractConditionHistory):
+class BasaltConditionHistory(AbstractConditionHistory, BroadcastMixin):
     condition = models.ForeignKey(BasaltCondition, related_name=settings.XGDS_CORE_CONDITION_HISTORY_MODEL.replace('.','_'))
     activity_status = models.ForeignKey(ActivityStatus, null=True, blank=True)
     
+    
+    def getBroadcastChannel(self):
+        return self.condition.getRedisSSEChannel()
+    
+    def getSseType(self):
+        return 'condition'
+
     def populate(self, condition_data_dict, save=False):
         super(BasaltConditionHistory, self).populate(condition_data_dict, save)
         
