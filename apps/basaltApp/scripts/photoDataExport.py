@@ -18,9 +18,9 @@ print "Found %d images." % imgList.count()
 for img in imgList:
     if img.flight:
         print img.flight.name
-        singleImgs = img.basaltsingleimage_set
+        singleImages = img.images
         print "  Images:"
-        for si in singleImages:
-            print "Thumb: %s (%d x %d)" % (si.thumbnail, si.width, si.height)
+        for si in singleImages.all():
+            print "    Thumb: %s (%s x %s)" % (si.thumbnail, si.width, si.height)
     else:
         print "<none>"
