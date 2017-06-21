@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz
 django.setup()
 from basaltApp.models import BasaltImageSet, BasaltSingleImage
+from geocamTrack.utils import getClosestPosition
 
 hawaiiStandardTime = pytz.timezone('US/Hawaii')
 startTime = datetime(2016, 11, 8, 0, 0, 0, tzinfo=hawaiiStandardTime)
@@ -17,5 +18,9 @@ print "Found %d images." % imgList.count()
 for img in imgList:
     if img.flight:
         print img.flight.name
+        singleImgs = img.basaltsingleimage_set
+        print "  Images:"
+        for si in singleImages:
+            print "Thumb: %s (%d x %d)" % (si.thumbnail, si.width, si.height)
     else:
         print "<none>"
