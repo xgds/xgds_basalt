@@ -37,7 +37,7 @@ from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName
 from xgds_core.models import Constant
-from xgds_core.views import addRelayFiles, getConditionActiveJSON
+from xgds_core.views import addRelay, getConditionActiveJSON
 from xgds_core.util import addPort
 
 from xgds_notes2 import views as xgds_notes2_views
@@ -386,7 +386,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
-                    addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
+                    addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
 
                 if jsonResult:
                     return HttpResponse(json.dumps(result), content_type='application/json')
@@ -430,7 +430,7 @@ def savePxrfMfgFile(request):
                     
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
-                    addRelayFiles(dataProduct, request.FILES, broadcast=broadcast)
+                    addRelay(dataProduct, request.FILES, broadcast=broadcast)
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'No PXRF record for ' + str(seekNumber), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
@@ -485,7 +485,7 @@ def buildPxrfDataProductsFromResultsFile(request):
                     updatedRecords.append(foundProduct.fileNumber)
                     # this method is only called by data push from instrument / lua script
                     broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
-                    addRelayFiles(foundProduct, request.FILES, broadcast=broadcast)
+                    addRelay(foundProduct, request.FILES, broadcast=broadcast)
             result= {'status': 'success', 
                      'updated': updatedRecords,
                      'modelName': 'pXRF'}
@@ -538,7 +538,7 @@ def saveNewPxrfData(request, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
-                    addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
+                    addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
                     
                 if jsonResult:
                     return HttpResponse(json.dumps(result), content_type='application/json')
