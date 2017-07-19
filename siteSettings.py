@@ -724,7 +724,7 @@ XGDS_CORE_CONDITION_MODEL = "basaltApp.BasaltCondition"
 XGDS_CORE_CONDITION_HISTORY_MODEL = "basaltApp.BasaltConditionHistory"
 
 XGDS_CORE_REBROADCAST_MAP = getOrCreateDict('XGDS_CORE_REBROADCAST_MAP')
-XGDS_CORE_REBROADCAST_MAP.update({'basaltApp_pastposition':{'modelName':'basaltApp.PastPosition', 'pkColNum':1, 'pkType': 'int'})
+XGDS_CORE_REBROADCAST_MAP.update({'basaltApp_pastposition':{'modelName':'basaltApp.PastPosition', 'pkColNum':1, 'pkType': 'int'}})
 
 XGDS_CORE_TEMPLATE_DEBUG = False
 
