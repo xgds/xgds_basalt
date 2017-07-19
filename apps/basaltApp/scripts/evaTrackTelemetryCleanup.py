@@ -40,7 +40,7 @@ from geocamTrack.models import (IconStyle, LineStyle)
 from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 
 if settings.XGDS_CORE_REDIS:
-    from xgds_core.util import publishRedisSSE
+    from xgds_core.redisUtil import publishRedisSSE
 
 from basaltApp.models import (BasaltActiveFlight,
                               BasaltResource,
