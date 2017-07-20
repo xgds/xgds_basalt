@@ -147,7 +147,7 @@ XGDS_MAP_SERVER_MAP_API_KEY = ""
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'US/Hawaii'
+TIME_ZONE = 'America/Los_Angeles'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -241,14 +241,6 @@ TEMPLATES = [
         },
     ]
 
-# TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS \
-#                                + ['django.core.context_processors.request',
-#                                   'django.core.context_processors.static',
-#                                   'geocamUtil.context_processors.settings',
-#                                   'geocamUtil.context_processors.AuthUrlsContextProcessor.AuthUrlsContextProcessor',
-#                                   'geocamUtil.context_processors.SettingsContextProcessor.SettingsContextProcessor',
-#                                   ]
-
 
 # Session Serializer: we use Pickle for backward compatibility and to allow more flexible session storage, but
 # be sure to keep the SECRET_KEY secret for security (see:
@@ -274,18 +266,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'urls'
-
-# TEMPLATE_DIRS = (
-#     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-#     # Always use forward slashes, even on Windows.
-#     # Don't forget to use absolute paths, not relative paths.
-#     os.path.join(PROJ_ROOT, 'apps/basaltApp/templates'),
-#     os.path.join(PROJ_ROOT, 'apps/basaltApp/templates/basaltApp'),
-#     os.path.join(PROJ_ROOT, 'apps/basaltApp/templates/registration'),
-
-#     # Templates for utility scripts
-#     os.path.join(PROJ_ROOT, 'bin/templates'),
-# )
 
 LOGIN_URL = SCRIPT_NAME + 'accounts/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -411,7 +391,7 @@ XGDS_PLANNER2_COMMAND_MONIKER_PLURAL = "Activities"
 XGDS_PLANNER2_FLIGHT_MODEL = "basaltApp.BasaltFlight"
 XGDS_PLANNER2_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
 XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
-XGDS_PLANNER2_DEFAULT_SITE = 'HIL'
+XGDS_PLANNER2_DEFAULT_SITE = 'Ames'
 
 
 XGDS_PLANNER2_SCHEDULE_INCLUDED = True
@@ -577,8 +557,14 @@ XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    'columnTitles': ['Time', 'TZ', 'Name',  'Description', 'Image'],
                                    'viewHandlebars': 'xgds_image/templates/handlebars/image-view2.handlebars',
                                    'viewJS': [EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.min.js',
-                                              STATIC_URL + 'xgds_image/js/imageReview.js' ],
-                                   'viewCss': [STATIC_URL + 'xgds_image/css/xgds_image.css'],
+                                                EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.js',
+                                                EXTERNAL_URL + 'fabric.js/dist/fabric.min.js',
+                                                EXTERNAL_URL + 'openseadragon-fabricjsOverlay/openseadragon-fabricjs-overlay.js',
+                                                EXTERNAL_URL + 'spectrum/spectrum.js',
+                                                STATIC_URL + 'xgds_image/js/imageAnnotation.js',
+                                                STATIC_URL + 'xgds_image/js/imageReview.js' ],
+                                   'viewCss': [STATIC_URL + 'xgds_image/css/xgds_image.css',
+                                               EXTERNAL_URL + 'spectrum/spectrum.js'],
                                    'viewInitMethods': ['xgds_image.setupImageViewer'],
                                    'viewResizeMethod': ['xgds_image.resizeImageViewer'],
                                    'event_time_field': 'acquisition_time',
@@ -679,15 +665,13 @@ BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 
 PYRAPTORD_SERVICE = True
 
-XGDS_CURRENT_SITEFRAME_ID = 2
-XGDS_CURRENT_REGION_ID = 2
+XGDS_CURRENT_SITEFRAME_ID = 3
+XGDS_CURRENT_REGION_ID = 2 # sample region?
 XGDS_DEFAULT_SAMPLE_TYPE = 2 #'Geology'
 XGDS_CORE_LIVE_INDEX_URL = '/basaltApp/live'
 
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-
-# XGDS_NOTES_NOTE_MODEL = 'basaltApp.Note'
 
 XGDS_MAP_SERVER_DEFAULT_ZOOM = 15
 XGDS_MAP_SERVER_SITE_MONIKER = 'Region'
@@ -727,7 +711,7 @@ XGDS_CORE_REBROADCAST_MAP = getOrCreateDict('XGDS_CORE_REBROADCAST_MAP')
 XGDS_CORE_REBROADCAST_MAP.update({'basaltApp_pastposition':{'modelName':'basaltApp.PastPosition', 'pkColNum':1, 'pkType': 'int'}})
 #XGDS_CORE_REBROADCAST_MAP['basaltApp_basaltconditionhistory'] = 'basaltApp.BasaltConditionHistory'
 
-XGDS_CORE_TEMPLATE_DEBUG = False
+XGDS_CORE_TEMPLATE_DEBUG = True
 
 COUCHDB_FILESTORE_NAME = "basalt-file-store"
 
