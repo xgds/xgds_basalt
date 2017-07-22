@@ -18,7 +18,7 @@
 
   tasks:
     - shell: ls -d {{ ansible_user_dir }}/tungsten/releases/tungsten-replicator-oss-4.0.1-123_pid[0-9]*/tungsten-replicator/conf
-      register: replication_properties_dir
+      register: replication_properties_ls
 
     - debug:
-        msg: "Replication properties dir: {{ replication_properties_dir }}"
+        msg: "Replication properties dir: {{ replication_properties_ls.stdout_lines[0] }}"
