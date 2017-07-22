@@ -21,4 +21,4 @@
       register: replication_properties_dir
 
     - debug:
-        msg: "Replication properties dir: {{ replication_properties_dir }}
+        msg: "Replication properties dir: {{ replication_properties_dir }}"
