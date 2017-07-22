@@ -22,3 +22,21 @@
 
     - debug:
         msg: "Replication properties dir: {{ replication_properties_ls.stdout_lines[0] }}"
+
+    - name: Update alpha JS filters
+      blockinfile:
+        path: {{ replication_properties_ls.stdout_lines[0] }}/static-alpha.properties
+        insertafter: EOF
+        block: |
+          ## Local JS filter definitions
+          replicator.filter.handleDbInsert=com.continuent.tungsten.replicator.filter.JavaScriptFilter
+          replicator.filter.handleDbInsert.script=/home/irg/xgds_basalt/apps/xgds_core/scripts/tungsten/handle_data_insertion.js
+
+    - name: Update bravo JS filters
+      blockinfile:
+        path: {{ replication_properties_ls.stdout_lines[0] }}/static-bravo.properties
+        insertafter: EOF
+        block: |
+          ## Local JS filter definitions
+          replicator.filter.handleDbInsert=com.continuent.tungsten.replicator.filter.JavaScriptFilter
+          replicator.filter.handleDbInsert.script=/home/irg/xgds_basalt/apps/xgds_core/scripts/tungsten/handle_data_insertion.js
