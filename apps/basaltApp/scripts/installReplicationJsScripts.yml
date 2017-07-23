@@ -42,3 +42,13 @@
           ## Local JS filter definitions
           replicator.filter.handleDbInsert=com.continuent.tungsten.replicator.filter.JavaScriptFilter
           replicator.filter.handleDbInsert.script=/home/irg/xgds_basalt/apps/xgds_core/scripts/tungsten/handle_data_insertion.js
+
+    - name: Append to list of JS filters in alpha
+      lineinfile: 
+        path: "{{ replication_properties_ls.stdout_lines[0] }}/static-alpha.properties"
+        backrefs: True
+        state: present
+        regexp: 'replicator.stage.q-to-dbms.filters=([\w_,]+)\s*$'
+        line: 'replicator.stage.q-to-dbms.filters=\1,handleDbInsert'
+
+        
