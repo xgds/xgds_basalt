@@ -338,66 +338,72 @@ class BasaltFlight(plannerModels.AbstractFlight):
     
     def getTreeJsonChildren(self):
         children = super(BasaltFlight, self).getTreeJsonChildren()
-        children.append({"title": "Notes", 
-                         "selected": False, 
-                         "tooltip": "Notes for " + self.name, 
-                         "key": self.uuid + "_notes", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_NOTES_NOTE_MODEL',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "Photos", 
-                         "selected": False, 
-                         "tooltip": "Images for " + self.name, 
-                         "key": self.uuid + "_images", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_IMAGE_IMAGE_SET_MODEL',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "Samples", 
-                         "selected": False, 
-                         "tooltip": "Samples for " + self.name, 
-                         "key": self.uuid + "_samples", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_SAMPLE_SAMPLE_MODEL',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "ASD", 
-                         "selected": False, 
-                         "tooltip": "ASD readings for " + self.name, 
-                         "key": self.uuid + "_asd", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.AsdDataProduct',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "FTIR", 
-                         "selected": False, 
-                         "tooltip": "FTIR readings for " + self.name, 
-                         "key": self.uuid + "_ftir", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.FtirDataProduct',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-#         children.append({"title": "pXRF", 
-#                          "selected": False, 
-#                          "tooltip": "pXRF readings for " + self.name, 
-#                          "key": self.uuid + "_pxrf", 
-#                          "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.PxrfDataProduct',
-#                                                                                          'filter': 'flight__pk:'+str(self.pk)}),
-#                                  "sseUrl": "", 
-#                                  "type": 'MapLink', 
-#                                  }
-#                          })
+        if self.basaltnote_set.exists():
+            children.append({"title": "Notes", 
+                             "selected": False, 
+                             "tooltip": "Notes for " + self.name, 
+                             "key": self.uuid + "_notes", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_NOTES_NOTE_MODEL',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.basaltimageset_set.exists():
+            children.append({"title": "Photos", 
+                             "selected": False, 
+                             "tooltip": "Images for " + self.name, 
+                             "key": self.uuid + "_images", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_IMAGE_IMAGE_SET_MODEL',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.basaltsample_set.exists():
+            children.append({"title": "Samples", 
+                             "selected": False, 
+                             "tooltip": "Samples for " + self.name, 
+                             "key": self.uuid + "_samples", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_SAMPLE_SAMPLE_MODEL',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.asddataproduct_set.exists():
+            children.append({"title": "ASD", 
+                             "selected": False, 
+                             "tooltip": "ASD readings for " + self.name, 
+                             "key": self.uuid + "_asd", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.AsdDataProduct',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.ftirdataproduct_set.exists():
+            children.append({"title": "FTIR", 
+                             "selected": False, 
+                             "tooltip": "FTIR readings for " + self.name, 
+                             "key": self.uuid + "_ftir", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.FtirDataProduct',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.pxrfdataproduct_set.exists():
+            children.append({"title": "pXRF", 
+                             "selected": False, 
+                             "tooltip": "pXRF readings for " + self.name, 
+                             "key": self.uuid + "_pxrf", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.PxrfDataProduct',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
         return children
 
 
