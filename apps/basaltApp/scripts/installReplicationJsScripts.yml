@@ -51,4 +51,10 @@
         regexp: 'replicator.stage.q-to-dbms.filters=([\w_,]+)\s*$'
         line: 'replicator.stage.q-to-dbms.filters=\1,handleDbInsert'
 
-        
+    - name: Append to list of JS filters in bravo
+      lineinfile: 
+        path: "{{ replication_properties_ls.stdout_lines[0] }}/static-bravo.properties"
+        backrefs: True
+        state: present
+        regexp: 'replicator.stage.q-to-dbms.filters=([\w_,]+)\s*$'
+        line: 'replicator.stage.q-to-dbms.filters=\1,handleDbInsert'
