@@ -38,7 +38,7 @@ import pextantHarness
 from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName
 from xgds_core.models import Constant
 from xgds_core.views import addRelay, getConditionActiveJSON
-from xgds_core.util import addPort
+from xgds_core.util import addPort, deletePostKey
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
@@ -386,7 +386,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
-                    del request.POST['relay']
+                    deletePostKey(request.POST, 'relay')
                     addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
 
                 if jsonResult:
@@ -541,7 +541,7 @@ def saveNewPxrfData(request, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
-                    del request.POST['relay']
+                    deletePostKey(request.POST, 'relay')
                     addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
                     
                 if jsonResult:
