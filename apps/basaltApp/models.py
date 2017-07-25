@@ -53,6 +53,7 @@ from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, s
 from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, stopFlightRecording
 from xgds_status_board.models import *
 from xgds_instrument.models import getNewDataFileName
+from xgds_core.util import callUrl
 
 from subprocess import Popen
 import re
@@ -326,6 +327,9 @@ class BasaltFlight(plannerModels.AbstractFlight):
         if settings.XGDS_VIDEO_ON:
             self.getVideoSource()
             startFlightRecording(request, self.name)
+        
+        self.manageRemoteFlights(request, True)
+            
 
     def stopFlightExtras(self, request):
         #stop the eva track listener
@@ -334,8 +338,30 @@ class BasaltFlight(plannerModels.AbstractFlight):
         
         if settings.XGDS_VIDEO_ON:
             stopFlightRecording(request, self.name)
-        
+
+        self.manageRemoteFlights(request, False)
+
+
+    def manageRemoteFlights(self, request, start=True):
+        return
+                # because we are evil, see if this is boat and if so, start the flight on shore and bpc
+        if settings.HOSTNAME == 'boat':
+            # no delay on start
+            urlContent = '/xgds_planner2/'
+            if start:
+                urlContent += 'start'
+            else:
+                urlContent += 'stop'
+            urlContent += 'Flight/' + self.uuid
+            callUrl('https://shore.xgds.org' + urlContent, request.user.username, request.user.password)
+            if self.name.endswith('EV1'):
+                callUrl('https://bpc1.xgds.org' + urlContent, request.user.username, request.user.password)
+            elif self.name.endswith('EV2'):
+                callUrl('https://bpc2.xgds.org' + urlContent, request.user.username, request.user.password)
+            elif self.name.endswith('SA'):
+                callUrl('https://bpc3.xgds.org' + urlContent, request.user.username, request.user.password)
     
+
     def getTreeJsonChildren(self):
         children = super(BasaltFlight, self).getTreeJsonChildren()
         if self.basaltnote_set.exists():

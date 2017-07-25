@@ -386,6 +386,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
+                    del request.POST['relay']
                     addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
 
                 if jsonResult:
@@ -430,6 +431,7 @@ def savePxrfMfgFile(request):
                     
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
+                    # TODO do not rerelay
                     addRelay(dataProduct, request.FILES, broadcast=broadcast)
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
@@ -485,6 +487,7 @@ def buildPxrfDataProductsFromResultsFile(request):
                     updatedRecords.append(foundProduct.fileNumber)
                     # this method is only called by data push from instrument / lua script
                     broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
+                    # TODO do not re-relay
                     addRelay(foundProduct, request.FILES, broadcast=broadcast)
             result= {'status': 'success', 
                      'updated': updatedRecords,
@@ -538,6 +541,7 @@ def saveNewPxrfData(request, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
+                    del request.POST['relay']
                     addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
                     
                 if jsonResult:
