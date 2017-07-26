@@ -25,6 +25,12 @@ import pytz
 import json
 from uuid import uuid4
 
+#
+# TODO:
+# WARNING!!! This is a hack to work around an apparent fail in the NovAtel GPS firmware, take this out ASAP.
+#
+OVERRIDE_GPS_DATE = True
+
 from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -171,8 +177,14 @@ class GpsTelemetryCleanup(object):
         sentenceType, utcTime, activeVoid, lat, latHemi, lon,\
             lonHemi, speed, heading, date, declination, declinationDir,\
             modeAndChecksum = content.split(",")
-        sourceTimestamp = datetime.datetime.strptime('%s %s' % (date, utcTime),
-                                                     '%d%m%y %H%M%S.%f')
+        if OVERRIDE_GPS_DATE:
+            serverTime = datetime.datetime.now(pytz.utc)
+            overrideDate = serverTime.strftime("%d%m%y")
+            sourceTimestamp = datetime.datetime.strptime('%s %s' % (overrideDate, utcTime),
+                                                         '%d%m%y %H%M%S.%f')
+        else:
+            sourceTimestamp = datetime.datetime.strptime('%s %s' % (date, utcTime),
+                                                         '%d%m%y %H%M%S.%f')
         sourceTimestamp = sourceTimestamp.replace(tzinfo=pytz.utc)
         lat = parseTracLinkDM(lat, latHemi)
         lon = parseTracLinkDM(lon, lonHemi)
