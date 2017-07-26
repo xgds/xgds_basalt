@@ -35,5 +35,6 @@ Don't try to get the value of FOO from django.conf.settings.  That
 settings object will not know about the default value!
 """
 import os
+import datetime
 
-XGDS_SAMPLE_START_YEAR = 2016
+XGDS_SAMPLE_START_YEAR = datetime.datetime.now().year
