@@ -247,18 +247,18 @@ class BasaltFlight(plannerModels.AbstractFlight):
         resource=self.getResource()
         
         protocol = None
+        try:
+            protocol = Constant.objects.get(name=resource.name + "_TRACKING_PROTO")
+        except:
+            # if there is no protocol, there should be no track.
+            return
+
         #Create the track if it does not exist
         if not self.track:
             TRACK_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_TRACK_MODEL)
             try:
                 track = TRACK_MODEL.get().objects.get(name=self.name)
             except ObjectDoesNotExist:
-                try:
-                    protocol = Constant.objects.get(name=resource.name + "_TRACKING_PROTO")
-                except:
-                    # if there is no protocol, there should be no track.
-                    return
-            
                 timezone = settings.TIME_ZONE
                 if self.plans:
                     timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
