@@ -432,7 +432,7 @@ def savePxrfMfgFile(request):
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
                     deletePostKey(request.POST, 'relay')
-                    addRelay(dataProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast)
+                    addRelay(dataProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast, update=True)
 
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
