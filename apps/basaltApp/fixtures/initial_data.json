@@ -248,6 +248,14 @@
             "display_name": "Special"
         }
     },
+    {
+        "pk": 6,
+        "model": "xgds_sample.SampleType",
+        "fields": {
+            "value": "P",
+            "display_name": "Porosity"
+        }
+    },
     {	
         "pk": 1,
         "model": "basaltApp.Replicate",

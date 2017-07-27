@@ -39,6 +39,10 @@ SECRET_KEY = '***REMOVED***'
 
 XGDS_BROWSERIFY = getOrCreateArray('XGDS_BROWSERIFY')
 
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
+                           ]
+
+
 # from apps.basaltApp.instrumentDataImporters import *
 # apps should be listed from "most specific" to "most general".  that
 # way, templates in more specific apps override ones from more general
