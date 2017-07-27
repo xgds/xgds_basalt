@@ -431,8 +431,9 @@ def savePxrfMfgFile(request):
                     
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
-                    # TODO do not rerelay
-                    addRelay(dataProduct, request.FILES, broadcast=broadcast)
+                    deletePostKey(request.POST, 'relay')
+                    addRelay(dataProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast)
+
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'No PXRF record for ' + str(seekNumber), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
@@ -487,8 +488,9 @@ def buildPxrfDataProductsFromResultsFile(request):
                     updatedRecords.append(foundProduct.fileNumber)
                     # this method is only called by data push from instrument / lua script
                     broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
-                    # TODO do not re-relay
-                    addRelay(foundProduct, request.FILES, broadcast=broadcast)
+                    deletePostKey(request.POST, 'relay')
+                    addRelay(foundProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast)
+
             result= {'status': 'success', 
                      'updated': updatedRecords,
                      'modelName': 'pXRF'}
