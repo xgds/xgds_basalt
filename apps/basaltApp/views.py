@@ -53,6 +53,7 @@ from geocamUtil.TimeUtil import utcToTimeZone, timeZoneToUtc
 from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 from basaltApp.hvnp_air_quality import hvnp_kml_generator
 from basaltApp.instrumentDataImporters import extractPxrfMfgFileNumber, pxrfProcessElementResultsRow, lookupFlightInfo
+from django.forms.models import model_to_dict
 
 
 def editEV(request, pk=None):
@@ -414,7 +415,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
 
 
 def savePxrfMfgFile(request):
-    seekNumber = -1
+    seekNumber=None
     mintime = None
     # coming from the LUA on pxrf, look up the pxrfData with the same fileNumber
     try:
@@ -431,8 +432,9 @@ def savePxrfMfgFile(request):
                     
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
-                    deletePostKey(request.POST, 'relay')
-                    addRelay(dataProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast, update=True)
+                    if broadcast:
+                        pxrfDict = buildPxrfRelayDict(dataProduct)
+                        addRelay(dataProduct, request.FILES, json.dumps(pxrfDict, cls=DatetimeJsonEncoder), '/basaltApp/relaySavePxrfData', broadcast=broadcast)
 
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
@@ -443,6 +445,41 @@ def savePxrfMfgFile(request):
     return HttpResponse(json.dumps({'status': 'error', 'message': 'Something was missing', 'seekNumber': seekNumber, 'mintime': str(mintime)}), content_type='application/json', status=406)
 
 
+def buildPxrfRelayDict(pxrf):
+    result = model_to_dict(pxrf)
+    elementset = pxrf.pxrfelement_set.all()
+    elementsetList = []
+    for e in elementset:
+        elementsetList.append(model_to_dict(e, exclude=['dataProduct']))
+    result['elementset'] = elementsetList
+    
+    del result['manufacturer_data_file']
+#     del result['portable_data_file']
+    del result['elementResultsCsvFile']
+    return result
+
+
+def relaySavePxrfData(request):
+    """ Receive relay data about a pXRF including manufacture data file """
+    try:
+        pxrfData = request.POST.get('serialized_form')
+        elementset = pxrfData['elementset']
+        del pxrfData['elementset']
+        newPxrf = PxrfDataProduct(**pxrfData)
+        mdf = request.FILES.get('manufacturerDataFile', None)
+        newPxrf.manufacturer_data_file = mdf
+        newPxrf.save()
+        
+        for element in elementset:
+            pe = PxrfElement(**element)
+            pe.dataProduct = newPxrf
+            pe.save()
+        return JsonResponse({'status': 'success', 'object_id': newPxrf.pk})
+    except Exception, e:
+        traceback.print_exc()
+        return JsonResponse({'status': 'fail', 'exception': str(e)}, status=406)
+     
+    
 def buildPxrfMetadata(request):
     
     if request.user.is_authenticated():
@@ -487,9 +524,10 @@ def buildPxrfDataProductsFromResultsFile(request):
                 if foundProduct:
                     updatedRecords.append(foundProduct.fileNumber)
                     # this method is only called by data push from instrument / lua script
-                    broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
-                    deletePostKey(request.POST, 'relay')
-                    addRelay(foundProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast)
+                    # we only broadcast when we get the manufacturer data file
+#                     broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
+#                     deletePostKey(request.POST, 'relay')
+#                     addRelay(foundProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast)
 
             result= {'status': 'success', 
                      'updated': updatedRecords,
