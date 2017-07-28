@@ -511,8 +511,7 @@ def relaySavePxrfData(request):
         print 'saved pxrf object %d' % newPxrf.pk
         
         for element in elementset:
-            pe_dict = json.loads(element)
-            pe = PxrfElement(**pe_dict)
+            pe = PxrfElement(**element)
             pe.dataProduct = newPxrf
             pe.save()
         print 'built elements'
