@@ -455,7 +455,11 @@ def buildPxrfRelayDict(pxrf):
     elementset = pxrf.pxrfelement_set.all()
     elementsetList = []
     for e in elementset:
-        elementsetList.append(model_to_dict(e, exclude=['dataProduct']))
+        edict = model_to_dict(e, exclude=['dataProduct'])
+        edict['element_id'] = edict['element']
+        del edict['element']
+        elementsetList.append(edict)
+        
     result['elementset'] = elementsetList
     del result['creator']
     if pxrf.collector:
