@@ -417,6 +417,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
 def savePxrfMfgFile(request):
     seekNumber=None
     mintime = None
+    print "*** savePxrfMfgFile POST: %s" % request.POST
     # coming from the LUA on pxrf, look up the pxrfData with the same fileNumber
     try:
         mdf = request.FILES.get('manufacturerDataFile', None)
@@ -438,10 +439,14 @@ def savePxrfMfgFile(request):
 
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
+                    print "*** PXRF Returning 406 from savePxrfMfgFile: SEQ # not found!  ***"
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'No PXRF record for ' + str(seekNumber), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     except Exception, e:
+        print "*** PXRF Returning 406 from savePxrfMfgFile: exception in lookup!  ***"
+        traceback.print_exc()
         return HttpResponse(json.dumps({'status': 'error', 'message': str(e), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     
+    print "*** PXRF Returning 406 from savePxrfMfgFile: something was missing!  ***"
     return HttpResponse(json.dumps({'status': 'error', 'message': 'Something was missing', 'seekNumber': seekNumber, 'mintime': str(mintime)}), content_type='application/json', status=406)
 
 
@@ -454,7 +459,7 @@ def buildPxrfRelayDict(pxrf):
     result['elementset'] = elementsetList
     
     del result['manufacturer_data_file']
-#     del result['portable_data_file']
+    del result['portable_data_file']
     del result['elementResultsCsvFile']
     return result
 
@@ -518,6 +523,8 @@ def buildPxrfDataProductsFromResultsFile(request):
     except:
         result= {'status': 'error', 
                  'message': 'Did not receive element results csv file' }
+        print "*** PXRF buildPxrfDataProductsFromResultsFile: did not receive CSV file! ***"
+        print "POST: %s" % request.POST
         return HttpResponse(json.dumps(result), content_type='application/json', status=status)
     
     try:
@@ -540,6 +547,9 @@ def buildPxrfDataProductsFromResultsFile(request):
                      'modelName': 'pXRF'}
             status=200
     except:
+        print "*** PXRF buildPxrfDataProductsFromResultsFile: exception catch! ***"
+        print "POST: %s" % request.POST
+        traceback.print_exc()
         result= {'status': 'error', 
                  'updated': updatedRecords,
                  'message': 'Problem with csv file' }
