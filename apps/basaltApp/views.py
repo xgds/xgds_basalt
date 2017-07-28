@@ -461,6 +461,9 @@ def buildPxrfRelayDict(pxrf):
     del result['manufacturer_data_file']
     del result['portable_data_file']
     del result['elementResultsCsvFile']
+    del result['track_position']
+    del result['user_position']
+    
     return result
 
 
@@ -476,6 +479,16 @@ def relaySavePxrfData(request):
         print 'built new pxrf'
         mdf = request.FILES.get('manufacturerDataFile', None)
         newPxrf.manufacturer_data_file = mdf
+        
+        print 'looking up position'
+        try:
+            (flight, foundlocation) = lookupFlightInfo(newPxrf.acquisition_time, timezone, newPxrf.resource, 'pxrf')
+            #newPxrf.flight = flight
+            newPxrf.track_position = foundlocation
+        except:
+            print 'could not find the location'
+            pass
+        print 'about to save pxrf'
         newPxrf.save()
         print 'saved pxrf object %d' % newPxrf.pk
         
