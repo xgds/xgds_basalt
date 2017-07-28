@@ -483,7 +483,7 @@ def relaySavePxrfData(request):
         print 'looking up position'
         try:
             (flight, foundlocation) = lookupFlightInfo(newPxrf.acquisition_time, timezone, newPxrf.resource, 'pxrf')
-            #newPxrf.flight = flight
+            newPxrf.flight = flight
             newPxrf.track_position = foundlocation
         except:
             print 'could not find the location'
