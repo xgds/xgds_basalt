@@ -457,6 +457,20 @@ def buildPxrfRelayDict(pxrf):
     for e in elementset:
         elementsetList.append(model_to_dict(e, exclude=['dataProduct']))
     result['elementset'] = elementsetList
+    del result['creator']
+    if pxrf.collector:
+        result['collector_id'] = pxrf.collector.pk
+    del result['collector']
+    
+    result['instrument_id'] = pxrf.instrument.pk
+    del result['instrument']
+    
+    result['resource_id'] = pxrf.resource.pk
+    del result['resource']
+    
+    if pxrf.flight:
+        result['flight_id'] = pxrf.flight.pk
+    del result['flight']
     
     del result['manufacturer_data_file']
     del result['portable_data_file']
