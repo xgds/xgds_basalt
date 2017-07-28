@@ -462,18 +462,24 @@ def buildPxrfRelayDict(pxrf):
 def relaySavePxrfData(request):
     """ Receive relay data about a pXRF including manufacture data file """
     try:
+        print 'receive pxrf relay' 
         pxrfData = request.POST.get('serialized_form')
-        elementset = pxrfData['elementset']
-        del pxrfData['elementset']
-        newPxrf = PxrfDataProduct(**pxrfData)
+        pxrfDict = json.loads(pxrfData)
+        elementset = pxrfDict['elementset']
+        del pxrfDict['elementset']
+        newPxrf = PxrfDataProduct(**pxrfDict)
+        print 'built new pxrf'
         mdf = request.FILES.get('manufacturerDataFile', None)
         newPxrf.manufacturer_data_file = mdf
         newPxrf.save()
+        print 'saved pxrf object %d' % newPxrf.pk
         
         for element in elementset:
-            pe = PxrfElement(**element)
+            pe_dict = json.loads(element)
+            pe = PxrfElement(**pe_dict)
             pe.dataProduct = newPxrf
             pe.save()
+        print 'built elements'
         return JsonResponse({'status': 'success', 'object_id': newPxrf.pk})
     except Exception, e:
         traceback.print_exc()
