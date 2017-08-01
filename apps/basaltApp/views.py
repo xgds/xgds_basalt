@@ -439,7 +439,7 @@ def savePxrfMfgFile(request):
 
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
-                    print "*** PXRF Returning 406 from savePxrfMfgFile: SEQ # not found!  ***"
+                    print "*** PXRF Returning 406 from savePxrfMfgFile: SEQ # not found! mfg file upload before csv file ***"
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'No PXRF record for ' + str(seekNumber), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     except Exception, e:
         print "*** PXRF Returning 406 from savePxrfMfgFile: exception in lookup!  ***"
@@ -488,33 +488,26 @@ def buildPxrfRelayDict(pxrf):
 def relaySavePxrfData(request):
     """ Receive relay data about a pXRF including manufacture data file """
     try:
-        print 'receive pxrf relay' 
         pxrfData = request.POST.get('serialized_form')
         pxrfDict = json.loads(pxrfData)
         elementset = pxrfDict['elementset']
         del pxrfDict['elementset']
         newPxrf = PxrfDataProduct(**pxrfDict)
-        print 'built new pxrf'
         mdf = request.FILES.get('manufacturerDataFile', None)
         newPxrf.manufacturer_data_file = mdf
         
-        print 'looking up position'
         try:
             (flight, foundlocation) = lookupFlightInfo(newPxrf.acquisition_time, timezone, newPxrf.resource, 'pxrf')
             newPxrf.flight = flight
             newPxrf.track_position = foundlocation
         except:
-            print 'could not find the location'
             pass
-        print 'about to save pxrf'
         newPxrf.save()
-        print 'saved pxrf object %d' % newPxrf.pk
         
         for element in elementset:
             pe = PxrfElement(**element)
             pe.dataProduct = newPxrf
             pe.save()
-        print 'built elements'
         return JsonResponse({'status': 'success', 'object_id': newPxrf.pk})
     except Exception, e:
         traceback.print_exc()
@@ -554,7 +547,6 @@ def buildPxrfDataProductsFromResultsFile(request):
         result= {'status': 'error', 
                  'message': 'Did not receive element results csv file' }
         print "*** PXRF buildPxrfDataProductsFromResultsFile: did not receive CSV file! ***"
-        print "POST: %s" % request.POST
         return HttpResponse(json.dumps(result), content_type='application/json', status=status)
     
     try:
@@ -578,7 +570,6 @@ def buildPxrfDataProductsFromResultsFile(request):
             status=200
     except:
         print "*** PXRF buildPxrfDataProductsFromResultsFile: exception catch! ***"
-        print "POST: %s" % request.POST
         traceback.print_exc()
         result= {'status': 'error', 
                  'updated': updatedRecords,

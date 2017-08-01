@@ -431,6 +431,12 @@ XGDS_SAMPLE_PERM_LINK_PREFIX = "https://basalt.xgds.org"
 
 XGDS_IMAGE_IMAGE_SET_MODEL = 'basaltApp.BasaltImageSet'
 XGDS_IMAGE_SINGLE_IMAGE_MODEL = 'basaltApp.BasaltSingleImage'
+XGDS_IMAGE_ARROW_ANNOTATION_MODEL = 'basaltApp.ArrowAnnotation'
+XGDS_IMAGE_ELLIPSE_ANNOTATION_MODEL = 'basaltApp.EllipseAnnotation'
+XGDS_IMAGE_RECTANGLE_ANNOTATION_MODEL = 'basaltApp.RectangleAnnotation'
+XGDS_IMAGE_TEXT_ANNOTATION_MODEL = 'basaltApp.TextAnnotation'
+XGDS_IMAGE_ANNOTATION_MANAGER = 'basaltApp.ANNOTATION_MANAGER'
+
 
 XGDS_INSTRUMENT_IMPORT_MODULE_PATH = 'basaltApp.instrumentDataImporters'
 
