@@ -33,6 +33,7 @@ from geocamTrack import models as geocamTrackModels
 from geocamTrack.utils import getClosestPosition
 
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
+
 from xgds_core.couchDbStorage import CouchDbStorage
 
 from xgds_planner2 import models as plannerModels
@@ -1107,28 +1108,25 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
             vehicle = self.resource.vehicle
             self.flight = getFlight(self.acquisition_time, vehicle)
         
-#     def toMapDict(self):
-#         """
-#         Return a reduced dictionary that will be turned to JSON for rendering in a map
-#         """
-#         result = xgds_image_models.AbstractImageSet.toMapDict(self)
-#         result['type'] = 'Photo'
-#         if self.flight:
-#             result['flight_name'] = self.flight.name
-#         else:
-#             result['flight_name'] = ''
-#         if self.resource:
-#             result['resource_name'] = self.resource.name
-#         else:
-#             result['resource_name'] = ''
-#         return result
-
 
 class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
     """ This can be used for screenshots or non geolocated images 
     """
     # set foreign key fields from parent model to point to correct types
     imageSet = models.ForeignKey(BasaltImageSet, null=True, related_name="images")
+
+
+class TextAnnotation(xgds_image_models.AbstractTextAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
+
+class EllipseAnnotation(xgds_image_models.AbstractEllipseAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
+
+class RectangleAnnotation(xgds_image_models.AbstractRectangleAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
+
+class ArrowAnnotation(xgds_image_models.AbstractArrowAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
 
 
 class BasaltStillFrame(AbstractStillFrame):
