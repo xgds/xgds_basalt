@@ -634,5 +634,104 @@
 			"constantName": "BASALT_DEV_IP",
 			"active": 1
 		}
-	}
+	},
+	{
+    	"pk": 80,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"SHORE_IP",
+    		"units":"n/a",
+    		"notes":"IP of shore computer",
+    		"dataType":"string",
+    		"value":"10.10.24.82"
+    		}
+    },
+    {
+    	"pk": 81,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BOAT_IP",
+    		"units":"n/a",
+    		"notes":"IP of boat computer",
+    		"dataType":"string",
+    		"value":"10.10.24.81"
+    		}
+    },
+    {
+    	"pk": 82,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK3_IP",
+    		"units":"n/a",
+    		"notes":"IP of bpc3 computer",
+    		"dataType":"string",
+    		"value":"10.10.24.73"
+    		}
+    },
+    {
+    	"pk": 12,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK1_IP",
+    		"units":"n/a",
+    		"notes":"IP of bpc1 computer",
+    		"dataType":"string",
+    		"value":"10.10.24.71"
+    		}
+    },
+    {
+    	"pk": 13,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK2_IP",
+    		"units":"n/a",
+    		"notes":"IP of bpc2 computer",
+    		"dataType":"string",
+    		"value":"10.10.24.72"
+    		}
+    },
+    {
+    	"pk": 83,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BASALT_DEV_IP",
+    		"units":"n/a",
+    		"notes":"IP of basalt-dev computer",
+    		"dataType":"string",
+    		"value":"10.10.24.91"
+    		}
+    },
+    {
+    	"pk": 41,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"RED_CAMERA2_IP",
+    		"units":"n/a",
+    		"notes":"IP of red camera 2 wifi card TODO CHECKME FTIR CONFLICT",
+    		"dataType":"string",
+    		"value":"10.10.24.76"
+    		}
+    },
+    {
+    	"pk": 84,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"PXRF_IP",
+    		"units":"n/a",
+    		"notes":"IP of pXRF wifi card TODO CHECKME",
+    		"dataType":"string",
+    		"value":"10.10.24.78"
+    		}
+    },
+    {
+    	"pk": 85,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"LIBS_IP",
+    		"units":"n/a",
+    		"notes":"IP of LIBS wifi card TODO CHECKME",
+    		"dataType":"string",
+    		"value":"10.10.24.79"
+    		}
+    }
 ]
