@@ -79,33 +79,6 @@
    
    This should open a new terminal where you are successfully ssh-ed in
    
-1. Get SEXTANT DEM:
-   * Download SEXTANT DEM from BASALT server (there are several, choose at least Hawaii_Lava_Flows.tif) :
-https://basalt.xgds.org/data/dem
-   * Copy from your computer to the data directory in the docker container:
-
-   ```
-   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
-   ```
-   
-   Windows with PUTTY installed (make sure it is on your PATH):
-   
-   ```
-   pscp -P 222 Hawaii_Lava_Flows.tif xgds@localhost:xgds_basalt/data/dem
-   ```
-
-1. Run Sextantwebapp
-   * Log into Docker container per step #4.
-   
-   ```
-   cd sextantwebapp
-   babel-node server.js babel-node index.js --presets es2015,stage-2
-   ```
-   
-   Hit the sextantweb app in a browser:  https://localhost/wristApp
-   
-   See more instructions here: https://github.com/xgds/sextantwebapp/blob/master/tutorial.md
-
 1. Start the track generator
    * Log into Docker container per step #4.  
 
@@ -113,11 +86,21 @@ https://basalt.xgds.org/data/dem
    cd xgds_basalt/apps/basaltApp/scripts
    ```
    ```
-   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20161114A_EV2_trunc.csv
+   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20160526G_EV2_Ames.csv
    ```
    ```
    ctrl-c to stop track generation
    ```
+   
+   * Note this will read in a csv file with lat, lon as the positions so if you have your own file you can load that too.
+   * Note that by default xGDS is currently centered on Ames (but this will change)
+   * -i is the interval (in seconds) for updates
+   * If you want to generate 2 tracks, do this for EV2 (same track slower interval:
+   
+   ```
+   ./evaTrackGenerator.py -i 2 -p 10002 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20160526G_EV2_Ames.csv
+   ```
+   
 
 1. Create an EVA in xGDS and start it.
    * http://localhost/xgds_planner2/addGroupFlight
@@ -145,12 +128,51 @@ https://basalt.xgds.org/data/dem
    * In order to see the plan in the sextant web app, it has to be the last plan scheduled for today.  To do that, go to the planned traverses page:
      * https://localhost/xgds_planner2/index/
      * Check on the planned traverse you want to schedule (if you don't have any planned traverses, create one in the region you are working in)
+     * IMPORTANT -- you need to have your BING map key in place in order for any map pages including the planner to work.
      * Select a crew (you have to have set up the crew with mass on the crew mass tab)
      * Select the EVA (it will be one of the last ones)
      * Click the 'when' and just click now
      * Click schedule.
 
-1. Restart web server (from within docker container):
+1. Get SEXTANT DEM:
+   * Ames.tif is already in place, you only have to do this if you are testing for a different area)
+   * Download SEXTANT DEM from BASALT server (there are several) :
+     https://basalt.xgds.org/data/dem
+   * Copy from your computer to the data directory in the docker container:
+
+   ```
+   scp -P 222 <local-path-to-DEM> xgds@localhost:xgds_basalt/data/dem
+   ```
+   
+   Windows with PUTTY installed (make sure it is on your PATH):
+   
+   ```
+   pscp -P 222 local-path-to-DEM.tim xgds@localhost:xgds_basalt/data/dem
+   ```
+
+1. Run Sextantwebapp
+   * Log into Docker container per step #4.
+   * Determine what configuration you want to run.  Inside of sextantwebapp, there is a config directory.  
+      * By default, sextantwebapp runs iphone_xgds_config.js
+      * This can be overridden in the terminal by typing
+         * export CONFIG_PATH='./name_of_config_in_config_directory.js'
+         * ie export CONFIG_PATH='./xgds_config.js'
+         * the latter is what we have set up for you in this docker instance
+         * therefore to run with the iphone you will have to remove CONFIG_PATH from .bashrc in the home directory 
+      * If you want to run from iphone with no problems you need an ssl certificate with the hostname of the machine running your xGDS & sextantwebapp
+      * Once you have this set up, you can put that everywhere there is an ip address inside of iphone_xgds_config.js
+      * You must ideally update iphone_xgds_config.js to have a hostname that matches your development
+   
+   ```
+   cd sextantwebapp
+   babel-node server.js babel-node index.js --presets es2015,stage-2
+   ```
+   
+   Hit the sextantweb app in a browser:  https://localhost/wristApp/mobile.html
+   
+   See more instructions here: https://github.com/xgds/sextantwebapp/blob/master/tutorial.md
+
+1. Restarting web server (from within docker container):
    * sudo apachectl restart
      * sudo password will be xgds
 
