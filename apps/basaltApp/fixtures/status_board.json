@@ -52,7 +52,7 @@
 		"pk": 6, 
 		"model": "xgds_status_board.SubsystemGroup", 
 		"fields": {
-			"name": "basalt-dev",
+			"name": "basaltDev",
 			"displayName": "Wowza Server",
 			"warningThreshold": 10,
 			"failureThreshold": 20
@@ -625,7 +625,7 @@
 		"pk": 46, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "basalt-dev",
+			"name": "basaltDev",
 			"displayName": "Computer",
 			"group": 6,
 			"logFileUrl": "",
