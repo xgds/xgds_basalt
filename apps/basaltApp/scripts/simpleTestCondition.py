@@ -23,19 +23,19 @@ import json
 import pytz
 
 HTTP_PREFIX = 'https'
-URL_PREFIX = 'ksc-field1.xgds.org'
+URL_PREFIX = 'localhost'
 
 def test_set_condition():
     url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'start_time': isonow,
-                        'status': 'Started',
+                        'status': 'activity_started',
                         'timezone': 'US/Hawaii',
                         'name': 'test_set_condition',
                         'extra': 'Start time should be set',
                         'assignment': 'EV2',
-                        'group_name': '20170426B',
+                        'group_name': '20170807A',
                         'xgds_id': 'HIL13_A_WAY0_0_PXO'
                         }
     data = {'time': isonow,
@@ -51,10 +51,10 @@ def test_update_condition():
     url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
-    nested_data_dict = {'status': 'in_progress',
+    nested_data_dict = {'status': 'activity_in_progress',
                         'extra': 'In progress for this',
                         'assignment': 'EV2',
-                        'group_name': '20170426B',
+                        'group_name': '20170807A',
                         'xgds_id': 'HIL13_A_WAY0_0_PXO'
                         }
     data = {'time': isonow,
@@ -71,10 +71,10 @@ def test_end_condition():
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'end_time': isonow,
-                        'status': 'completed',
+                        'status': 'activity_completed',
                         'extra': 'Done done done',
                         'assignment': 'EV2',
-                        'group_name': '20170426B',
+                        'group_name': '20170807A',
                         'xgds_id': 'HIL13_A_WAY0_0_PXO'
                         }
     data = {'time': isonow,
@@ -84,6 +84,7 @@ def test_end_condition():
             }
     response = requests.post(url, data=data, verify=False)
     json_response = response.json()
+    return json_response
 
 
 mode = sys.argv[1]
