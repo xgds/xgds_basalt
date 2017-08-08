@@ -235,7 +235,7 @@
 			"name": "redCamera2",
 			"displayName": "Red Camera",
 			"group": 2,
-			"logFileUrl": "/data/pyraptord/redCamera_latest.txt",
+			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
 			"constantName": "RED_CAMERA2_IP",
@@ -249,7 +249,7 @@
 			"name": "FLIR",
 			"displayName": "FLIR",
 			"group": 2,
-			"logFileUrl": "/data/pyraptord/FLIR_latest.txt",
+			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
 			"constantName": "FLIR_IP",
@@ -263,7 +263,7 @@
 			"name": "pXRF",
 			"displayName": "pXRF",
 			"group": 2,
-			"logFileUrl": "/data/pyraptord/PXRF_latest.txt",
+			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
 			"constantName": "PXRF_IP",
@@ -284,6 +284,20 @@
 			"active": 0
 		}
 	},
+	{
+		"pk": 40, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "FTIR",
+			"displayName": "FTIR",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "FTIR_IP",
+			"active": 0
+		}
+	},	
 	{
     	"pk": 80,
     	"model": "xgds_core.Constant",
@@ -356,7 +370,7 @@
     	"fields": {
     		"name":"RED_CAMERA2_IP",
     		"units":"n/a",
-    		"notes":"IP of red camera 2 wifi card TODO CHECKME FTIR CONFLICT",
+    		"notes":"IP of red camera 2 wifi card",
     		"dataType":"string",
     		"value":"10.10.24.76"
     		}
@@ -367,9 +381,9 @@
     	"fields": {
     		"name":"PXRF_IP",
     		"units":"n/a",
-    		"notes":"IP of pXRF wifi card TODO CHECKME",
+    		"notes":"IP of pXRF wifi card",
     		"dataType":"string",
-    		"value":"10.10.24.78"
+    		"value":"10.10.24.77"
     		}
     },
     {
@@ -378,7 +392,29 @@
     	"fields": {
     		"name":"LIBS_IP",
     		"units":"n/a",
-    		"notes":"IP of LIBS wifi card TODO CHECKME",
+    		"notes":"IP of LIBS wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.74"
+    		}
+    },
+    {
+    	"pk": 86,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"FLIR_IP",
+    		"units":"n/a",
+    		"notes":"IP of FLIR wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.78"
+    		}
+    },
+    {
+    	"pk": 87,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"FTIR_IP",
+    		"units":"n/a",
+    		"notes":"IP of FTIR wifi card",
     		"dataType":"string",
     		"value":"10.10.24.79"
     		}
