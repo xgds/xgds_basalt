@@ -29,7 +29,7 @@ from uuid import uuid4
 # TODO:
 # WARNING!!! This is a hack to work around an apparent fail in the NovAtel GPS firmware, take this out ASAP.
 #
-OVERRIDE_GPS_DATE = True
+OVERRIDE_GPS_DATE = False
 
 from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
@@ -79,7 +79,7 @@ def isSentenceType(sentence, sentenceType):
 def hasGoodNmeaChecksum(sentence):
     checkSum=0
     if len(sentence) < 4:
-        return false  # Can't possibly be good if shorter than this
+        return False  # Can't possibly be good if shorter than this
     for ch in sentence[1:len(sentence)-3]:
         checkSum = checkSum ^ ord(ch)
     checkSumHex = ("%02x" % checkSum).upper()
@@ -89,8 +89,27 @@ def hasGoodNmeaChecksum(sentence):
     else:
         return False
 
-def checkCompassDataQuality(sentence):
-    return True
+
+def checkCompassDataQuality(resourceId, sentence):
+    #subsystem status color codes
+    OKAY_COLOR = '#00ff00'
+    ERROR_COLOR = '#ff0000'
+    dataQualityColor = OKAY_COLOR
+    dataQualityGood = True
+    
+    # Bail out immediately if we have obviosuly corrupted data
+    if not hasGoodNmeaChecksum(sentence):
+        logging.warning("Bad checksum: %1s", sentence)
+        dataQualityGood = False
+        dataQualityColor = ERROR_COLOR
+        
+    myKey = "compassDataQuality%s" % str(resourceId)
+    status = {'dataQuality': dataQualityColor,
+              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+
+    cache.set(myKey, json.dumps(status))
+    return dataQualityGood
+
 
 def checkGpsDataQuality(resourceId, sentence):
     '''
@@ -159,6 +178,58 @@ class GpsTelemetryCleanup(object):
             logging.warning('%s', traceback.format_exc())
             logging.warning('exception caught, continuing')
 
+    def handle_compass(self, topic, body):
+        try:
+            self.handle_compass0(topic, body)
+        except:  # pylint: disable=W0702
+            logging.warning('%s', traceback.format_exc())
+            logging.warning('exception caught, continuing')
+
+    def parseCompassData(self, compassSentence):
+        # Sample compass NMEA sentence: $R92.3P-0.3C359.8X219.4Y-472.8Z19.7T35.4D270.1A87.7*6F
+        
+        compassReParsed = re.match("\$(?P<rollLbl>[A-Z])(?P<roll>-*[0-9\.]+)(?P<pitchLbl>[A-Z])(?P<pitch>-*[0-9\.]+)(?P<compassLbl>[A-Z])(?P<compass>-*[0-9\.]+)(?P<xLbl>[A-Z])(?P<x>-*[0-9\.]+)(?P<yLbl>[A-Z])(?P<y>-*[0-9\.]+)(?P<zLbl>[A-Z])(?P<z>-*[0-9\.]+)(?P<tempLbl>[A-Z])(?P<temp>-*[0-9\.]+)(?P<drillDLbl>[A-Z])(?P<drillD>-*[0-9\.]+)(?P<drillALbl>[A-Z])(?P<drillA>-*[0-9\.]+)",
+                 compassSentence)
+        compassRecord = {"roll" : float(compassReParsed.group('roll')),
+                         "pitch": float(compassReParsed.group('pitch')),
+                         "compass": float(compassReParsed.group('compass')),
+                         "x": float(compassReParsed.group('x')),
+                         "y": float(compassReParsed.group('y')),
+                         "z": float(compassReParsed.group('z')),
+                         "temp": float(compassReParsed.group('temp')),
+                         "drillD": float(compassReParsed.group('drillD')),
+                         "drillA": float(compassReParsed.group('drillA'))
+                         }
+        return compassRecord
+    
+    def handle_compass0(self, topic, body):
+    # example: 2:$GPRMC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
+
+        serverTimestamp = datetime.datetime.now(pytz.utc)
+    
+        if body == 'NO DATA':
+            logging.info('NO DATA')
+            return
+    
+        # parse record
+        resourceIdStr, trackName, content = body.split(":", 2)
+        resourceId = int(resourceIdStr)
+        if not checkDataQuality(resourceId, content):
+            logging.info('UNRECOGNIZED OR CORRUPT COMPASS SENTENCE: %s', content)
+            return
+        compassRecord = self.parseCompassData(content)
+        sourceTimestamp = serverTimestamp  # Compass has no independent clock
+                
+        # save subsystem status to cache
+        myKey = "telemetryCleanup"
+        status = {'lastUpdated': datetime.datetime.utcnow().isoformat()}
+        cache.set(myKey, json.dumps(status))
+        
+        # save latest compass reading in memcache for GPS use
+        cacheKey = 'compass.%s' % resourceId
+        cacheRecordDict = {"timestamp": sourceTimestamp, "compassRecord": compassRecord}
+        cache.set(cacheKey, json.dumps(cacheRecordDict, cls=DatetimeJsonEncoder))
+
     def handle_gpsposition0(self, topic, body):
         # example: 2:$GPRMC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
 
@@ -188,6 +259,12 @@ class GpsTelemetryCleanup(object):
         sourceTimestamp = sourceTimestamp.replace(tzinfo=pytz.utc)
         lat = parseTracLinkDM(lat, latHemi)
         lon = parseTracLinkDM(lon, lonHemi)
+        
+        # Get compass heading from compass record
+        # TODO: sanity check the timestamp in the compass record
+        compassCacheKey = 'compass.%s' % resourceId
+        compassInfo = cache.get(compassCacheKey)
+        heading = compassInfo["compassRecord"]["compass"]
         
         # save subsystem status to cache
         myKey = "telemetryCleanup"
