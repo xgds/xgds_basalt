@@ -1,6 +1,4 @@
 {"fieldLoadAverage" : {"HOST": "irg@boat"}, 
   "groundLoadAverage": {"HOST": "irg@shore"},
-  "bpc1LoadAverage": {"HOST":"irg@bpc1"},
-  "bpc2LoadAverage": {"HOST":"irg@bpc2"},
-  "bpc3LoadAverage": {"HOST":"irg@bpc3"}
+  "devLoadAverage": {"HOST": "irg@basalt-dev"}
  }

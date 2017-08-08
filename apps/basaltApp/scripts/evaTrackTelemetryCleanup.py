@@ -104,7 +104,9 @@ def checkCompassDataQuality(resourceId, sentence):
         dataQualityColor = ERROR_COLOR
         
     myKey = "compassDataQuality%s" % str(resourceId)
-    status = {'dataQuality': dataQualityColor,
+    status = {'name': myKey,
+              'displayName': 'Compass Data Quality %s' % str(resourceId),
+              'statusColor': dataQualityColor,
               'lastUpdated': datetime.datetime.utcnow().isoformat()}
 
     cache.set(myKey, json.dumps(status))
@@ -139,7 +141,9 @@ def checkGpsDataQuality(resourceId, sentence):
 
     # get the EV number from NMEA sentence
     myKey = "gpsDataQuality%s" % str(resourceId)
-    status = {'dataQuality': dataQualityColor,
+    status = {'name': myKey,
+              'displayName': 'GPS Data Quality %s' % str(resourceId),
+              'statusColor': dataQualityColor,
               'lastUpdated': datetime.datetime.utcnow().isoformat()}
 
     cache.set(myKey, json.dumps(status))
@@ -221,8 +225,11 @@ class GpsTelemetryCleanup(object):
         sourceTimestamp = serverTimestamp  # Compass has no independent clock
                 
         # save subsystem status to cache
-        myKey = "telemetryCleanup"
-        status = {'lastUpdated': datetime.datetime.utcnow().isoformat()}
+        myKey = "telemetryCleanupEV%s" % resourceIdStr
+        status = {'name': myKey,
+              'displayName': 'Telemetry Cleanup EV%s' % str(resourceIdStr),
+              'statusColor': '#00ff00',
+              'lastUpdated': datetime.datetime.utcnow().isoformat()}
         cache.set(myKey, json.dumps(status))
         
         # save latest compass reading in memcache for GPS use
