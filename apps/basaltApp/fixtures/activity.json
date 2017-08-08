@@ -1,0 +1,42 @@
+[    
+	{
+		"pk": 1, 
+		"model": "basaltApp.ActivityStatus", 
+		"fields": {
+			"value": "activity_started",
+			"display_name": "Started"
+		}
+	},
+	{
+		"pk": 2, 
+		"model": "basaltApp.ActivityStatus", 
+		"fields": {
+			"value": "activity_in_progress",
+			"display_name": "In Progress"
+		}
+	},
+	{
+		"pk": 3, 
+		"model": "basaltApp.ActivityStatus", 
+		"fields": {
+			"value": "activity_scheduled",
+			"display_name": "Scheduled"
+		}
+	},
+	{
+		"pk": 4, 
+		"model": "basaltApp.ActivityStatus", 
+		"fields": {
+			"value": "activity_completed",
+			"display_name": "Completed"
+		}
+	},
+	{
+		"pk": 5, 
+		"model": "basaltApp.ActivityStatus", 
+		"fields": {
+			"value": "activity_aborted",
+			"display_name": "Aborted"
+		}
+	}
+]
