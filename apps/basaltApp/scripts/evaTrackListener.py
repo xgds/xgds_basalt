@@ -80,7 +80,7 @@ def zmqPublish(opts, q):
     p = ZmqPublisher(**ZmqPublisher.getOptionValues(opts))
     p.start()
     for line in q:
-        msg = 'gpsposition:%s:%s:' % (opts.evaNumber, opts.trackName) + line
+        msg = '%s:%s:%s:' % (opts.dataTopic, opts.evaNumber, opts.trackName) + line
         logging.debug('publishing: %s', msg)
         p.pubStream.send(msg)
 
@@ -120,6 +120,10 @@ def main():
                       default="",
                       help=\
                 'Track name to store GPS points. If blank will use active flight then EVA #')
+    parser.add_option('-d', '--dataTopic',
+                      default="gpsposition",
+                      help=\
+                'ZMQ topic to publish data record under.  Compass and GPS are on separate topics')
     opts, _args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
