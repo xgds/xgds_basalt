@@ -301,7 +301,7 @@
     	"fields": {
     		"name":"RED_CAMERA2_IP",
     		"units":"n/a",
-    		"notes":"IP of red camera 2 wifi card TODO CHECKME FTIR CONFLICT",
+    		"notes":"IP of red camera 2 wifi card",
     		"dataType":"string",
     		"value":"10.10.24.76"
     		}
@@ -312,9 +312,9 @@
     	"fields": {
     		"name":"PXRF_IP",
     		"units":"n/a",
-    		"notes":"IP of pXRF wifi card TODO CHECKME",
+    		"notes":"IP of pXRF wifi card",
     		"dataType":"string",
-    		"value":"10.10.24.78"
+    		"value":"10.10.24.77"
     		}
     },
     {
@@ -323,7 +323,29 @@
     	"fields": {
     		"name":"LIBS_IP",
     		"units":"n/a",
-    		"notes":"IP of LIBS wifi card TODO CHECKME",
+    		"notes":"IP of LIBS wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.74"
+    		}
+    },
+    {
+    	"pk": 86,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"FLIR_IP",
+    		"units":"n/a",
+    		"notes":"IP of FLIR wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.78"
+    		}
+    },
+    {
+    	"pk": 87,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"FTIR_IP",
+    		"units":"n/a",
+    		"notes":"IP of FTIR wifi card",
     		"dataType":"string",
     		"value":"10.10.24.79"
     		}
