@@ -524,13 +524,13 @@
 		"pk": 45, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "shore",
+			"name": "boat",
 			"displayName": "Computer",
-			"group": 3,
+			"group": 4,
 			"logFileUrl": "",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
-			"constantName": "SHORE_IP",
+			"constantName": "BOAT_IP",
 			"active": 1
 		}
 	},	
