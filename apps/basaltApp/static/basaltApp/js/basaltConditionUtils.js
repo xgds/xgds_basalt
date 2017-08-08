@@ -23,9 +23,9 @@ $.extend(condition, {
 		});
 		if (!_.isEmpty(ch.activity_status)) {
 			var status = ch.activity_status[0];
-			if (status == 'in_progress' || status == 'started'){
+			if (status == 'activity_in_progress' || status == 'activity_started'){
 				cdiv.addClass('alert-success');
-			} else if (status == 'completed' || status == 'aborted'){
+			} else if (status == 'activity_completed' || status == 'activity_aborted'){
 				cdiv.addClass('alert-danger');
 			} else {
 				cdiv.addClass('alert-info');

@@ -66,6 +66,25 @@ def test_update_condition():
     json_response = response.json()
     return json_response
 
+def test_abort_condition():
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    nowtime = datetime.datetime.now(pytz.utc)
+    isonow = nowtime.isoformat()
+    nested_data_dict = {'status': 'activity_aborted',
+                        'extra': 'Dead dead dead like a doornail',
+                        'assignment': 'EV2',
+                        'group_name': '20170807A',
+                        'xgds_id': 'HIL13_A_WAY0_0_PXO'
+                        }
+    data = {'time': isonow,
+            'source': 'playbook',
+            'id': 'PB1',
+            'data': json.dumps(nested_data_dict)
+            }
+    response = requests.post(url, data=data, verify=False)
+    json_response = response.json()
+    return json_response
+
 def test_end_condition():
     url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
@@ -96,5 +115,7 @@ if mode == 'update':
     resp = test_update_condition()
 if mode == 'end':
     resp = test_end_condition()
+if mode == 'abort':
+    resp = test_abort_condition()
 
 print "response:", resp
