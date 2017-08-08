@@ -228,6 +228,19 @@
 			"constantName": "BACKPACK2_IP",
 			"active": 1
 		}
+	},	{
+		"pk": 45, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "boat",
+			"displayName": "Computer",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "BOAT_IP",
+			"active": 1
+		}
 	},	
 	{
     	"pk": 80,
