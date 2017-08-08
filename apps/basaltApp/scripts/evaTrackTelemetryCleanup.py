@@ -269,9 +269,9 @@ class GpsTelemetryCleanup(object):
         
         # Get compass heading from compass record
         # TODO: sanity check the timestamp in the compass record
-        compassCacheKey = 'compass.%s' % resourceId
-        compassInfo = cache.get(compassCacheKey)
-        heading = compassInfo["compassRecord"]["compass"]
+#        compassCacheKey = 'compass.%s' % resourceId
+#        compassInfo = cache.get(compassCacheKey)
+#        heading = compassInfo["compassRecord"]["compass"]
         
         # save subsystem status to cache
         myKey = "telemetryCleanup"
