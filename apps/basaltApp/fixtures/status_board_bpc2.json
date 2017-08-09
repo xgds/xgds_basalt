@@ -81,6 +81,20 @@
 		}
 	},
 	{
+		"pk": 17, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "bpc2LoadAverage",
+			"displayName": "Load Average",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 120,
+			"failureThreshold": 180,
+			"refreshRate": 60,
+			"active": 1
+		}
+	},
+	{
 		"pk": 5, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
