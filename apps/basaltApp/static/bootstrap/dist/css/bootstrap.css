@@ -728,6 +728,11 @@ small,
   font-weight: normal;
 }
 
+big,
+.big {
+  font-size: 110%;
+}
+
 mark,
 .mark {
   padding: 0.2em;

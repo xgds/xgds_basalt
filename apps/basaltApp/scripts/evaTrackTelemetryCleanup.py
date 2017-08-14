@@ -25,6 +25,12 @@ import pytz
 import json
 from uuid import uuid4
 
+#
+# TODO:
+# WARNING!!! This is a hack to work around an apparent fail in the NovAtel GPS firmware, take this out ASAP.
+#
+OVERRIDE_GPS_DATE = False
+
 from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -40,7 +46,7 @@ from geocamTrack.models import (IconStyle, LineStyle)
 from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 
 if settings.XGDS_CORE_REDIS:
-    from xgds_core.util import publishRedisSSE
+    from xgds_core.redisUtil import publishRedisSSE
 
 from basaltApp.models import (BasaltActiveFlight,
                               BasaltResource,
@@ -73,7 +79,7 @@ def isSentenceType(sentence, sentenceType):
 def hasGoodNmeaChecksum(sentence):
     checkSum=0
     if len(sentence) < 4:
-        return false  # Can't possibly be good if shorter than this
+        return False  # Can't possibly be good if shorter than this
     for ch in sentence[1:len(sentence)-3]:
         checkSum = checkSum ^ ord(ch)
     checkSumHex = ("%02x" % checkSum).upper()
@@ -83,8 +89,29 @@ def hasGoodNmeaChecksum(sentence):
     else:
         return False
 
-def checkCompassDataQuality(sentence):
-    return True
+
+def checkCompassDataQuality(resourceId, sentence):
+    #subsystem status color codes
+    OKAY_COLOR = '#00ff00'
+    ERROR_COLOR = '#ff0000'
+    dataQualityColor = OKAY_COLOR
+    dataQualityGood = True
+    
+    # Bail out immediately if we have obviosuly corrupted data
+    if not hasGoodNmeaChecksum(sentence):
+        logging.warning("Bad checksum: %1s", sentence)
+        dataQualityGood = False
+        dataQualityColor = ERROR_COLOR
+        
+    myKey = "compassDataQuality%s" % str(resourceId)
+    status = {'name': myKey,
+              'displayName': 'Compass Data Quality %s' % str(resourceId),
+              'statusColor': dataQualityColor,
+              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+
+    cache.set(myKey, json.dumps(status))
+    return dataQualityGood
+
 
 def checkGpsDataQuality(resourceId, sentence):
     '''
@@ -114,7 +141,9 @@ def checkGpsDataQuality(resourceId, sentence):
 
     # get the EV number from NMEA sentence
     myKey = "gpsDataQuality%s" % str(resourceId)
-    status = {'dataQuality': dataQualityColor,
+    status = {'name': myKey,
+              'displayName': 'GPS Data Quality %s' % str(resourceId),
+              'statusColor': dataQualityColor,
               'lastUpdated': datetime.datetime.utcnow().isoformat()}
 
     cache.set(myKey, json.dumps(status))
@@ -153,6 +182,61 @@ class GpsTelemetryCleanup(object):
             logging.warning('%s', traceback.format_exc())
             logging.warning('exception caught, continuing')
 
+    def handle_compass(self, topic, body):
+        try:
+            self.handle_compass0(topic, body)
+        except:  # pylint: disable=W0702
+            logging.warning('%s', traceback.format_exc())
+            logging.warning('exception caught, continuing')
+
+    def parseCompassData(self, compassSentence):
+        # Sample compass NMEA sentence: $R92.3P-0.3C359.8X219.4Y-472.8Z19.7T35.4D270.1A87.7*6F
+        
+        compassReParsed = re.match("\$(?P<rollLbl>[A-Z])(?P<roll>-*[0-9\.]+)(?P<pitchLbl>[A-Z])(?P<pitch>-*[0-9\.]+)(?P<compassLbl>[A-Z])(?P<compass>-*[0-9\.]+)(?P<xLbl>[A-Z])(?P<x>-*[0-9\.]+)(?P<yLbl>[A-Z])(?P<y>-*[0-9\.]+)(?P<zLbl>[A-Z])(?P<z>-*[0-9\.]+)(?P<tempLbl>[A-Z])(?P<temp>-*[0-9\.]+)(?P<drillDLbl>[A-Z])(?P<drillD>-*[0-9\.]+)(?P<drillALbl>[A-Z])(?P<drillA>-*[0-9\.]+)",
+                 compassSentence)
+        compassRecord = {"roll" : float(compassReParsed.group('roll')),
+                         "pitch": float(compassReParsed.group('pitch')),
+                         "compass": float(compassReParsed.group('compass')),
+                         "x": float(compassReParsed.group('x')),
+                         "y": float(compassReParsed.group('y')),
+                         "z": float(compassReParsed.group('z')),
+                         "temp": float(compassReParsed.group('temp')),
+                         "drillD": float(compassReParsed.group('drillD')),
+                         "drillA": float(compassReParsed.group('drillA'))
+                         }
+        return compassRecord
+    
+    def handle_compass0(self, topic, body):
+    # example: 2:$GPRMC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
+
+        serverTimestamp = datetime.datetime.now(pytz.utc)
+    
+        if body == 'NO DATA':
+            logging.info('NO DATA')
+            return
+    
+        # parse record
+        resourceIdStr, trackName, content = body.split(":", 2)
+        resourceId = int(resourceIdStr)
+        if not checkDataQuality(resourceId, content):
+            logging.info('UNRECOGNIZED OR CORRUPT COMPASS SENTENCE: %s', content)
+            return
+        compassRecord = self.parseCompassData(content)
+        sourceTimestamp = serverTimestamp  # Compass has no independent clock
+                
+        # save subsystem status to cache
+        myKey = "telemetryCleanupEV%s" % resourceIdStr
+        status = {'name': myKey,
+              'displayName': 'Telemetry Cleanup EV%s' % str(resourceIdStr),
+              'statusColor': '#00ff00',
+              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+        cache.set(myKey, json.dumps(status))
+        
+        # save latest compass reading in memcache for GPS use
+        cacheKey = 'compass.%s' % resourceId
+        cacheRecordDict = {"timestamp": sourceTimestamp, "compassRecord": compassRecord}
+        cache.set(cacheKey, json.dumps(cacheRecordDict, cls=DatetimeJsonEncoder))
+
     def handle_gpsposition0(self, topic, body):
         # example: 2:$GPRMC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
 
@@ -171,11 +255,23 @@ class GpsTelemetryCleanup(object):
         sentenceType, utcTime, activeVoid, lat, latHemi, lon,\
             lonHemi, speed, heading, date, declination, declinationDir,\
             modeAndChecksum = content.split(",")
-        sourceTimestamp = datetime.datetime.strptime('%s %s' % (date, utcTime),
-                                                     '%d%m%y %H%M%S.%f')
+        if OVERRIDE_GPS_DATE:
+            serverTime = datetime.datetime.now(pytz.utc)
+            overrideDate = serverTime.strftime("%d%m%y")
+            sourceTimestamp = datetime.datetime.strptime('%s %s' % (overrideDate, utcTime),
+                                                         '%d%m%y %H%M%S.%f')
+        else:
+            sourceTimestamp = datetime.datetime.strptime('%s %s' % (date, utcTime),
+                                                         '%d%m%y %H%M%S.%f')
         sourceTimestamp = sourceTimestamp.replace(tzinfo=pytz.utc)
         lat = parseTracLinkDM(lat, latHemi)
         lon = parseTracLinkDM(lon, lonHemi)
+        
+        # Get compass heading from compass record
+        # TODO: sanity check the timestamp in the compass record
+#        compassCacheKey = 'compass.%s' % resourceId
+#        compassInfo = cache.get(compassCacheKey)
+#        heading = compassInfo["compassRecord"]["compass"]
         
         # save subsystem status to cache
         myKey = "telemetryCleanup"
@@ -248,17 +344,15 @@ class GpsTelemetryCleanup(object):
         cpos = CurrentPosition(**params)
         cpos.saveCurrent()
         
-        if settings.XGDS_SSE and settings.XGDS_CORE_REDIS:
-            # broadcast the data
-            result = pos.toMapDict()
-            result['track_name'] = track.name
-            result['track_pk'] = track.pk
-            result['displayName'] = track.resource_name
-            try:
-                json_string = json.dumps(result, cls=DatetimeJsonEncoder)
-                publishRedisSSE(track.resource_name, 'position', json_string)
-            except:
-                traceback.print_exc()
+        pos.broadcast()
+#         if settings.XGDS_SSE and settings.XGDS_CORE_REDIS:
+#             # broadcast the data
+#             result = pos.toMapDict()
+#             try:
+#                 json_string = json.dumps(result, cls=DatetimeJsonEncoder)
+#                 publishRedisSSE(track.resource_name, 'position', json_string)
+#             except:
+#                 traceback.print_exc()
                 
         self.publisher.sendDjango(cpos)
 

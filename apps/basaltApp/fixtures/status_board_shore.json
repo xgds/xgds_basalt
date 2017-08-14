@@ -1,0 +1,686 @@
+[    {
+		"pk": 1, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "EV1",
+			"displayName": "EV1",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 2, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "EV2",
+			"displayName": "EV2",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 3, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "ground",
+			"displayName": "MCC Services (Ground)",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 4, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "field",
+			"displayName": "IV Services (Field)",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 5, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "SA",
+			"displayName": "SA",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 6, 
+		"model": "xgds_status_board.SubsystemGroup", 
+		"fields": {
+			"name": "basaltDev",
+			"displayName": "Wowza Server",
+			"warningThreshold": 10,
+			"failureThreshold": 20
+		}
+	},
+	{
+		"pk": 1, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "gpsDataQualityEV1",
+			"displayName": "GPS Data Quality",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 2, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "compassDataQualityEV1",
+			"displayName": "Compass Data Quality",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 3, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "compassDataQualityEV2",
+			"displayName": "Compass Data Quality",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 4, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "gpsDataQualityEV2",
+			"displayName": "GPS Data Quality",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	},
+	{
+		"pk": 5, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "trackListenerEV1",
+			"displayName": "Track Listener",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 6, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "trackListenerEV2",
+			"displayName": "Track Listener",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	},
+	{
+		"pk": 7, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "FTIR",
+			"displayName": "FTIR",
+			"group": 2,
+			"logFileUrl": "/data/pyraptord/FTIR_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "FTIR_IP",
+			"active": 0
+		}
+	},	
+	{
+		"pk": 8, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "ASD",
+			"displayName": "ASD Spectrometer",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 0
+		}
+	}, 
+	{
+		"pk": 9, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "redCamera1",
+			"displayName": "Red Camera",
+			"group": 1,
+			"logFileUrl": "/data/pyraptord/redCamera_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "RED_CAMERA_IP",
+			"active": 1
+		}
+	},
+	{
+		"pk": 10, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "saTeradek",
+			"displayName": "Teradek",
+			"group": 5,
+			"logFileUrl": "/data/pyraptord/saCamera_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "SA_CAMERA_IP",
+			"active": 1
+		}
+	},
+	{
+		"pk": 11, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "ev1teradek",
+			"displayName": "Teradek",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "EV1_CAMERA_IP",
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 12, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "ev2teradek",
+			"displayName": "Teradek",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "EV2_CAMERA_IP",
+			"active": 1
+		}
+	}, 	
+	{
+		"pk": 13, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "telemetryCleanupEV1",
+			"displayName": "Telemetry Cleanup",
+			"group": 1,
+			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 14, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "telemetryCleanupEV2",
+			"displayName": "Telemetry Cleanup",
+			"group": 2,
+			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 15, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "boatDataReplication",
+			"displayName": "Data Replication",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 120,
+			"failureThreshold": 180,
+			"active": 0
+		}
+	}, 
+	{
+		"pk": 15, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "shoreDataReplication",
+			"displayName": "Data Replication",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 120,
+			"failureThreshold": 180,
+			"active": 0
+		}
+	},
+	{
+		"pk": 16, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "fieldLoadAverage",
+			"displayName": "Load Average",
+			"group": 4,
+			"logFileUrl": "/data/pyraptord/fieldLoadAvg_latest.txt",
+			"warningThreshold": 120,
+			"failureThreshold": 180,
+			"refreshRate": 60,
+			"active": 1
+		}
+	},
+	{
+		"pk": 17, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "groundLoadAverage",
+			"displayName": "Load Average",
+			"group": 3,
+			"logFileUrl": "/data/pyraptord/basecampLoadAvg_latest.txt",
+			"warningThreshold": 120,
+			"failureThreshold": 180,
+			"refreshRate": 60,
+			"active": 1
+		}
+	},
+	{
+		"pk": 18, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "physioTablet1",
+			"displayName": "Physio Tablet",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "PHYSIO_TABLET_1_IP",
+			"active": 0
+		}
+	},
+	{
+		"pk": 19, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "physioTablet2",
+			"displayName": "Physio Tablet",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "PHYSIO_TABLET_2_IP",
+			"active": 0
+		}
+	},
+	{
+		"pk": 20, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "wrist1",
+			"displayName": "Wrist Phone",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "WRIST_1_IP",
+			"active": 0
+		}
+	},
+	{
+		"pk": 21, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "wrist2",
+			"displayName": "Wrist Phone",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "WRIST_2_IP",
+			"active": 0
+		}
+	},
+	{
+		"pk": 23, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "EV1_recorder",
+			"displayName": "Video Recorder EV1",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 24, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "EV2_recorder",
+			"displayName": "Video Recorder EV2",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 
+	{
+		"pk": 25, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "SA_recorder",
+			"displayName": "Video Recorder SA",
+			"group": 5,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"active": 1
+		}
+	}, 	
+	{
+		"pk": 31, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "shoreTungstenReplicator",
+			"displayName": "Tungsten Replicator",
+			"group": 3,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"refreshRate": 60,
+			"active": 1
+		}
+	},
+	{
+		"pk": 32, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "boatTungstenReplicator",
+			"displayName": "Tungsten Replicator",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"refreshRate": 60,
+			"active": 1
+		}
+	},
+	{
+		"pk": 33, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "bpc1",
+			"displayName": "Computer",
+			"group": 1,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "BACKPACK1_IP",
+			"active": 1
+		}
+	},	
+	{
+		"pk": 34, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "bpc2",
+			"displayName": "Computer",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "BACKPACK2_IP",
+			"active": 1
+		}
+	},	
+	{
+		"pk": 36, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "redCamera2",
+			"displayName": "Red Camera",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "RED_CAMERA2_IP",
+			"active": 1
+		}
+	},
+	{
+		"pk": 37, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "FLIR",
+			"displayName": "FLIR",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "FLIR_IP",
+			"active": 0
+		}
+	},	
+	{
+		"pk": 38, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "pXRF",
+			"displayName": "pXRF",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "PXRF_IP",
+			"active": 1
+		}
+	},	
+	{
+		"pk": 39, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "LIBS",
+			"displayName": "LIBS",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "LIBS_IP",
+			"active": 0
+		}
+	},
+	{
+		"pk": 40, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "FTIR",
+			"displayName": "FTIR",
+			"group": 2,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "FTIR_IP",
+			"active": 0
+		}
+	},	
+	{
+		"pk": 43, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "devLoadAverage",
+			"displayName": "Load Average",
+			"group": 6,
+			"logFileUrl": "/data/pyraptord/devLoadAvg_latest.txt",
+			"warningThreshold": 120,
+			"failureThreshold": 180,
+			"refreshRate": 60,
+			"active": 1
+		}
+	},
+	{
+		"pk": 45, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "boat",
+			"displayName": "Computer",
+			"group": 4,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "BOAT_IP",
+			"active": 1
+		}
+	},	
+	{
+		"pk": 46, 
+		"model": "xgds_status_board.Subsystem", 
+		"fields": {
+			"name": "basaltDev",
+			"displayName": "Computer",
+			"group": 6,
+			"logFileUrl": "",
+			"warningThreshold": 10,
+			"failureThreshold": 20,
+			"constantName": "BASALT_DEV_IP",
+			"active": 1
+		}
+	},
+	{
+    	"pk": 80,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"SHORE_IP",
+    		"units":"n/a",
+    		"notes":"IP of shore computer",
+    		"dataType":"string",
+    		"value":"10.10.24.82"
+    		}
+    },
+    {
+    	"pk": 81,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BOAT_IP",
+    		"units":"n/a",
+    		"notes":"IP of boat computer",
+    		"dataType":"string",
+    		"value":"10.10.24.81"
+    		}
+    },
+    {
+    	"pk": 82,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK3_IP",
+    		"units":"n/a",
+    		"notes":"IP of bpc3 computer",
+    		"dataType":"string",
+    		"value":"10.10.24.73"
+    		}
+    },
+    {
+    	"pk": 12,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK1_IP",
+    		"units":"n/a",
+    		"notes":"IP of bpc1 computer",
+    		"dataType":"string",
+    		"value":"10.10.24.71"
+    		}
+    },
+    {
+    	"pk": 13,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BACKPACK2_IP",
+    		"units":"n/a",
+    		"notes":"IP of bpc2 computer",
+    		"dataType":"string",
+    		"value":"10.10.24.72"
+    		}
+    },
+    {
+    	"pk": 83,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"BASALT_DEV_IP",
+    		"units":"n/a",
+    		"notes":"IP of basalt-dev computer",
+    		"dataType":"string",
+    		"value":"10.10.24.91"
+    		}
+    },
+    {
+    	"pk": 41,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"RED_CAMERA2_IP",
+    		"units":"n/a",
+    		"notes":"IP of red camera 2 wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.76"
+    		}
+    },
+    {
+    	"pk": 84,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"PXRF_IP",
+    		"units":"n/a",
+    		"notes":"IP of pXRF wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.77"
+    		}
+    },
+    {
+    	"pk": 85,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"LIBS_IP",
+    		"units":"n/a",
+    		"notes":"IP of LIBS wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.74"
+    		}
+    },
+    {
+    	"pk": 86,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"FLIR_IP",
+    		"units":"n/a",
+    		"notes":"IP of FLIR wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.78"
+    		}
+    },
+    {
+    	"pk": 87,
+    	"model": "xgds_core.Constant",
+    	"fields": {
+    		"name":"FTIR_IP",
+    		"units":"n/a",
+    		"notes":"IP of FTIR wifi card",
+    		"dataType":"string",
+    		"value":"10.10.24.79"
+    		}
+    }
+]

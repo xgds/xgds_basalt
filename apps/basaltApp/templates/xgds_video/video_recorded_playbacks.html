@@ -1,3 +1,4 @@
+<!--  TODO DELETE ME  -->
 {% extends "base.html" %}
 {% load nav %}
 {% load static %}
@@ -167,7 +168,7 @@ var indexFileUrl = null;
 		                       movingSlider: false, //if slider is moving, turn off onTime call
 		                       seekOffsetList: {}, //needed for seeking vid in flash mode,
 		                       indexFileUrl: indexFileUrl,
-			                   noteTimeStamp: xgds_video.toJsDateTime({{ noteTimeStamp|safe }}),
+			                   noteTimeStamp: '{{ noteTimeStamp|safe }}',
 			                   flightName: {% if flightName %} "{{ flightName }}" {% else %} null {% endif %},
 			                   sourceVehicle: {{ sourceVehicle|safe }},
 			                   timeZone: '{{ flightTZ }}',
@@ -184,8 +185,8 @@ var indexFileUrl = null;
         if ((segments != undefined) && (segments.length > 0)) {
             $.each(segments, function(id) {
                 var segment = segments[id];
-                segment.startTime = xgds_video.toJsDateTime(segment.startTime);
-                segment.endTime = xgds_video.toJsDateTime(segment.endTime);
+                segment.startTime = moment(segment.startTime);
+                segment.endTime = moment(segment.endTime);
 
                 if(xgds_video_options.firstSegment == null) {
                     xgds_video_options.firstSegment = segment;

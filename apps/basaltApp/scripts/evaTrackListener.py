@@ -29,7 +29,8 @@ from gevent.queue import Queue
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
 from geocamUtil.zmqUtil.util import zmqLoop
 import os
-import memcache
+from django.core.cache import caches
+
 
 DEFAULT_HOST = '10.10.91.5'  # this is for in the field
 DEFAULT_HOST = '127.0.0.1'
@@ -39,7 +40,8 @@ DEFAULT_PORT = 50000
 
 DATA_DELIVERY_PROTOCOL = "UDP"
 
-_cache = memcache.Client(['127.0.0.1:11211'], debug=0)
+cache = caches['default']
+
 
 def socketListenTcp(opts, q):
     logging.info('constructing socket')
@@ -80,9 +82,25 @@ def zmqPublish(opts, q):
     p = ZmqPublisher(**ZmqPublisher.getOptionValues(opts))
     p.start()
     for line in q:
-        msg = 'gpsposition:%s:%s:' % (opts.evaNumber, opts.trackName) + line
+        msg = '%s:%s:%s:' % (opts.dataTopic, opts.evaNumber, opts.trackName) + line
         logging.debug('publishing: %s', msg)
+        updateStatus(opts.evaNumber)
         p.pubStream.send(msg)
+
+def updateStatus(evaNumber):
+    '''
+    update the status in memcache so the status board knows we are listening
+    '''
+
+    OKAY_COLOR = '#00ff00'
+
+    myKey = "trackListenerEV%s" % str(evaNumber)
+    status = {'name': myKey,
+              'displayName': 'Track Listener EV%s' % str(evaNumber),
+              'statusColor': OKAY_COLOR,
+              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+
+    cache.set(myKey, json.dumps(status))
 
 
 def evaTrackListener(opts):
@@ -120,6 +138,10 @@ def main():
                       default="",
                       help=\
                 'Track name to store GPS points. If blank will use active flight then EVA #')
+    parser.add_option('-d', '--dataTopic',
+                      default="gpsposition",
+                      help=\
+                'ZMQ topic to publish data record under.  Compass and GPS are on separate topics')
     opts, _args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)

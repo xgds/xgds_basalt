@@ -39,6 +39,10 @@ SECRET_KEY = '***REMOVED***'
 
 XGDS_BROWSERIFY = getOrCreateArray('XGDS_BROWSERIFY')
 
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
+                           ]
+
+
 # from apps.basaltApp.instrumentDataImporters import *
 # apps should be listed from "most specific" to "most general".  that
 # way, templates in more specific apps override ones from more general
@@ -147,7 +151,7 @@ XGDS_MAP_SERVER_MAP_API_KEY = ""
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'US/Hawaii'
+TIME_ZONE = 'America/Los_Angeles'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -241,14 +245,6 @@ TEMPLATES = [
         },
     ]
 
-# TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS \
-#                                + ['django.core.context_processors.request',
-#                                   'django.core.context_processors.static',
-#                                   'geocamUtil.context_processors.settings',
-#                                   'geocamUtil.context_processors.AuthUrlsContextProcessor.AuthUrlsContextProcessor',
-#                                   'geocamUtil.context_processors.SettingsContextProcessor.SettingsContextProcessor',
-#                                   ]
-
 
 # Session Serializer: we use Pickle for backward compatibility and to allow more flexible session storage, but
 # be sure to keep the SECRET_KEY secret for security (see:
@@ -274,18 +270,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'urls'
-
-# TEMPLATE_DIRS = (
-#     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-#     # Always use forward slashes, even on Windows.
-#     # Don't forget to use absolute paths, not relative paths.
-#     os.path.join(PROJ_ROOT, 'apps/basaltApp/templates'),
-#     os.path.join(PROJ_ROOT, 'apps/basaltApp/templates/basaltApp'),
-#     os.path.join(PROJ_ROOT, 'apps/basaltApp/templates/registration'),
-
-#     # Templates for utility scripts
-#     os.path.join(PROJ_ROOT, 'bin/templates'),
-# )
 
 LOGIN_URL = SCRIPT_NAME + 'accounts/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -411,7 +395,7 @@ XGDS_PLANNER2_COMMAND_MONIKER_PLURAL = "Activities"
 XGDS_PLANNER2_FLIGHT_MODEL = "basaltApp.BasaltFlight"
 XGDS_PLANNER2_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
 XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
-XGDS_PLANNER2_DEFAULT_SITE = 'HIL'
+XGDS_PLANNER2_DEFAULT_SITE = 'Ames'
 
 
 XGDS_PLANNER2_SCHEDULE_INCLUDED = True
@@ -447,6 +431,11 @@ XGDS_SAMPLE_PERM_LINK_PREFIX = "https://basalt.xgds.org"
 
 XGDS_IMAGE_IMAGE_SET_MODEL = 'basaltApp.BasaltImageSet'
 XGDS_IMAGE_SINGLE_IMAGE_MODEL = 'basaltApp.BasaltSingleImage'
+XGDS_IMAGE_ARROW_ANNOTATION_MODEL = 'basaltApp.ArrowAnnotation'
+XGDS_IMAGE_ELLIPSE_ANNOTATION_MODEL = 'basaltApp.EllipseAnnotation'
+XGDS_IMAGE_RECTANGLE_ANNOTATION_MODEL = 'basaltApp.RectangleAnnotation'
+XGDS_IMAGE_TEXT_ANNOTATION_MODEL = 'basaltApp.TextAnnotation'
+
 
 XGDS_INSTRUMENT_IMPORT_MODULE_PATH = 'basaltApp.instrumentDataImporters'
 
@@ -528,9 +517,11 @@ XGDS_DATA_EXPAND_RELATED['basaltApp'] = {'BasaltSample': [('region', 'zone', 'Zo
 XGDS_VIDEO_GET_ACTIVE_EPISODE = 'basaltApp.views.getActiveEpisode'
 XGDS_VIDEO_GET_EPISODE_FROM_NAME = 'basaltApp.views.getEpisodeFromName'
 XGDS_VIDEO_GET_TIMEZONE_FROM_NAME = 'basaltApp.views.getTimezoneFromFlightName'
-XGDS_VIDEO_INDEX_FILE_METHOD = 'basaltApp.views.getIndexFileSuffix'
+#XGDS_VIDEO_INDEX_FILE_METHOD = 'basaltApp.views.getIndexFileSuffix'
 XGDS_VIDEO_DELAY_AMOUNT_METHOD = 'basaltApp.views.getDelaySeconds'
 XGDS_VIDEO_NOTE_EXTRAS_FUNCTION = 'basaltApp.views.getNoteExtras'
+XGDS_VIDEO_NOTE_FILTER_FUNCTION = 'basaltApp.views.noteFilterFunction'
+
 
 
 RECORDED_VIDEO_DIR_BASE = DATA_ROOT
@@ -556,10 +547,10 @@ except:
     pass
 XGDS_MAP_SERVER_JS_MAP['Position'] = {'ol': 'geocamTrack/js/olPositionMap.js',
                                       'model': GEOCAM_TRACK_PAST_POSITION_MODEL,
-                                      'columns': ['timestamp', 'displayName', 'type', 'lat', 'lon', 'altitude', 'heading', 'pk', 'app_label', 'model_type', 'DT_RowId'],
-                                      'hiddenColumns': ['type', 'pk', 'app_label', 'model_type', 'DT_RowId'],
-                                      'columnTitles': ['Time', 'TZ', 'Name', 'Latitude', 'Longitude', 'Altitude', 'Heading', ''],
-                                      'searchableColumns': ['displayName', 'timestamp', 'lat', 'lon', 'altitude', 'heading'],
+                                      'columns': ['timestamp', 'displayName', 'type', 'lat', 'lon', 'altitude', 'heading', 'pk', 'app_label', 'model_type', 'track_name', 'track_pk', 'displayName', 'DT_RowId'],
+                                      'hiddenColumns': ['type', 'pk', 'app_label', 'model_type', 'track_pk', 'displayName', 'DT_RowId'],
+                                      'columnTitles': ['Time', 'TZ', 'Name', 'Latitude', 'Longitude', 'Altitude', 'Heading', 'EVA', ''],
+                                      'searchableColumns': ['displayName', 'timestamp', 'lat', 'lon', 'altitude', 'heading', 'track_name'],
                                       'search_form_class': 'basaltApp.forms.SearchBasaltPositionForm'}
 
 XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
@@ -575,8 +566,15 @@ XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    'columnTitles': ['Time', 'TZ', 'Name',  'Description', 'Image'],
                                    'viewHandlebars': 'xgds_image/templates/handlebars/image-view2.handlebars',
                                    'viewJS': [EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.min.js',
-                                              STATIC_URL + 'xgds_image/js/imageReview.js' ],
-                                   'viewCss': [STATIC_URL + 'xgds_image/css/xgds_image.css'],
+                                                EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.js',
+                                                EXTERNAL_URL + 'fabric.js/dist/fabric.min.js',
+                                                EXTERNAL_URL + 'openseadragon-fabricjsOverlay/openseadragon-fabricjs-overlay.js',
+                                                EXTERNAL_URL + 'spectrum/spectrum.js',
+                                                EXTERNAL_URL + 'jquery-fileDownload/src/Scripts/jquery.fileDownload.js',
+                                                STATIC_URL + 'xgds_image/js/imageAnnotation.js',
+                                                STATIC_URL + 'xgds_image/js/imageReview.js' ],
+                                   'viewCss': [STATIC_URL + 'xgds_image/css/xgds_image.css',
+                                               EXTERNAL_URL + 'spectrum/spectrum.css'],
                                    'viewInitMethods': ['xgds_image.setupImageViewer'],
                                    'viewResizeMethod': ['xgds_image.resizeImageViewer'],
                                    'event_time_field': 'acquisition_time',
@@ -677,15 +675,13 @@ BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 
 PYRAPTORD_SERVICE = True
 
-XGDS_CURRENT_SITEFRAME_ID = 2
-XGDS_CURRENT_REGION_ID = 2
+XGDS_CURRENT_SITEFRAME_ID = 3
+XGDS_CURRENT_REGION_ID = 2 # sample region?
 XGDS_DEFAULT_SAMPLE_TYPE = 2 #'Geology'
 XGDS_CORE_LIVE_INDEX_URL = '/basaltApp/live'
 
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-
-# XGDS_NOTES_NOTE_MODEL = 'basaltApp.Note'
 
 XGDS_MAP_SERVER_DEFAULT_ZOOM = 15
 XGDS_MAP_SERVER_SITE_MONIKER = 'Region'
@@ -712,6 +708,7 @@ USE_TZ = True
 # turn this on when we are live field broadcasting
 GEOCAM_UTIL_LIVE_MODE = False
 GEOCAM_UTIL_DATATABLES_EDITOR = False
+GEOCAM_TRACK_URL_PORT = 8181
 
 XGDS_CORE_TEMPLATE_DIRS = getOrCreateDict('XGDS_CORE_TEMPLATE_DIRS')
 XGDS_CORE_TEMPLATE_DIRS[XGDS_SAMPLE_SAMPLE_MODEL] = [os.path.join('xgds_sample', 'templates', 'handlebars')]
@@ -720,8 +717,11 @@ XGDS_CORE_TEMPLATE_DIRS[XGDS_IMAGE_IMAGE_SET_MODEL] = [os.path.join('xgds_image'
 XGDS_CORE_CONDITION_MODEL = "basaltApp.BasaltCondition"
 XGDS_CORE_CONDITION_HISTORY_MODEL = "basaltApp.BasaltConditionHistory"
 
+XGDS_CORE_REBROADCAST_MAP = getOrCreateDict('XGDS_CORE_REBROADCAST_MAP')
+XGDS_CORE_REBROADCAST_MAP.update({'basaltApp_pastposition':{'modelName':'basaltApp.PastPosition', 'pkColNum':1, 'pkType': 'int'}})
+#XGDS_CORE_REBROADCAST_MAP['basaltApp_basaltconditionhistory'] = 'basaltApp.BasaltConditionHistory'
 
-XGDS_CORE_TEMPLATE_DEBUG = False
+XGDS_CORE_TEMPLATE_DEBUG = True
 
 COUCHDB_FILESTORE_NAME = "basalt-file-store"
 
@@ -734,3 +734,8 @@ FAVICON_PATH = 'basaltApp/icons/favicon.ico'
 ALLOWED_HOSTS = ['*']
 
 XGDS_SSE_CHANNELS = ['sse', 'EV1', 'EV2']
+
+
+# Setup support for proxy headers
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

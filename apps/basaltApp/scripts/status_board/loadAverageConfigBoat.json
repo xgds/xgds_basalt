@@ -1,0 +1,4 @@
+{"fieldLoadAverage" : {"HOST": "irg@boat"}, 
+  "groundLoadAverage": {"HOST": "irg@shore"},
+  "devLoadAverage": {"HOST": "irg@basalt-dev"}
+ }

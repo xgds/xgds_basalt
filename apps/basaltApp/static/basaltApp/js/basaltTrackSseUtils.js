@@ -20,6 +20,14 @@ $.extend(trackSse, {
 	getTrackModel: function() {
 		return app.options.searchModels['Actual_Traverse'].model;
 	},
+	convertTrackNameToChannel: function(track_name){
+		// override 
+		var splits = track_name.split('_');
+		if (splits.length > 1){
+			return splits[1];
+		}
+		return track_name;
+	},
 	renderTrack: function(channel, data) {
 		var elements = Actual_Traverse.constructElements([data]);
 		trackSse.tracksGroup.getLayers().push(elements);

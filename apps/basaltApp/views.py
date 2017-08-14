@@ -24,7 +24,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render, get_object_or_404
 from django import forms
 
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse
+from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404,  HttpResponse, JsonResponse
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.core.urlresolvers import reverse
@@ -37,11 +37,12 @@ from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName
 from xgds_core.models import Constant
-from xgds_core.views import addRelayFiles, setCondition
+from xgds_core.views import addRelay, getConditionActiveJSON
+from xgds_core.util import addPort, deletePostKey
 
 from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
-from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights
+from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights, getActiveFlightFlights, getTodaysPlans, getTodaysPlanFiles
 from xgds_planner2.models import Vehicle
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
@@ -52,6 +53,7 @@ from geocamUtil.TimeUtil import utcToTimeZone, timeZoneToUtc
 from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 from basaltApp.hvnp_air_quality import hvnp_kml_generator
 from basaltApp.instrumentDataImporters import extractPxrfMfgFileNumber, pxrfProcessElementResultsRow, lookupFlightInfo
+from django.forms.models import model_to_dict
 
 
 def editEV(request, pk=None):
@@ -188,31 +190,10 @@ def getActivePlan(request, vehicleName, wrist=True):
         return redirect(reverse('error'))
     else:
         return redirect(reverse('wrist'))
-    
-    
-def getTodaysPlans(request):
-    letters = []
-    plankmls = []
-    groupFlights = getTodaysGroupFlights()
-    if groupFlights:
-        for gf in groupFlights.all():
-            letter = gf.name[-1]
-            for flight in gf.flights.all():
-                if flight.plans:
-                    plan = flight.plans.last().plan
-                    if letter not in letters:
-                        letters.append(letter)
-                        plankmls.append(plan.getExportUrl('.kml') )
+
         
-    if not letters:
-        messages.error(request, "No Planned Traverses found for today. Tell team to schedule in xGDS.")
-        return None
-    else:
-        return zip(letters, plankmls)
-
-
-def wrist(request):
-    found = getTodaysPlans(request)
+def wrist(request, fileFormat):
+    found = getTodaysPlanFiles(request, fileFormat)
     return render(request,
                   "basaltApp/kmlWrist.html",
                   {'letter_plans': found},
@@ -220,6 +201,7 @@ def wrist(request):
 
 
 def wristKmlTrack(request):
+    
     found = {}
     activeFlights = getActiveFlights()
     for af in activeFlights:
@@ -231,6 +213,7 @@ def wristKmlTrack(request):
 
     kmlContent = ''
     for name, url in found.iteritems():
+        url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
         kmlContent += buildNetworkLink(url, name)
     return wrapKmlForDownload(kmlContent)
     
@@ -260,12 +243,12 @@ def getEpisodeFromName(flightName):
         return group.videoEpisode
 
 
-def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
-    """ get path to video for PLRP """
-    if flightName.endswith(sourceShortName):
-        return '%s/prog_index.m3u8' % getSegmentPath(flightName, None, segmentNumber)
-    else:
-        return '%s/prog_index.m3u8' % getSegmentPath(flightName, sourceShortName, segmentNumber)
+# def getIndexFileSuffix(flightName, sourceShortName, segmentNumber):
+#     """ get path to video for PLRP """
+#     if flightName.endswith(sourceShortName):
+#         return '%s/prog_index.m3u8' % getSegmentPath(flightName, None, segmentNumber)
+#     else:
+#         return '%s/prog_index.m3u8' % getSegmentPath(flightName, sourceShortName, segmentNumber)
 
 
 def getDelaySeconds(flightName):
@@ -404,7 +387,8 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
-                    addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
+                    deletePostKey(request.POST, 'relay')
+                    addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
 
                 if jsonResult:
                     return HttpResponse(json.dumps(result), content_type='application/json')
@@ -431,8 +415,9 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
 
 
 def savePxrfMfgFile(request):
-    seekNumber = -1
+    seekNumber=None
     mintime = None
+    print "*** savePxrfMfgFile POST: %s" % request.POST
     # coming from the LUA on pxrf, look up the pxrfData with the same fileNumber
     try:
         mdf = request.FILES.get('manufacturerDataFile', None)
@@ -448,16 +433,87 @@ def savePxrfMfgFile(request):
                     
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
-                    addRelayFiles(dataProduct, request.FILES, broadcast=broadcast)
+                    if broadcast:
+                        pxrfDict = buildPxrfRelayDict(dataProduct)
+                        addRelay(dataProduct, request.FILES, json.dumps(pxrfDict, cls=DatetimeJsonEncoder), '/basaltApp/relaySavePxrfData', broadcast=broadcast)
+
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
+                    print "*** PXRF Returning 406 from savePxrfMfgFile: SEQ # not found! mfg file upload before csv file ***"
                     return HttpResponse(json.dumps({'status': 'error', 'message': 'No PXRF record for ' + str(seekNumber), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     except Exception, e:
+        print "*** PXRF Returning 406 from savePxrfMfgFile: exception in lookup!  ***"
+        traceback.print_exc()
         return HttpResponse(json.dumps({'status': 'error', 'message': str(e), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     
+    print "*** PXRF Returning 406 from savePxrfMfgFile: something was missing!  ***"
     return HttpResponse(json.dumps({'status': 'error', 'message': 'Something was missing', 'seekNumber': seekNumber, 'mintime': str(mintime)}), content_type='application/json', status=406)
 
 
+def buildPxrfRelayDict(pxrf):
+    result = model_to_dict(pxrf)
+    elementset = pxrf.pxrfelement_set.all()
+    elementsetList = []
+    for e in elementset:
+        edict = model_to_dict(e, exclude=['dataProduct'])
+        edict['element_id'] = edict['element']
+        del edict['element']
+        elementsetList.append(edict)
+        
+    result['elementset'] = elementsetList
+    del result['creator']
+    if pxrf.collector:
+        result['collector_id'] = pxrf.collector.pk
+    del result['collector']
+    
+    result['instrument_id'] = pxrf.instrument.pk
+    del result['instrument']
+    
+    result['resource_id'] = pxrf.resource.pk
+    del result['resource']
+    
+    if pxrf.flight:
+        result['flight_id'] = pxrf.flight.pk
+    del result['flight']
+    
+    del result['manufacturer_data_file']
+    del result['portable_data_file']
+    del result['elementResultsCsvFile']
+    del result['track_position']
+    del result['user_position']
+    
+    return result
+
+
+def relaySavePxrfData(request):
+    """ Receive relay data about a pXRF including manufacture data file """
+    try:
+        pxrfData = request.POST.get('serialized_form')
+        pxrfDict = json.loads(pxrfData)
+        elementset = pxrfDict['elementset']
+        del pxrfDict['elementset']
+        newPxrf = PxrfDataProduct(**pxrfDict)
+        mdf = request.FILES.get('manufacturerDataFile', None)
+        newPxrf.manufacturer_data_file = mdf
+        
+        try:
+            (flight, foundlocation) = lookupFlightInfo(newPxrf.acquisition_time, timezone, newPxrf.resource, 'pxrf')
+            newPxrf.flight = flight
+            newPxrf.track_position = foundlocation
+        except:
+            pass
+        newPxrf.save()
+        
+        for element in elementset:
+            pe = PxrfElement(**element)
+            pe.dataProduct = newPxrf
+            pe.save()
+        return JsonResponse({'status': 'success', 'object_id': newPxrf.pk})
+    except Exception, e:
+        traceback.print_exc()
+        return JsonResponse({'status': 'fail', 'exception': str(e)}, status=406)
+     
+    
 def buildPxrfMetadata(request):
     
     if request.user.is_authenticated():
@@ -490,6 +546,7 @@ def buildPxrfDataProductsFromResultsFile(request):
     except:
         result= {'status': 'error', 
                  'message': 'Did not receive element results csv file' }
+        print "*** PXRF buildPxrfDataProductsFromResultsFile: did not receive CSV file! ***"
         return HttpResponse(json.dumps(result), content_type='application/json', status=status)
     
     try:
@@ -502,13 +559,18 @@ def buildPxrfDataProductsFromResultsFile(request):
                 if foundProduct:
                     updatedRecords.append(foundProduct.fileNumber)
                     # this method is only called by data push from instrument / lua script
-                    broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
-                    addRelayFiles(foundProduct, request.FILES, broadcast=broadcast)
+                    # we only broadcast when we get the manufacturer data file
+#                     broadcast = foundProduct.manufacturer_data_file and foundProduct.elementResultsCsvFile
+#                     deletePostKey(request.POST, 'relay')
+#                     addRelay(foundProduct, request.FILES, json.dumps(request.POST), request.get_full_path(), broadcast=broadcast)
+
             result= {'status': 'success', 
                      'updated': updatedRecords,
                      'modelName': 'pXRF'}
             status=200
     except:
+        print "*** PXRF buildPxrfDataProductsFromResultsFile: exception catch! ***"
+        traceback.print_exc()
         result= {'status': 'error', 
                  'updated': updatedRecords,
                  'message': 'Problem with csv file' }
@@ -556,7 +618,8 @@ def saveNewPxrfData(request, jsonResult=False):
                 if 'relay' in request.POST:
                     theModel = getModelByName(settings.XGDS_MAP_SERVER_JS_MAP[result['modelName']]['model'])
                     theInstance = theModel.objects.get(pk=result['pk'])
-                    addRelayFiles(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
+                    deletePostKey(request.POST, 'relay')
+                    addRelay(theInstance, request.FILES, json.dumps(request.POST), request.get_full_path())
                     
                 if jsonResult:
                     return HttpResponse(json.dumps(result), content_type='application/json')
@@ -725,3 +788,17 @@ def getHvnpNetworkLink(request):
     response = wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
     return response
 
+
+def getActiveFlightConditionJSON(request):
+    activeFlights = getActiveFlightFlights()
+    filterDict = {'condition__flight__in': activeFlights}
+    return getConditionActiveJSON(request, filterDict=filterDict)
+
+def noteFilterFunction(episode, sourceShortName):
+    group = BasaltGroupFlight.objects.get(name=episode.shortName)
+    #filter = {'flight__group_name':episode.shortName} # this does not work.  Register a function to be able to look up a more useful pk
+    theFilter = {'flight__group': group.pk}
+    if sourceShortName:
+        vehicles = Vehicle.objects.filter(name=sourceShortName)
+        theFilter['flight__vehicle'] = vehicles.first
+    return theFilter

@@ -47,7 +47,7 @@ urlpatterns = [
     url(r'^xgds_instrument/', include('xgds_instrument.urls')),
     url(r'^xgds_core/', include('xgds_core.urls')),
     url(r'^xgds_status_board/', include('xgds_status_board.urls')),
-    url(r'^w$', wrist, {'loginRequired':False}, 'w'),
+    url(r'^w$', wrist, {'loginRequired':False, 'fileFormat':'.kml'}, 'w'),
 ]
 
 if settings.DEBUG_TOOLBAR:

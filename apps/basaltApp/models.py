@@ -33,13 +33,14 @@ from geocamTrack import models as geocamTrackModels
 from geocamTrack.utils import getClosestPosition
 
 from geocamUtil.models.AbstractEnum import AbstractEnumModel
+
 from xgds_core.couchDbStorage import CouchDbStorage
 
 from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
 from xgds_status_board import models as statusBoardModels
 from geocamUtil.loader import LazyGetModelByName
-from xgds_core.models import Constant, AbstractCondition, AbstractConditionHistory, NameManager
+from xgds_core.models import Constant, AbstractCondition, AbstractConditionHistory, NameManager, BroadcastMixin
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin, HierarchichalTag
 from xgds_image import models as xgds_image_models
 from xgds_planner2.utils import getFlight
@@ -53,6 +54,7 @@ from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, s
 from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, stopFlightRecording
 from xgds_status_board.models import *
 from xgds_instrument.models import getNewDataFileName
+from xgds_core.util import callUrl
 
 from subprocess import Popen
 import re
@@ -121,11 +123,23 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
         return '%s %s' % (self.__class__.__name__, self.name)
 
 
-class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid):
+class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid, BroadcastMixin):
     # set foreign key fields required by parent model to correct types for this site
     track = models.ForeignKey(BasaltTrack, db_index=True, null=True, blank=True)
-
     serverTimestamp = models.DateTimeField(db_index=True)
+    
+    
+    def getBroadcastChannel(self):
+        result =  self.displayName
+        if not result:
+            return 'sse'
+        return result
+    
+    @property
+    def displayName(self):
+        if self.track:
+            return self.track.resource_name
+        return None
 
     class Meta:
         abstract = True
@@ -233,6 +247,13 @@ class BasaltFlight(plannerModels.AbstractFlight):
     def startTracking(self):
         resource=self.getResource()
         
+        protocol = None
+        try:
+            protocol = Constant.objects.get(name=resource.name + "_TRACKING_PROTO")
+        except:
+            # if there is no protocol, there should be no track.
+            return
+
         #Create the track if it does not exist
         if not self.track:
             TRACK_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_TRACK_MODEL)
@@ -256,12 +277,11 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 delayConstant = Constant.objects.get(name="remoteDelay")
                 self.delaySeconds = int(delayConstant.value)
                 self.save()
-    
-        if settings.PYRAPTORD_SERVICE is True:
+
+        if settings.PYRAPTORD_SERVICE is True and protocol:
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
             ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
-            protocol = Constant.objects.get(name=resource.name + "_TRACKING_PROTO")
             scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
             command = "%s -o %s -p %d -n %s --proto=%s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], protocol.value, self.name)
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
@@ -308,6 +328,9 @@ class BasaltFlight(plannerModels.AbstractFlight):
         if settings.XGDS_VIDEO_ON:
             self.getVideoSource()
             startFlightRecording(request, self.name)
+        
+        self.manageRemoteFlights(request, True)
+            
 
     def stopFlightExtras(self, request):
         #stop the eva track listener
@@ -316,70 +339,98 @@ class BasaltFlight(plannerModels.AbstractFlight):
         
         if settings.XGDS_VIDEO_ON:
             stopFlightRecording(request, self.name)
-        
+
+        self.manageRemoteFlights(request, False)
+
+
+    def manageRemoteFlights(self, request, start=True):
+        return
+                # because we are evil, see if this is boat and if so, start the flight on shore and bpc
+        if settings.HOSTNAME == 'boat':
+            # no delay on start
+            urlContent = '/xgds_planner2/'
+            if start:
+                urlContent += 'start'
+            else:
+                urlContent += 'stop'
+            urlContent += 'Flight/' + self.uuid
+            callUrl('https://shore.xgds.org' + urlContent, request.user.username, request.user.password)
+            if self.name.endswith('EV1'):
+                callUrl('https://bpc1.xgds.org' + urlContent, request.user.username, request.user.password)
+            elif self.name.endswith('EV2'):
+                callUrl('https://bpc2.xgds.org' + urlContent, request.user.username, request.user.password)
+            elif self.name.endswith('SA'):
+                callUrl('https://bpc3.xgds.org' + urlContent, request.user.username, request.user.password)
     
+
     def getTreeJsonChildren(self):
         children = super(BasaltFlight, self).getTreeJsonChildren()
-        children.append({"title": "Notes", 
-                         "selected": False, 
-                         "tooltip": "Notes for " + self.name, 
-                         "key": self.uuid + "_notes", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_NOTES_NOTE_MODEL',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "Photos", 
-                         "selected": False, 
-                         "tooltip": "Images for " + self.name, 
-                         "key": self.uuid + "_images", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_IMAGE_IMAGE_SET_MODEL',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "Samples", 
-                         "selected": False, 
-                         "tooltip": "Samples for " + self.name, 
-                         "key": self.uuid + "_samples", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_SAMPLE_SAMPLE_MODEL',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "ASD", 
-                         "selected": False, 
-                         "tooltip": "ASD readings for " + self.name, 
-                         "key": self.uuid + "_asd", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.AsdDataProduct',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-        children.append({"title": "FTIR", 
-                         "selected": False, 
-                         "tooltip": "FTIR readings for " + self.name, 
-                         "key": self.uuid + "_ftir", 
-                         "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.FtirDataProduct',
-                                                                                         'filter': 'flight__pk:'+str(self.pk)}),
-                                 "sseUrl": "", 
-                                 "type": 'MapLink', 
-                                 }
-                         })
-#         children.append({"title": "pXRF", 
-#                          "selected": False, 
-#                          "tooltip": "pXRF readings for " + self.name, 
-#                          "key": self.uuid + "_pxrf", 
-#                          "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.PxrfDataProduct',
-#                                                                                          'filter': 'flight__pk:'+str(self.pk)}),
-#                                  "sseUrl": "", 
-#                                  "type": 'MapLink', 
-#                                  }
-#                          })
+        if self.basaltnote_set.exists():
+            children.append({"title": "Notes", 
+                             "selected": False, 
+                             "tooltip": "Notes for " + self.name, 
+                             "key": self.uuid + "_notes", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_NOTES_NOTE_MODEL',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.basaltimageset_set.exists():
+            children.append({"title": "Photos", 
+                             "selected": False, 
+                             "tooltip": "Images for " + self.name, 
+                             "key": self.uuid + "_images", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_IMAGE_IMAGE_SET_MODEL',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.basaltsample_set.exists():
+            children.append({"title": "Samples", 
+                             "selected": False, 
+                             "tooltip": "Samples for " + self.name, 
+                             "key": self.uuid + "_samples", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'XGDS_SAMPLE_SAMPLE_MODEL',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.asddataproduct_set.exists():
+            children.append({"title": "ASD", 
+                             "selected": False, 
+                             "tooltip": "ASD readings for " + self.name, 
+                             "key": self.uuid + "_asd", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.AsdDataProduct',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.ftirdataproduct_set.exists():
+            children.append({"title": "FTIR", 
+                             "selected": False, 
+                             "tooltip": "FTIR readings for " + self.name, 
+                             "key": self.uuid + "_ftir", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.FtirDataProduct',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
+        if self.pxrfdataproduct_set.exists():
+            children.append({"title": "pXRF", 
+                             "selected": False, 
+                             "tooltip": "pXRF readings for " + self.name, 
+                             "key": self.uuid + "_pxrf", 
+                             "data": {"json": reverse('xgds_map_server_objectsJson', kwargs={'object_name':'basaltApp.PxrfDataProduct',
+                                                                                             'filter': 'flight__pk:'+str(self.pk)}),
+                                     "sseUrl": "", 
+                                     "type": 'MapLink', 
+                                     }
+                             })
         return children
 
 
@@ -1057,28 +1108,25 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
             vehicle = self.resource.vehicle
             self.flight = getFlight(self.acquisition_time, vehicle)
         
-#     def toMapDict(self):
-#         """
-#         Return a reduced dictionary that will be turned to JSON for rendering in a map
-#         """
-#         result = xgds_image_models.AbstractImageSet.toMapDict(self)
-#         result['type'] = 'Photo'
-#         if self.flight:
-#             result['flight_name'] = self.flight.name
-#         else:
-#             result['flight_name'] = ''
-#         if self.resource:
-#             result['resource_name'] = self.resource.name
-#         else:
-#             result['resource_name'] = ''
-#         return result
-
 
 class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
     """ This can be used for screenshots or non geolocated images 
     """
     # set foreign key fields from parent model to point to correct types
     imageSet = models.ForeignKey(BasaltImageSet, null=True, related_name="images")
+
+
+class TextAnnotation(xgds_image_models.AbstractTextAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
+
+class EllipseAnnotation(xgds_image_models.AbstractEllipseAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
+
+class RectangleAnnotation(xgds_image_models.AbstractRectangleAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
+
+class ArrowAnnotation(xgds_image_models.AbstractArrowAnnotation):
+    image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
 
 
 class BasaltStillFrame(AbstractStillFrame):
@@ -1128,10 +1176,17 @@ class BasaltCondition(AbstractCondition):
         return result
     
 
-class BasaltConditionHistory(AbstractConditionHistory):
+class BasaltConditionHistory(AbstractConditionHistory, BroadcastMixin):
     condition = models.ForeignKey(BasaltCondition, related_name=settings.XGDS_CORE_CONDITION_HISTORY_MODEL.replace('.','_'))
     activity_status = models.ForeignKey(ActivityStatus, null=True, blank=True)
     
+    
+    def getBroadcastChannel(self):
+        return self.condition.getRedisSSEChannel()
+    
+    def getSseType(self):
+        return 'condition'
+
     def populate(self, condition_data_dict, save=False):
         super(BasaltConditionHistory, self).populate(condition_data_dict, save)
         

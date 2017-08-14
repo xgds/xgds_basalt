@@ -4,13 +4,22 @@
 
 {% block contents %}
 <script type="x-template/underscore" id="application_contents">
-  <div id="toolbar" class="row">
-	</div>
- {% if settings.XGDS_SSE %}
- <div id="conditionDiv" class="alert alert-info mx-2">
-	Waiting for status ...
- </div>
-{% endif %}
+<div id="gridstack_buttonrow" class="row justify-content-between  mr-2">
+		<div class="col-10">
+			{% block buttonrowLeft %}
+			{% if settings.XGDS_SSE %}
+			<div id="conditionDiv" class="alert alert-info ml-2"  role="alert">
+				Waiting for status ...
+ 			</div>
+			{% endif %}
+			{% endblock buttonrowLeft %}
+		</div>
+		<div>
+			{% block buttonrowRight %}
+			{% endblock buttonrowRight %}
+			<button id="gridstack_toggleAll" class='btn btn-primary fa fa-lock' role='button' style="color:white;" onclick="xgds_gridstack.handleToggleAllClick();"></button>
+		</div>
+</div>
  <div class="grid-stack" id="container">
     	<div id="map-gridstack-item" class="grid-stack-item"  data-gs-x="0" data-gs-y="0" data-gs-width="10" data-gs-height="8" >
 			<div id="map-gridstack-item-content"  class="grid-stack-item-content" >
