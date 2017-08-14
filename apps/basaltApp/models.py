@@ -473,6 +473,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")), db_index=True)
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
+    flir_temperature = models.FloatField(null=True, blank=True, verbose_name='FLIR Temp', help_text='C')
     
     @classmethod
     def getSearchableNumericFields(self):
