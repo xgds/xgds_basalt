@@ -410,6 +410,10 @@ XGDS_PLANNER2_HANDLEBARS_DIRS = [os.path.join('xgds_planner2', 'templates', 'han
 XGDS_PLANNER2_EDITOR_CONTEXT_METHOD = 'basaltApp.views.addToPlannerContext'
 XGDS_PLANNER2_SCHEDULE_EXTRAS_METHOD = 'basaltApp.views.addEVToPlanExecution'
 
+XGDS_PLANNER2_PLOTS = getOrCreateDict('XGDS_PLANNER2_PLOTS')
+XGDS_PLANNER2_PLOTS['Temp'] = 'hi_temp'
+
+
 # list of (formatCode, extension, exporterClass)
 XGDS_PLANNER_PLAN_EXPORTERS = (
     ('xpjson', '.json', 'xgds_planner2.planExporter.XpjsonPlanExporter'),
