@@ -2668,8 +2668,8 @@ fieldset[disabled] a.btn {
 
 .btn-primary:hover, form input[type="submit"]:hover, form input[type="button"]:hover, .ui-dialog .ui-dialog-buttonpane button:hover {
   color: white;
-  background-color: #002b56;
-  border-color: #00264c;
+  background-color: #007bf8;
+  border-color: #0067cf;
 }
 
 .btn-primary:focus, form input[type="submit"]:focus, form input[type="button"]:focus, .ui-dialog .ui-dialog-buttonpane button:focus, .btn-primary.focus, form input.focus[type="submit"], form input.focus[type="button"], .ui-dialog .ui-dialog-buttonpane button.focus {
@@ -2686,10 +2686,10 @@ fieldset[disabled] a.btn {
 .show > input.dropdown-toggle[type="submit"], form
 .show > input.dropdown-toggle[type="button"], .ui-dialog .ui-dialog-buttonpane
 .show > button.dropdown-toggle {
-  color: white;
-  background-color: #002b56;
+  color: white !important;
+  background-color: #007bf8 !important;
   background-image: none;
-  border-color: #00264c;
+  border-color: #0067cf !important;
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
@@ -8846,4 +8846,7 @@ label {
   padding-left: 2px;
 }
 
+.tag {
+	margin-left: 8px;
+}
 /*# sourceMappingURL=bootstrap.css.map */
