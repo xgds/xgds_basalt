@@ -151,13 +151,13 @@ XGDS_MAP_SERVER_MAP_API_KEY = ""
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Los_Angeles'
+TIME_ZONE = 'US/Hawaii'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-US'
 
-SITE_ID = 1
+SITE_ID = 2  #hawaii lava flows
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -395,7 +395,7 @@ XGDS_PLANNER2_COMMAND_MONIKER_PLURAL = "Activities"
 XGDS_PLANNER2_FLIGHT_MODEL = "basaltApp.BasaltFlight"
 XGDS_PLANNER2_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
 XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
-XGDS_PLANNER2_DEFAULT_SITE = 'Ames'
+XGDS_PLANNER2_DEFAULT_SITE = 'Hawaii Lava Flows'
 
 
 XGDS_PLANNER2_SCHEDULE_INCLUDED = True

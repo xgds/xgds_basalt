@@ -96,8 +96,6 @@ $.extend(playback, {
 				} catch (e) {
 					prev = undefined;
 				}
-
-				
 			}
 			
 			if (next == undefined ) {
