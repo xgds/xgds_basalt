@@ -94,7 +94,6 @@ $.extend(playback, {
 					var newy = prev[1] + ( percentage * (next[1] - prev[1]));
 					newcoordinates = [newx, newy];
 				} catch (e) {
-					console.log(e);
 					prev = undefined;
 				}
 
