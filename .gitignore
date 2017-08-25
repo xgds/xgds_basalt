@@ -29,3 +29,7 @@ apps/basaltApp/pycroraptor_dev.json
 apps/basaltApp/pycroraptor.json
 pyraptord
 .classpath
+sextantwebapp
+pysrc
+ssl
+db_dumps
