@@ -157,7 +157,7 @@ TIME_ZONE = 'US/Hawaii'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-US'
 
-SITE_ID = 2  #hawaii lava flows
+SITE_ID = 1  # This is for Django's site framework - NOT to specify the location of a field site.
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
