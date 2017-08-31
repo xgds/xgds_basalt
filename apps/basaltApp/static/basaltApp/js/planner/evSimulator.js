@@ -42,6 +42,13 @@ _.extend(ev.Simulator.prototype, {
         };
     },
 
+    arrayToCoords: function(coordsArray) {
+        return {
+            lng: coordsArray[0],
+            lat: coordsArray[1]
+        };
+    },
+    
     startPlan: function(plan) {
         var firstStation = plan.get('sequence').at(0);
         this.coordinates = this.geoJsonToCoords(firstStation.get('geometry'));
@@ -53,17 +60,34 @@ _.extend(ev.Simulator.prototype, {
 
     startSegment: function(segment, context) {},
     endSegment: function(segment, context) {
-        var nextCoords = this.geoJsonToCoords(context.nextStation.get('geometry'));
-        var distanceVector = geo.calculateDiffMeters(nextCoords, this.coordinates);
-        var norm = geo.norm(distanceVector);
-        segment._segmentLength = norm;
-        this.distanceTraveled = this.distanceTraveled + norm;
+    		var geometry = segment.get('geometry');
+		var segmentDistance = 0;
+    		if (geometry == undefined){
+	        var nextCoords = this.geoJsonToCoords(context.nextStation.get('geometry'));
+	        var distanceVector = geo.calculateDiffMeters(nextCoords, this.coordinates);
+	        segmentDistance = geo.norm(distanceVector);
+    		}  else {
+    			var lastCoord = undefined
+            	_.each(geometry.coordinates, function(coord) {
+            		if (lastCoord == undefined){
+            			lastCoord = ev.Simulator.prototype.arrayToCoords(coord);
+            		} else {
+            			var nextCoord = ev.Simulator.prototype.arrayToCoords(coord);
+            			var distanceVector = geo.calculateDiffMeters(lastCoord, nextCoord);
+            	        var norm = geo.norm(distanceVector);
+            	        segmentDistance += norm;
+            	        lastCoord = nextCoord;
+            		}
+            	});
+    		}
+        segment._segmentLength = segmentDistance;
+        this.distanceTraveled = this.distanceTraveled + segmentDistance;
 
         var hintedSpeed = segment.get('hintedSpeed');
         if (_.isUndefined(hintedSpeed) || _.isNull(hintedSpeed) || hintedSpeed < 0) {
             hintedSpeed = context.plan.get('defaultSpeed');
         }
-        var segmentDriveTime =  Math.round(norm / hintedSpeed);
+        var segmentDriveTime =  Math.round(segmentDistance / hintedSpeed);
         var derivedInfo = segment.get('derivedInfo');
         if (_.isUndefined(derivedInfo) || _.isNull(derivedInfo)){
         	derivedInfo = {};
@@ -75,7 +99,7 @@ _.extend(ev.Simulator.prototype, {
         } else {
             derivedInfo['durationSeconds'] = segmentDriveTime;
         }
-        derivedInfo['distanceMeters'] = norm;
+        derivedInfo['distanceMeters'] = segmentDistance;
         this.elapsedTime = this.elapsedTime + derivedInfo['durationSeconds'];
 
         this.coordinates = nextCoords;
