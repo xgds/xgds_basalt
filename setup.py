@@ -1,205 +1,149 @@
-#__BEGIN_LICENSE__
-# Copyright (c) 2015, United States Government, as represented by the
-# Administrator of the National Aeronautics and Space Administration.
-# All rights reserved.
-#
-# The xGDS platform is licensed under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# http://www.apache.org/licenses/LICENSE-2.0.
-#
-# Unless required by applicable law or agreed to in writing, software distributed
-# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-# CONDITIONS OF ANY KIND, either express or implied. See the License for the
-# specific language governing permissions and limitations under the License.
-#__END_LICENSE__
+'''
+Full setup, used to distribute the debugger backend to PyPi.
 
+Note that this is mostly so that users can do:
+
+pip install pydevd
+
+in a machine for doing remote-debugging, as a local installation with the IDE should have
+everything already distributed.
+
+Reference on wheels:
+https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/
+http://lucumr.pocoo.org/2014/1/27/python-on-wheels/
+
+Another (no wheels): https://jamie.curle.io/blog/my-first-experience-adding-package-pypi/
+
+New version: change version and then:
+
+rm dist/pydevd*
+
+C:\tools\Miniconda32\Scripts\activate py27_32
+python setup.py sdist bdist_wheel
+deactivate
+
+C:\tools\Miniconda32\Scripts\activate py34_32
+python setup.py sdist bdist_wheel
+deactivate
+
+C:\tools\Miniconda32\Scripts\activate py35_32
+python setup.py sdist bdist_wheel
+deactivate
+
+C:\tools\Miniconda\Scripts\activate py27_64
+python setup.py sdist bdist_wheel
+deactivate
+
+C:\tools\Miniconda\Scripts\activate py34_64
+python setup.py sdist bdist_wheel
+deactivate
+
+C:\tools\Miniconda\Scripts\activate py35_64
+python setup.py sdist bdist_wheel
+deactivate
+
+twine upload dist/pydevd*
+'''
+
+
+from setuptools import setup
+from setuptools.dist import Distribution
+from distutils.extension import Extension
 import os
-from setuptools import setup, find_packages, Command
 
-import os.path as op
-import subprocess
+class BinaryDistribution(Distribution):
+    def is_pure(self):
+        return False
 
+data_files = []
 
-def read_file(filename):
-    """Read a file into a string"""
-    path = os.path.abspath(os.path.dirname(__file__))
-    filepath = os.path.join(path, filename)
-    try:
-        return open(filepath).read()
-    except IOError:
-        return ''
+def accept_file(f):
+    f = f.lower()
+    for ext in '.py .dll .so .dylib .txt .cpp .h .bat .c .sh .md .txt'.split():
+        if f.endswith(ext):
+            return True
 
-# Use the docstring of the __init__ file to be the description
-# DESC = " ".join(__import__('xgds_basalt').__doc__.splitlines()).strip()
-DESC = ""
+    return f in ['readme', 'makefile']
 
-PROJ_ROOT = op.abspath(op.dirname(__file__))
+data_files.append(('pydevd_attach_to_process', [os.path.join('pydevd_attach_to_process', f) for f in os.listdir('pydevd_attach_to_process') if accept_file(f)]))
+for root, dirs, files in os.walk("pydevd_attach_to_process"):
+    for d in dirs:
+        data_files.append((os.path.join(root, d), [os.path.join(root, d, f) for f in os.listdir(os.path.join(root, d)) if accept_file(f)]))
 
+import pydevd
+version = pydevd.__version__
 
-def find_sub_apps(directory=PROJ_ROOT):
-    """We define a sub-application to be any top-level subdirectory that
-    contains a urls.py and a models.py. Note that we do not look solely
-    for submodule based apps, since there could be an odd app or two that
-    aren't based on a git submodule, or it could be the main 'glue'
-    application."""
-    requiredFiles = ['models.py', 'urls.py']
-    subApps = []
-    for entry in os.listdir(directory):
-        fullEntry = op.join(directory, entry)
-        if not op.isdir(fullEntry):
-            continue
-        if all([op.exists(op.join(fullEntry, f)) for f in requiredFiles]):
-            subApps.append((entry, fullEntry))
-    return subApps
+args = dict(
+    name='pydevd',
+    version=version,
+    description = 'PyDev.Debugger (used in PyDev and PyCharm)',
+    author='Fabio Zadrozny and others',
+    url='https://github.com/fabioz/PyDev.Debugger/',
+    license='EPL (Eclipse Public License)',
+    packages=[
+        '_pydev_bundle',
+        '_pydev_imps',
+        '_pydev_runfiles',
+        '_pydevd_bundle',
+        'pydev_ipython',
 
+        # 'pydev_sitecustomize', -- Not actually a package (not added)
 
-def find_submodules(directory=op.join(PROJ_ROOT, 'apps')):
-    """We define a submodule as a subdirectory in submodules which contains a
-    subdirectory under that of the same name. We do not do git magic as there
-    could be times where it is a sub-app that isn't a git subrepo."""
-    subModules = []
-    for entry in os.listdir(directory):
-        fullEntry = op.join(directory, entry)
-        if not op.isdir(fullEntry):
-            continue
-        fullSubDir = op.join(fullEntry, entry)
-        if op.exists(fullSubDir) and op.isdir(fullSubDir):
-            subModules.append((entry, fullSubDir))
-    return subModules
+        # 'pydevd_attach_to_process', -- Not actually a package (included in MANIFEST.in)
 
-
-class RunSubCommand(Command):
-    """Run a sub-command on the sub-apps. This class is meant to be subclassed.
-    Override 'self.subcommand' in initialize_options to specify what command
-    to run. If you override run, be sure to call this class' run to
-    run the subcommand."""
-    user_options = []
-
-    # Option defaults
-    def initialize_options(self):
-        self.subcommand = None
-
-    # Validate options
-    def finalize_options(self):
-        pass
-
-    # Where the action happens
-    def run(self):
-        if getattr(self, 'subcommand', None) is None:
-            raise Exception("must override self.subcommand")
-        projDir = op.abspath(op.dirname(__file__))
-        subApps = find_sub_apps(projDir)
-        for app, directory in subApps:
-            appDir = op.join(projDir, 'submodules', app)
-            if not op.exists(appDir):
-                self.announce("skipping %s" % app)
-                continue
-
-            setupPath = op.join(appDir, 'setup.py')
-            if not op.exists(setupPath):
-                self.announce("skipping %s" % app)
-                continue
-
-            subprocess.call(["python", setupPath, self.subcommand])
-
-
-class TestCommand(RunSubCommand):
-    description = 'test geocam command'
-    user_options = []
-
-    # Option defaults
-    def initialize_options(self):
-        self.subcommand = 'geocam'
-
-    # Validate options
-    def finalize_options(self):
-        pass
-
-
-class SymlinkCommand(Command):
-    """This command makes the submodule app directories symlinked to the
-    site-level. Will not work on windows."""
-    description = 'symlink submodules to the main site level'
-    user_options = [('force', 'f', 'overwrite existing symlinks')]
-    boolean_options = ['force']
-
-    # Option defaults
-    def initialize_options(self):
-        self.force = False
-
-    # Validate options
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        subModules = find_submodules()
-        for name, directory in subModules:
-            destination = op.join(PROJ_ROOT, name)
-            if op.exists(destination):
-                if not op.islink(destination):
-                    self.announce("skipping " + name + ": not a symlink")
-                    continue
-                if not self.force:
-                    self.announce("skipping " + name + ": file exists (use -f to override)")
-                    continue
-                os.remove(destination)
-            os.symlink(directory, destination)
-
-
-class MediaCommand(Command):
-    description = 'collect together the site-level static media'
-    user_options = [('force', 'f', 'overwrite existing symlinks')]
-    boolean_options = ['force']
-
-    # Option defaults
-    def initialize_options(self):
-        self.force = False
-
-    # Validate options
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        siteMediaDir = op.join(PROJ_ROOT, 'media')
-        if not op.exists(siteMediaDir):
-            os.mkdir(siteMediaDir)
-        subApps = find_sub_apps()
-        for name, directory in subApps:
-            mediaDirectory = op.join(directory, 'media', name)
-            if not op.exists(mediaDirectory):
-                self.announce("skipping " + name + ": media directory does not exist")
-                continue
-            destination = op.join(siteMediaDir, name)
-            if op.exists(destination):
-                if not op.islink(destination):
-                    self.announce("skipping " + name + ": not a symlink")
-                    continue
-                if not self.force:
-                    self.announce("skipping " + name + ": file exists (use -f to override)")
-                    continue
-                os.remove(destination)
-            os.symlink(directory, destination)
-
-
-setup(
-    name="xgds_basalt",
-    version='1.0',  # __import__('xgds_basalt').get_version().replace(' ', '-'),
-    url='',
-    author='tecohen',
-    author_email='',
-    description=DESC,
-    long_description=read_file('README'),
-    packages=find_packages(),
-    include_package_data=True,
-    install_requires=read_file('requirements.txt'),
-    classifiers=[
-        'License :: OSI Approved :: Apache 2 License Agreement',
-        'Framework :: Django',
+        'pydevd_concurrency_analyser',
+        'pydevd_plugins',
     ],
+    py_modules=[
+        # 'interpreterInfo', -- Not needed for debugger
+        # 'pycompletionserver', -- Not needed for debugger
+        'pydev_app_engine_debug_startup',
+        # 'pydev_coverage', -- Not needed for debugger
+        # 'pydev_pysrc', -- Not needed for debugger
+        'pydev_run_in_console',
+        'pydevconsole',
+        'pydevd_file_utils',
+        'pydevd',
+        # 'runfiles', -- Not needed for debugger
+        # 'setup_cython', -- Should not be included as a module
+        # 'setup', -- Should not be included as a module
+    ],
+    classifiers=[
+        'Development Status :: 6 - Mature',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
 
-    cmdclass={
-        'link_submodules': SymlinkCommand,
-        'link_media': MediaCommand
-    },
+        # It seems that the license is not recognized by Pypi, so, not categorizing it for now.
+        # https://bitbucket.org/pypa/pypi/issues/369/the-eclipse-public-license-superseeded
+        # 'License :: OSI Approved :: Eclipse Public License',
+
+        'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX',
+        'Programming Language :: Python',
+        'Topic :: Software Development :: Debuggers',
+    ],
+    data_files=data_files,
+    keywords=['pydev', 'pydevd', 'pydev.debugger'],
+    include_package_data=True,
+    zip_safe=False,
 )
+
+
+
+import sys
+try:
+    args_with_binaries = args.copy()
+    args_with_binaries.update(dict(
+        distclass=BinaryDistribution,
+        ext_modules=[
+            # In this setup, don't even try to compile with cython, just go with the .c file which should've
+            # been properly generated from a tested version.
+            Extension('_pydevd_bundle.pydevd_cython', ["_pydevd_bundle/pydevd_cython.c",])
+        ]
+    ))
+    setup(**args_with_binaries)
+except:
+    # Compile failed: just setup without compiling cython deps.
+    setup(**args)
+    sys.stdout.write('Plain-python version of pydevd installed (cython speedups not available).\n')
