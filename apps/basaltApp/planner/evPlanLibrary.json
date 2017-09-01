@@ -158,6 +158,30 @@
             },
             "bbox": [28.521993, -80.648116,
             		 28.522003, -80.648107]
+        },
+        {
+            "type": "Site",
+            "id": "BPA",
+            "name": "Black Point",
+            "alternateCrs": {
+                "type": "roversw",
+                "properties": {
+                    "originNorthing": 3949752,
+                    "originEasting": 457797,
+                    "projection": "utm",
+                    "zone": 12,
+                    "zoneLetter": "S",
+                    "frame": "BPASiteFrameZDown",
+                    "zDirection": "down",
+                    "label": "Site Frame",
+                    "coordinateLabel": "X, Y",
+                    "coordinateNotes": "X=Northing Y=Easting",
+                    "coordinateMapping": "lat, lon",
+                    "timezone": "America/Phoenix"
+                }
+            },
+            "bbox": [35.676539, -111.484398,
+            		  35.706584, -111.445504]
         }
     ],
 

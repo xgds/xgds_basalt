@@ -1,0 +1,20 @@
+[
+	{
+        "pk": 11,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+           "name": "BPA",
+           "displayName": "Black Point",
+           "east0": 457797,
+           "north0": 3949752,
+           "zone": "12S",
+           "zoneNumber": 12,
+           "south": 0,
+           "axes": "NED",
+           "north": "grid",
+           "timezone": "America/Phoenix",
+           "projCode": "EPSG:26949",
+           "projString": "+proj=utm +zone=12 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+        }
+    }
+]
