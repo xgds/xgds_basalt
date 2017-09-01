@@ -62,8 +62,9 @@ _.extend(ev.Simulator.prototype, {
     endSegment: function(segment, context) {
     		var geometry = segment.get('geometry');
 		var segmentDistance = 0;
-    		if (geometry == undefined){
-	        var nextCoords = this.geoJsonToCoords(context.nextStation.get('geometry'));
+		var nextCoords = this.geoJsonToCoords(context.nextStation.get('geometry'));
+        var hasSextantPath = segment.get('derivedInfo') !== undefined && segment.get('derivedInfo').timeList !== undefined;
+    		if (geometry == undefined && !hasSextantPath){
 	        var distanceVector = geo.calculateDiffMeters(nextCoords, this.coordinates);
 	        segmentDistance = geo.norm(distanceVector);
     		}  else {
