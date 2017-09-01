@@ -289,7 +289,19 @@ class BasaltFlight(plannerModels.AbstractFlight):
             pyraptord.updateServiceConfig(serviceName,
                                           {'command': command})
             pyraptord.startService(serviceName)
-        
+
+            if settings.COMPASS_PRESENT:
+                serviceName = self.vehicle.name + "CompassListener"
+                port = Constant.objects.get(name="%s_COMPASS_PORT" % self.vehicle.name).value
+                scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
+                command = "%s -p %s -n %s -d compass --proto=%s -t %s" % (scriptPath, port, self.vehicle.name[-1:], 'UDP', self.name)
+                print "COMPASS: %s" % command
+                stopPyraptordServiceIfRunning(pyraptord, serviceName)
+                time.sleep(2)
+                pyraptord.updateServiceConfig(serviceName,
+                                              {'command': command})
+                pyraptord.startService(serviceName)
+
 #     def startVideoRecording(self):
 #         flightGroup = self.group
 #         if not flightGroup.videoEpisode:
@@ -336,7 +348,11 @@ class BasaltFlight(plannerModels.AbstractFlight):
         #stop the eva track listener
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
             self.stopTracking()
-        
+            if settings.COMPASS_PRESENT:
+                pyraptord = getPyraptordClient()
+                serviceName = self.vehicle.name + "CompassListener"
+                stopPyraptordServiceIfRunning(pyraptord, serviceName)
+           
         if settings.XGDS_VIDEO_ON:
             stopFlightRecording(request, self.name)
 

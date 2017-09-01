@@ -63,7 +63,7 @@ DEFAULT_LINE_STYLE = LineStyle.objects.get(name='default')
 RAW_DATA_TYPE = DataType.objects.get(name="RawGPSLocation") 
 TRACK_CACHE_TIMEOUT = 30
 GPS_SENTENCE_TYPE = "$GPRMC"
-COMPASS_SENTENCE_TYPE = "$"
+COMPASS_SENTENCE_TYPE = ("$R","$P","$C","$X","$Y","$Z","$T","$D","$A")
 
 def parseTracLinkDM(dm, hemi):
     m = DM_REGEX.match(dm.strip())
@@ -74,7 +74,7 @@ def parseTracLinkDM(dm, hemi):
     return sign * (degrees + minutes / 60.0)
 
 def isSentenceType(sentence, sentenceType):
-    return sentence.startswith("%1s," % sentenceType)
+    return sentence.startswith(sentenceType)
 
 def hasGoodNmeaChecksum(sentence):
     checkSum=0
@@ -167,7 +167,7 @@ class GpsTelemetryCleanup(object):
     def start(self):
         self.publisher.start()
         self.subscriber.start()
-        topics = ['gpsposition']
+        topics = ['gpsposition', 'compass']
         for topic in topics:
             self.subscriber.subscribeRaw(topic + ':', getattr(self, 'handle_' + topic))
 
@@ -208,7 +208,6 @@ class GpsTelemetryCleanup(object):
     
     def handle_compass0(self, topic, body):
     # example: 2:$GPRMC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
-
         serverTimestamp = datetime.datetime.now(pytz.utc)
     
         if body == 'NO DATA':
@@ -216,7 +215,7 @@ class GpsTelemetryCleanup(object):
             return
     
         # parse record
-        resourceIdStr, trackName, content = body.split(":", 2)
+        resourceIdStr, compassStr, content = body.split(":", 2)
         resourceId = int(resourceIdStr)
         if not checkDataQuality(resourceId, content):
             logging.info('UNRECOGNIZED OR CORRUPT COMPASS SENTENCE: %s', content)
@@ -225,9 +224,9 @@ class GpsTelemetryCleanup(object):
         sourceTimestamp = serverTimestamp  # Compass has no independent clock
                 
         # save subsystem status to cache
-        myKey = "telemetryCleanupEV%s" % resourceIdStr
+        myKey = "compassCleanupEV%s" % resourceIdStr
         status = {'name': myKey,
-              'displayName': 'Telemetry Cleanup EV%s' % str(resourceIdStr),
+              'displayName': 'Compass Cleanup EV%s' % str(resourceIdStr),
               'statusColor': '#00ff00',
               'lastUpdated': datetime.datetime.utcnow().isoformat()}
         cache.set(myKey, json.dumps(status))
@@ -236,7 +235,7 @@ class GpsTelemetryCleanup(object):
         cacheKey = 'compass.%s' % resourceId
         cacheRecordDict = {"timestamp": sourceTimestamp, "compassRecord": compassRecord}
         cache.set(cacheKey, json.dumps(cacheRecordDict, cls=DatetimeJsonEncoder))
-
+        
     def handle_gpsposition0(self, topic, body):
         # example: 2:$GPRMC,225030.00,A,3725.1974462,N,12203.8994696,W,,,220216,0.0,E,A*2B
 
