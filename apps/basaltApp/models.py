@@ -332,7 +332,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
 #             episode.endTime = self.end_time
 #             episode.save()
 
-    def startFlightExtras(self, request):
+    def startFlightExtras(self, request, flight):
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
             self.startTracking()
 
@@ -344,7 +344,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
         self.manageRemoteFlights(request, True)
             
 
-    def stopFlightExtras(self, request):
+    def stopFlightExtras(self, request, flight):
         #stop the eva track listener
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
             self.stopTracking()
@@ -353,8 +353,16 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 serviceName = self.vehicle.name + "CompassListener"
                 stopPyraptordServiceIfRunning(pyraptord, serviceName)
            
+        # See if we're the last running flight and end episode if we are
+        print "Checking if we're last active flight"
+        print "Other active flight count:", flight.active.otherActiveFlights().count()
+        if flight.active.otherActiveFlights().count() == 0:
+            endEpisode = True
+        else:
+            endEpisode = False
+
         if settings.XGDS_VIDEO_ON:
-            stopFlightRecording(request, self.name)
+            stopFlightRecording(request, self.name, endEpisode)
 
         self.manageRemoteFlights(request, False)
 
@@ -471,7 +479,9 @@ class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
 
 class BasaltActiveFlight(plannerModels.AbstractActiveFlight):
     flight = models.OneToOneField(BasaltFlight, related_name="active")
-    
+
+    def otherActiveFlights(self):
+        return BasaltActiveFlight.objects.exclude(flight=self.flight)
     
 class Replicate(AbstractEnumModel):
     def __unicode__(self):
