@@ -16,13 +16,14 @@
 #specific language governing permissions and limitations under the License.
 # __END_LICENSE__
 
+# TODO: Add args for network port, baud rate, and serial device
+
 import socket
 import serial
 
 port = 40001
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.bind(("", port))
 
 ser = serial.Serial()
 ser.baudrate=19200
@@ -32,5 +33,5 @@ ser.open()
 print "send compass serial data:", port
 while 1:
     l = ser.readline()
-    s.sendto(l, 'localhost')
+    s.sendto(l, ('localhost', port))
     print l,
