@@ -463,9 +463,9 @@ class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
     def toSimpleDict(self):
         result = super(BasaltPlanExecution, self).toSimpleDict()
         if self.ev:
-            result['ev'] = self.ev.pk
+            result['ev_id'] = self.ev.pk
         else:
-            result['ev'] = None
+            result['ev_id'] = None
         return result
 
 
