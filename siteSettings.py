@@ -151,7 +151,8 @@ XGDS_MAP_SERVER_MAP_API_KEY = ""
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'US/Hawaii'
+#TIME_ZONE = 'US/Hawaii'
+TIME_ZONE = 'America/Phoenix'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -396,7 +397,9 @@ XGDS_PLANNER2_COMMAND_MONIKER_PLURAL = "Activities"
 XGDS_PLANNER2_FLIGHT_MODEL = "basaltApp.BasaltFlight"
 XGDS_PLANNER2_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
 XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
-XGDS_PLANNER2_DEFAULT_SITE = 'Hawaii Lava Flows'
+
+#XGDS_PLANNER2_DEFAULT_SITE = 'Hawaii Lava Flows'
+XGDS_PLANNER2_DEFAULT_SITE = 'BPA'
 
 
 XGDS_PLANNER2_SCHEDULE_INCLUDED = True
@@ -680,7 +683,8 @@ BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 
 PYRAPTORD_SERVICE = True
 
-XGDS_CURRENT_SITEFRAME_ID = 2  # Hawaii Lava Flows siteframe
+#XGDS_CURRENT_SITEFRAME_ID = 2  # Hawaii Lava Flows siteframe
+XGDS_CURRENT_SITEFRAME_ID = 11  # Black Point siteframe
 XGDS_CURRENT_REGION_ID = 2 # sample region?
 XGDS_DEFAULT_SAMPLE_TYPE = 2 #'Geology'
 XGDS_CORE_LIVE_INDEX_URL = '/basaltApp/live'
