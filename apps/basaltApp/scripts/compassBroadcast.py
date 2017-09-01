@@ -23,15 +23,55 @@ import serial
 
 port = 40001
 
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+def broadcastCompassUdp(hostPortList, serialDevice, baudRate):
+    udpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-ser = serial.Serial()
-ser.baudrate=19200
-ser.port = '/dev/ttyS0'
-ser.open()
+    # Open serial connection to compass
+    ser = serial.Serial()
+    ser.baudrate = baudRate
+    ser.port = serialDevice
+    ser.open()
 
-print "send compass serial data:", port
-while 1:
-    l = ser.readline()
-    s.sendto(l, ('localhost', port))
-    print l,
+    print "Connected to compass at %s, speed: %d" % (serialDevice, baudRate)
+    print "Sending compass serial data via UDP to:", hostPortList
+    while True:
+        l = ser.readline()
+        for hostInfo in hostPortList:
+            udpSocket.sendto(l, (hostInfo['hostname'], hostInfo['port']))
+        print l,
+
+
+def parseHostListStr(hostStr):
+    hostPortInfo = []
+    hostAndPortList = hostStr.split(",")
+    for hostPlusPort in hostAndPortList:
+        host, port = hostPlusPort.split(":")
+        hostPortInfo.append({'hostname':host, 'port':int(port)})
+
+    return hostPortInfo
+
+
+def main():
+    import optparse
+    parser = optparse.OptionParser('usage: %prog --hostList <host1:port1, host2:port2...> ' +
+                                   '--serialDevice <pathToSerialDevice> ' +
+                                   '--baudRate <serialBaudRate>')
+    parser.add_option('--hostList', dest="hostListStr",
+                      help='list of hosts to send UDP compass data')
+    parser.add_option('--serialDevice', dest="serialDevice",
+                      help='path to serial device file')
+    parser.add_option('--baudRate', dest="baudRate",
+                      help='baud rate for serial device')
+    opts, args = parser.parse_args()
+    if len(args) != 0:
+        parser.error('expected no arguments')
+    if (not opts.hostListStr) or (not opts.serialDevice) or (not opts.baudRate):
+        parser.error("All options are required")
+
+    hostList = parseHostListStr(opts.hostListStr)
+    print "Serial Dev: %s, Baud Rate: %s" % (opts.serialDevice, opts.baudRate)
+    print "Parsed host info: %s" % hostList
+    broadcastCompassUdp(hostList, opts.serialDevice, int(opts.baudRate))
+
+if __name__ == '__main__':
+    main()
