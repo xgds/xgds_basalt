@@ -46,6 +46,7 @@ from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights, getActi
 from xgds_planner2.models import Vehicle
 from xgds_map_server.views import viewMultiLast
 from xgds_video.util import getSegmentPath
+from xgds_video.util import getDelaySeconds as getVideoDelaySeconds
 from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink, djangoResponse
 from xgds_instrument.views import lookupImportFunctionByName, editInstrumentDataPosition
 
@@ -257,8 +258,7 @@ def getDelaySeconds(flightName):
         foundActive = BasaltActiveFlight.objects.all()
         for af in foundActive:
             if af.flight.name.startswith(flightName):
-                delayConstant = Constant.objects.get(name="delay")
-                return int(delayConstant.value)
+                return getVideoDelaySeconds(flightName)
     except:
         pass
     return 0
