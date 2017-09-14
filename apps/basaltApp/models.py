@@ -290,7 +290,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
                                           {'command': command})
             pyraptord.startService(serviceName)
 
-            if settings.COMPASS_PRESENT:
+            if self.vehicle.name in settings.COMPASS_EQUIPPED_VEHICLES:
                 serviceName = self.vehicle.name + "CompassListener"
                 port = Constant.objects.get(name="%s_COMPASS_PORT" % self.vehicle.name).value
                 scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
@@ -348,7 +348,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
         #stop the eva track listener
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
             self.stopTracking()
-            if settings.COMPASS_PRESENT:
+            if self.vehicle.name in settings.COMPASS_EQUIPPED_VEHICLES:
                 pyraptord = getPyraptordClient()
                 serviceName = self.vehicle.name + "CompassListener"
                 stopPyraptordServiceIfRunning(pyraptord, serviceName)
