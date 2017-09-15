@@ -21,8 +21,6 @@
 import socket
 import serial
 
-port = 40001
-
 def broadcastCompassUdp(hostPortList, serialDevice, baudRate):
     udpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
