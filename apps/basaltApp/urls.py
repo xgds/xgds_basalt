@@ -54,7 +54,7 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^update/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.saveUpdatedInstrumentData, name="instrument_data_update"),
                url(r'^hvnp_so2.kml$', views.getHvnpKml, {'loginRequired': False}, name="hvnp_so2"),
                url(r'^hvnp_so2_link.kml$', views.getHvnpNetworkLink, {'loginRequired': False}, name="hvnp_so2_link"),
-               url(r'^pextantTest/$', TemplateView.as_view(template_name='basaltApp/pextantTest.html'), {}, 'index'),
+               url(r'^pextantTest/$', TemplateView.as_view(template_name='basaltApp/pextantTest.html'), {}, 'pextantTest'),
                url(r'^condition/activeJSON/$',views.getActiveFlightConditionJSON, {}, 'basalt_get_active_flight_condition_json'),
 
            ]
