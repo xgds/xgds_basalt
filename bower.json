@@ -18,6 +18,9 @@
     "backbone-forms": "master",
     "jquery": "3.2.1",
     "dropzone": "^5.1.1",
+    "bootstrap-tagsinput": "^0.8.0",
+    "fancytree": "^2.22.0",
+    "gridstack": "0.2.6",
     "modernizr": "^3.5.0"
   }
 }
