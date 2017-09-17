@@ -16,9 +16,15 @@
 # specific language governing permissions and limitations under the License.
 # __END_LICENSE__
 
-for d in submodules/*/ ; do
-    echo "updating basalt-dev git repo to $d"
+cd submodules
+for d in */ ; do
+    cd $d
+    d=${d%/}
+    echo "adding basalt-dev git repo to $d"
     git remote set-url dev irg@basalt-dev.xgds.snrf:/home/irg/github/$d.git
+    cd ..
 done
+
+cd ..
 
 git remote set-url dev irg@basalt-dev.xgds.snrf:/home/irg/github/xgds_basalt.git
