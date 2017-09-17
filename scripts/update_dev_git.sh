@@ -20,7 +20,7 @@ cd submodules
 for d in */ ; do
     cd $d
     d=${d%/}
-    echo "adding basalt-dev git repo to $d"
+    echo "updating basalt-dev git repo to $d"
     git remote set-url dev irg@basalt-dev.xgds.snrf:/home/irg/github/$d.git
     cd ..
 done
