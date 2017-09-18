@@ -24,12 +24,14 @@ import traceback
 import pytz
 import json
 from uuid import uuid4
+from dateutil.parser import parse as dateparser
 
 #
 # TODO:
 # WARNING!!! This is a hack to work around an apparent fail in the NovAtel GPS firmware, take this out ASAP.
 #
 OVERRIDE_GPS_DATE = False
+MAX_COMPASS_TIME_SECONDS = 60
 
 from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
@@ -267,10 +269,23 @@ class GpsTelemetryCleanup(object):
         lon = parseTracLinkDM(lon, lonHemi)
         
         # Get compass heading from compass record
-        # TODO: sanity check the timestamp in the compass record
-#        compassCacheKey = 'compass.%s' % resourceId
-#        compassInfo = cache.get(compassCacheKey)
-#        heading = compassInfo["compassRecord"]["compass"]
+        # TODO this clobbers heading read from GPS every time. but this is for basalt. do we care?
+        heading = None
+        compassCacheKey = 'compass.%s' % resourceId
+        compassInfoString = cache.get(compassCacheKey)
+        try:
+            if compassInfoString:
+                compassInfo = json.loads(compassInfoString) 
+                compassRecord = compassInfo["compassRecord"]
+                # sanity check the timestamp in the compass record
+                compassTimeString = compassRecord['timestamp']
+                compassTimestamp = dateparser(compassTimeString)
+                tdelta = serverTimestamp - compassTimestamp
+                if tdelta.total_seconds() <= MAX_COMPASS_TIME_SECONDS:
+                    heading = float(compassRecord["compass"])
+        except:
+            pass #default to None
+            
         
         # save subsystem status to cache
         myKey = "telemetryCleanup"
@@ -333,8 +348,7 @@ class GpsTelemetryCleanup(object):
             'serverTimestamp': serverTimestamp,
             'latitude': lat,
             'longitude': lon,
-             # may not have heading, but we'll try...
-            'heading': float(heading) if len(heading) else None, 
+            'heading': heading, 
             'altitude': None,
         }
         pos = PastPosition(**params)
