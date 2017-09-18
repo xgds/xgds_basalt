@@ -405,6 +405,8 @@ XGDS_PLANNER2_DEFAULT_SITE = 'BPA'
 XGDS_PLANNER2_SCHEDULE_INCLUDED = True
 XGDS_PLANNER2_SITE_MONIKER = 'Zone'
 XGDS_PLANNER2_PLAN_EXECUTION_MODEL = "basaltApp.BasaltPlanExecution"
+XGDS_PLANNER2_FLIGHT_EXECUTION_MODEL = "basaltApp.BasaltFlightExecution"
+
 
 XGDS_PLANNER2_HANDLEBARS_DIRS = [os.path.join('xgds_planner2', 'templates', 'handlebars'),
                                  os.path.join('basaltApp', 'templates', 'xgds_planner2'),

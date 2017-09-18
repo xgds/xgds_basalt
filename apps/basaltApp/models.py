@@ -323,8 +323,8 @@ class BasaltFlight(plannerModels.AbstractFlight):
 #         stopRecording(self.getVideoSource(), self.end_time)
 #         done = True
 #         for flight in self.group.basaltflight_set.all():
-#             if flight.hasStarted():
-#                 if not flight.hasEnded():
+#             if flight.started:
+#                 if not flight.ended:
 #                     done = False
 #                     break
 #         if done:
@@ -475,6 +475,10 @@ class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
         else:
             result['ev_id'] = None
         return result
+    
+
+class BasaltFlightExecution(plannerModels.AbstractFlightExecution):
+    flight = models.ForeignKey(BasaltFlight, related_name='%(app_label)s_%(class)s_related')
 
 
 class BasaltActiveFlight(plannerModels.AbstractActiveFlight):
