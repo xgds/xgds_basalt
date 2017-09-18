@@ -24,12 +24,14 @@ import traceback
 import pytz
 import json
 from uuid import uuid4
+from dateutil.parser import parse as dateparser
 
 #
 # TODO:
 # WARNING!!! This is a hack to work around an apparent fail in the NovAtel GPS firmware, take this out ASAP.
 #
 OVERRIDE_GPS_DATE = False
+MAX_COMPASS_TIME_SECONDS = 60
 
 from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
@@ -267,6 +269,7 @@ class GpsTelemetryCleanup(object):
         lon = parseTracLinkDM(lon, lonHemi)
         
         # Get compass heading from compass record
+        # TODO this clobbers heading read from GPS every time. but this is for basalt. do we care?
         heading = None
         compassCacheKey = 'compass.%s' % resourceId
         compassInfoString = cache.get(compassCacheKey)
@@ -274,10 +277,12 @@ class GpsTelemetryCleanup(object):
             if compassInfoString:
                 compassInfo = json.loads(compassInfoString) 
                 compassRecord = compassInfo["compassRecord"]
-                # TODO: sanity check the timestamp in the compass record
-                # u'2017-09-18T02:13:33.527207+00:00'
-                #compassTimestamp = compassRecord['timestamp']
-                heading = float(compassRecord["compass"])
+                # sanity check the timestamp in the compass record
+                compassTimeString = compassRecord['timestamp']
+                compassTimestamp = dateparser(compassTimeString)
+                tdelta = serverTimestamp - compassTimestamp
+                if tdelta.total_seconds() <= MAX_COMPASS_TIME_SECONDS:
+                    heading = float(compassRecord["compass"])
         except:
             pass #default to None
             
