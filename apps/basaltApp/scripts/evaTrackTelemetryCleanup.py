@@ -267,10 +267,20 @@ class GpsTelemetryCleanup(object):
         lon = parseTracLinkDM(lon, lonHemi)
         
         # Get compass heading from compass record
-        # TODO: sanity check the timestamp in the compass record
-#        compassCacheKey = 'compass.%s' % resourceId
-#        compassInfo = cache.get(compassCacheKey)
-#        heading = compassInfo["compassRecord"]["compass"]
+        heading = None
+        compassCacheKey = 'compass.%s' % resourceId
+        compassInfoString = cache.get(compassCacheKey)
+        try:
+            if compassInfoString:
+                compassInfo = json.loads(compassInfoString) 
+                compassRecord = compassInfo["compassRecord"]
+                # TODO: sanity check the timestamp in the compass record
+                # u'2017-09-18T02:13:33.527207+00:00'
+                #compassTimestamp = compassRecord['timestamp']
+                heading = float(compassRecord["compass"])
+        except:
+            pass #default to None
+            
         
         # save subsystem status to cache
         myKey = "telemetryCleanup"
@@ -333,8 +343,7 @@ class GpsTelemetryCleanup(object):
             'serverTimestamp': serverTimestamp,
             'latitude': lat,
             'longitude': lon,
-             # may not have heading, but we'll try...
-            'heading': float(heading) if len(heading) else None, 
+            'heading': heading, 
             'altitude': None,
         }
         pos = PastPosition(**params)
