@@ -35,7 +35,7 @@ def broadcastCompassUdp(hostPortList, serialDevice, baudRate):
     while True:
         l = ser.readline()
         for hostInfo in hostPortList:
-            udpSocket.sendto(l, (hostInfo['hostname'], hostInfo['port']))
+            udpSocket.sendto(l, (hostInfo['hostip'], hostInfo['port']))
         print l,
 
 
@@ -44,7 +44,7 @@ def parseHostListStr(hostStr):
     hostAndPortList = hostStr.split(",")
     for hostPlusPort in hostAndPortList:
         host, port = hostPlusPort.split(":")
-        hostPortInfo.append({'hostname':host, 'port':int(port)})
+        hostPortInfo.append({'hostname':host, 'port':int(port), 'hostip':socket.gethostbyname(host)})
 
     return hostPortInfo
 

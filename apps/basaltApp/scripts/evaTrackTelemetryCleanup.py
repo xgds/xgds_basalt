@@ -278,13 +278,13 @@ class GpsTelemetryCleanup(object):
                 compassInfo = json.loads(compassInfoString) 
                 compassRecord = compassInfo["compassRecord"]
                 # sanity check the timestamp in the compass record
-                compassTimeString = compassRecord['timestamp']
+                compassTimeString = compassInfo['timestamp']
                 compassTimestamp = dateparser(compassTimeString)
                 tdelta = serverTimestamp - compassTimestamp
                 if tdelta.total_seconds() <= MAX_COMPASS_TIME_SECONDS:
                     heading = float(compassRecord["compass"])
         except:
-            pass #default to None
+            traceback.print_exc()
             
         
         # save subsystem status to cache
