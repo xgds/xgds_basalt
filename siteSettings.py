@@ -397,7 +397,8 @@ XGDS_PLANNER2_FLIGHT_MODEL = "basaltApp.BasaltFlight"
 XGDS_PLANNER2_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
 XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
 
-XGDS_PLANNER2_DEFAULT_SITE = ('HIL', 'Hawaii Lava Flows') #'Hawaii Lava Flows'
+#XGDS_PLANNER2_DEFAULT_SITE = ('HIL', 'Hawaii Lava Flows') #'Hawaii Lava Flows'
+XGDS_PLANNER2_DEFAULT_SITE = ('KIL', 'Kilauea') 
 
 XGDS_PLANNER2_SCHEDULE_INCLUDED = True
 XGDS_PLANNER2_SITE_MONIKER = 'Zone'
@@ -681,6 +682,7 @@ BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 PYRAPTORD_SERVICE = True
 
 XGDS_CURRENT_SITEFRAME_ID = 2  # Hawaii Lava Flows siteframe
+XGDS_CURRENT_SITEFRAME_ID = 12  # Kilauea siteframe
 XGDS_CURRENT_REGION_ID = 2 # sample region?
 XGDS_DEFAULT_SAMPLE_TYPE = 2 #'Geology'
 XGDS_CORE_LIVE_INDEX_URL = '/basaltApp/live'

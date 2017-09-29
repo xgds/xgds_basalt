@@ -1,0 +1,38 @@
+[
+	{
+        "pk": 12,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+           "name": "KIL",
+           "displayName": "Kilauea",
+           "east0": 262667.72,
+           "north0": 2147570.08, 
+           "zone": "5Q",
+           "zoneNumber": 5,
+           "south": 0,
+           "axes": "NED",
+           "north": "grid",
+           "timezone": "US/Hawaii",
+	       "projCode": "EPSG:32605",
+           "projString": "+proj=utm +zone=5 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "geocamUtil.SiteFrame",
+        "fields": {
+            "name": "Hawaii Lava Flows",
+            "displayName": "Mauna Ulu",
+	          "east0": 268475.7,
+	          "north0": 2142944.1,
+	          "zone": "5Q",
+	          "zoneNumber": 5,
+	          "south": 0,
+	          "axes": "ENU",
+	          "north": "grid",
+	          "timezone": "US/Hawaii",
+	          "projCode": "EPSG:32605",
+           	  "projString": "+proj=utm +zone=5 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+        }
+    }
+]
