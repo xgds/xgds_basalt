@@ -191,6 +191,13 @@ class GpsTelemetryCleanup(object):
             logging.warning('%s', traceback.format_exc())
             logging.warning('exception caught, continuing')
 
+    def adjustHeading(self, compassRecord):
+        cc = settings.COMPASS_CORRECTION;
+        compassRecord['compass'] = compassRecord['compass'] + cc
+        if compassRecord['compass'] > 360:
+            compassRecord['compass'] -= 360
+        
+        
     def parseCompassData(self, compassSentence):
         # Sample compass NMEA sentence: $R92.3P-0.3C359.8X219.4Y-472.8Z19.7T35.4D270.1A87.7*6F
         
@@ -223,6 +230,7 @@ class GpsTelemetryCleanup(object):
             logging.info('UNRECOGNIZED OR CORRUPT COMPASS SENTENCE: %s', content)
             return
         compassRecord = self.parseCompassData(content)
+        self.adjustHeading(compassRecord)
         sourceTimestamp = serverTimestamp  # Compass has no independent clock
                 
         # save subsystem status to cache

@@ -152,7 +152,7 @@ XGDS_MAP_SERVER_MAP_API_KEY = ""
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 #TIME_ZONE = 'US/Hawaii'
-TIME_ZONE = 'America/Phoenix'
+TIME_ZONE = 'America/New_York'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -384,6 +384,9 @@ GEOCAM_TRACK_INTERPOLATE_MAX_SECONDS = 120
 GEOCAM_TRACK_OPS_TIME_ZONE = TIME_ZONE
 
 COMPASS_EQUIPPED_VEHICLES = ["EV1", "EV2"]
+COMPASS_CORRECTION = 180 - 6.3
+#TODO FOR HI IT IS
+#COMPASS_CORRECTION = 180 + 10
 
 XGDS_SAMPLE_SAMPLE_MODEL = 'basaltApp.BasaltSample'
 
@@ -398,9 +401,8 @@ XGDS_PLANNER2_FLIGHT_MODEL = "basaltApp.BasaltFlight"
 XGDS_PLANNER2_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
 XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
 
-#XGDS_PLANNER2_DEFAULT_SITE = 'Hawaii Lava Flows'
-XGDS_PLANNER2_DEFAULT_SITE = 'BPA'
-
+#XGDS_PLANNER2_DEFAULT_SITE = ('HIL', 'Hawaii Lava Flows') #'Hawaii Lava Flows'
+XGDS_PLANNER2_DEFAULT_SITE = ('KIL', 'Kilauea') 
 
 XGDS_PLANNER2_SCHEDULE_INCLUDED = True
 XGDS_PLANNER2_SITE_MONIKER = 'Zone'
@@ -684,7 +686,8 @@ BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 PYRAPTORD_SERVICE = True
 
 #XGDS_CURRENT_SITEFRAME_ID = 2  # Hawaii Lava Flows siteframe
-XGDS_CURRENT_SITEFRAME_ID = 11  # Black Point siteframe
+#XGDS_CURRENT_SITEFRAME_ID = 12  # Kilauea siteframe
+XGDS_CURRENT_SITEFRAME_ID = 10  # KSC
 XGDS_CURRENT_REGION_ID = 2 # sample region?
 XGDS_DEFAULT_SAMPLE_TYPE = 2 #'Geology'
 XGDS_CORE_LIVE_INDEX_URL = '/basaltApp/live'
