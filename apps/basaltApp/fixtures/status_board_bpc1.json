@@ -22,7 +22,7 @@
 		"pk": 1, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "gpsDataQualityEV1",
+			"name": "gpsDataQuality1",
 			"displayName": "GPS Data Quality",
 			"group": 1,
 			"logFileUrl": "",
@@ -35,7 +35,7 @@
 		"pk": 2, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "compassDataQualityEV1",
+			"name": "compassDataQuality1",
 			"displayName": "Compass Data Quality",
 			"group": 1,
 			"logFileUrl": "",
