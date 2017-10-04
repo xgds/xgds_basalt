@@ -108,7 +108,8 @@ def checkCompassDataQuality(resourceId, sentence):
     status = {'name': myKey,
               'displayName': 'Compass Data Quality %s' % str(resourceId),
               'statusColor': dataQualityColor,
-              'lastUpdated': lastUpdated.isoformat()
+              'lastUpdated': lastUpdated.isoformat(),
+              'elapsedTime': ''
               }
 
     cache.set(myKey, json.dumps(status))
@@ -142,7 +143,8 @@ def checkGpsDataQuality(resourceId, sentence):
     status = {'name': myKey,
               'displayName': 'GPS Data Quality %s' % str(resourceId),
               'statusColor': dataQualityColor,
-              'lastUpdated': datetime.datetime.utcnow().isoformat()
+              'lastUpdated': datetime.datetime.utcnow().isoformat(),
+              'elapsedTime': ''
               }
 
     cache.set(myKey, json.dumps(status))
@@ -235,7 +237,8 @@ class GpsTelemetryCleanup(object):
         status = {'name': myKey,
                   'displayName': 'Compass Cleanup EV%s' % str(resourceIdStr),
                   'statusColor': '#00ff00',
-                  'lastUpdated': datetime.datetime.utcnow().isoformat()
+                  'lastUpdated': datetime.datetime.utcnow().isoformat(),
+                  'elapsedTime': ''
                  }
         cache.set(myKey, json.dumps(status))
         
@@ -298,7 +301,8 @@ class GpsTelemetryCleanup(object):
         status = {'name': myKey,
                   'displayName': 'Telemetry Cleanup',
                   'statusColor': OKAY_COLOR,
-                  'lastUpdated': datetime.datetime.utcnow().isoformat()
+                  'lastUpdated': datetime.datetime.utcnow().isoformat(),
+                  'elapsedTime': ''
                   }
 
         cache.set(myKey, json.dumps(status))
