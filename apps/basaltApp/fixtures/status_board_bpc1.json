@@ -9,16 +9,6 @@
 		}
 	},
 	{
-		"pk": 2, 
-		"model": "xgds_status_board.SubsystemGroup", 
-		"fields": {
-			"name": "EV2",
-			"displayName": "EV2",
-			"warningThreshold": 10,
-			"failureThreshold": 20
-		}
-	},
-	{
 		"pk": 4, 
 		"model": "xgds_status_board.SubsystemGroup", 
 		"fields": {
@@ -55,32 +45,6 @@
 		}
 	}, 
 	{
-		"pk": 3, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "compassDataQualityEV2",
-			"displayName": "Compass Data Quality",
-			"group": 2,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	}, 
-	{
-		"pk": 4, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "gpsDataQualityEV2",
-			"displayName": "GPS Data Quality",
-			"group": 2,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	},
-	{
 		"pk": 5, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
@@ -93,19 +57,6 @@
 			"active": 1
 		}
 	}, 
-	{
-		"pk": 6, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "trackListenerEV2",
-			"displayName": "Track Listener",
-			"group": 2,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	},
 	{
 		"pk": 9, 
 		"model": "xgds_status_board.Subsystem", 
@@ -141,19 +92,6 @@
 			"name": "telemetryCleanupEV1",
 			"displayName": "Telemetry Cleanup",
 			"group": 1,
-			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	}, 
-	{
-		"pk": 14, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "telemetryCleanupEV2",
-			"displayName": "Telemetry Cleanup",
-			"group": 2,
 			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
 			"warningThreshold": 10,
 			"failureThreshold": 20,
@@ -214,21 +152,8 @@
 			"failureThreshold": 20,
 			"active": 1
 		}
-	}, 
+	},	
 	{
-		"pk": 34, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "bpc2",
-			"displayName": "Computer",
-			"group": 2,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"constantName": "BACKPACK2_IP",
-			"active": 1
-		}
-	},	{
 		"pk": 45, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {

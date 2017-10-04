@@ -1,13 +1,4 @@
-[    {
-		"pk": 1, 
-		"model": "xgds_status_board.SubsystemGroup", 
-		"fields": {
-			"name": "EV1",
-			"displayName": "EV1",
-			"warningThreshold": 10,
-			"failureThreshold": 20
-		}
-	},
+[    
 	{
 		"pk": 2, 
 		"model": "xgds_status_board.SubsystemGroup", 
@@ -28,32 +19,6 @@
 			"failureThreshold": 20
 		}
 	},
-	{
-		"pk": 1, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "gpsDataQualityEV1",
-			"displayName": "GPS Data Quality",
-			"group": 1,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	}, 
-	{
-		"pk": 2, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "compassDataQualityEV1",
-			"displayName": "Compass Data Quality",
-			"group": 1,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	}, 
 	{
 		"pk": 3, 
 		"model": "xgds_status_board.Subsystem", 
@@ -94,19 +59,6 @@
 			"active": 1
 		}
 	},
-	{
-		"pk": 5, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "trackListenerEV1",
-			"displayName": "Track Listener",
-			"group": 1,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	}, 
 	{
 		"pk": 6, 
 		"model": "xgds_status_board.Subsystem", 
@@ -162,19 +114,6 @@
 		}
 	}, 	
 	{
-		"pk": 13, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "telemetryCleanupEV1",
-			"displayName": "Telemetry Cleanup",
-			"group": 1,
-			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	}, 
-	{
 		"pk": 14, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
@@ -228,20 +167,6 @@
 			"active": 1
 		}
 	}, 
-	{
-		"pk": 33, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "bpc1",
-			"displayName": "Computer",
-			"group": 1,
-			"logFileUrl": "",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"constantName": "BACKPACK1_IP",
-			"active": 1
-		}
-	},	
 	{
 		"pk": 45, 
 		"model": "xgds_status_board.Subsystem", 
