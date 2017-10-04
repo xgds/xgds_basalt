@@ -223,22 +223,9 @@
 		"pk": 13, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "telemetryCleanupEV1",
+			"name": "telemetryCleanup",
 			"displayName": "Telemetry Cleanup",
-			"group": 1,
-			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
-			"warningThreshold": 10,
-			"failureThreshold": 20,
-			"active": 1
-		}
-	}, 
-	{
-		"pk": 14, 
-		"model": "xgds_status_board.Subsystem", 
-		"fields": {
-			"name": "telemetryCleanupEV2",
-			"displayName": "Telemetry Cleanup",
-			"group": 2,
+			"group": 3,
 			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
 			"warningThreshold": 10,
 			"failureThreshold": 20,

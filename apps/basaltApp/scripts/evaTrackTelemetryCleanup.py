@@ -40,6 +40,7 @@ import django
 django.setup()
 
 from django.conf import settings
+from xgds_status_board.models import SubsystemStatus
 
 from geocamUtil.zmqUtil.subscriber import ZmqSubscriber
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
@@ -93,23 +94,22 @@ def hasGoodNmeaChecksum(sentence):
 
 
 def checkCompassDataQuality(resourceId, sentence):
-    #subsystem status color codes
-    OKAY_COLOR = '#00ff00'
-    ERROR_COLOR = '#ff0000'
-    dataQualityColor = OKAY_COLOR
+    dataQualityColor = SubsystemStatus.OKAY_COLOR
     dataQualityGood = True
     
     # Bail out immediately if we have obviosuly corrupted data
     if not hasGoodNmeaChecksum(sentence):
         logging.warning("Bad checksum: %1s", sentence)
         dataQualityGood = False
-        dataQualityColor = ERROR_COLOR
+        dataQualityColor = SubsystemStatus.ERROR_COLOR
         
     myKey = "compassDataQuality%s" % str(resourceId)
+    lastUpdated = datetime.datetime.utcnow()
     status = {'name': myKey,
               'displayName': 'Compass Data Quality %s' % str(resourceId),
               'statusColor': dataQualityColor,
-              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+              'lastUpdated': lastUpdated.isoformat()
+              }
 
     cache.set(myKey, json.dumps(status))
     return dataQualityGood
@@ -122,10 +122,6 @@ def checkGpsDataQuality(resourceId, sentence):
     Sets 'GpsDataQuality' field in the memcache for subsystem status board
     '''
 
-    #subsystem status color codes
-    OKAY_COLOR = '#00ff00'
-    WARNING_COLOR = '#ffff00'
-    ERROR_COLOR = '#ff0000'
 
     dataQualityGood = False
     # Bail out immediately if we have obviosuly corrupted data
@@ -135,10 +131,10 @@ def checkGpsDataQuality(resourceId, sentence):
 
     dataQualityCode = sentence.split(',')[2]
     if dataQualityCode == 'A':
-        dataQualityColor = OKAY_COLOR
+        dataQualityColor = SubsystemStatus.OKAY_COLOR
         dataQualityGood = True
     else: # dataQualityCode == 'V'
-        dataQualityColor = ERROR_COLOR
+        dataQualityColor = SubsystemStatus.ERROR_COLOR
         dataQualityGood = False
 
     # get the EV number from NMEA sentence
@@ -146,7 +142,8 @@ def checkGpsDataQuality(resourceId, sentence):
     status = {'name': myKey,
               'displayName': 'GPS Data Quality %s' % str(resourceId),
               'statusColor': dataQualityColor,
-              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+              'lastUpdated': datetime.datetime.utcnow().isoformat()
+              }
 
     cache.set(myKey, json.dumps(status))
     return dataQualityGood
@@ -236,9 +233,10 @@ class GpsTelemetryCleanup(object):
         # save subsystem status to cache
         myKey = "compassCleanupEV%s" % resourceIdStr
         status = {'name': myKey,
-              'displayName': 'Compass Cleanup EV%s' % str(resourceIdStr),
-              'statusColor': '#00ff00',
-              'lastUpdated': datetime.datetime.utcnow().isoformat()}
+                  'displayName': 'Compass Cleanup EV%s' % str(resourceIdStr),
+                  'statusColor': '#00ff00',
+                  'lastUpdated': datetime.datetime.utcnow().isoformat()
+                 }
         cache.set(myKey, json.dumps(status))
         
         # save latest compass reading in memcache for GPS use
@@ -297,7 +295,12 @@ class GpsTelemetryCleanup(object):
         
         # save subsystem status to cache
         myKey = "telemetryCleanup"
-        status = {'lastUpdated': datetime.datetime.utcnow().isoformat()}
+        status = {'name': myKey,
+                  'displayName': 'Telemetry Cleanup',
+                  'statusColor': SubsystemStatus.OKAY_COLOR,
+                  'lastUpdated': datetime.datetime.utcnow().isoformat()
+                  }
+
         cache.set(myKey, json.dumps(status))
         
         # calculate which track record belongs to

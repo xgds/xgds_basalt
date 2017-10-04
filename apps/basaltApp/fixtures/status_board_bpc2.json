@@ -117,7 +117,7 @@
 		"pk": 14, 
 		"model": "xgds_status_board.Subsystem", 
 		"fields": {
-			"name": "telemetryCleanupEV2",
+			"name": "telemetryCleanup",
 			"displayName": "Telemetry Cleanup",
 			"group": 2,
 			"logFileUrl": "/data/pyraptord/evaTrackTelemetryCleanup_latest.txt",
