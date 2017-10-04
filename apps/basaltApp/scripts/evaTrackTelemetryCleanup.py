@@ -40,7 +40,7 @@ import django
 django.setup()
 
 from django.conf import settings
-from xgds_status_board.models import SubsystemStatus
+from xgds_status_board.util import *
 
 from geocamUtil.zmqUtil.subscriber import ZmqSubscriber
 from geocamUtil.zmqUtil.publisher import ZmqPublisher
@@ -94,14 +94,14 @@ def hasGoodNmeaChecksum(sentence):
 
 
 def checkCompassDataQuality(resourceId, sentence):
-    dataQualityColor = SubsystemStatus.OKAY_COLOR
+    dataQualityColor = OKAY_COLOR
     dataQualityGood = True
     
     # Bail out immediately if we have obviosuly corrupted data
     if not hasGoodNmeaChecksum(sentence):
         logging.warning("Bad checksum: %1s", sentence)
         dataQualityGood = False
-        dataQualityColor = SubsystemStatus.ERROR_COLOR
+        dataQualityColor = ERROR_COLOR
         
     myKey = "compassDataQuality%s" % str(resourceId)
     lastUpdated = datetime.datetime.utcnow()
@@ -131,10 +131,10 @@ def checkGpsDataQuality(resourceId, sentence):
 
     dataQualityCode = sentence.split(',')[2]
     if dataQualityCode == 'A':
-        dataQualityColor = SubsystemStatus.OKAY_COLOR
+        dataQualityColor = OKAY_COLOR
         dataQualityGood = True
     else: # dataQualityCode == 'V'
-        dataQualityColor = SubsystemStatus.ERROR_COLOR
+        dataQualityColor = ERROR_COLOR
         dataQualityGood = False
 
     # get the EV number from NMEA sentence
@@ -297,7 +297,7 @@ class GpsTelemetryCleanup(object):
         myKey = "telemetryCleanup"
         status = {'name': myKey,
                   'displayName': 'Telemetry Cleanup',
-                  'statusColor': SubsystemStatus.OKAY_COLOR,
+                  'statusColor': OKAY_COLOR,
                   'lastUpdated': datetime.datetime.utcnow().isoformat()
                   }
 

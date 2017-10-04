@@ -31,6 +31,9 @@ from geocamUtil.zmqUtil.util import zmqLoop
 import os
 from django.core.cache import caches
 
+from xgds_status_board.util import *
+
+
 
 DEFAULT_HOST = '10.10.91.5'  # this is for in the field
 DEFAULT_HOST = '127.0.0.1'
@@ -91,8 +94,6 @@ def updateStatus(evaNumber):
     '''
     update the status in memcache so the status board knows we are listening
     '''
-
-    OKAY_COLOR = '#00ff00'
 
     myKey = "trackListenerEV%s" % str(evaNumber)
     status = {'name': myKey,
