@@ -128,15 +128,17 @@ def checkGpsDataQuality(resourceId, sentence):
     # Bail out immediately if we have obviosuly corrupted data
     if not hasGoodNmeaChecksum(sentence):
         logging.warning("Bad checksum: %1s", sentence)
-        return False
-
-    dataQualityCode = sentence.split(',')[2]
-    if dataQualityCode == 'A':
-        dataQualityColor = OKAY_COLOR
-        dataQualityGood = True
-    else: # dataQualityCode == 'V'
         dataQualityColor = ERROR_COLOR
         dataQualityGood = False
+
+    else:
+        dataQualityCode = sentence.split(',')[2]
+        if dataQualityCode == 'A':
+            dataQualityColor = OKAY_COLOR
+            dataQualityGood = True
+        else: # dataQualityCode == 'V'
+            dataQualityColor = ERROR_COLOR
+            dataQualityGood = False
 
     # get the EV number from NMEA sentence
     myKey = "gpsDataQuality%s" % str(resourceId)
