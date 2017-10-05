@@ -151,8 +151,7 @@ XGDS_MAP_SERVER_MAP_API_KEY = ""
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-#TIME_ZONE = 'US/Hawaii'
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'US/Hawaii'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -686,9 +685,8 @@ BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 PYRAPTORD_SERVICE = True
 
 #XGDS_CURRENT_SITEFRAME_ID = 2  # Hawaii Lava Flows siteframe
-#XGDS_CURRENT_SITEFRAME_ID = 12  # Kilauea siteframe
-XGDS_CURRENT_SITEFRAME_ID = 10  # KSC
-XGDS_CURRENT_REGION_ID = 2 # sample region?
+XGDS_CURRENT_SITEFRAME_ID = 12  # Kilauea siteframe
+XGDS_CURRENT_REGION_ID = 6 # sample region?
 XGDS_DEFAULT_SAMPLE_TYPE = 2 #'Geology'
 XGDS_CORE_LIVE_INDEX_URL = '/basaltApp/live'
 
