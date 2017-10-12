@@ -24,31 +24,31 @@ class ReplicationData:
     replicationCommandBaseNoDelay = "/home/irg/tungsten/tungsten/tools/tpm update --hosts=%s,%s --repl-svc-applier-filters=replicate --property=replicator.filter.replicate.ignore="
     replicationCommandBaseWithDelay = "/home/irg/tungsten/tungsten/tools/tpm update --hosts=%s,%s --repl-svc-applier-filters=delay,replicate --property=replicator.filter.delay.delay=%s --property=replicator.filter.replicate.ignore="
 
-    def getTableCommandString(self):
-        tableStringList = []
+    def getTableListString(self):
+        tableFullNameList = []
         for ti in self.tableList:
             dbName = ti['database']
             for tname in ti['tables']:
-                tableStringList.append("%s.%s" % (dbName, tname))
+                tableFullNameList.append("%s.%s" % (dbName, tname))
 
-        tableCommandString = ",".join(tableStringList)
-        return tableCommandString
+        tableListString = ",".join(tableFullNameList)
+        return tableListString
 
     def buildReplicationCommand(self, delayTimeSecs=0, remoteHost=None):
         if remoteHost:
             if delayTimeSecs == 0:
                 replicationCommand = self.replicationCommandBaseNoDelay % (self.localHostname, self.remoteHostname)
-                cmdString = "ssh %s %s%s" % (self.remoteHostname, replicationCommand, self.getTableCommandString())
+                cmdString = "ssh %s %s%s" % (self.remoteHostname, replicationCommand, self.getTableListString())
             else:
                 replicationCommand = self.replicationCommandBaseWithDelay % (self.localHostname, self.remoteHostname, delayTimeSecs)
-                cmdString = "ssh %s %s%s" % (self.remoteHostname, replicationCommand, self.getTableCommandString())
+                cmdString = "ssh %s %s%s" % (self.remoteHostname, replicationCommand, self.getTableListString())
         else:
             if delayTimeSecs == 0:
                 replicationCommand = self.replicationCommandBaseNoDelay % (self.localHostname, self.remoteHostname)
-                cmdString = "%s%s" % (replicationCommand, self.getTableCommandString())
+                cmdString = "%s%s" % (replicationCommand, self.getTableListString())
             else:
                 replicationCommand = self.replicationCommandBaseWithDelay % (self.localHostname, self.remoteHostname, delayTimeSecs)
-                cmdString = "ssh %s %s%s" % (self.remoteHostname, replicationCommand, self.getTableCommandString())
+                cmdString = "ssh %s %s%s" % (self.remoteHostname, replicationCommand, self.getTableListString())
         return cmdString
 
 
