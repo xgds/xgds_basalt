@@ -37,10 +37,7 @@ from geocamUtil.SettingsUtil import getOrCreateDict, getOrCreateArray
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '***REMOVED***'
 
-XGDS_BROWSERIFY = getOrCreateArray('XGDS_BROWSERIFY')
-
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
-                           ]
+#XGDS_BROWSERIFY = getOrCreateArray('XGDS_BROWSERIFY')
 
 
 # from apps.basaltApp.instrumentDataImporters import *
@@ -67,7 +64,6 @@ INSTALLED_APPS = ['basaltApp',
                   'geocamTrack',
                   'geocamPycroraptor2',
                   'geocamUtil',
-                  #'haystack',
                   'pipeline',
                   'taggit',
                   'resumable',
@@ -76,6 +72,8 @@ INSTALLED_APPS = ['basaltApp',
 
                   'dal',
                   'dal_select2',
+                  'rest_framework.authtoken',
+                  'rest_framework',
                   'django.contrib.admin',
                   'django.contrib.auth',
                   'django.contrib.contenttypes',
@@ -93,14 +91,6 @@ for app in INSTALLED_APPS:
                 globals()[key] = val
     except:
         pass
-
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-#         'URL': 'http://127.0.0.1:9200/',
-#         'INDEX_NAME': 'haystack',
-#     },
-# }
 
 USING_DJANGO_DEV_SERVER = ('runserver' in sys.argv)
 USE_STATIC_SERVE = USING_DJANGO_DEV_SERVER
@@ -264,13 +254,21 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
+
 #    'reversion.middleware.RevisionMiddleware',
-    'geocamUtil.middleware.SecurityMiddleware',
+    #'geocamUtil.middleware.SecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.RemoteUserBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
 ROOT_URLCONF = 'urls'
 
+#TODO probably can delete the below 2 lines
 LOGIN_URL = SCRIPT_NAME + 'accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
@@ -749,3 +747,14 @@ XGDS_SSE_CHANNELS = ['sse', 'EV1', 'EV2', 'SA']
 # Setup support for proxy headers
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+         'rest_framework.permissions.IsAuthenticated',
+    ]
+}

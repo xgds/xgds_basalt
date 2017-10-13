@@ -28,6 +28,8 @@ from django.core import mail
 
 from django.conf import settings
 from basaltApp.forms import UserRegistrationForm, EmailFeedbackForm
+from rest_framework.authtoken.models import Token
+from django.http import JsonResponse
 
 
 registration_email_template = string.Template(  # noqa
@@ -161,3 +163,13 @@ def email_feedback(request):
                   {'form': form,
                    'mail_sent': mail_sent},
                   )
+
+
+def generateAuthToken(request, username):
+    user = request.user
+    if username:
+        user = User.objects.get(username=username)
+    token = Token.objects.get_or_create(user=user)
+    theDict = {'username':user.username,
+               'token': token[0].key}
+    return JsonResponse(theDict);

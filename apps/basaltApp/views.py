@@ -208,9 +208,9 @@ def wristKmlTrack(request):
     for af in activeFlights:
         if "_EV" in af.flight.name:
             # build the kml for that ev
-            found['%s Current' % af.flight.name]=request.build_absolute_uri('/track/tracks.kml?track=%s&line=0' % af.flight.name)
-            found['%s Recent' % af.flight.name]=request.build_absolute_uri('/track/recent/tracks.kml?track=%s&recent=900&icon=0' % af.flight.name)
-    found['Notes'] = request.build_absolute_uri('/notes/notesFeed.kml')
+            found['%s Current' % af.flight.name]=request.build_absolute_uri('/track/rest/tracks.kml?track=%s&line=0' % af.flight.name)
+            found['%s Recent' % af.flight.name]=request.build_absolute_uri('/track/rest/recent/tracks.kml?track=%s&recent=900&icon=0' % af.flight.name)
+    found['Notes'] = request.build_absolute_uri('/notes/rest/notesFeed.kml')
 
     kmlContent = ''
     for name, url in found.iteritems():
@@ -779,13 +779,19 @@ def getTimezoneFromFlightName(flightName):
             return settings.TIME_ZONE
 
 def getHvnpKml(request):
-    document = hvnp_kml_generator.getCurrentStateKml(request.scheme + '://' + request.META['HTTP_HOST'])
+    # pass on url parameters, if any
+    theUrl = 'http://%s:%d'  % (request.META['HTTP_HOST'], settings.GEOCAM_TRACK_URL_PORT)
+    document = hvnp_kml_generator.getCurrentStateKml(theUrl)
     response = djangoResponse(document)
     response['Content-disposition'] = 'attachment; filename=%s' % 'hvnp_so2.kml'
     return response
 
 def getHvnpNetworkLink(request):
-    response = wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
+    #response = wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
+    url = request.build_absolute_uri(reverse('hvnp_so2'))
+    url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
+    response = wrapKmlForDownload(buildNetworkLink(url,'HVNP SO2',900), 'hvnp_so2_link.kml')
+
     return response
 
 
@@ -793,6 +799,7 @@ def getActiveFlightConditionJSON(request):
     activeFlights = getActiveFlightFlights()
     filterDict = {'condition__flight__in': activeFlights}
     return getConditionActiveJSON(request, filterDict=filterDict)
+
 
 def noteFilterFunction(episode, sourceShortName):
     group = BasaltGroupFlight.objects.get(name=episode.shortName)

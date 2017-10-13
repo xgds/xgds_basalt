@@ -18,15 +18,9 @@ import os
 import sys
 import tempfile
 import re
-from django.core.wsgi import get_wsgi_application
-try:
-    from django.contrib.auth.handlers.modwsgi import check_password
-except:
-    print >> sys.stderr, 'djangoWsgi.py: could not import check_password function to enable httpd WSGIAuthUserScript directive'
 
 # avoid crazy error on mac os
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'
-
 
 def getEnvironmentFromSourceMe(d='.'):
     # pick up environment variables from sourceme
@@ -83,8 +77,18 @@ def downForMaintenance(environ, start_response):
 
 thisDir = os.path.dirname(os.path.realpath(__file__))
 getEnvironmentFromSourceMe(thisDir)
+
+# do the apache login
+import django
+django.setup()
+from django.conf import settings
+from xgds_core.tokenAuth import check_password
+
+# end apache login
+
 if os.path.exists(os.path.join(thisDir, 'DOWN_FOR_MAINTENANCE')):
     application = downForMaintenance
 else:
     #os.environ['DJANGO_SETTINGS_MODULE'] = 'basaltApp.settings'
+    from django.core.wsgi import get_wsgi_application
     application = get_wsgi_application()
