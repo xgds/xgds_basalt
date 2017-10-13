@@ -29,4 +29,5 @@ urlpatterns = [url(r'^login/$', auth.views.login, {}, 'user-login'),
                url(r'^reset-password-complete/$', auth.views.password_reset_complete, {}),
                url(r'^feedback/$', register.email_feedback, {}, 'email_feedback'),
                url(r'^rest/genToken/(?P<username>[\w]*)$', register.generateAuthToken, {}, 'user-gen-token'),
+               url(r'^genToken/(?P<username>[\w]*)$', register.generateAuthToken, {}, 'user-gen-token'),
            ]

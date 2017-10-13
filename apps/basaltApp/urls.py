@@ -35,26 +35,18 @@ urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.ht
                url(r'^objectsLive', views.getLiveObjects, {}, 'basalt_live_objects'),
                url(r'^activePlan/(?P<vehicleName>\w*)$', views.getActivePlan, {}, 'basalt_live_objects'),
                url(r'^w$', views.wrist, {'fileFormat':'.kml'}, 'wrist'),
-               url(r'^rest/wrist.kml$', views.wristKmlTrack, {}, 'kmlwrist'),
                # get instrument import page
                url(r'^instrumentDataImport/(?P<instrumentName>\w*)$', views.getInstrumentDataImportPage, name="get_instrument_data_import_page"),
                url(r'^pXRFDataImport/$', views.getPxrfDataImportPage, name="get_pxrf_data_import_page"),
-               # save newly imported instrument data
-               url(r'^saveInstrumentData/(?P<instrumentName>\w*)$', views.saveNewInstrumentData, name='save_instrument_data'),
-               url(r'^savePxrfData/$', views.saveNewPxrfData, name='save_pxrf_data'),
-               url(r'^savePxrfElementFile/$', views.buildPxrfDataProductsFromResultsFile, {}, name='save_pxrf_element_LUA'),
-               url(r'^savePxrfMfgFile/$', views.savePxrfMfgFile, {}, name='save_pxrf_mfg_LUA'),
-               url(r'^relaySavePxrfData/$', views.relaySavePxrfData, {}, name='relay_save_pxrf_data'),
-               
-               url(r'^getPxrfInstrumentDataJson/(?P<pk>[\d]+)$', views.getPxrfDataJson, name='pxrf_instrument_data_json'),
     
                #get instrument edit page
                url(r'^edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.editInstrumentData, name="instrument_data_edit"),
                # update instrument data
-               url(r'^update/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.saveUpdatedInstrumentData, name="instrument_data_update"),
-               url(r'^rest/hvnp_so2.kml$', views.getHvnpKml, {}, name="hvnp_so2"),
-               url(r'^rest/hvnp_so2_link.kml$', views.getHvnpNetworkLink, {}, name="hvnp_so2_link"),
                url(r'^pextantTest/$', TemplateView.as_view(template_name='basaltApp/pextantTest.html'), {}, 'pextantTest'),
-               url(r'^condition/activeJSON/$',views.getActiveFlightConditionJSON, {}, 'basalt_get_active_flight_condition_json'),
+               
+               # Including these in this order ensures that reverse will return the non-rest urls for use in our server
+               url(r'^rest/', include('basaltApp.restUrls')),
+               url('', include('basaltApp.restUrls')),
+
 
            ]
