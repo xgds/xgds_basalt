@@ -19,17 +19,16 @@ from django.conf.urls import include, url
 
 from django.views.generic.base import TemplateView
 from basaltApp import views
+from basaltApp.register import renderTemplate
 
-urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index'),
+urlpatterns = [url(r'^$', renderTemplate, {'template_name':'basaltApp/index.html'}, 'index'),
                url(r'^setup$', TemplateView.as_view(template_name='basaltApp/setup.html'), {}, 'setup_intro'),
                url(r'^editEV/?$', views.editEV, {}, 'planner2_edit_ev'),
                url(r'^editEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_edit_ev'),
                url(r'^saveEV/?$', views.editEV, {}, 'planner2_save_ev'),
                url(r'^saveEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_save_ev'),
-               url(r'^pextant/(?P<planId>[\d]+)$', views.callPextantAjax, {},
-                   'pextant_ajax'),
-               url(r'^pextant/(?P<planId>[\d]+)/(?P<clear>[\d])$', views.callPextantAjax, {},
-                   'pextant_ajax_clear'),
+               url(r'^pextant/(?P<planId>[\d]+)$', views.callPextantAjax, {},'pextant_ajax'),
+               url(r'^pextant/(?P<planId>[\d]+)/(?P<clear>[\d])$', views.callPextantAjax, {},'pextant_ajax_clear'),
                url(r'^storeFieldData$', views.storeFieldData, {}, 'storeFieldData'),
                url(r'^live', views.getLiveIndex, {}, 'basalt_live'),
                url(r'^objectsLive', views.getLiveObjects, {}, 'basalt_live_objects'),

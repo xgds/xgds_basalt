@@ -18,7 +18,7 @@ import logging
 from uuid import uuid4
 import string
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, permission_required
@@ -173,3 +173,8 @@ def generateAuthToken(request, username):
     theDict = {'username':user.username,
                'token': token[0].key}
     return JsonResponse(theDict);
+
+
+def renderTemplate(request, template_name):
+    ''' Because TemplateView.as_view does not support post'''
+    return render(request, template_name)

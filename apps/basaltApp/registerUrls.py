@@ -20,7 +20,7 @@ from django.contrib import auth
 from basaltApp import register
 
 urlpatterns = [url(r'^login/$', auth.views.login, {}, 'user-login'),
-               url(r'^logout/$', auth.views.logout, {'next_page': '/basaltApp/'}),
+               url(r'^logout/$', auth.views.logout, {'next_page': '/basaltApp/'}, 'user-logout'),
                url(r'^register/$', register.registerUser, {}, 'user-registration'),
                url(r'^activate/(.*)$', register.activateUser, {}, 'user-activate'),
                url(r'^reset-password/$', auth.views.password_reset, {}, 'reset-password'),
