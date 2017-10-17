@@ -48,7 +48,7 @@ class ReplicationData:
                 cmdString = "%s%s" % (replicationCommand, self.getTableListString())
             else:
                 replicationCommand = self.replicationCommandBaseWithDelay % (self.localHostname, self.remoteHostname, delayTimeSecs)
-                cmdString = "ssh %s %s%s" % (self.remoteHostname, replicationCommand, self.getTableListString())
+                cmdString = "%s%s" % (replicationCommand, self.getTableListString())
         return cmdString
 
 
