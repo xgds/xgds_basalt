@@ -780,7 +780,10 @@ def getTimezoneFromFlightName(flightName):
 
 def getHvnpKml(request):
     # pass on url parameters, if any
-    theUrl = 'http://%s' % request.META['HTTP_HOST']
+    if 'HTTP_X_FORWARDED_PROTO' in request.META:
+        theUrl = '%s://%s' % (request.META['HTTP_X_FORWARDED_PROTO'], request.META['HTTP_HOST'])
+    else:
+        theUrl = '%s://%s' % (request.META['REQUEST_SCHEME'], request.META['HTTP_HOST'])
     document = hvnp_kml_generator.getCurrentStateKml(theUrl, 'rest' in request.path)
     response = djangoResponse(document)
     response['Content-disposition'] = 'attachment; filename=%s' % 'hvnp_so2.kml'
@@ -792,7 +795,9 @@ def getHvnpNetworkLink(request):
         url = request.build_absolute_uri('/basaltApp/rest/hvnp_so2.kml') 
     else:
         url = request.build_absolute_uri(reverse('hvnp_so2'))
-    #url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
+    
+#     if settings.GEOCAM_TRACK_URL_PORT not in url:
+#         url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
     response = wrapKmlForDownload(buildNetworkLink(url,'HVNP SO2',900), 'hvnp_so2_link.kml')
 
     return response
