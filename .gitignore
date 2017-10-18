@@ -1,5 +1,6 @@
 .settings
 .git
+.idea
 *.pyc
 dev.db
 /settings.py
