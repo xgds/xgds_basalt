@@ -24,7 +24,7 @@ chmod ugo+rw /tmp/$hostname
 
 echo 'clearing old database dumps'
 rm /tmp/$hostname/*.s*
-cp load_post_flight.* /tmp/$hostname
+cp load_post_flight_$hostname.* /tmp/$hostname/hostname
 
 echo 'dumping'
 read -s -p "enter mysql password" sqlpwd

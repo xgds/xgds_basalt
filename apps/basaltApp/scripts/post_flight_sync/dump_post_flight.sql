@@ -11,3 +11,13 @@ set @videoSegmentCmd=CONCAT("select * from xgds_video_videosegment where startTi
 PREPARE vsStmt FROM @videoSegmentCmd;
 EXECUTE vsStmt;
 
+set @trackPrefix=DATE_FORMAT(@today, '%Y%m%d');
+set @trackFile=CONCAT('/tmp/',@@global.hostname,'/',@@global.hostname,'_track_',@today,'.sql');
+set @trackCmd=CONCAT("select id, name, uuid, extras, 2 as dataType_id, iconStyle_id, lineStyle_id, resource_id, timezone from basaltApp_basalttrack where name like '@trackPrefix%' into outfile '",@trackFile,"'");
+PREPARE trackStmt FROM @trackCmd;
+EXECUTE trackStmt;
+
+set @positionFile=CONCAT('/tmp/',@@global.hostname,'/',@@global.hostname,'_position_',@today,'.sql');
+set @positionCmd=CONCAT("select * from basaltApp_pastposition where timestamp>@today into outfile '",@positionFile,"'");
+PREPARE positionStmt FROM @positionCmd;
+EXECUTE positionStmt;
