@@ -15,7 +15,7 @@
    Strongly recommend installing and using kitematic to allow easy management of docker containers, ports and volumes.
 
 1. Download xGDS BASALT Docker Container and Load it
-   * download https://xgds.org/downloads/xgds-basalt-wristapp-20170802.tbz, don't unzip it, and
+   * download https://xgds.org/downloads/xgds-basalt-sse-20171019.tbz, don't unzip it, and
 
 1. Load container data into Docker  
 
