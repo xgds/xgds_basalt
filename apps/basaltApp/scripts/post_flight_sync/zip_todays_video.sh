@@ -17,9 +17,11 @@
 
 today=$(date +"%Y%m%d")
 hostname=$(hostname)
+rootdir=~/video_dumps
+
 read -p "Enter flight letter: " flightLetter
-echo zipping video for $hostname $today$flightLetter into /tmp/$hostname/video
-mkdir -p /tmp/$hostname/video
+echo zipping video for $hostname $today$flightLetter into $rootdir/$hostname/video
+mkdir -p $rootdir/$hostname/video
 cd ~/xgds_basalt/data
-tar -cvzf /tmp/$hostname/video/$hostname$today$flightLetter.tar.gz ./$today$flightLetter*/
+tar -cvzf $rootdir/$hostname/video/$hostname$today$flightLetter.tar.gz ./$today$flightLetter*/
 echo done

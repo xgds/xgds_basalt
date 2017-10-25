@@ -15,16 +15,20 @@
 #specific language governing permissions and limitations under the License.
 # __END_LICENSE__
 
+./dump_post_flight.sh
+
 today=$(date +"%Y-%m-%d")
 hostname=$(hostname)
+rootdir=~/video_dumps
 
 # make sure we have directories
-mkdir /tmp/$hostname
-chmod ugo+rw /tmp/$hostname
+mkdir $rootdir/$hostname
+chmod ugo+rw $rootdir/$hostname
 
 echo 'clearing old database dumps'
-rm /tmp/$hostname/*.s*
-cp load_post_flight_$hostname.* /tmp/$hostname/hostname
+rm $rootdir/$hostname/*.s*
+cp load_post_flight_$hostname.* $rootdir/$hostname/hostname
+cp dump_post_flight.* $rootdir/$hostname/hostname
 
 echo 'dumping'
 read -s -p "enter mysql password" sqlpwd
@@ -32,6 +36,6 @@ mysql -u root -p xgds_basalt --password=$sqlpwd < ./dump_post_flight.sql
 echo 'done dumping'
 
 echo 'tarring'
-cd /tmp
-tar -czvf ./$hostname/$hostname$today.tar.gz $hostname/*$today.sql $hostname/load_post_flight.*
+cd $rootdir
+tar -czvf ./$hostname/$hostname$today.tar.gz $hostname/*$today.sql $hostname/load_post_flight_$hostname.* $hostname/dump_post_flight.*
 echo 'done'
