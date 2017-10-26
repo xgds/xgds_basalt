@@ -15,20 +15,18 @@
 #specific language governing permissions and limitations under the License.
 # __END_LICENSE__
 
-./dump_post_flight.sh
-
 today=$(date +"%Y-%m-%d")
 hostname=$(hostname)
 rootdir=~/video_dumps
 
 # make sure we have directories
-mkdir $rootdir/$hostname
+mkdir -p $rootdir/$hostname
 chmod ugo+rw $rootdir/$hostname
 
 echo 'clearing old database dumps'
 rm $rootdir/$hostname/*.s*
-cp load_post_flight_$hostname.* $rootdir/$hostname/hostname
-cp dump_post_flight.* $rootdir/$hostname/hostname
+cp load_post_flight_$hostname.* $rootdir/$hostname
+cp dump_post_flight.* $rootdir/$hostname
 
 echo 'dumping'
 read -s -p "enter mysql password" sqlpwd

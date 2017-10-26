@@ -21,7 +21,7 @@ rootdir=~/video_dumps
 
 echo $today
 
-path=$rootdir/$hostname/$hostname/
+path=$rootdir/$hostname/
 
 echo 'dumping first'
 ./dump_post_flight.sh

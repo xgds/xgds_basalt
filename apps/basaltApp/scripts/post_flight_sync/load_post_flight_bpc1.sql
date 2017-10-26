@@ -1,8 +1,8 @@
 # only load data from @hostname that is in @rootdir/@hostname
 set @rootdir='/home/irg/video_dumps/';
 set FOREIGN_KEY_CHECKS=0;
-set @hostname='bpc1'
-set @prefix='_video_'
+set @hostname='bpc1';
+set @prefix='_video_';
 set @today=DATE(NOW());
 
 # LOOK UP EPISODE(S) FROM TODAY THAT MATCH EPISODE(S) THAT ARE BEING IMPORTED BY shortName
@@ -24,10 +24,7 @@ CREATE TEMPORARY TABLE tmp_video_episode   (
 ); 
 
 # load the incoming episodes into the temp table
-set @videoEpisodeFile=CONCAT(@rootdir,@hostname,'/',@hostname,'/',@hostname,@prefix,'episode',.sql');
-set @videoTempEpisodeCmd=CONCAT("load data infile '@videoEpisodeFile' into table tmp_video_episode");
-PREPARE vtStmt FROM @videoTempEpisodeCmd;
-EXECUTE vtStmt;
+load data infile '/home/irg/video_dumps/bpc1/bpc1_video_episode.sql' into table tmp_video_episode;
 
 # Clear out and create a temp table to hold the incoming segments
 DROP TEMPORARY TABLE IF EXISTS tmp_video_segment;
@@ -45,10 +42,7 @@ CREATE TEMPORARY TABLE `tmp_video_segment` (
   PRIMARY KEY (`id`));
   
 # load the incoming segments into the temp table
-set @videoSegmentFile=CONCAT(@rootdir,@hostname,'/',@hostname,'/',@hostname,@prefix,'segment','.sql');
-set @videoSegmentCmd=CONCAT("load data infile '@videoSegmentFile' into table tmp_video_segment");
-PREPARE vsStmt FROM @videoSegmentCmd;
-EXECUTE vsStmt;
+load data infile '/home/irg/video_dumps/bpc1/bpc1_video_segment.sql' into table tmp_video_segment;
 
 # update temp segments to have episode id that is matching the one coming in
 update tmp_video_segment s set s.episode_id=(select ve.id from xgds_video_videoepisode ve, tmp_video_episode te where te.shortName=ve.shortName);
@@ -72,18 +66,11 @@ CREATE TEMPORARY TABLE ve_end (`id` int(11) NOT NULL AUTO_INCREMENT, `endTime` d
 insert into ve_end select ve.id, max(vs.endTime) from xgds_video_videosegment vs, xgds_video_videoepisode ve  where ve.id=vs.episode_id and vs.episode_id in (select ve.id from xgds_video_videoepisode ve, tmp_video_episode te where te.shortName=ve.shortName) group by ve.id;
 update xgds_video_videoepisode ve, ve_end vs set ve.endTime=vs.endTime where ve.id=vs.id;
 
-
 # LOAD THE TRACK DATA IN, IT HAS A DIFFERENT DATA TYPE SO IT WILL COEXIST WITH OUR OTHER TRACK
-set @trackFile=CONCAT(@rootdir, @hostname, '/', @hostname, '/', @hostname, '_track','.sql');
-set @trackCmd=CONCAT("load data infile '@trackFile' into table basaltApp_basalttrack");
-PREPARE trackStmt FROM @trackCmd;
-EXECUTE trackStmt;
+load data infile '/home/irg/video_dumps/bpc1/bpc1_track.sql' into table basaltApp_basalttrack;
 
 # LOAD THE POSITION DATA IN, IT WILL POINT TO THE NEW TRACK
-set @positionFile=CONCAT(@rootdir, @hostname, '/', @hostname, '/', @hostname, '_position','.sql');
-set @positionCmd=CONCAT("load data infile '@positionFile' into table basaltApp_pastposition");
-PREPARE positionStmt FROM @positionCmd;
-EXECUTE positionStmt;
+load data infile '/home/irg/video_dumps/bpc1/bpc1_position.sql' into table basaltApp_pastposition;
 
 # TODO WE ARE NOT REPLACING OUR TRACK AND POSITION DATA BECAUSE WE HAVE A TON OF FOREIGN KEYS THAT POINT TO THE EXISTING POSITIONS AND WE NEED A WAY TO UPDATE THEM NICELY.
 set FOREIGN_KEY_CHECKS=1;
