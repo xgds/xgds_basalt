@@ -17,11 +17,16 @@
 today=$(date +"%Y-%m-%d")
 # WE ONLY LOAD DATA FROM BOAT, EVER
 hostname='bpc1'
+rootdir=~/video_dumps
 
 echo $today
 
+path=$rootdir/$hostname/
+
+echo 'dumping first'
+./dump_post_flight.sh
+
 echo 'renaming sql files for loading for $hostname'
-path=/tmp/$hostname/$hostname/
 
 episodeFilename=${path}${hostname}_video_episode_${today}.sql
 episodeNewFilename=${path}${hostname}_video_episode.sql

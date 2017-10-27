@@ -15,27 +15,28 @@
    Strongly recommend installing and using kitematic to allow easy management of docker containers, ports and volumes.
 
 1. Download xGDS BASALT Docker Container and Load it
-   * download https://xgds.org/downloads/xgds-basalt-wristapp-20170802.tbz, don't unzip it, and
+   * download https://xgds.org/downloads/xgds-basalt-sse-20171019.tbz, don't unzip it, and
 
 1. Load container data into Docker  
 
 	```
-	docker load -i xgds-basalt.tar.bz2
+	docker load -i xgds-basalt-sse-20171019.tbz
 	```  
 	Or just load from stdin:
 	
 	```
-	docker load < xgds-basalt.tar.bz2
+	docker load < xgds-basalt-sse-20171019.tbz
 	```  
 	
-	Once you have loaded it into Docker, it is safe to delete xgds-basalt.tar.bz2.
+	Once you have loaded it into Docker, it is safe to delete the zipped file
 	
 1. Create Docker data storage container/volume
 
    ```
-   docker create -v /var -v /home/xgds -v /etc -v /usr/local --name basalt-data-store xgds-basalt /bin/true
+   docker create -v /var -v /home/xgds -v /etc -v /usr/local --name basalt-data-store xgds-basalt-sse:TAG /bin/true
    ```  
-
+   
+   Where you replace *TAG* by the docker tag associated with the current distribution(e.g. 20171019 for current version)
    *Note:* This creates a persistent docker container for the xGDS home directory and database storage.  You generally do *not* want to delete this container unless things are so messed up that you need to start over.
    
 ##### Running and using your Docker container 

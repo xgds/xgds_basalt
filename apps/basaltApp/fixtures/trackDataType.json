@@ -1,0 +1,9 @@
+[    {	
+        "pk": 2,
+        "model": "basaltApp.DataType",
+        "fields": {
+            "name": "ImportedGPSLocation",
+            "notes": "GPS data imported from the backpack computer."
+        }
+    }
+]
