@@ -15,13 +15,11 @@
 #__END_LICENSE__
 
 import logging
-from uuid import uuid4
 import string
 
-from django.shortcuts import render, redirect
-from django.template import RequestContext
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 
 from django.core import mail
