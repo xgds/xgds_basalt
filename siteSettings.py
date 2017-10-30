@@ -31,7 +31,7 @@ import sys
 
 from django.conf import global_settings
 from django.core.urlresolvers import reverse
-from geocamUtil.SettingsUtil import getOrCreateDict, getOrCreateArray
+from geocamUtil.SettingsUtil import getOrCreateDict, getOrCreateArray, HOSTNAME
 
 
 # Make this unique, and don't share it with anybody.
