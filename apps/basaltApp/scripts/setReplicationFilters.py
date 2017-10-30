@@ -13,7 +13,6 @@ class ReplicationData:
                       'django_session',
                       'xgds_status_board_subsystem',
                       'xgds_status_board_subsystemgroup',
-                      'xgds_core_relayevent',
                       'xgds_core_relayfile',
                       'basaltApp_basaltactiveflight'
                   ]}]
@@ -21,8 +20,8 @@ class ReplicationData:
     remoteHostname = "boat"
     localHostname = "shore"
 
-    replicationCommandBaseNoDelay = "/home/irg/tungsten/tungsten/tools/tpm update --hosts=%s,%s --repl-svc-applier-filters=replicate --property=replicator.filter.replicate.ignore="
-    replicationCommandBaseWithDelay = "/home/irg/tungsten/tungsten/tools/tpm update --hosts=%s,%s --repl-svc-applier-filters=delay,replicate --property=replicator.filter.delay.delay=%s --property=replicator.filter.replicate.ignore="
+    replicationCommandBaseNoDelay = "/home/irg/tungsten/tungsten/tools/tpm update --skip-validation-check=MySQLMyISAMCheck --skip-validation-check=MySQLUnsupportedDataTypesCheck --hosts=%s,%s --repl-svc-applier-filters=replicate --property=replicator.filter.replicate.ignore="
+    replicationCommandBaseWithDelay = "/home/irg/tungsten/tungsten/tools/tpm update --skip-validation-check=MySQLMyISAMCheck --skip-validation-check=MySQLUnsupportedDataTypesCheck --hosts=%s,%s --repl-svc-applier-filters=delay,replicate --property=replicator.filter.delay.delay=%s --property=replicator.filter.replicate.ignore="
 
     def getTableListString(self):
         tableFullNameList = []
