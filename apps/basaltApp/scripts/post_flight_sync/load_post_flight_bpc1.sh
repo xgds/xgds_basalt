@@ -24,7 +24,7 @@ echo $today
 path=$rootdir/$hostname/
 
 echo 'dumping first'
-./dump_post_flight.sh
+/home/irg/xgds_basalt/apps/basaltApp/scripts/post_flight_sync/dump_post_flight.sh
 
 echo 'renaming sql files for loading for $hostname'
 
