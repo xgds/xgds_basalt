@@ -31,16 +31,13 @@ import sys
 
 from django.conf import global_settings
 from django.core.urlresolvers import reverse
-from geocamUtil.SettingsUtil import getOrCreateDict, getOrCreateArray
+from geocamUtil.SettingsUtil import getOrCreateDict, getOrCreateArray, HOSTNAME
 
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '***REMOVED***'
 
-XGDS_BROWSERIFY = getOrCreateArray('XGDS_BROWSERIFY')
-
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
-                           ]
+#XGDS_BROWSERIFY = getOrCreateArray('XGDS_BROWSERIFY')
 
 
 # from apps.basaltApp.instrumentDataImporters import *
@@ -67,7 +64,6 @@ INSTALLED_APPS = ['basaltApp',
                   'geocamTrack',
                   'geocamPycroraptor2',
                   'geocamUtil',
-                  #'haystack',
                   'pipeline',
                   'taggit',
                   'resumable',
@@ -76,6 +72,9 @@ INSTALLED_APPS = ['basaltApp',
 
                   'dal',
                   'dal_select2',
+                  'rest_framework.authtoken',
+                  'rest_framework',
+                  'corsheaders',
                   'django.contrib.admin',
                   'django.contrib.auth',
                   'django.contrib.contenttypes',
@@ -93,14 +92,6 @@ for app in INSTALLED_APPS:
                 globals()[key] = val
     except:
         pass
-
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-#         'URL': 'http://127.0.0.1:9200/',
-#         'INDEX_NAME': 'haystack',
-#     },
-# }
 
 USING_DJANGO_DEV_SERVER = ('runserver' in sys.argv)
 USE_STATIC_SERVE = USING_DJANGO_DEV_SERVER
@@ -151,8 +142,7 @@ XGDS_MAP_SERVER_MAP_API_KEY = ""
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-#TIME_ZONE = 'US/Hawaii'
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'US/Hawaii'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -262,16 +252,25 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 MIDDLEWARE_CLASSES = (
     'geocamUtil.middleware.LogErrorsMiddleware',
     'django.middleware.gzip.GZipMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
+
 #    'reversion.middleware.RevisionMiddleware',
-    'geocamUtil.middleware.SecurityMiddleware',
+    #'geocamUtil.middleware.SecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.RemoteUserBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
 ROOT_URLCONF = 'urls'
 
+#TODO probably can delete the below 2 lines
 LOGIN_URL = SCRIPT_NAME + 'accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
@@ -566,14 +565,14 @@ XGDS_MAP_SERVER_JS_MAP['Position'] = {'ol': 'geocamTrack/js/olPositionMap.js',
 XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    'model': XGDS_IMAGE_IMAGE_SET_MODEL,
                                    'searchableColumns': ['name','description','flight_name', 'author_name'],
-                                   'columns': ['acquisition_time', 'acquisition_timezone', 'name', 'description', 'thumbnail_image_url', 'author_name', 'pk', 'view_url', 
+                                   'columns': ['acquisition_time', 'acquisition_timezone', 'author_name', 'name', 'description', 'thumbnail_image_url',  'pk', 'view_url', 
                                                'camera_name', 'raw_image_url', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'head','flight_name', 'deepzoom_file_url', 
                                                'rotation_degrees', 'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom','DT_RowId'],
-                                   'hiddenColumns': ['pk', 'view_url', 'camera_name', 'raw_image_url', 'app_label', 'author_name', 'resource_name', 'model_type','type', 
+                                   'hiddenColumns': ['pk', 'view_url', 'camera_name', 'raw_image_url', 'app_label',  'resource_name', 'model_type','type', 
                                                      'lat','lon','alt','head','flight_name', 'deepzoom_file_url', 'rotation_degrees', 
                                                      'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom', 'DT_RowId'],
                                    'unsortableColumns': ['thumbnail_image_url'],
-                                   'columnTitles': ['Time', 'TZ', 'Name',  'Description', 'Image'],
+                                   'columnTitles': ['Time', 'TZ', 'Author', 'Name',  'Description', 'Image'],
                                    'viewHandlebars': 'xgds_image/templates/handlebars/image-view2.handlebars',
                                    'viewJS': [EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.min.js',
                                                 EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.js',
@@ -686,9 +685,8 @@ BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 PYRAPTORD_SERVICE = True
 
 #XGDS_CURRENT_SITEFRAME_ID = 2  # Hawaii Lava Flows siteframe
-#XGDS_CURRENT_SITEFRAME_ID = 12  # Kilauea siteframe
-XGDS_CURRENT_SITEFRAME_ID = 10  # KSC
-XGDS_CURRENT_REGION_ID = 2 # sample region?
+XGDS_CURRENT_SITEFRAME_ID = 12  # Kilauea siteframe
+XGDS_CURRENT_REGION_ID = 6 # sample region?
 XGDS_DEFAULT_SAMPLE_TYPE = 2 #'Geology'
 XGDS_CORE_LIVE_INDEX_URL = '/basaltApp/live'
 
@@ -751,3 +749,14 @@ XGDS_SSE_CHANNELS = ['sse', 'EV1', 'EV2', 'SA']
 # Setup support for proxy headers
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+         'rest_framework.permissions.IsAuthenticated',
+    ]
+}

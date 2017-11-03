@@ -19,13 +19,15 @@ from django.contrib import auth
 
 from basaltApp import register
 
-urlpatterns = [url(r'^login/$', auth.views.login, {'loginRequired': False}, 'user-login'),
-               url(r'^logout/$', auth.views.logout, {'loginRequired': False, 'next_page': '/accounts/login/'}),
-               url(r'^register/$', register.registerUser, {'loginRequired': False}, 'user-registration'),
+urlpatterns = [url(r'^login/$', auth.views.login, {}, 'user-login'),
+               url(r'^logout/$', auth.views.logout, {'next_page': '/basaltApp/'}, 'user-logout'),
+               url(r'^register/$', register.registerUser, {}, 'user-registration'),
                url(r'^activate/(.*)$', register.activateUser, {}, 'user-activate'),
-               url(r'^reset-password/$', auth.views.password_reset, {'loginRequired': False}, 'reset-password'),
-               url(r'^reset-password-done/$', auth.views.password_reset_done, {'loginRequired': False},'password_reset_done'),
-               url(r'^reset-password-confirm/(?P<uidb36>[^/]+)/(?P<token>.+)$', auth.views.password_reset_confirm, {'loginRequired': False}),
-               url(r'^reset-password-complete/$', auth.views.password_reset_complete, {'loginRequired': False}),
-               url(r'^feedback/$', register.email_feedback, {'loginRequired': True}, 'email_feedback')
+               url(r'^reset-password/$', auth.views.password_reset, {}, 'reset-password'),
+               url(r'^reset-password-done/$', auth.views.password_reset_done, {},'password_reset_done'),
+               url(r'^reset-password-confirm/(?P<uidb64>[^/]+)/(?P<token>.+)$', auth.views.password_reset_confirm, {}, 'password_reset_confirm'),
+               url(r'^reset-password-complete/$', auth.views.password_reset_complete, {}, 'password_reset_complete'),
+               url(r'^feedback/$', register.email_feedback, {}, 'email_feedback'),
+               url(r'^rest/genToken/(?P<username>[\w]*)$', register.generateAuthToken, {}, 'user-gen-token'),
+               url(r'^genToken/(?P<username>[\w]*)$', register.generateAuthToken, {}, 'user-gen-token'),
            ]

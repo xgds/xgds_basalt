@@ -15,19 +15,19 @@
 #__END_LICENSE__
 
 import logging
-from uuid import uuid4
 import string
 
 from django.shortcuts import render
-from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 
 from django.core import mail
 
 from django.conf import settings
 from basaltApp.forms import UserRegistrationForm, EmailFeedbackForm
+from rest_framework.authtoken.models import Token
+from django.http import JsonResponse
 
 
 registration_email_template = string.Template(  # noqa
@@ -161,3 +161,18 @@ def email_feedback(request):
                   {'form': form,
                    'mail_sent': mail_sent},
                   )
+
+
+def generateAuthToken(request, username):
+    user = request.user
+    if username:
+        user = User.objects.get(username=username)
+    token = Token.objects.get_or_create(user=user)
+    theDict = {'username':user.username,
+               'token': token[0].key}
+    return JsonResponse(theDict);
+
+
+def renderTemplate(request, template_name):
+    ''' Because TemplateView.as_view does not support post'''
+    return render(request, template_name)

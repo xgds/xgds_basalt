@@ -104,10 +104,10 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     @classmethod
     def getTrackByName(cls, trackName):
         try:
-            track = cls.objects.get(name=trackName)
+            tracks = cls.objects.filter(name=trackName, dataType__id=1)
+            return tracks.first()
         except cls.DoesNotExist:
-            track = None
-        return track
+            return None
 
     def getLabelName(self, pos):  # Returned shortened name for display
         return "__%s" % self.resource.vehicle.name

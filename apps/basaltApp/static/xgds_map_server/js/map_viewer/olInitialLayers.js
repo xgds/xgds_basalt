@@ -25,11 +25,18 @@ if (!map_api_key) {
 }
 else {
     getInitialLayers = function() {
-        return [new ol.layer.Tile({
-            source: new ol.source.BingMaps({
-                key: map_api_key,
-                imagerySet: 'AerialWithLabels',
-                maxZoom: 19}
-                                          )})]
+        return [
+//        		new ol.layer.Tile({
+//            source: new ol.source.BingMaps({
+//                key: map_api_key,
+//                imagerySet: 'AerialWithLabels',
+//                maxZoom: 19})}),
+             new ol.layer.Tile({
+                    source: new ol.source.XYZ({
+                        url: '/data/xgds_map_server/geoTiff/Kilauea_True_Color/{z}/{x}/{-y}.png',
+                    })
+//                    opacity: this.opacity
+                })
+        	]
     }
 }

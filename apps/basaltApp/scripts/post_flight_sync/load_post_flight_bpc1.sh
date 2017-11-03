@@ -16,25 +16,38 @@
 
 today=$(date +"%Y-%m-%d")
 # WE ONLY LOAD DATA FROM BOAT, EVER
-hostname='boat'
+hostname='bpc1'
+rootdir=~/video_dumps
 
 echo $today
 
-echo 'renaming sql files for loading'
-path=/tmp/$hostname/$hostname/
+path=$rootdir/$hostname/
+
+echo 'dumping first'
+/home/irg/xgds_basalt/apps/basaltApp/scripts/post_flight_sync/dump_post_flight.sh
+
+echo 'renaming sql files for loading for $hostname'
+
 episodeFilename=${path}${hostname}_video_episode_${today}.sql
 episodeNewFilename=${path}${hostname}_video_episode.sql
+cp ${episodeFilename} ${episodeNewFilename}
 
 segmentFilename=${path}${hostname}_video_segment_${today}.sql
 segmentNewFilename=${path}${hostname}_video_segment.sql
-
-cp ${episodeFilename} ${episodeNewFilename}
 cp ${segmentFilename} ${segmentNewFilename}
+
+trackFilename=${path}${hostname}_track_${today}.sql
+trackNewFilename=${path}${hostname}_track.sql
+cp ${trackFilename} ${trackNewFilename}
+
+positionFilename=${path}${hostname}_position_${today}.sql
+positionNewFilename=${path}${hostname}_position.sql
+cp ${positionFilename} ${positionNewFilename}
 
 sudo chown mysql:mysql ${path}*.sql
 
 echo 'loading data from boat'
 read -s -p "enter mysql password" sqlpwd
-mysql -u root -p xgds_basalt --password=$sqlpwd < ./load_post_flight.sql
+mysql -u root -p xgds_basalt --password=$sqlpwd < ./load_post_flight_$hostname.sql
 echo ''
 echo 'done loading'

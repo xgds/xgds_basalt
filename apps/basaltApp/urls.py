@@ -19,42 +19,33 @@ from django.conf.urls import include, url
 
 from django.views.generic.base import TemplateView
 from basaltApp import views
+from basaltApp.register import renderTemplate
 
-urlpatterns = [url(r'^$', TemplateView.as_view(template_name='basaltApp/index.html'), {}, 'index'),
+urlpatterns = [url(r'^$', renderTemplate, {'template_name':'basaltApp/index.html'}, 'index'),
                url(r'^setup$', TemplateView.as_view(template_name='basaltApp/setup.html'), {}, 'setup_intro'),
                url(r'^editEV/?$', views.editEV, {}, 'planner2_edit_ev'),
                url(r'^editEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_edit_ev'),
                url(r'^saveEV/?$', views.editEV, {}, 'planner2_save_ev'),
                url(r'^saveEV/(?P<pk>[\d]+)$', views.editEV, {}, 'planner2_re_save_ev'),
-               url(r'^pextant/(?P<planId>[\d]+)$', views.callPextantAjax, {},
-                   'pextant_ajax'),
-               url(r'^pextant/(?P<planId>[\d]+)/(?P<clear>[\d])$', views.callPextantAjax, {},
-                   'pextant_ajax_clear'),
+               url(r'^pextant/(?P<planId>[\d]+)$', views.callPextantAjax, {},'pextant_ajax'),
+               url(r'^pextant/(?P<planId>[\d]+)/(?P<clear>[\d])$', views.callPextantAjax, {},'pextant_ajax_clear'),
                url(r'^storeFieldData$', views.storeFieldData, {}, 'storeFieldData'),
                url(r'^live', views.getLiveIndex, {}, 'basalt_live'),
                url(r'^objectsLive', views.getLiveObjects, {}, 'basalt_live_objects'),
-               url(r'^activePlan/(?P<vehicleName>\w*)$', views.getActivePlan, {'loginRequired':False}, 'basalt_live_objects'),
-               url(r'^wrist$', views.wrist, {'loginRequired':False, 'fileFormat':'.kml'}, 'wrist'),
-               url(r'^wrist.kml$', views.wristKmlTrack, {'loginRequired':False}, 'kmlwrist'),
+               url(r'^activePlan/(?P<vehicleName>\w*)$', views.getActivePlan, {}, 'basalt_live_objects'),
+               url(r'^w$', views.wrist, {'fileFormat':'.kml'}, 'wrist'),
                # get instrument import page
                url(r'^instrumentDataImport/(?P<instrumentName>\w*)$', views.getInstrumentDataImportPage, name="get_instrument_data_import_page"),
                url(r'^pXRFDataImport/$', views.getPxrfDataImportPage, name="get_pxrf_data_import_page"),
-               # save newly imported instrument data
-               url(r'^saveInstrumentData/(?P<instrumentName>\w*)$', views.saveNewInstrumentData, name='save_instrument_data'),
-               url(r'^savePxrfData/$', views.saveNewPxrfData, name='save_pxrf_data'),
-               url(r'^savePxrfElementFile/$', views.buildPxrfDataProductsFromResultsFile, {'loginRequired':False}, name='save_pxrf_element_LUA'),
-               url(r'^savePxrfMfgFile/$', views.savePxrfMfgFile, {'loginRequired':False}, name='save_pxrf_mfg_LUA'),
-               url(r'^relaySavePxrfData/$', views.relaySavePxrfData, {'loginRequired':False}, name='relay_save_pxrf_data'),
-               
-               url(r'^getPxrfInstrumentDataJson/(?P<pk>[\d]+)$', views.getPxrfDataJson, name='pxrf_instrument_data_json'),
     
                #get instrument edit page
                url(r'^edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.editInstrumentData, name="instrument_data_edit"),
                # update instrument data
-               url(r'^update/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.saveUpdatedInstrumentData, name="instrument_data_update"),
-               url(r'^hvnp_so2.kml$', views.getHvnpKml, {'loginRequired': False}, name="hvnp_so2"),
-               url(r'^hvnp_so2_link.kml$', views.getHvnpNetworkLink, {'loginRequired': False}, name="hvnp_so2_link"),
                url(r'^pextantTest/$', TemplateView.as_view(template_name='basaltApp/pextantTest.html'), {}, 'pextantTest'),
-               url(r'^condition/activeJSON/$',views.getActiveFlightConditionJSON, {}, 'basalt_get_active_flight_condition_json'),
+               
+               # Including these in this order ensures that reverse will return the non-rest urls for use in our server
+               url(r'^rest/', include('basaltApp.restUrls')),
+               url('', include('basaltApp.restUrls')),
+
 
            ]

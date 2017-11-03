@@ -36,6 +36,7 @@ RAW_DATA_URL = "http://www.hawaiiso2network.com/havo_json.txt" # source of the j
 ADVISORY_SUMMARY_URL = 'http://www.hawaiiso2network.com/summary.html'
 
 # Update this with the path to icons on your server
+# TODO right now this gets overridden if this is called with the rest flag.
 ICON_PATH = '/static/basaltApp/icons/hvnp_air_quality'
 
 NAME_SPACE = '{http://www.opengis.net/kml/2.2}'
@@ -90,7 +91,7 @@ DEGREE_SYMBOL = unichr(176)
 
 NETWORK_LINK_NAME = 'HVNP_SO2' # The name that will show up in Google Earth for the network link
 
-def getCurrentStateKml(serverUrl):
+def getCurrentStateKml(serverUrl, rest=True):
     ''' Create the overall KML for the current state of the air quality.
     If we can't get fresh data, return None
     serverUrl = the url of the server providing this KML, so we can have the network link and the icons.
@@ -105,6 +106,10 @@ def getCurrentStateKml(serverUrl):
     
     # Create the root KML object
     topKml = kml.KML()
+    
+    if rest:
+        global ICON_PATH
+        ICON_PATH = '/static/rest/basaltApp/icons/hvnp_air_quality'
     
     # Create a KML Document and add it to the KML root object
     document = kml.Document(NAME_SPACE, 'hvnp_caq_doc', 

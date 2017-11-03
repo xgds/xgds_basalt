@@ -2687,7 +2687,7 @@ fieldset[disabled] a.btn {
 .show > input.dropdown-toggle[type="button"], .ui-dialog .ui-dialog-buttonpane
 .show > button.dropdown-toggle {
   color: white !important;
-  background-color: #007bf8 !important;
+  background-color: #0083fe !important; //#007bf8 !important;
   background-image: none;
   border-color: #0067cf !important;
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
