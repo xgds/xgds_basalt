@@ -16,6 +16,11 @@
 
 // DESCRIPTION -- define & override the initial openlayers hardcoded base layers
 
+var setupSO2Worker = function() {
+	var worker = new Worker('so2LayerManager.js');
+	worker.postMessage();
+};
+
 if (!map_api_key) {
     getInitialLayers = function() {
  	return [new ol.layer.Tile({
@@ -25,18 +30,18 @@ if (!map_api_key) {
 }
 else {
     getInitialLayers = function() {
+    		//app.vent.on('treeData:loaded', setupSO2Worker());
         return [
-//        		new ol.layer.Tile({
-//            source: new ol.source.BingMaps({
-//                key: map_api_key,
-//                imagerySet: 'AerialWithLabels',
-//                maxZoom: 19})}),
-             new ol.layer.Tile({
-                    source: new ol.source.XYZ({
-                        url: '/data/xgds_map_server/geoTiff/Kilauea_True_Color/{z}/{x}/{-y}.png',
-                    })
-//                    opacity: this.opacity
-                })
+        		new ol.layer.Tile({
+            source: new ol.source.BingMaps({
+                key: map_api_key,
+                imagerySet: 'AerialWithLabels',
+                maxZoom: 19})})
+//             new ol.layer.Tile({
+//                    source: new ol.source.XYZ({
+//                        url: '/data/xgds_map_server/geoTiff/Kilauea_True_Color/{z}/{x}/{-y}.png',
+//                    })
+//                })
         	]
     }
 }
