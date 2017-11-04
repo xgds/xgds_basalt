@@ -83,6 +83,7 @@ local function uploadFile(dirPath, fileName, fileLabel, mimeType, uploadUrl, sna
 
     headers['Connection'] = 'close'
     headers['Content-Type'] = 'multipart/form-data; boundary="'..boundary..'"'
+    headers['Authorization'] = 'Basic TODO PYTHON base64.b64encode(username:token)'
 
     local body = '--' .. boundary..'\r\n'
         ..'Content-Disposition: form-data; name="collector"\r\n\r\n'..'20372'
