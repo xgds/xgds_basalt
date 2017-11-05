@@ -16,10 +16,23 @@
 
 // DESCRIPTION -- define & override the initial openlayers hardcoded base layers
 
+var worker = undefined;
+var so2Layer = undefined;
+
 var setupSO2Worker = function() {
-	var worker = new Worker('so2LayerManager.js');
-	worker.postMessage();
+	worker = new Worker('so2LayerManager.js');
+	var newLayer = worker.postMessage();
 };
+
+var callSO2Worker = function() {
+	if (so2Layer !== undefined) {
+		app.map.map.removeLayer(so2Layer);
+	}
+	so2Layer = worker.postMessage('load');
+	if (so2Layer !== undefined){
+		app.map.map.addLayer(so2Layer);
+	}
+}
 
 if (!map_api_key) {
     getInitialLayers = function() {
@@ -30,18 +43,19 @@ if (!map_api_key) {
 }
 else {
     getInitialLayers = function() {
-    		//app.vent.on('treeData:loaded', setupSO2Worker());
+    		//app.vent.on('onMapSetup', setupSO2Worker);
         return [
-        		new ol.layer.Tile({
-            source: new ol.source.BingMaps({
-                key: map_api_key,
-                imagerySet: 'AerialWithLabels',
-                maxZoom: 19})})
-//             new ol.layer.Tile({
-//                    source: new ol.source.XYZ({
-//                        url: '/data/xgds_map_server/geoTiff/Kilauea_True_Color/{z}/{x}/{-y}.png',
-//                    })
-//                })
+//        		new ol.layer.Tile({
+//            source: new ol.source.BingMaps({
+//                key: map_api_key,
+//                imagerySet: 'AerialWithLabels',
+//                maxZoom: 19})})
+        		
+             new ol.layer.Tile({
+                    source: new ol.source.XYZ({
+                        url: '/data/xgds_map_server/geoTiff/Kilauea_True_Color/{z}/{x}/{-y}.png',
+                    })
+                })
         	]
     }
 }

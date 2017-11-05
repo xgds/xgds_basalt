@@ -796,8 +796,9 @@ def getHvnpNetworkLink(request):
     else:
         url = request.build_absolute_uri(reverse('hvnp_so2'))
     
-#     if settings.GEOCAM_TRACK_URL_PORT not in url:
-#         url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
+    if str(settings.GEOCAM_TRACK_URL_PORT) not in url:
+        url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
+
     response = wrapKmlForDownload(buildNetworkLink(url,'HVNP SO2',900), 'hvnp_so2_link.kml')
 
     return response

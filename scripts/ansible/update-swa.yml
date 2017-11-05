@@ -17,28 +17,11 @@
 - hosts: all
 
   vars:
-    basalt_dir: "/home/irg/xgds_basalt/"
+    swa_dir: "/home/irg/sextantwebapp/"
 
   tasks:
-    - name: xgds_basalt git pull
+    - name: swa git pull
       command: git pull dev master
       args:
-        chdir: "{{ basalt_dir }}"
-
-    - name: Put submodules on master branch
-      command: git submodule foreach git pull dev master
-      args:
-        chdir: "{{ basalt_dir }}"
-        
-    - name: prep
-      command: ./manage.py prep
-      args:
-        chdir: "{{ basalt_dir }}"
-      notify:
-        - Restart apache2
-        
-  handlers:
-    - name: Restart apache2
-      service: name=apache2 state=restarted
-      become: true
+        chdir: "{{ swa_dir }}"
     

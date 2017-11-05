@@ -20,4 +20,27 @@ local function waitWlanConnect()
 end
 
 waitWlanConnect()
-fa.request("http://10.10.24.71/xgds_image/writeEvent/")
+headers = {}
+args = {}
+headers['Authorization'] = 'Basic TODO PYTHON base64.b64encode(username:token)'
+headers['X-Test-Header'] = 'I_am_a_header'
+
+args["url"]  = "http://10.10.24.71/xgds_image/rest/writeEvent/"
+args["method"] = "GET"
+args["headers"] = headers
+
+c = fa.request(args)
+
+print("HTTP/1.1 200 OK\r\n")
+print("<HTML>")
+print("<HEAD>")
+print("<TITLE>Write Event</TITLE>")
+print("</HEAD>")
+print("<BODY style='font-family:helvetica;'>")
+print("<pre>")
+print "Write event sent!"
+print("Status code:")
+print(c)
+print("</pre>")
+print("</BODY>")
+print("</HTML>")
