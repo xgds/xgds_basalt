@@ -84,7 +84,6 @@ local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
     headers['Connection'] = 'close'
     headers['Content-Type'] = 'multipart/form-data; boundary="'..boundary..'"'
     headers['Authorization'] = 'Basic TODO PYTHON base64.b64encode(username:token)'
-    
 
     local body = '--' .. boundary..'\r\n'
         ..'Content-Disposition: form-data; name="username"\r\n\r\n'..'ev1'
@@ -93,6 +92,8 @@ local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
         .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="timezone"\r\n\r\n'
         .. 'US/Hawaii'
+        .. '\r\n--' .. boundary .. '\r\n'
+        ..'Content-Disposition: form-data; name="relay"\r\n\r\n'..'true'
         .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="file"; filename="'
         ..fileName..'"\r\n'
