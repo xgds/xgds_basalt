@@ -3,7 +3,7 @@
 		<li class="nav-item {% if modelName == 'Photo' %}active{% endif %}"><a class="nav-link {% if modelName == 'Photo' %}active{% endif %}" href="{% url 'search_map_object' 'Photo'%}">{{settings.XGDS_IMAGE_IMAGE_SET_MONIKER}}</a></li>
 		<li class="nav-item {% if modelName == 'Sample' %}active{% endif %}"><a class="nav-link {% if modelName == 'Sample' %}active{% endif %}" href="{% url 'xgds_sample_fullsearch'%}">Sample</a></li>
 		<li class="nav-item {% if modelName == 'ASD' %}active{% endif %}"><a class="nav-link {% if modelName == 'ASD' %}active{% endif %}" href="{% url 'search_map_object' 'ASD'%}">ASD</a></li>
-		<li class="nav-item {% if modelName == 'FTIR' %}active{% endif %}"><a class="nav-link {% if modelName == 'FTIR' %}active{% endif %}" href="{% url 'search_map_object' 'FTIR'%}">FTIR</a></li>
+		<!-- <li class="nav-item {% if modelName == 'FTIR' %}active{% endif %}"><a class="nav-link {% if modelName == 'FTIR' %}active{% endif %}" href="{% url 'search_map_object' 'FTIR'%}">FTIR</a></li> -->
 		<li class="nav-item {% if modelName == 'pXRF' %}active{% endif %}"><a class="nav-link {% if modelName == 'pXRF' %}active{% endif %}" href="{% url 'search_map_object' 'pXRF'%}">pXRF</a></li>
 		<li class="nav-item {% if modelName == 'Note' %}active{% endif %}"><a class="nav-link {% if modelName == 'Note' %}active{% endif %}" href="{% url 'search_xgds_notes_map' %}">Notes</a></li>
 		<!-- <li class="nav-item {% if model_names %}active{% endif %}"><a class="nav-link {% if model_names %}active{% endif %}" href="{% url 'basalt_live_objects'%}">Latest Data</a></li> -->
