@@ -1,7 +1,7 @@
 # only load data from @hostname that is in @rootdir/@hostname
 set @rootdir='/home/irg/video_dumps/';
 set FOREIGN_KEY_CHECKS=0;
-set @hostname='bpc1';
+set @hostname='bpc2';
 set @prefix='_video_';
 set @today=DATE(NOW());
 
