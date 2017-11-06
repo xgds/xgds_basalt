@@ -86,14 +86,14 @@ local function uploadFile(dirPath, fileName, fileLabel, mimeType, uploadUrl, sna
     headers['Authorization'] = 'Basic TODO PYTHON base64.b64encode(username:token)'
 
     local body = '--' .. boundary..'\r\n'
-        ..'Content-Disposition: form-data; name="collector"\r\n\r\n'..'20372'
+        ..'Content-Disposition: form-data; name="username"\r\n\r\n'..'ev2'
         .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="resource"\r\n\r\n'..'2'
         .. '\r\n--' .. boundary .. '\r\n'
-        ..'Content-Disposition: form-data; name="instrument"\r\n\r\n'..'3'
-        .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="timezone"\r\n\r\n'
         .. 'US/Hawaii'
+        .. '\r\n--' .. boundary .. '\r\n'
+        ..'Content-Disposition: form-data; name="relay"\r\n\r\n'..'true'
         .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name='..fileLabel..'; filename="'
         ..fileName..'"\r\n'
@@ -135,10 +135,10 @@ else
 end
   
 
-c = uploadFile(dirRoot, "Results.csv", "elementResultsCsvFile", "text/csv", "http://10.10.24.71/basaltApp/savePxrfElementFile/", snapshotFile)
+c = uploadFile(dirRoot, "Results.csv", "elementResultsCsvFile", "text/csv", "http://10.10.24.72/basaltApp/savePxrfElementFile/", snapshotFile)
 
 for index, file in ipairs(newFileList) do
-  c = uploadFile(dirRoot, file, "manufacturerDataFile", "application/octet-stream", "http://10.10.24.71/basaltApp/savePxrfMfgFile/", snapshotFile)
+  c = uploadFile(dirRoot, file, "manufacturerDataFile", "application/octet-stream", "http://10.10.24.72/basaltApp/savePxrfMfgFile/", snapshotFile)
   if c == 200 then
     appendCurrentFileList(snapshotFile, file)
 --    writeCurrentFileList(dirRoot, snapshotFile)
@@ -147,6 +147,7 @@ for index, file in ipairs(newFileList) do
 end
 
 
+print("HTTP/1.1 200 OK\r\n")
 print("<HTML>")
 print("<HEAD>")
 print("<TITLE>Upload Page</TITLE>")

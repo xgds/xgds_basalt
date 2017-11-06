@@ -423,20 +423,25 @@ def savePxrfMfgFile(request):
         mdf = request.FILES.get('manufacturerDataFile', None)
         if mdf:
             seekNumber = extractPxrfMfgFileNumber(mdf)
+            print "***savePXRFMfg: got seekNumber:", seekNumber
             if seekNumber:
+                print "Foo 1"
                 mintime = pytz.utc.localize(datetime.datetime.utcnow()) - datetime.timedelta(hours=12)
                 found = PxrfDataProduct.objects.filter(fileNumber=seekNumber, acquisition_time__gte=mintime)
                 if found:
+                    print "Foo 2"
                     dataProduct = found.last()
                     dataProduct.manufacturer_data_file = mdf
                     dataProduct.save()
-                    
+
+                    print "Foo 3"
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
                     if broadcast:
                         pxrfDict = buildPxrfRelayDict(dataProduct)
                         addRelay(dataProduct, request.FILES, json.dumps(pxrfDict, cls=DatetimeJsonEncoder), '/basaltApp/relaySavePxrfData', broadcast=broadcast)
 
+                    print "Foo 4"
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
                 else:
                     print "*** PXRF Returning 406 from savePxrfMfgFile: SEQ # not found! mfg file upload before csv file ***"
@@ -446,6 +451,7 @@ def savePxrfMfgFile(request):
         traceback.print_exc()
         return HttpResponse(json.dumps({'status': 'error', 'message': str(e), 'seekNumber': seekNumber, 'mintime': str(mintime) }), content_type='application/json', status=406)
     
+    print "Foo 5"
     print "*** PXRF Returning 406 from savePxrfMfgFile: something was missing!  ***"
     return HttpResponse(json.dumps({'status': 'error', 'message': 'Something was missing', 'seekNumber': seekNumber, 'mintime': str(mintime)}), content_type='application/json', status=406)
 
@@ -568,6 +574,7 @@ def buildPxrfDataProductsFromResultsFile(request):
                      'updated': updatedRecords,
                      'modelName': 'pXRF'}
             status=200
+            print "*** PXRF buildPxrfDataProductsFromResultsFile: returning with success!"
     except:
         print "*** PXRF buildPxrfDataProductsFromResultsFile: exception catch! ***"
         traceback.print_exc()
