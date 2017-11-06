@@ -437,7 +437,9 @@ def savePxrfMfgFile(request):
                     print "Foo 3"
                     # this method is only called by data push from instrument / lua script
                     broadcast = dataProduct.manufacturer_data_file and dataProduct.elementResultsCsvFile
+                    print "Foo 3.5:", broadcast
                     if broadcast:
+                        print "Foo 3.75"
                         pxrfDict = buildPxrfRelayDict(dataProduct)
                         addRelay(dataProduct, request.FILES, json.dumps(pxrfDict, cls=DatetimeJsonEncoder), '/basaltApp/relaySavePxrfData', broadcast=broadcast)
 
