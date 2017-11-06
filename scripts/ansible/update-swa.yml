@@ -24,4 +24,9 @@
       command: git pull dev master
       args:
         chdir: "{{ swa_dir }}"
+        
+    - name: swa webpack
+      command: webpack -p
+      args:
+        chdir: "{{ swa_dir }}"
     

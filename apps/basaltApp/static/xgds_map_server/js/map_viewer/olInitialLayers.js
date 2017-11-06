@@ -45,11 +45,11 @@ else {
     getInitialLayers = function() {
     		//app.vent.on('onMapSetup', setupSO2Worker);
         return [
-//        		new ol.layer.Tile({
-//            source: new ol.source.BingMaps({
-//                key: map_api_key,
-//                imagerySet: 'AerialWithLabels',
-//                maxZoom: 19})})
+        		new ol.layer.Tile({
+            source: new ol.source.BingMaps({
+                key: map_api_key,
+                imagerySet: 'AerialWithLabels',
+                maxZoom: 19})}),
         		
              new ol.layer.Tile({
                     source: new ol.source.XYZ({

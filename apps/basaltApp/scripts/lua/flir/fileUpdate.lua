@@ -1,4 +1,4 @@
-dirRoot = "/DCIM/101OLYMP"
+dirRoot = "/DCIM/DirA"
 snapshotFile = "/filesnapshot.txt"
 
 local function waitWlanConnect()
@@ -86,9 +86,9 @@ local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
     headers['Authorization'] = 'Basic TODO PYTHON base64.b64encode(username:token)'
 
     local body = '--' .. boundary..'\r\n'
-        ..'Content-Disposition: form-data; name="username"\r\n\r\n'..'ev1'
+        ..'Content-Disposition: form-data; name="username"\r\n\r\n'..'ev2'
         .. '\r\n--' .. boundary .. '\r\n'
-        ..'Content-Disposition: form-data; name="resource"\r\n\r\n'..'1'
+        ..'Content-Disposition: form-data; name="resource"\r\n\r\n'..'2'
         .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="timezone"\r\n\r\n'
         .. 'US/Hawaii'
@@ -121,7 +121,6 @@ local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
     return c
 end
 
-
 sFile = io.open(snapshotFile, "r")
 if not sFile then
   writeCurrentFileList(dirRoot, snapshotFile)
@@ -136,7 +135,7 @@ end
   
 
 for index, file in ipairs(newFileList) do
-  c = uploadFile(dirRoot, file, "http://10.10.24.71/xgds_image/saveImage/", snapshotFile)
+  c = uploadFile(dirRoot, file, "http://10.10.24.72/xgds_image/saveImage/", snapshotFile)
   if c == 200 then
     appendCurrentFileList(snapshotFile, file)
 --    writeCurrentFileList(dirRoot, snapshotFile)
@@ -145,6 +144,7 @@ for index, file in ipairs(newFileList) do
 end
 
 
+print("HTTP/1.1 200 OK\r\n")
 print("<HTML>")
 print("<HEAD>")
 print("<TITLE>Upload Page</TITLE>")

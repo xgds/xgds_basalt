@@ -33,21 +33,24 @@ def getCornersForMap(extent, zone, zoneLetter):
     return None, None
     
 def getMap(site, maxSlope=15, extent=None):
-    site_frame = site['name']
-    dem_name = site_frame.replace(' ', '_')+'.tif'
-    fullPath = os.path.join(settings.DATA_ROOT, 'dem', dem_name)
-    if os.path.isfile(fullPath): 
-        zone=site['alternateCrs']['properties']['zone']
-        zoneLetter=site['alternateCrs']['properties']['zoneLetter']
-        
-        if extent:
-            nw_corner, se_corner = getCornersForMap(extent, zone, zoneLetter)
-        else:
-            nw_corner = None
-            se_corner = None
-        nw_corner_pad, se_corner_pad = GeoEnvelope(nw_corner, se_corner).addMargin(0.5, 30).getBounds()
-        dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner_pad, se_corner=se_corner_pad)
-        return dem
+    try:
+        site_frame = site['name']
+        dem_name = site_frame.replace(' ', '_')+'.tif'
+        fullPath = os.path.join(settings.DATA_ROOT, 'dem', dem_name)
+        if os.path.isfile(fullPath): 
+            zone=site['alternateCrs']['properties']['zone']
+            zoneLetter=site['alternateCrs']['properties']['zoneLetter']
+            
+            if extent:
+                nw_corner, se_corner = getCornersForMap(extent, zone, zoneLetter)
+            else:
+                nw_corner = None
+                se_corner = None
+            nw_corner_pad, se_corner_pad = GeoEnvelope(nw_corner, se_corner).addMargin(0.5, 30).getBounds()
+            dem = loadElevationMap(fullPath, maxSlope=maxSlope, nw_corner=nw_corner_pad, se_corner=se_corner_pad)
+            return dem
+    except:
+        traceback.print_exc()
     return None
 
 def testJsonSegments(plan):
