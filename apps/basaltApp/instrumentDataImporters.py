@@ -240,6 +240,7 @@ def pxrfProcessElementResultsRow(firstrow, lastrow, dataProduct=None, timezone=s
                 dataProduct.alloy3 = dictionary['Alloy 3']
                 dataProduct.matchQuality3 = dictionary['Match Qual 3']
         except:
+            traceback.print_exc()
             pass
         
         percentTotal = 0
