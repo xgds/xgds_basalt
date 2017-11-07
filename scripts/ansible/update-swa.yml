@@ -21,7 +21,7 @@
 
   tasks:
     - name: swa git pull
-      command: git pull dev master
+      command: git pull origin master
       args:
         chdir: "{{ swa_dir }}"
         
