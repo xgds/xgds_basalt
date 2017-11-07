@@ -93,6 +93,7 @@
    ctrl-c to stop track generation
    ```
    
+   
    * Note this will read in a csv file with lat, lon as the positions so if you have your own file you can load that too.
    * Note that by default xGDS is currently centered on Ames (but this will change)
    * -i is the interval (in seconds) for updates
@@ -100,6 +101,13 @@
    
    ```
    ./evaTrackGenerator.py -i 2 -p 10002 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20160526G_EV2_Ames.csv
+   ```
+   
+   * If you want to simulate tracking with heading, have heading as the 3rd column in the csv.  There is an example here. In this case you 
+   can also pass in -r 1 or -r 2 for EV1 or EV2.  It defaults to 1.
+   
+   ```
+   ./evaTrackGenerator.py -i 1 -p 10001 -t /home/xgds/xgds_basalt/apps/basaltApp/scripts/test_data/20171105A_EV2_Kilauea.csv
    ```
    
 
