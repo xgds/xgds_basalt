@@ -23,7 +23,6 @@ By default, the server just replays data from a log of real TracLink
 output from a test at KSC. But you can overwrite fields in the records
 for your testing convenience using the options.
 """
-
 import socket
 import time
 import datetime
@@ -32,6 +31,14 @@ import logging
 import os
 import math
 import calendar
+import json
+from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
+
+import django
+django.setup()
+
+from django.core.cache import caches
+cache = caches['default']
 
 REDIS = False
 if REDIS:
@@ -133,9 +140,14 @@ def evaBackpackGenerator(opts):
             while True:
                 for line in sampleTrackingData.split("\n"):
                     if len(line) != 0:
-                        lat, lon = line.split(',')
-                        lat = float(lat)
-                        lon = float(lon)
+                        splits = line.split(',')
+                        lat = float(splits[0])
+                        lon = float(splits[1])
+                        hasHeading = False
+                        heading = ""
+                        if len(splits) > 2:
+                            hasHeading = True
+                            heading = float(splits[2])
                         now = datetime.datetime.now(pytz.utc)
                         if opts.age:
                             now -= datetime.timedelta(seconds=opts.age)
@@ -147,9 +159,18 @@ def evaBackpackGenerator(opts):
                             lon, lat = getFakePosition(now)
                         lon = formatDM(lon, "EW")
                         lat = formatDM(lat, "NS")
+                        
+                        # shove compass in memcache FOR ev1
+                        if hasHeading:
+                            compassRecord = {"compass": heading}
+                            cacheKey = 'compass.%s' % opts.resource 
+                            cacheRecordDict = {"timestamp": now, "compassRecord": compassRecord}
+                            cache.set(cacheKey, json.dumps(cacheRecordDict, cls=DatetimeJsonEncoder))
+                        
+                        #gpsposition:1:20171105A_EV1:$GPRMC,211808.50,A,1924.7077453,N,15514.6245117,W,0.145,353.2,051117,0.0,E,A*29
                         newLinePreChecksum = ",".join(("GPRMC",
                                                        timeStr+".00", "A",
-                                                       lat, lon, "","",
+                                                       lat, lon, "", str(heading),
                                                        dateStr, "0.0,E,A"))
                         checkSum = computeChecksumString(newLinePreChecksum)
                         newLine = "%s%s*%s" % ("$", newLinePreChecksum,
@@ -158,8 +179,10 @@ def evaBackpackGenerator(opts):
                         client.send(newLine + "\n")
                         
                         if REDIS:
+                            if heading == "":
+                                heading = None
                             data_dict = {'altitude': 0,
-                                         'heading': 0,
+                                         'heading': heading,
                                          'id': 0,
                                          'latitude': lat,
                                          'longitude': lon,
@@ -194,6 +217,7 @@ def main():
     parser.add_option('-t', '--trackFile',
                       type='str', default='SampleTrack.txt',
                       help='Read lat/lon from this file to generate track')
+    parser.add_option('-r', '--resource', default=1, help='id of the resource, 1 for ev1, 2 for ev2')
     opts, args = parser.parse_args()
     if args:
         parser.error('expected no args')
