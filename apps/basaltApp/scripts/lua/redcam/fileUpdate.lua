@@ -145,6 +145,7 @@ for index, file in ipairs(newFileList) do
 end
 
 
+print("HTTP/1.1 200 OK\r\n")
 print("<HTML>")
 print("<HEAD>")
 print("<TITLE>Upload Page</TITLE>")
