@@ -73,6 +73,7 @@ app.views.PlanLinksView = Marionette.View.extend({
         	            type: "POST",
         	            data: postData,
         	            dataType: 'json',
+        	            timeout: 200000,
         	            success: function(data)
         	            {
         	            	$('#pextantMessage').text(data.msg);
