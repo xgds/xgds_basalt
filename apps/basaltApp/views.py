@@ -441,7 +441,7 @@ def savePxrfMfgFile(request):
                     if broadcast:
                         print "Foo 3.75"
                         pxrfDict = buildPxrfRelayDict(dataProduct)
-                        addRelay(dataProduct, request.FILES, json.dumps(pxrfDict, cls=DatetimeJsonEncoder), '/basaltApp/rest/relaySavePxrfData', broadcast=broadcast)
+                        addRelay(dataProduct, request.FILES, json.dumps(pxrfDict, cls=DatetimeJsonEncoder), '/basaltApp/rest/relaySavePxrfData/', broadcast=broadcast)
 
                     print "Foo 4"
                     return HttpResponse(json.dumps({'status': 'success'}), content_type='application/json')
