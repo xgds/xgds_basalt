@@ -39,10 +39,16 @@ $.extend(condition, {
 		var ch = received[1].fields;
 		
 		// EV# FLIGHT# (TIME): NAME STATUS
-		var result = c.flight;
+		var result = '';
+
+		if (!_.isEmpty(c.flight) && !_.isNull(c.flight)) {
+            result = c.flight;
+        }
 		result += ' (' + condition.getPrintableTime(ch.source_time, c.timezone) + '): '; // todo convert to the timezone
 		result += c.name;
-		result += ' ' + c.xgds_id;
+		if (!_.isEmpty(c.xgds_id) && !_.isNull(c.xgds_id)) {
+            result += ' ' + c.xgds_id;
+        }
 		if (!_.isEmpty(ch.activity_status)){
 			result += ' <strong>' + ch.activity_status[1] + '</strong>';
 		}
