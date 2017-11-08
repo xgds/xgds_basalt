@@ -23,10 +23,10 @@ import json
 import pytz
 
 HTTP_PREFIX = 'https'
-URL_PREFIX = 'localhost'
+URL_PREFIX = 'boat.xgds.org'
 
 def test_set_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'start_time': isonow,
@@ -43,12 +43,12 @@ def test_set_condition():
             'id': 'PB1',
             'data': json.dumps(nested_data_dict)
             }
-    response = requests.post(url, data=data, verify=False)
+    response = requests.post(url, data=data, verify=False, auth=("ev1","ev1"))
     json_response = response.json()
     return json_response
 
 def test_update_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'status': 'activity_in_progress',
@@ -62,12 +62,12 @@ def test_update_condition():
             'id': 'PB1',
             'data': json.dumps(nested_data_dict)
             }
-    response = requests.post(url, data=data, verify=False)
+    response = requests.post(url, data=data, verify=False, auth=("ev1","ev1"))
     json_response = response.json()
     return json_response
 
 def test_abort_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'status': 'activity_aborted',
@@ -81,12 +81,12 @@ def test_abort_condition():
             'id': 'PB1',
             'data': json.dumps(nested_data_dict)
             }
-    response = requests.post(url, data=data, verify=False)
+    response = requests.post(url, data=data, verify=False, auth=("ev1","ev1"))
     json_response = response.json()
     return json_response
 
 def test_end_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'end_time': isonow,
@@ -101,7 +101,7 @@ def test_end_condition():
             'id': 'PB1',
             'data': json.dumps(nested_data_dict)
             }
-    response = requests.post(url, data=data, verify=False)
+    response = requests.post(url, data=data, verify=False, auth=("ev1","ev1"))
     json_response = response.json()
     return json_response
 
