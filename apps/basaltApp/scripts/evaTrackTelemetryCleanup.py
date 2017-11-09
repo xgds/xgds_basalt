@@ -48,8 +48,6 @@ from geocamUtil.zmqUtil.util import zmqLoop
 from geocamTrack.models import (IconStyle, LineStyle)
 from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 
-if settings.XGDS_CORE_REDIS:
-    from xgds_core.redisUtil import publishRedisSSE
 
 from basaltApp.models import (BasaltActiveFlight,
                               BasaltResource,
@@ -375,14 +373,6 @@ class GpsTelemetryCleanup(object):
         cpos.saveCurrent()
         
         pos.broadcast()
-#         if settings.XGDS_SSE and settings.XGDS_CORE_REDIS:
-#             # broadcast the data
-#             result = pos.toMapDict()
-#             try:
-#                 json_string = json.dumps(result, cls=DatetimeJsonEncoder)
-#                 publishRedisSSE(track.resource_name, 'position', json_string)
-#             except:
-#                 traceback.print_exc()
                 
         self.publisher.sendDjango(cpos)
 
