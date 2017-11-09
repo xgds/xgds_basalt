@@ -385,7 +385,7 @@ GEOCAM_TRACK_OPS_TIME_ZONE = TIME_ZONE
 COMPASS_EQUIPPED_VEHICLES = []
 #COMPASS_CORRECTION = 180 - 6.3
 #TODO FOR HI IT IS
-COMPASS_CORRECTION = 180 + 10
+COMPASS_CORRECTION = 0
 
 XGDS_SAMPLE_SAMPLE_MODEL = 'basaltApp.BasaltSample'
 
@@ -760,3 +760,10 @@ REST_FRAMEWORK = {
          'rest_framework.permissions.IsAuthenticated',
     ]
 }
+
+GEOCAM_TRACK_PRELOAD_TRACK_IMAGES = ["/static/basaltApp/icons/ev1_pointer.png", 
+                                     "/static/basaltApp/icons/ev2_pointer.png",
+                                     "/static/basaltApp/icons/ev1_circle.png", 
+                                     "/static/basaltApp/icons/ev2_circle.png",
+                                     "/static/basaltApp/icons/ev1_stop.png", 
+                                     "/static/basaltApp/icons/ev2_stop.png"]

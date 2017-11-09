@@ -7,7 +7,7 @@
 <div id="gridstack_buttonrow" class="row justify-content-between  mr-2">
 		<div class="col-10">
 			{% block buttonrowLeft %}
-			{% if settings.XGDS_SSE %}
+			{% if settings.XGDS_SSE and settings.GEOCAM_UTIL_LIVE_MODE%}
 			<div id="conditionDiv" class="alert alert-info ml-2"  role="alert">
 				Waiting for status ...
  			</div>
@@ -50,48 +50,21 @@
 
 {% endblock %}
 
-{% block jsInit %}
-	
-	{% block jsInitPreApp %}
-	var preloadImageList = ["{% static 'basaltApp/icons/ev1_pointer.png' %}", 
-							"{% static 'basaltApp/icons/ev2_pointer.png' %}",
-							"{% static 'basaltApp/icons/ev1_circle.png' %}", 
-							"{% static 'basaltApp/icons/ev2_circle.png' %}",
-							"{% static 'basaltApp/icons/ev1_stop.png' %}", 
-							"{% static 'basaltApp/icons/ev2_stop.png' %}"
-							];
-	trackSse.preloadedIcons = $.preloadImages(preloadImageList);
-	{% endblock jsInitPreApp %}
-	
-	$(function(){
-		siteFrames = {% siteframes_dict %};
-    	app.start(appOptions);
-    	app.vent.on("mapSearch:drewFeatures", function(e) {
-        	app.vent.trigger('mapSearch:fit');
-            });
-        {% block preLayout %}
-		{% endblock preLayout %}
-		
-    	xgds_gridstack.initializeGridstack({width:12});
-    	{% if settings.XGDS_SSE %}
-    	condition.initialize();
-    	trackSse.initialize();
-    	{% endif %}
-    	
-    	{% block otherJSInit %}
-		{% endblock otherJSInit %}
-	});
-	
-{% endblock %}
 
+{% block initGridstack %}
+	xgds_gridstack.initializeGridstack({width:12});
+{% endblock initGridstack %}
+
+{% block otherJSInit %}
+
+{% if settings.XGDS_SSE and settings.GEOCAM_UTIL_LIVE_MODE %}
+    	condition.initialize();
+{% endif %}
+{% endblock otherJSInit %}
+	
 {% block scripts %}
 {{ block.super }}
-	{% load sse %}
-	{% setup_sse %}
 	<script type="text/javascript" src="{% static 'xgds_core/js/conditionUtils.js' %}"></script>
 	<script type="text/javascript" src="{% static 'basaltApp/js/basaltConditionUtils.js' %}"></script>
-	<script type="text/javascript" src="{% static 'geocamTrack/js/trackSseUtils.js' %}"></script>
-	<script type="text/javascript" src="{% static 'geocamTrack/js/olTrackSseUtils.js' %}"></script>
-	<script type="text/javascript" src="{% static 'basaltApp/js/basaltTrackSseUtils.js' %}"></script>
 {% endblock scripts %}
     
