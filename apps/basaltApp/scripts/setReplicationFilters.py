@@ -11,6 +11,7 @@ class ReplicationData:
                       'xgds_core_constant',
                       'django_migrations',
                       'django_session',
+                      'django_admin_log',
                       'xgds_status_board_subsystem',
                       'xgds_status_board_subsystemgroup',
                       'xgds_core_relayfile',
