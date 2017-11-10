@@ -26,7 +26,7 @@ HTTP_PREFIX = 'https'
 URL_PREFIX = 'localhost'
 
 def test_set_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'start_time': isonow,
@@ -48,7 +48,7 @@ def test_set_condition():
     return json_response
 
 def test_update_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'status': 'activity_in_progress',
@@ -67,7 +67,7 @@ def test_update_condition():
     return json_response
 
 def test_abort_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'status': 'activity_aborted',
@@ -86,7 +86,7 @@ def test_abort_condition():
     return json_response
 
 def test_end_condition():
-    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/condition/set/')
+    url = "%s://%s%s" % (HTTP_PREFIX, URL_PREFIX, '/xgds_core/rest/condition/set/')
     nowtime = datetime.datetime.now(pytz.utc)
     isonow = nowtime.isoformat()
     nested_data_dict = {'end_time': isonow,
