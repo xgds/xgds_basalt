@@ -33,6 +33,7 @@ urlpatterns = [url(r'^wrist.kml$', views.wristKmlTrack, {}, 'kmlwrist'),
     
                url(r'^hvnp_so2.kml$', views.getHvnpKml, {}, name="hvnp_so2"),
                url(r'^hvnp_so2_link.kml$', views.getHvnpNetworkLink, {}, name="hvnp_so2_link"),
+               url(r'^https_hvnp_so2_link.kml$', views.getHvnpNetworkLink, {'http':False}, name="https_hvnp_so2_link"),
                url(r'^condition/activeJSON/$',views.getActiveFlightConditionJSON, {}, 'basalt_get_active_flight_condition_json'),
 
            ]

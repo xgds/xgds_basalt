@@ -793,23 +793,25 @@ def getHvnpKml(request):
         theUrl = '%s://%s' % (request.META['HTTP_X_FORWARDED_PROTO'], request.META['HTTP_HOST'])
     else:
         theUrl = '%s://%s' % (request.META['REQUEST_SCHEME'], request.META['HTTP_HOST'])
+    print theUrl
     document = hvnp_kml_generator.getCurrentStateKml(theUrl, 'rest' in request.path)
     response = djangoResponse(document)
     response['Content-disposition'] = 'attachment; filename=%s' % 'hvnp_so2.kml'
     return response
 
-def getHvnpNetworkLink(request):
+def getHvnpNetworkLink(request, http=True):
     #response = wrapKmlForDownload(buildNetworkLink(request.build_absolute_uri(reverse('hvnp_so2')),'HVNP SO2',900), 'hvnp_so2_link.kml')
     if 'rest' in request.path:
         url = request.build_absolute_uri('/basaltApp/rest/hvnp_so2.kml') 
     else:
         url = request.build_absolute_uri(reverse('hvnp_so2'))
     
-    if str(settings.GEOCAM_TRACK_URL_PORT) not in url:
-        url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
+    if http:
+        if str(settings.GEOCAM_TRACK_URL_PORT) not in url:
+            url = addPort(url, settings.GEOCAM_TRACK_URL_PORT)
 
     response = wrapKmlForDownload(buildNetworkLink(url,'HVNP SO2',900), 'hvnp_so2_link.kml')
-
+    
     return response
 
 
