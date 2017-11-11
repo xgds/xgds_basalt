@@ -16,7 +16,14 @@ class ReplicationData:
                       'xgds_status_board_subsystemgroup',
                       'xgds_core_relayfile',
                       'basaltApp_basaltactiveflight'
-                  ]}]
+                  ]},
+                 {'database':'performance_schema',
+                  'tables':['*']
+                 },
+                 {'database':'information_schema',
+                  'tables':['*']
+                 }
+    ]
 
     remoteHostname = "boat"
     localHostname = "shore"
