@@ -249,7 +249,8 @@ def pxrfProcessElementResultsRow(firstrow, lastrow, dataProduct=None, timezone=s
             if elementPercent:
                 errorKey = key + ' Err'
                 try:
-                    percentTotal += float(elementPercent)
+                    if 'Err' not in key:
+                        percentTotal += float(elementPercent)
                 except:
                     pass
                 if errorKey in dictionary:
