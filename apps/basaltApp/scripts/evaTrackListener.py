@@ -18,6 +18,7 @@
 import logging
 import datetime
 import json
+from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 
 from zmq.eventloop import ioloop
 ioloop.install()
@@ -99,9 +100,10 @@ def updateStatus(evaNumber):
     status = {'name': myKey,
               'displayName': 'Track Listener EV%s' % str(evaNumber),
               'statusColor': OKAY_COLOR,
+              "refreshRate": 1,
               'lastUpdated': datetime.datetime.utcnow().isoformat()}
 
-    cache.set(myKey, json.dumps(status))
+    cache.set(myKey, json.dumps(status, cls=DatetimeJsonEncoder))
 
 
 def evaTrackListener(opts):

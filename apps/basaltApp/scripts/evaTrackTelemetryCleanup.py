@@ -110,7 +110,7 @@ def checkCompassDataQuality(resourceId, sentence):
               'elapsedTime': ''
               }
 
-    cache.set(myKey, json.dumps(status))
+    cache.set(myKey, json.dumps(status, cls=DatetimeJsonEncoder))
     return dataQualityGood
 
 
