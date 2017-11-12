@@ -308,7 +308,7 @@ def buildStyles():
         kmlStyles.append(iconStyle)
         
         # build the polygon style
-        innerPolyStyle = styles.PolyStyle(NAME_SPACE, color='33' + ADVISORY_SCALE[level], fill=1, outline=1)
+        innerPolyStyle = styles.PolyStyle(NAME_SPACE, color='20' + ADVISORY_SCALE[level], fill=1, outline=1)
         innerLineStyle = styles.LineStyle(NAME_SPACE, color='FF' + ADVISORY_SCALE[level], width=2)
         polyStyle = styles.Style(NAME_SPACE, id=getPolyStyleId(level), styles=[innerLineStyle, innerPolyStyle])
         kmlStyles.append(polyStyle)
