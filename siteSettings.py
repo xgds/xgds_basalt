@@ -766,3 +766,6 @@ GEOCAM_TRACK_PRELOAD_TRACK_IMAGES = ["/static/basaltApp/icons/ev1_pointer.png",
                                      "/static/basaltApp/icons/ev2_circle.png",
                                      "/static/basaltApp/icons/ev1_stop.png", 
                                      "/static/basaltApp/icons/ev2_stop.png"]
+
+XGDS_SSE_TRACK_CHANNELS = ['EV1','EV2']
+XGDS_SSE_CONDITION_CHANNELS = XGDS_SSE_TRACK_CHANNELS
