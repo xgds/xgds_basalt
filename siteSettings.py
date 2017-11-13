@@ -541,7 +541,7 @@ try:
     del XGDS_MAP_SERVER_JS_MAP['Track']
 except:
     pass
-XGDS_MAP_SERVER_JS_MAP[GEOCAM_TRACK_TRACK_MONIKIER] = {'ol': 'geocamTrack/js/olActual_TraverseMap.js',
+XGDS_MAP_SERVER_JS_MAP['Actual_Traverse'] = {'ol': 'geocamTrack/js/olActual_TraverseMap.js',
                                                        'model': GEOCAM_TRACK_TRACK_MODEL,
                                                        'columns': ['name', 'resource_name', 'type', 'color', 'alpha',  'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
                                                        'hiddenColumns': ['type', 'color', 'alpha', 'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
@@ -593,8 +593,8 @@ XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    } 
 XGDS_MAP_SERVER_JS_MAP['Note'] = {'ol': 'xgds_notes2/js/olNoteMap.js',
                                   'model': XGDS_NOTES_NOTE_MODEL,
-                                  'columns': ['event_time', 'event_timezone', 'author_name', 'role_name', 'location_name', 'content', 'tag_names','content_url', 'content_thumbnail_url', 'content_name', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'flight_name','object_type', 'object_id', 'creation_time','pk'],
-                                  'hiddenColumns': ['app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'flight_name', 'content_thumbnail_url', 'content_name', 'object_type', 'object_id', 'creation_time','pk', ],
+                                  'columns': ['event_time', 'event_timezone', 'author_name', 'role_name', 'location_name', 'content', 'tag_names','content_url', 'content_thumbnail_url', 'content_name', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'flight_name','object_type', 'object_id', 'creation_time','show_on_map','pk'],
+                                  'hiddenColumns': ['app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'flight_name', 'content_thumbnail_url', 'content_name', 'object_type', 'object_id', 'creation_time','show_on_map','pk', ],
                                   'searchableColumns': ['name','description','flight_name', 'author_name'],
                                   'editableColumns':{'content':'text','tag_names':'tagsinput'},
                                   'unsortableColumns': ['content_url'],

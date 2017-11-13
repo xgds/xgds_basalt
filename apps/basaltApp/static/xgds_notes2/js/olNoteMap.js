@@ -1,5 +1,10 @@
 // render json note information on the openlayers map
 
+String.prototype.trunc = String.prototype.trunc ||
+      function(n){
+          return (this.length > n) ? this.substr(0, n-1) : this;
+      };
+
 var Note = {
 		selectedStylePath: '/static/xgds_notes2/icons/post_office_selected.png',
 		stylePath: '/static/xgds_notes2/icons/post_office.png',
@@ -88,6 +93,12 @@ var Note = {
                 		return a.concat(" " + b);
                 	});
                 	theText.setText(noteJson.tag_names[0]);
+                } else {
+                    if ('show_on_map' in noteJson) {
+                        if (noteJson.show_on_map) {
+                            theText.setText(noteJson.content.trunc(10));
+                        }
+                    }
                 }
                 
                 var textStyle = new ol.style.Style({
