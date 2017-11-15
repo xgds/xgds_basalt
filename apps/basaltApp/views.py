@@ -35,7 +35,7 @@ from django.http import HttpResponse
 from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm, SearchBasaltNoteForm
 from models import *
 import pextantHarness
-from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName
+from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName, getClassByName
 from xgds_core.models import Constant
 from xgds_core.views import addRelay, getConditionActiveJSON
 from xgds_core.util import addPort, deletePostKey
@@ -44,7 +44,7 @@ from xgds_notes2 import views as xgds_notes2_views
 from xgds_planner2.utils import getFlight
 from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights, getActiveFlightFlights, getTodaysPlans, getTodaysPlanFiles
 from xgds_planner2.models import Vehicle
-from xgds_map_server.views import viewMultiLast
+from xgds_map_server.views import viewMultiLast, getMappedObjectsJson
 from xgds_video.util import getSegmentPath
 from xgds_video.util import getDelaySeconds as getVideoDelaySeconds
 from geocamUtil.KmlUtil import wrapKmlForDownload, buildNetworkLink, djangoResponse
@@ -829,3 +829,11 @@ def noteFilterFunction(episode, sourceShortName):
         vehicles = Vehicle.objects.filter(name=sourceShortName)
         theFilter['flight__vehicle'] = vehicles.first
     return theFilter
+
+
+def currentMapNotes(request):
+    activeFlights = [flight.pk for flight in getActiveFlightFlights()]
+    filterDict = {'show_on_map':True,
+                  'flight__pk__in': activeFlights}
+
+    return getMappedObjectsJson(request, settings.XGDS_NOTES_NOTE_MODEL, filter=filterDict)
