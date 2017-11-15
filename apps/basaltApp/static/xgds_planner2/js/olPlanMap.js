@@ -24,16 +24,16 @@ var Plan = {
                     stroke: new ol.style.Stroke({
                         color: 'yellow',
                         width: 2
-                      })
-                    });
+                    })
+                });
                 this.styles['station'] = new ol.style.Style({
                     image: new ol.style.Icon({
                         src: '/static/xgds_map_server/icons/placemark_circle.png',
                         scale: .8,
                         rotateWithView: false,
-                        opacity: 1
-                        })
-                    });
+                        opacity: 1,
+                    })
+                });
                 this.styles['boundary'] = new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: 'rgba(255, 255, 0, 0.8)',
@@ -54,7 +54,7 @@ var Plan = {
                         color: 'black',
                         width: 2
                     }),
-                    offsetY: -20
+                    offsetY: -20,
                 };
                 this.styles['segmentText'] = {
                     font: '14px Calibri,sans-serif',
@@ -70,55 +70,63 @@ var Plan = {
                 return null;
             }
             this.initStyles();
-            var olFeatures = [];
+            this.allFeatures = [], this.stationFeatures = [], this.stationDecoratorFeats = [], this.segmentFeatures = [];
             for (var i = 0; i < plansJson.length; i++) {
-                var planFeatures = this.construct(plansJson[i]);
-                olFeatures = olFeatures.concat(planFeatures);
+                this.construct(plansJson[i]);
+                var allFeatures = this.allFeatures.concat(this.stationDecoratorFeats, this.segmentFeatures, this.stationFeatures);
             }
             var vectorLayer = new ol.layer.Vector({
                 name: "Plans",
                 source: new ol.source.Vector({
-                    features: olFeatures
+                    features: allFeatures
                 })
-            });  
+            });
+
             return vectorLayer;
         },
         construct: function(planJson){
-            var allFeatures = [];
             var coords = [];
             var coord;
             for (var i = 0; i < planJson.sequence.length; i++){
                 if (planJson.sequence[i].type == "Station"){
                     coord = transform(planJson.sequence[i].geometry.coordinates);
                     coords.push(coord);
-                    var station = this.constructStation(planJson.sequence[i], coord);
+                    var label = this.getStationLabel(i, planJson.sequence.length);
+                    this.constructStation(planJson.sequence[i], coord, label);
 
-                    // if (i == 0) station = this.initTextStyle(station, "Start");
-                    // else if (i == planJson.sequence.length - 1) station = this.initTextStyle(station, "End");
-
-                    allFeatures.push(station);
-                    allFeatures.push(this.getBoundaryFeature(planJson.sequence[i]));
-                    allFeatures.push(this.getToleranceFeature(planJson.sequence[i]));
+                    this.stationDecoratorFeats.push(this.getBoundaryFeature(planJson.sequence[i]));
+                    this.stationDecoratorFeats.push(this.getToleranceFeature(planJson.sequence[i]));
                 }
             }
+            this.constructSegment(planJson, coords);
+        },
+        constructSegment: function(planJson, coords){
             var lineFeature = new ol.Feature({
                 name: planJson.name,
-                geometry: new ol.geom.LineString(coords)
+                geometry: new ol.geom.LineString(coords),
+                type: "Segment"
             });
             lineFeature.setStyle(this.styles['lineStyle']);
             this.setupLinePopup(lineFeature, planJson);
-            allFeatures.unshift(lineFeature);
-            return allFeatures;
+            this.segmentFeatures.push(lineFeature);
         },
-        constructStation: function(stationJson, coord){
+        constructStation: function(stationJson, coord, label){
+            // var style = this.styles['station'].setText(this.getStationTextStyle(label));
+            var styles = [];
+            var textStyle = this.getStationTextStyle(label);
+            styles.push(this.styles['station']);
+            styles.push(textStyle);
             var feature = new ol.Feature({
                 name: stationJson.id,
                 geometry: new ol.geom.Point(coord),
-                textStyle: this.styles['stationText']
+                style: this.styles['station'],
+                textStyle: this.getStationTextStyle(label),
+                type: stationJson.type
             });
-            feature.setStyle(this.styles['station']);
+
+            feature.setStyle(styles);
             this.setupStationPopup(feature, stationJson);
-            return feature;
+            this.stationFeatures.push(feature);
         },
         setupStationPopup: function(feature, stationJson) {
             var trString = "<tr><td>%s</td><td>%s</td></tr>";
@@ -143,16 +151,34 @@ var Plan = {
                         "Author:", planJson.author];
             feature['popup'] = vsprintf(formattedString, data);
         },
-        initTextStyle: function(feature, text) {
-            var theText = new ol.style.Text(this.styles['stationText']);
-            theText.setText(text);
-            this.textStyle = new ol.style.Style({
-                text: theText
+        getStationLabel: function(index, sequenceLength){
+            var label;
+
+            if (index == 0) label = "Start";
+            else if (index == sequenceLength - 1) label = "End";
+            else label = "" + (index / 2);
+
+            return label;
+        },
+        getStationTextStyle: function(text) {
+            var textStyle = new ol.style.Text({
+                font: '16px Calibri,sans-serif,bold',
+                fill: new ol.style.Fill({
+                    color: 'yellow'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'black',
+                    width: 2
+                }),
+                offsetY: -20,
+                text: text
             });
-            if (!_.isUndefined(feature)){
-                feature.set('textStyle', this.textStyle);
-            }
-            return feature;
+
+            var style = new ol.style.Style({
+                text: textStyle
+            });
+
+            return style;
         },
 		getToleranceGeometry: function(stationJson) {
 			if ('tolerance' in stationJson) {
