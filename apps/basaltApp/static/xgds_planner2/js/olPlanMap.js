@@ -63,6 +63,12 @@ var Plan = {
                         width: 1
                     })
                 };
+                this.styles['fancySegment'] = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'orange',
+                        width: 2
+                    })
+                });
              };
         },
         constructElements: function(plansJson){
@@ -97,21 +103,15 @@ var Plan = {
                     this.stationDecoratorFeats.push(this.getBoundaryFeature(planJson.sequence[i]));
                     this.stationDecoratorFeats.push(this.getToleranceFeature(planJson.sequence[i]));
                 }
+                else{
+                    if (!_.isUndefined(planJson.sequence[i].geometry)){
+                        this.constructSextantSegment(planJson.sequence[i], planJson.sequence[i-1], planJson.sequence[i+1]);
+                    }
+                }
             }
             this.constructSegment(planJson, coords);
         },
-        constructSegment: function(planJson, coords){
-            var lineFeature = new ol.Feature({
-                name: planJson.name,
-                geometry: new ol.geom.LineString(coords),
-                type: "Segment"
-            });
-            lineFeature.setStyle(this.styles['lineStyle']);
-            this.setupLinePopup(lineFeature, planJson);
-            this.segmentFeatures.push(lineFeature);
-        },
         constructStation: function(stationJson, coord, label){
-            // var style = this.styles['station'].setText(this.getStationTextStyle(label));
             var styles = [];
             var textStyle = this.getStationTextStyle(label);
             styles.push(this.styles['station']);
@@ -127,6 +127,58 @@ var Plan = {
             feature.setStyle(styles);
             this.setupStationPopup(feature, stationJson);
             this.stationFeatures.push(feature);
+        },
+        constructSegment: function(planJson, coords){
+            var lineFeature = new ol.Feature({
+                name: planJson.name,
+                geometry: new ol.geom.LineString(coords),
+                type: "Segment"
+            });
+            lineFeature.setStyle(this.styles['lineStyle']);
+            this.setupLinePopup(lineFeature, planJson);
+            this.segmentFeatures.push(lineFeature);
+        },
+        constructSextantSegment: function(segmentJson, fromStation, toStation){
+            //Draw sextant line feature
+            var pathGeometry = this.getPathGeometry(segmentJson, fromStation, toStation);
+            if (pathGeometry != null){
+	            var pathFeature = new ol.Feature({
+                    geometry: pathGeometry,
+	                id: segmentJson.id + '_sextant_path',
+	                name: segmentJson.id + '_sextant_path',
+	                model: segmentJson,
+	            });
+	            pathFeature.setStyle(this.styles['fancySegment']);
+	            this.segmentFeatures.push(pathFeature);
+            }
+        },
+        updateCoords: function(fromStation, toStation) {
+        	var coords = _.map([fromStation, toStation],
+        			function(station) {
+        				return transform(station.geometry.coordinates);
+        	});
+        	return coords;
+        },
+        updatePathCoords: function(segmentJson, fromStation, toStation) {
+            var stationCoords = this.updateCoords(fromStation, toStation);
+        	var geometry = segmentJson.geometry;
+        	if (geometry != undefined) {
+        		// get the geometry out of the segment, and update its endpoints
+        		var coords = transformList(geometry.coordinates)
+        		// make sure first and last match stations
+        		coords.splice(0, 0, stationCoords[0]);
+        		coords.push(stationCoords[1]);
+        	} else {
+        		return null;
+        	}
+        	return coords;
+        },
+        getPathGeometry: function(segmentJson, fromStation, toStation) {
+            var pathCoords = this.updatePathCoords(segmentJson, fromStation, toStation);
+        	if (pathCoords != null){
+        		return new ol.geom.LineString(pathCoords, 'XY');
+        	}
+        	return undefined;
         },
         setupStationPopup: function(feature, stationJson) {
             var trString = "<tr><td>%s</td><td>%s</td></tr>";
