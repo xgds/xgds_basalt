@@ -997,7 +997,12 @@ class BasaltNote(AbstractLocatedNote):
     tags = TaggableManager(through=BasaltTaggedNote, blank=True)
 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
-    
+
+    def getBroadcastChannel(self):
+        if self.flight:
+            return self.flight.vehicle.name
+        return 'sse'
+
     @property
     def flight_name(self):
         if self.flight:
