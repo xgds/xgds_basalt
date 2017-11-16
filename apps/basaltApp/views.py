@@ -13,6 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
+
 import csv
 import traceback
 import json
@@ -671,12 +672,15 @@ def saveUpdatedInstrumentData(request, instrument_name, pk):
             form.is_valid()
         except:
             pass
-        
+
         for key in form.changed_data:
             value = form.cleaned_data[key]
             if not hasattr(value, 'read'):
-                if not isinstance(value, datetime.datetime):
-                    setattr(dataProduct, key, value)
+                try:
+                    if not isinstance(value, datetime.datetime):
+                        setattr(dataProduct, key, value)
+                except:
+                    pass
             else:
                 form.handleFileUpdate(dataProduct, key)
         # save the update info into the model.
