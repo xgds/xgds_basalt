@@ -41,6 +41,8 @@ urlpatterns = [url(r'^$', renderTemplate, {'template_name':'basaltApp/index.html
                #get instrument edit page
                url(r'^edit/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.editInstrumentData, name="instrument_data_edit"),
                # update instrument data
+               url(r'^update/(?P<instrument_name>\w*)/(?P<pk>[\d]+)$', views.saveUpdatedInstrumentData, name="instrument_data_update"),
+
                url(r'^pextantTest/$', TemplateView.as_view(template_name='basaltApp/pextantTest.html'), {}, 'pextantTest'),
                
                # Including these in this order ensures that reverse will return the non-rest urls for use in our server
