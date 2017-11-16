@@ -43,6 +43,8 @@
     	
     		{% if settings.XGDS_SSE and settings.GEOCAM_UTIL_LIVE_MODE%}
     			trackSse.initialize();
+                notesSse.initialize();
+                notesSse.olInitialize();
     		{% endif %}
     	
     		{% block otherJSInit %}
@@ -90,9 +92,11 @@
 	{% if settings.XGDS_SSE and settings.GEOCAM_UTIL_LIVE_MODE%}
 	{% load sse %}
 	{% setup_sse %}
-	<script type="text/javascript" src="{% static 'geocamTrack/js/trackSseUtils.js' %}"></script>
-	<script type="text/javascript" src="{% static 'geocamTrack/js/olTrackSseUtils.js' %}"></script>
-	<script type="text/javascript" src="{% static 'basaltApp/js/basaltTrackSseUtils.js' %}"></script>
+	    <script type="text/javascript" src="{% static 'geocamTrack/js/trackSseUtils.js' %}"></script>
+	    <script type="text/javascript" src="{% static 'geocamTrack/js/olTrackSseUtils.js' %}"></script>
+	    <script type="text/javascript" src="{% static 'basaltApp/js/basaltTrackSseUtils.js' %}"></script>
+        <script type="text/javascript" src="{% static 'xgds_notes2/js/noteSseUtils.js' %}"></script>
+        <script type="text/javascript" src="{% static 'xgds_notes2/js/olNoteSseUtils.js' %}"></script>
 	{% endif %}
 {% endblock scripts %}
 
