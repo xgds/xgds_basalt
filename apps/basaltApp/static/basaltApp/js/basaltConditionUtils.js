@@ -35,8 +35,8 @@ $.extend(condition, {
 		}
 	},
 	getMessage: function(received) {
-		var c = received[0].fields;
-		var ch = received[1].fields;
+		var c = received.slice(-2)[0].fields;
+		var ch = received.slice(-2)[1].fields;
 		
 		// EV# FLIGHT# (TIME): NAME STATUS
 		var result = '';
