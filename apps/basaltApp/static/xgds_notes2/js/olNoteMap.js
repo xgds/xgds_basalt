@@ -88,16 +88,19 @@ var Note = {
             var styles = [this.styles['iconStyle']];
             if (noteJson.tags != '') {
                 var theText = new ol.style.Text(this.styles['text']);
-                if (noteJson.tag_names.length > 0){
-                	noteJson.flattenedTags = noteJson.tag_names.reduce(function(a, b) {
-                		return a.concat(" " + b);
-                	});
-                	theText.setText(noteJson.tag_names[0]);
-                } else {
-                    if ('show_on_map' in noteJson) {
-                        if (noteJson.show_on_map) {
-                            theText.setText(noteJson.content.trunc(10));
-                        }
+                var done = false;
+                if ('show_on_map' in noteJson) {
+                     if (noteJson.show_on_map) {
+                         theText.setText(noteJson.content.trunc(10));
+                         done = true;
+                     }
+                }
+                if (!done) {
+                    if (noteJson.tag_names.length > 0){
+                	    noteJson.flattenedTags = noteJson.tag_names.reduce(function(a, b) {
+                		    return a.concat(" " + b);
+                	    });
+            		    theText.setText(noteJson.tag_names[0]);
                     }
                 }
                 
