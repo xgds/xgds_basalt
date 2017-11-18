@@ -16,7 +16,7 @@
 
 $.extend(condition, {
 	updateColor: function(received) {
-		var ch = received[1].fields;
+		var ch = received.slice(-2)[1].fields;
 		var cdiv = $('#conditionDiv');
 		cdiv.removeClass (function (index, className) {
 		    return (className.match (/(^|\s)alert-\S+/g) || []).join(' ');
