@@ -302,6 +302,7 @@ STATICFILES_FINDERS = (
     'pipeline.finders.PipelineFinder',
     'pipeline.finders.CachedFileFinder',
     'djangobower.finders.BowerFinder',
+    'django_npm.finders.NpmAppFinder',
 )
 
 BOWER_COMPONENTS_ROOT = PROJ_ROOT
