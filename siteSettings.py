@@ -46,6 +46,8 @@ SECRET_KEY = '***REMOVED***'
 # apps.
 INSTALLED_APPS = ['basaltApp',
 
+                  'django_npm',
+
                   # TODO uncomment the submodules that you are including
                   'xgds_sample',
                   'xgds_instrument',
