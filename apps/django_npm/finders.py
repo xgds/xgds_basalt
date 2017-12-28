@@ -27,6 +27,7 @@ class NpmAppFinder(AppDirectoriesFinder):
     """
     source_dir = 'node_modules'
     dependency_sets = {}
+    modules_names = set()
 
     def load_dependencies(self, storage):
         if not os.path.basename(storage.location) == self.source_dir:
@@ -43,11 +44,14 @@ class NpmAppFinder(AppDirectoriesFinder):
         if 'dependencies' not in package:
             return set()
 
+        deps = set(package['dependencies'].keys()) - self.modules_names
+        self.modules_names |= deps
+
         django_config = {}
         if 'django' in package:
             django_config = package['django']
 
-        return set(package['dependencies'].keys()), django_config
+        return deps, django_config
 
     def matches_filters(self, path, filters):
         if 'include' in filters:
