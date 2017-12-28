@@ -16,6 +16,7 @@
 
 import os
 import json
+import fnmatch
 from django.contrib.staticfiles.finders import AppDirectoriesFinder
 
 
@@ -39,16 +40,45 @@ class NpmAppFinder(AppDirectoriesFinder):
 
         package = json.load(open(package_path))
 
-        if not 'dependencies' in package:
+        if 'dependencies' not in package:
             return set()
 
-        return set(package['dependencies'].keys())
+        django_config = {}
+        if 'django' in package:
+            django_config = package['django']
+
+        return set(package['dependencies'].keys()), django_config
+
+    def matches_filters(self, path, filters):
+        if 'include' in filters:
+            includes = filters['include']
+            for include in includes:
+                if not fnmatch.fnmatchcase(path, include):
+                    return False
+
+        if 'exclude' in filters:
+            excludes = filters['exclude']
+            for exclude in excludes:
+                if fnmatch.fnmatchcase(path, exclude):
+                    return False
+
+        return True
 
     def is_dependency(self, path, storage):
-        if not storage.location in self.dependency_sets:
+        if storage.location not in self.dependency_sets:
             self.dependency_sets[storage.location] = self.load_dependencies(storage)
-        module_name = path.split(os.sep)[0]
-        return module_name in self.dependency_sets[storage.location]
+        parts = path.split(os.sep)
+        module_name = parts[0]
+        remaining_path = os.sep.join(parts[1:])
+        dependencies, filters = self.dependency_sets[storage.location]
+
+        if module_name not in dependencies:
+            return False
+
+        if module_name in filters:
+            return self.matches_filters(remaining_path, filters[module_name])
+
+        return True
 
     def list(self, ignore_patterns):
         """
