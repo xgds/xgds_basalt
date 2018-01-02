@@ -57,8 +57,9 @@ class NpmAppFinder(AppDirectoriesFinder):
         if 'include' in filters:
             includes = filters['include']
             for include in includes:
-                if not fnmatch.fnmatchcase(path, include):
-                    return False
+                if fnmatch.fnmatchcase(path, include):
+                    return True
+            return False
 
         if 'exclude' in filters:
             excludes = filters['exclude']
