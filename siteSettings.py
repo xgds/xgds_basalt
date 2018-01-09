@@ -46,7 +46,7 @@ SECRET_KEY = '***REMOVED***'
 # apps.
 INSTALLED_APPS = ['basaltApp',
 
-                  'django_npm',
+                  'django_npm_apps',
 
                   # TODO uncomment the submodules that you are including
                   'xgds_sample',
@@ -302,7 +302,7 @@ STATICFILES_FINDERS = (
     'pipeline.finders.PipelineFinder',
     'pipeline.finders.CachedFileFinder',
     'djangobower.finders.BowerFinder',
-    'django_npm.finders.NpmAppFinder',
+    'django_npm_apps.finders.NpmAppFinder',
 )
 
 BOWER_COMPONENTS_ROOT = PROJ_ROOT
