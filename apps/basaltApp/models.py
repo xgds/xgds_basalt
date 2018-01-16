@@ -354,14 +354,16 @@ class BasaltFlight(plannerModels.AbstractFlight):
                 stopPyraptordServiceIfRunning(pyraptord, serviceName)
            
         # See if we're the last running flight and end episode if we are
-        print "Checking if we're last active flight"
-        print "Other active flight count:", flight.active.otherActiveFlights().count()
-        if flight.active.otherActiveFlights().count() == 0:
-            endEpisode = True
-        else:
-            endEpisode = False
-
         if settings.XGDS_VIDEO_ON:
+            print "Checking if we're last active flight"
+            oaf = flight.active.otherActiveFlights()
+            if oaf:
+                print "Other active flight count:", oaf.count()
+            if oaf.count() == 0:
+                endEpisode = True
+            else:
+                endEpisode = False
+
             stopFlightRecording(request, self.name, endEpisode)
 
         self.manageRemoteFlights(request, False)
