@@ -46,6 +46,8 @@ SECRET_KEY = '***REMOVED***'
 # apps.
 INSTALLED_APPS = ['basaltApp',
 
+                  'django_npm_apps',
+
                   # TODO uncomment the submodules that you are including
                   'xgds_sample',
                   'xgds_instrument',
@@ -300,6 +302,7 @@ STATICFILES_FINDERS = (
     'pipeline.finders.PipelineFinder',
     'pipeline.finders.CachedFileFinder',
     'djangobower.finders.BowerFinder',
+    'django_npm_apps.finders.NpmAppFinder',
 )
 
 BOWER_COMPONENTS_ROOT = PROJ_ROOT
@@ -576,8 +579,8 @@ XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    'viewJS': [EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.min.js',
                                                 EXTERNAL_URL + 'openseadragon/built-openseadragon/openseadragon/openseadragon.js',
                                                 EXTERNAL_URL + 'fabric.js/dist/fabric.min.js',
-                                                EXTERNAL_URL + 'openseadragon-fabricjsOverlay/openseadragon-fabricjs-overlay.js',
-                                                EXTERNAL_URL + 'spectrum/spectrum.js',
+                                                EXTERNAL_URL + 'openseadragon-fabricjs-overlay/openseadragon-fabricjs-overlay.js',
+                                                EXTERNAL_URL + 'spectrum-colorpicker/spectrum.js',
                                                 EXTERNAL_URL + 'jquery-fileDownload/src/Scripts/jquery.fileDownload.js',
                                                 STATIC_URL + 'xgds_image/js/imageAnnotation.js',
                                                 STATIC_URL + 'xgds_image/js/imageReview.js' ],
@@ -628,7 +631,7 @@ XGDS_MAP_SERVER_JS_MAP['FTIR'] = {'ol': 'xgds_instrument/js/olFtirDataProduct.js
                                   'hiddenColumns': ['pk', 'view_url', 'app_label', 'model_type','type', 'lat','lon','alt','flight_name','instrument_name','manufacturer_data_file_url','portable_data_file_url','jsonDataUrl','csvDataUrl', 'ev_name','DT_RowId'],
                                   'columnTitles': ['Time', 'TZ', 'Collector', 'Name', 'Description', 'Minerals'],
                                   'viewHandlebars': 'basaltApp/templates/xgds_instrument/handlebars/instrument-view.handlebars',
-                                  'viewJS': [EXTERNAL_URL + 'Flot/jquery.flot.js',
+                                  'viewJS': [EXTERNAL_URL + 'flot/jquery.flot.js',
                                              EXTERNAL_URL + 'flot-axislabels/jquery.flot.axislabels.js',
                                              STATIC_URL + 'xgds_instrument/js/instrumentView.js' ],
                                   'viewInitMethods': ['xgds_instrument.getData'],
@@ -643,7 +646,7 @@ XGDS_MAP_SERVER_JS_MAP['ASD'] = {'ol': 'xgds_instrument/js/olAsdDataProduct.js',
                                  'hiddenColumns': ['pk', 'view_url', 'app_label', 'model_type','type', 'lat','lon','alt','flight_name','instrument_name','manufacturer_data_file_url','portable_data_file_url','jsonDataUrl','csvDataUrl', 'ev_name', 'DT_RowId'],
                                  'columnTitles': ['Time', 'TZ', 'Collector', 'Name', 'Description', 'Minerals'],
                                  'viewHandlebars': 'basaltApp/templates/xgds_instrument/handlebars/instrument-view.handlebars',
-                                 'viewJS': [EXTERNAL_URL + 'Flot/jquery.flot.js',
+                                 'viewJS': [EXTERNAL_URL + 'flot/jquery.flot.js',
                                             EXTERNAL_URL + 'flot-axislabels/jquery.flot.axislabels.js',
                                             STATIC_URL + 'xgds_instrument/js/instrumentView.js' ],
                                  'viewInitMethods': ['xgds_instrument.getData'],
@@ -667,7 +670,7 @@ XGDS_MAP_SERVER_JS_MAP['pXRF'] = {'ol': 'xgds_instrument/js/olPxrfDataProduct.js
                                                     'DT_RowId'],
                                   'columnTitles': ['Time', 'TZ', 'Collector', 'File #', 'Total %', 'Name', 'Description'],
                                   'viewHandlebars': 'basaltApp/templates/xgds_instrument/handlebars/pxrf-view.handlebars',
-                                  'viewJS': [EXTERNAL_URL + 'Flot/jquery.flot.js',
+                                  'viewJS': [EXTERNAL_URL + 'flot/jquery.flot.js',
                                              EXTERNAL_URL + 'flot-axislabels/jquery.flot.axislabels.js',
                                              STATIC_URL + 'xgds_instrument/js/instrumentView.js' ,
                                              STATIC_URL + 'xgds_instrument/js/pxrfDataView.js' ,
