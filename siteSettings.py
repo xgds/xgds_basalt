@@ -305,8 +305,6 @@ STATICFILES_FINDERS = (
     'django_npm_apps.finders.NpmAppFinder',
 )
 
-BOWER_COMPONENTS_ROOT = PROJ_ROOT
-
 PIPELINE = {'PIPELINE_ENABLED': True,
             'JAVASCRIPT':{'simulator': {'source_filenames': ('basaltApp/js/planner/evSimulator.js',
                                                   ),
@@ -683,8 +681,6 @@ XGDS_MAP_SERVER_JS_MAP['pXRF'] = {'ol': 'xgds_instrument/js/olPxrfDataProduct.js
                                   'edit_form_class': 'basaltApp.forms.PxrfInstrumentDataForm',
                                   }
 
-
-BOWER_INSTALLED_APPS = tuple(getOrCreateArray('BOWER_INSTALLED_APPS'))
 
 PYRAPTORD_SERVICE = True
 
