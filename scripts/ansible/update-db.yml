@@ -14,16 +14,31 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
-from django import template
-from django.template.defaultfilters import stringfilter
-import os
+# https://stackoverflow.com/questions/28188508/insert-data-into-mysql-tables-using-ansible
+# https://www.reddit.com/r/ansible/comments/3rsybs/ansible_to_run_some_mysql_commands/
 
-register = template.Library()
+- hosts: all
 
+  vars:
+    swa_dir: "/home/irg/sextantwebapp/"
 
-@register.filter(name='basename')
-@stringfilter
-def basename(value):
-    if value:
-        return os.path.basename(value)
-    return None
+  tasks:
+  
+    - copy:
+      src: /srv/myfiles/foo.conf
+      dest: /etc/foo.conf
+      owner: foo
+      group: foo
+      mode: 0644
+
+    - name: Run SQL
+      mysql_db:
+        name: xgds_basalt
+        state: import
+        target: {{ sql_file }}
+        
+    - name: swa git pull
+      command: git pull dev master
+      args:
+        chdir: "{{ swa_dir }}"
+    
