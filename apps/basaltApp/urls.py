@@ -19,7 +19,7 @@ from django.conf.urls import include, url
 
 from django.views.generic.base import TemplateView
 from basaltApp import views
-from basaltApp.register import renderTemplate
+from xgds_core.register import renderTemplate
 
 urlpatterns = [url(r'^$', renderTemplate, {'template_name':'basaltApp/index.html'}, 'index'),
                url(r'^setup$', TemplateView.as_view(template_name='basaltApp/setup.html'), {}, 'setup_intro'),
