@@ -28,7 +28,7 @@ from basaltApp.views import wrist, editInstrumentData
 urlpatterns = [url(r'^admin/', include(admin.site.urls)),
                url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
                url(r'^$', RedirectView.as_view(url=settings.SCRIPT_NAME + 'basaltApp/', permanent=False),{}),
-               url(r'^accounts/', include('basaltApp.registerUrls')),
+               url(r'^accounts/', include('xgds_core.registerUrls')),
                url(r'^basaltApp/', include('basaltApp.urls')),
                url(r'^favicon\.ico$', RedirectView.as_view(url='/static/' + settings.FAVICON_PATH, permanent=True), {'readOnly': True}),
                url(r'^xgds_sample/', include('xgds_sample.urls')),
