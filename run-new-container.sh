@@ -19,11 +19,11 @@ getopts "a:" addropt
 
 # If we are running on a separate IP, we can use the standard SSH port, otherwise
 # we default to a non-standard port (222) so we don't interfere with host SSH.
-sshport = 222
+sshport=222
 
 if [ "$OPTARG" ]; then
     address="$OPTARG:"
-    sshport = 22
+    sshport=22
    shift $((OPTIND - 1))
 fi
 
