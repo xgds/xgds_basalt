@@ -55,6 +55,8 @@ from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, sto
 from xgds_status_board.models import *
 from xgds_instrument.models import getNewDataFileName
 from xgds_core.util import callUrl
+from django.contrib.contenttypes.fields import GenericRelation
+
 
 from subprocess import Popen
 import re
@@ -72,6 +74,9 @@ couchStore = CouchDbStorage()
 LOCATION_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_PAST_POSITION_MODEL)
 VIDEO_SOURCE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_SOURCE_MODEL)
 VIDEO_EPISODE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_EPISODE_MODEL)
+
+BASALT_NOTES_GENERIC_RELATION = lambda: GenericRelation('BasaltNote', related_name='%(app_label)s_%(class)s_related')
+
 
 class BasaltResource(geocamTrackModels.AbstractResource):
     resourceId = models.IntegerField(null=True, blank=True, db_index=True) # analogous to beacon id, identifier for track inputs
@@ -502,7 +507,8 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     flir_temperature = models.FloatField(null=True, blank=True, verbose_name='FLIR Temp', help_text='C')
-    
+    notes = BASALT_NOTES_GENERIC_RELATION()
+
     @classmethod
     def getSearchableNumericFields(self):
         return ['year', 'number', 'label__number']
@@ -673,6 +679,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+    notes = BASALT_NOTES_GENERIC_RELATION()
 
     @classmethod
     def getSearchableFields(self):
@@ -1000,6 +1007,8 @@ class BasaltNote(AbstractLocatedNote):
 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
 
+    notes = BASALT_NOTES_GENERIC_RELATION()
+
     def getBroadcastChannel(self):
         if self.flight:
             return self.flight.vehicle.name
@@ -1087,6 +1096,7 @@ class BasaltNote(AbstractLocatedNote):
                 'min_event_time',
                 'max_event_time']
 
+
 class BasaltImageSet(xgds_image_models.AbstractImageSet):
     # set foreign key fields from parent model to point to correct types
     camera = xgds_image_models.DEFAULT_CAMERA_FIELD()
@@ -1095,6 +1105,7 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
     resource = models.ForeignKey(BasaltResource, null=True, blank=True)
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
+    notes = BASALT_NOTES_GENERIC_RELATION()
 
     @classmethod
     def getSearchableFields(self):
