@@ -65,8 +65,8 @@ from django.core.cache import caches
 _cache = caches['default']
 
 RESOURCE_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_RESOURCE_MODEL)
-VEHICLE_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_VEHICLE_MODEL)
-ACTIVE_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL)
+VEHICLE_MODEL = LazyGetModelByName(settings.XGDS_PLANNER_VEHICLE_MODEL)
+ACTIVE_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER_ACTIVE_FLIGHT_MODEL)
 
 couchStore = CouchDbStorage()
 
@@ -504,7 +504,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     station_number = models.CharField(null=True, max_length=32, blank=True, verbose_name='Two digit station #', db_index=True)
     replicate = models.ForeignKey(Replicate, null=True, blank=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")), db_index=True)
-    flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER2_FLIGHT_MONIKER)
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     flir_temperature = models.FloatField(null=True, blank=True, verbose_name='FLIR Temp', help_text='C')
     notes = BASALT_NOTES_GENERIC_RELATION()
@@ -1191,7 +1191,7 @@ class ActivityStatus(AbstractEnumModel):
 
 
 class BasaltCondition(AbstractCondition):
-    vehicle = models.ForeignKey(settings.XGDS_PLANNER2_VEHICLE_MODEL, null=True, blank=True)
+    vehicle = models.ForeignKey(settings.XGDS_PLANNER_VEHICLE_MODEL, null=True, blank=True)
     source_group_name = models.CharField(null=True, blank=True, max_length=64) 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     

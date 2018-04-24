@@ -110,7 +110,7 @@ def callPextantAjax(request, planId, clear=0):
     """ Call Pextant over Ajax and either return the modified plan with success message,
     or return error message.
     """
-    PLAN_MODEL = LazyGetModelByName(settings.XGDS_PLANNER2_PLAN_MODEL)
+    PLAN_MODEL = LazyGetModelByName(settings.XGDS_PLANNER_PLAN_MODEL)
     response = {}
     try:
         plan = PLAN_MODEL.get().objects.get(pk=planId)
