@@ -50,13 +50,11 @@ INSTALLED_APPS = ['basaltApp',
 
                   'django_npm_apps',
 
-                  # TODO uncomment the submodules that you are including
                   'xgds_sample',
                   'xgds_instrument',
                   'xgds_notes2',
                   'xgds_planner2',
                   'xgds_map_server',
-                  'xgds_data',
                   'xgds_image',
                   'xgds_video',
                   'xgds_plot',
@@ -285,8 +283,6 @@ GEOCAM_UTIL_SECURITY_REQUIRE_ENCRYPTED_PASSWORDS = False
 
 GEOCAM_UTIL_SECURITY_LOGIN_REQUIRED_BY_DEFAULT = 'write'
 
-# This is an optional setting but if you don't have it enabled then the map server and the xgds_data won't work
-XGDS_DATA_LOG_ENABLED = True
 
 # email settings
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'

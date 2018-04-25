@@ -48,7 +48,6 @@ from xgds_planner2.models import AbstractActiveFlight
 from xgds_planner2.views import getActiveFlights
 from xgds_instrument.models import ScienceInstrument, AbstractInstrumentDataProduct
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
-from xgds_data.introspection import verbose_name
 from xgds_video.models import *
 from xgds_video.recordingUtil import getRecordedVideoDir, getRecordedVideoUrl, startRecording, stopRecording
 from xgds_video.recordingUtil import endActiveEpisode, startFlightRecording, stopFlightRecording
