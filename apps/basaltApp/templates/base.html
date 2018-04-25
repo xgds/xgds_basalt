@@ -52,8 +52,8 @@
 				<li class='nav-item {% currentnav search_map* basalt_live_objects%}'>
 					<a class="nav-link {% currentnav search_map* basalt_live_objects%}" href="/xgds_map_server/search/Photo" title="Search">Search</a>
 				</li>
-				<li class='nav-item {% currentnav xgds_data_import %}'>
-					<a class="nav-link {% currentnav xgds_data_import %}" href="{% url 'xgds_data_import' %}" title="Import">Import</a>
+				<li class='nav-item {% currentnav xgds_core_import %}'>
+					<a class="nav-link {% currentnav xgds_core_import %}" href="{% url 'xgds_core_import' %}" title="Import">Import</a>
 				</li>
 				{% if settings.GEOCAM_UTIL_LIVE_MODE %}
 				<li class='nav-item {% currentnav *tatus* %}'>
