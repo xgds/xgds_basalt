@@ -127,12 +127,11 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
         return '%s %s' % (self.__class__.__name__, self.name)
 
 
-class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePositionNoUuid, BroadcastMixin):
+class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePosition, BroadcastMixin):
     # set foreign key fields required by parent model to correct types for this site
     track = models.ForeignKey(BasaltTrack, db_index=True, null=True, blank=True)
     serverTimestamp = models.DateTimeField(db_index=True)
-    
-    
+
     def getBroadcastChannel(self):
         result =  self.displayName
         if not result:
