@@ -15,14 +15,60 @@
 # specific language governing permissions and limitations under the License.
 #__END_LICENSE__
 
-if [ -z ${1+present} ]; then
-  echo "Starting *without* mapping host source tree to docker."
-  echo "If you want to do that, pass one argument with path to source on host"
-  docker run -t -d --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22 -p 443:443 -p 3001:3001 -p 5000:5000 -p 5984:5984 -p 8080:8080 -p 8181:8181 -p 9090:9090 -p 9191:9191 xgds-basalt-wristapp:20170802
-else if [ $# -eq 1 ]; then
-  echo "Starting with xgds_basalt source tree at $1 mapped into docker."
-  docker run -t -d -v $1:/home/xgds/xgds_basalt --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22 -p 443:443 -p 3001:3001 -p 5000:5000 -p 5984:5984 -p 8080:8080 -p 8181:8181 -p 9090:9090 -p 9191:9191 xgds-basalt-wristapp:20170802
-else if [ $# -eq 2 ]; then
-  echo "Starting with xgds_basalt source tree at $1 and sextantwebapp at $2 mapped into docker."
-  docker run -t -d -v $1:/home/xgds/xgds_basalt -v $2:/home/xgds/sextantwebapp --volumes-from basalt-data-store --name basalt-container -p 80:80 -p 3306:3306 -p 7500:7500  -p 222:22 -p 443:443 -p 3001:3001 -p 5000:5000 -p 5984:5984 -p 8080:8080 -p 8181:8181 -p 9090:9090 -p 9191:9191 xgds-basalt-wristapp:20170802 
+getopts "a:" addropt
+
+# If we are running on a separate IP, we can use the standard SSH port, otherwise
+# we default to a non-standard port (222) so we don't interfere with host SSH.
+sshport=222
+
+if [ "$OPTARG" ]; then
+    address="$OPTARG:"
+    sshport=22
+   shift $((OPTIND - 1))
+fi
+
+if [ $# -lt 2 -o $addropt = "?" -a $OPTIND -eq 2 ]; then
+  echo "Usage:"
+  echo "$0 [-a forwardIP] <new-container-name> <image-name> [<data-store-name> [<host-source-path>:<container-source-path> ...]]"
+  exit 1
+fi
+
+container_name=$1
+image_name=$2
+
+if [ $# -gt 2 ]; then
+   data_store_name=$3
+fi
+
+if [ $# -eq 2 ]; then
+  echo "Starting *without* data container or mapping host source to docker."
+  echo "Container name: $container_name"
+  echo "Image name: $image_name"
+  docker run -t -d --name $container_name --hostname $container_name -p ${address}80:80 -p ${address}3306:3306 -p ${address}7500:7500  -p ${address}${sshport}:22 -p ${address}443:443 -p ${address}3001:3001 -p ${address}5000:5000 -p ${address}5984:5984 -p ${address}8080:8080 -p ${address}8181:8181 -p ${address}9090:9090 -p ${address}9191:9191 $image_name
+fi
+
+if [ $# -eq 3 ]; then
+  echo "Starting with data container $data_store_name and *no* source mapping."
+  echo "Container name: $container_name"
+  echo "Data store container: $data_store_name"
+  echo "Image name: $image_name"
+  docker run -t -d --volumes-from $data_store_name --name $container_name --hostname $container_name -p ${address}80:80 -p ${address}3306:3306 -p ${address}7500:7500  -p ${address}${sshport}:22 -p ${address}443:443 -p ${address}3001:3001 -p ${address}5000:5000 -p ${address}5984:5984 -p ${address}8080:8080 -p ${address}8181:8181 -p ${address}9090:9090 -p ${address}9191:9191 $image_name
+fi
+
+if [ $# -gt 3 ]; then
+    dir_mappings=""
+    shift 3  # drop previously parsed args
+    while (( "$#" )); do
+        dir_mappings+="-v $1 "
+        shift
+    done
+fi
+
+if [ -n "$dir_mappings" ]; then
+  echo "Starting with data container $data_store_name and source mapping(s): $dir_mappings"
+  echo "Container name: $container_name"
+  echo "Data store container: $data_store_name"
+  echo "Image name: $image_name"
+  echo "Source mappings: $dir_mappings"
+  docker run -t -d $dir_mappings --volumes-from $data_store_name --name $container_name --hostname $container_name -p ${address}80:80 -p ${address}3306:3306 -p ${address}7500:7500  -p ${address}${sshport}:22 -p ${address}443:443 -p ${address}3001:3001 -p ${address}5000:5000 -p ${address}5984:5984 -p ${address}8080:8080 -p ${address}8181:8181 -p ${address}9090:9090 -p ${address}9191:9191 $image_name
 fi

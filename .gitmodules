@@ -1,9 +1,6 @@
 [submodule "submodules/geocamUtil"]
 	path = submodules/geocamUtil
 	url = git://github.com/geocam/geocamUtilWeb.git
-[submodule "submodules/xgds_data"]
-	path = submodules/xgds_data
-	url = https://github.com/xgds/xgds_data.git
 [submodule "submodules/xgds_map_server"]
 	path = submodules/xgds_map_server
 	url = https://github.com/xgds/xgds_map_server.git

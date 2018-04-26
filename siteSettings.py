@@ -50,13 +50,11 @@ INSTALLED_APPS = ['basaltApp',
 
                   'django_npm_apps',
 
-                  # TODO uncomment the submodules that you are including
                   'xgds_sample',
                   'xgds_instrument',
                   'xgds_notes2',
                   'xgds_planner2',
                   'xgds_map_server',
-                  'xgds_data',
                   'xgds_image',
                   'xgds_video',
                   'xgds_plot',
@@ -285,8 +283,6 @@ GEOCAM_UTIL_SECURITY_REQUIRE_ENCRYPTED_PASSWORDS = False
 
 GEOCAM_UTIL_SECURITY_LOGIN_REQUIRED_BY_DEFAULT = 'write'
 
-# This is an optional setting but if you don't have it enabled then the map server and the xgds_data won't work
-XGDS_DATA_LOG_ENABLED = True
 
 # email settings
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
@@ -391,34 +387,34 @@ COMPASS_CORRECTION =  10
 
 XGDS_SAMPLE_SAMPLE_MODEL = 'basaltApp.BasaltSample'
 
-XGDS_PLANNER2_FLIGHT_MONIKER = "EVA"
-XGDS_PLANNER2_GROUP_FLIGHT_MONIKER = "EVA"
-XGDS_PLANNER2_PLAN_MONIKER = "Planned Traverse"
-XGDS_PLANNER2_STATION_MONIKER = "Waypoint"
-XGDS_PLANNER2_STATION_MONIKER_PLURAL = "Waypoints"
-XGDS_PLANNER2_COMMAND_MONIKER = "Activity"
-XGDS_PLANNER2_COMMAND_MONIKER_PLURAL = "Activities"
-XGDS_PLANNER2_FLIGHT_MODEL = "basaltApp.BasaltFlight"
-XGDS_PLANNER2_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
-XGDS_PLANNER2_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
+XGDS_PLANNER_FLIGHT_MONIKER = "EVA"
+XGDS_PLANNER_GROUP_FLIGHT_MONIKER = "EVA"
+XGDS_PLANNER_PLAN_MONIKER = "Planned Traverse"
+XGDS_PLANNER_STATION_MONIKER = "Waypoint"
+XGDS_PLANNER_STATION_MONIKER_PLURAL = "Waypoints"
+XGDS_PLANNER_COMMAND_MONIKER = "Activity"
+XGDS_PLANNER_COMMAND_MONIKER_PLURAL = "Activities"
+XGDS_PLANNER_FLIGHT_MODEL = "basaltApp.BasaltFlight"
+XGDS_PLANNER_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
+XGDS_PLANNER_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
 
-#XGDS_PLANNER2_DEFAULT_SITE = ('HIL', 'Hawaii Lava Flows') #'Hawaii Lava Flows'
-XGDS_PLANNER2_DEFAULT_SITE = ('KIL', 'Kilauea') 
+#XGDS_PLANNER_DEFAULT_SITE = ('HIL', 'Hawaii Lava Flows') #'Hawaii Lava Flows'
+XGDS_PLANNER_DEFAULT_SITE = ('KIL', 'Kilauea')
 
-XGDS_PLANNER2_SCHEDULE_INCLUDED = True
-XGDS_PLANNER2_SITE_MONIKER = 'Zone'
-XGDS_PLANNER2_PLAN_EXECUTION_MODEL = "basaltApp.BasaltPlanExecution"
+XGDS_PLANNER_SCHEDULE_INCLUDED = True
+XGDS_PLANNER_SITE_MONIKER = 'Zone'
+XGDS_PLANNER_PLAN_EXECUTION_MODEL = "basaltApp.BasaltPlanExecution"
 
-XGDS_PLANNER2_HANDLEBARS_DIRS = [os.path.join('xgds_planner2', 'templates', 'handlebars'),
+XGDS_PLANNER_HANDLEBARS_DIRS = [os.path.join('xgds_planner2', 'templates', 'handlebars'),
                                  os.path.join('basaltApp', 'templates', 'xgds_planner2'),
                                  os.path.join('basaltApp', 'templates', 'xgds_sample'),
                                  os.path.join('xgds_map_server', 'templates', 'handlebars', 'search')]
 
-XGDS_PLANNER2_EDITOR_CONTEXT_METHOD = 'basaltApp.views.addToPlannerContext'
-XGDS_PLANNER2_SCHEDULE_EXTRAS_METHOD = 'basaltApp.views.addEVToPlanExecution'
+XGDS_PLANNER_EDITOR_CONTEXT_METHOD = 'basaltApp.views.addToPlannerContext'
+XGDS_PLANNER_SCHEDULE_EXTRAS_METHOD = 'basaltApp.views.addEVToPlanExecution'
 
-XGDS_PLANNER2_PLOTS = getOrCreateDict('XGDS_PLANNER2_PLOTS')
-XGDS_PLANNER2_PLOTS['Temp'] = 'hi_temp'
+XGDS_PLANNER_PLOTS = getOrCreateDict('XGDS_PLANNER_PLOTS')
+XGDS_PLANNER_PLOTS['Temp'] = 'hi_temp'
 
 
 # list of (formatCode, extension, exporterClass)
