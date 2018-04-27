@@ -34,14 +34,13 @@ from xgds_instrument.models import ScienceInstrument
 from xgds_sample.forms import SearchSampleForm
 from xgds_image.forms import SearchImageSetForm
 from xgds_notes2.forms import SearchNoteForm
-from xgds_planner2.models import Vehicle
-from xgds_core.models import XgdsUser
+from xgds_core.models import XgdsUser, Vehicle
 
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
 from basaltApp.instrumentDataImporters import pxrfLoadPortableSampleData, pxrfParseElementResults
 
-GROUP_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER_GROUP_FLIGHT_MODEL)
+GROUP_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_CORE_GROUP_FLIGHT_MODEL)
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -154,14 +153,14 @@ class SearchFTIRDataForm(SearchInstrumentDataForm):
 
 class SearchBasaltImageSetForm(SearchImageSetForm):
     flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), 
-                                           label=settings.XGDS_PLANNER_FLIGHT_MONIKER,
+                                           label=settings.XGDS_CORE_FLIGHT_MONIKER,
                                            required=False,
                                            widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
 
 
 class SearchBasaltNoteForm(SearchNoteForm):
     flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), 
-                                           label=settings.XGDS_PLANNER_FLIGHT_MONIKER,
+                                           label=settings.XGDS_CORE_FLIGHT_MONIKER,
                                            required=False,
                                            widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
     flight__vehicle = forms.ModelChoiceField(Vehicle.objects.all(), label='Resource', required=False)

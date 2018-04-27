@@ -81,7 +81,7 @@
     },
     {
         "pk": 1,
-        "model": "xgds_planner2.vehicle",
+        "model": "xgds_core.vehicle",
         "fields": {
             "name": "EV1",
             "type": "EV"
@@ -89,7 +89,7 @@
     },
     {
         "pk": 2,
-        "model": "xgds_planner2.vehicle",
+        "model": "xgds_core.vehicle",
         "fields": {
             "name": "EV2",
             "type": "EV"
@@ -97,7 +97,7 @@
     },
     {
         "pk": 3,
-        "model": "xgds_planner2.vehicle",
+        "model": "xgds_core.vehicle",
         "fields": {
             "name": "SA",
             "type": "SA"

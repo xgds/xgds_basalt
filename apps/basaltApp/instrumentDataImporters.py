@@ -29,7 +29,7 @@ import spc  # library for reading SPC format spectra
 from django.conf import settings
 from geocamUtil.TimeUtil import timeZoneToUtc
 from geocamTrack.utils import getClosestPosition
-from xgds_planner2.utils import getFlight
+from xgds_core.flightUtils import getFlight
 from basaltApp.models import FtirDataProduct, AsdDataProduct, Element, PxrfDataProduct, PxrfSample, PxrfElement, FtirSample, ScienceInstrument, BasaltTrack, AsdSample
 from xgds_instrument.views import editInstrumentDataPosition
 

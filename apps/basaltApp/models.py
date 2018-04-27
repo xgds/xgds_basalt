@@ -36,16 +36,14 @@ from geocamUtil.models.AbstractEnum import AbstractEnumModel
 
 from xgds_core.couchDbStorage import CouchDbStorage
 
-from xgds_planner2 import models as plannerModels
 from xgds_sample import models as xgds_sample_models
-from xgds_status_board import models as statusBoardModels
 from geocamUtil.loader import LazyGetModelByName
-from xgds_core.models import Constant, AbstractCondition, AbstractConditionHistory, NameManager, BroadcastMixin
 from xgds_notes2.models import AbstractLocatedNote, AbstractUserSession, AbstractTaggedNote, Location, NoteMixin, NoteLinksMixin, HierarchichalTag
 from xgds_image import models as xgds_image_models
-from xgds_planner2.utils import getFlight
-from xgds_planner2.models import AbstractActiveFlight
-from xgds_planner2.views import getActiveFlights
+from xgds_core.flightUtils import getFlight
+from xgds_core.models import *
+from xgds_planner2 import models as plannerModels
+from xgds_core.views import getActiveFlights
 from xgds_instrument.models import ScienceInstrument, AbstractInstrumentDataProduct
 from geocamPycroraptor2.views import getPyraptordClient, stopPyraptordServiceIfRunning
 from xgds_video.models import *
@@ -64,8 +62,8 @@ from django.core.cache import caches
 _cache = caches['default']
 
 RESOURCE_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_RESOURCE_MODEL)
-VEHICLE_MODEL = LazyGetModelByName(settings.XGDS_PLANNER_VEHICLE_MODEL)
-ACTIVE_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER_ACTIVE_FLIGHT_MODEL)
+VEHICLE_MODEL = LazyGetModelByName(settings.XGDS_CORE_VEHICLE_MODEL)
+ACTIVE_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_CORE_ACTIVE_FLIGHT_MODEL)
 
 couchStore = CouchDbStorage()
 
@@ -79,7 +77,7 @@ BASALT_NOTES_GENERIC_RELATION = lambda: GenericRelation('BasaltNote', related_na
 
 class BasaltResource(geocamTrackModels.AbstractResource):
     resourceId = models.IntegerField(null=True, blank=True, db_index=True) # analogous to beacon id, identifier for track inputs
-    vehicle = models.OneToOneField(plannerModels.Vehicle, blank=True, null=True)
+    vehicle = models.OneToOneField(Vehicle, blank=True, null=True)
     port = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
@@ -174,7 +172,7 @@ class EV(models.Model):
     def __unicode__(self):
         return self.user.first_name + ' ' + self.user.last_name
 
-class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
+class BasaltGroupFlight(AbstractGroupFlight):
     
     @property
     def videoEpisode(self):
@@ -191,7 +189,7 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
     
     def summary_url(self):
-        return reverse('planner2_group_flight_summary', kwargs={'groupFlightName':self.name})
+        return reverse('xgds_core_group_flight_summary', kwargs={'groupFlightName':self.name})
 
     
     @property
@@ -199,13 +197,12 @@ class BasaltGroupFlight(plannerModels.AbstractGroupFlight):
         return self.basaltflight_set.all()
 
 
-
-class BasaltFlight(plannerModels.AbstractFlight):
+class BasaltFlight(AbstractFlight):
     ''' A Basalt Flight for storing delay and handling start and stop functions '''
     
     
     # set foreign key fields required by parent model to correct types for this site
-    vehicle = plannerModels.DEFAULT_VEHICLE_FIELD()
+    vehicle = DEFAULT_VEHICLE_FIELD()
     group = models.ForeignKey(BasaltGroupFlight, null=True, blank=True)
 
     delaySeconds = models.IntegerField(default=0)
@@ -335,7 +332,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
 #             episode.endTime = self.end_time
 #             episode.save()
 
-    def startFlightExtras(self, request, flight):
+    def startFlightExtras(self, request):
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
             self.startTracking()
 
@@ -347,7 +344,7 @@ class BasaltFlight(plannerModels.AbstractFlight):
         self.manageRemoteFlights(request, True)
             
 
-    def stopFlightExtras(self, request, flight):
+    def stopFlightExtras(self, request):
         #stop the eva track listener
         if settings.GEOCAM_TRACK_SERVER_TRACK_PROVIDER:
             self.stopTracking()
@@ -482,7 +479,7 @@ class BasaltPlanExecution(plannerModels.AbstractPlanExecution):
         return result
 
 
-class BasaltActiveFlight(plannerModels.AbstractActiveFlight):
+class BasaltActiveFlight(AbstractActiveFlight):
     flight = models.OneToOneField(BasaltFlight, related_name="active")
 
     def otherActiveFlights(self):
@@ -502,7 +499,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
     station_number = models.CharField(null=True, max_length=32, blank=True, verbose_name='Two digit station #', db_index=True)
     replicate = models.ForeignKey(Replicate, null=True, blank=True)
     year = models.PositiveSmallIntegerField(null=True, default=int(timezone.now().strftime("%y")), db_index=True)
-    flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_PLANNER_FLIGHT_MONIKER)
+    flight = models.ForeignKey(BasaltFlight, null=True, blank=True, verbose_name=settings.XGDS_CORE_FLIGHT_MONIKER)
     marker_id = models.CharField(null=True, blank=True, max_length=32, db_index=True)
     flir_temperature = models.FloatField(null=True, blank=True, verbose_name='FLIR Temp', help_text='C')
     notes = BASALT_NOTES_GENERIC_RELATION()
@@ -976,7 +973,7 @@ class AsdSample(models.Model):
 
 class BasaltUserSession(AbstractUserSession):
     location = models.ForeignKey(Location)
-    resource = models.ForeignKey(plannerModels.Vehicle)
+    resource = models.ForeignKey(Vehicle)
     
     @classmethod
     def getFormFields(cls):
@@ -1189,7 +1186,7 @@ class ActivityStatus(AbstractEnumModel):
 
 
 class BasaltCondition(AbstractCondition):
-    vehicle = models.ForeignKey(settings.XGDS_PLANNER_VEHICLE_MODEL, null=True, blank=True)
+    vehicle = models.ForeignKey(settings.XGDS_CORE_VEHICLE_MODEL, null=True, blank=True)
     source_group_name = models.CharField(null=True, blank=True, max_length=64) 
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
