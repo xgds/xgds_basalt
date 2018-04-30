@@ -14,29 +14,29 @@ sampleCount = 0
 missingPositionCount = 0
 for sample in samples:
     if (not sample.track_position) and (not sample.user_position):
-        if sample.resource:
+        if sample.vehicle:
             print "**** Processing: %s ****" % sample.name
-            sample.track_position = getClosestPosition(timestamp=sample.collection_time, resource=sample.resource)
+            sample.track_position = getClosestPosition(timestamp=sample.collection_time, vehicle=sample.vehicle)
             if not sample.track_position:
-                sample.track_position = getClosestPosition(timestamp=sample.collection_time, resource=sample.resource)
+                sample.track_position = getClosestPosition(timestamp=sample.collection_time, vehicle=sample.vehicle)
             if not sample.track_position:
                 print "  No location found - adding to list of samples w/o position"
                 missingPositionSampleList.append(sample.name)
                 missingPositionCount += 1
-            print "  Date: %s, Resource: %s, Location: %s\n" % (sample.collection_time, sample.resource, sample.track_position)
+            print "  Date: %s, vehicle: %s, Location: %s\n" % (sample.collection_time, sample.vehicle, sample.track_position)
             sample.save()
             sampleCount += 1
-#     if sample.resource is None:
+#     if sample.vehicle is None:
 #         print "**** Processing: %s ****" % sample.name
-#         sample.resource = BasaltResource.objects.get(name=settings.XGDS_SAMPLE_DEFAULT_COLLECTOR)
-#         sample.track_position = getClosestPosition(timestamp=sample.collection_time, resource=sample.resource)
+#         sample.vehicle = BasaltVehicle.objects.get(name=settings.XGDS_SAMPLE_DEFAULT_COLLECTOR)
+#         sample.track_position = getClosestPosition(timestamp=sample.collection_time, vehicle=sample.vehicle)
 #         if not sample.track_position:
-#             sample.track_position = getClosestPosition(timestamp=sample.collection_time, resource=BasaltResource.objects.get(name="EV1"))
+#             sample.track_position = getClosestPosition(timestamp=sample.collection_time, vehicle=BasaltVehicle.objects.get(name="EV1"))
 #         if not sample.track_position:
 #             print "  No location found - adding to list of samples w/o position"
 #             missingPositionSampleList.append(sample.name)
 #             missingPositionCount += 1
-#         print "  Date: %s, Resource: %s, Location: %s\n" % (sample.collection_time, sample.resource, sample.track_position)
+#         print "  Date: %s, vehicle: %s, Location: %s\n" % (sample.collection_time, sample.vehicle, sample.track_position)
 #         sample.save()
 #         sampleCount += 1
 

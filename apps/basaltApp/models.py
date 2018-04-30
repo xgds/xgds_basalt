@@ -61,7 +61,6 @@ import re
 from django.core.cache import caches  
 _cache = caches['default']
 
-RESOURCE_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_RESOURCE_MODEL)
 VEHICLE_MODEL = LazyGetModelByName(settings.XGDS_CORE_VEHICLE_MODEL)
 ACTIVE_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_CORE_ACTIVE_FLIGHT_MODEL)
 
@@ -75,14 +74,17 @@ VIDEO_EPISODE_MODEL = LazyGetModelByName(settings.XGDS_VIDEO_EPISODE_MODEL)
 BASALT_NOTES_GENERIC_RELATION = lambda: GenericRelation('BasaltNote', related_name='%(app_label)s_%(class)s_related')
 
 
-class BasaltResource(geocamTrackModels.AbstractResource):
+class BasaltVehicle(AbstractVehicle):
     resourceId = models.IntegerField(null=True, blank=True, db_index=True) # analogous to beacon id, identifier for track inputs
-    vehicle = models.OneToOneField(Vehicle, blank=True, null=True)
     port = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
-    
+
+
+DEFAULT_VEHICLE_FIELD = lambda: models.ForeignKey(BasaltVehicle, related_name='%(app_label)s_%(class)s_related',
+                                                  verbose_name='Asset', blank=True, null=True)
+
 
 class DataType(models.Model):
     name = models.CharField(max_length=32)
@@ -94,9 +96,7 @@ class DataType(models.Model):
 
 class BasaltTrack(geocamTrackModels.AbstractTrack):
     # set foreign key fields required by parent model to correct types for this site
-    resource = models.ForeignKey(BasaltResource,
-                                 related_name='%(app_label)s_%(class)s_related',
-                                 verbose_name='Asset', blank=True, null=True)
+    vehicle = DEFAULT_VEHICLE_FIELD()
     iconStyle = geocamTrackModels.DEFAULT_ICON_STYLE_FIELD()
     lineStyle = geocamTrackModels.DEFAULT_LINE_STYLE_FIELD()
 
@@ -112,14 +112,14 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
             return None
 
     def getLabelName(self, pos):  # Returned shortened name for display
-        return "__%s" % self.resource.vehicle.name
+        return "__%s" % self.vehicle.name
 
     def getTimezone(self):
         return pytz.timezone(self.timezone)
     
     @classmethod
     def getSearchFormFields(cls):
-        return ['name', 'resource', 'timezone']
+        return ['name', 'vehicle', 'timezone']
 
     def __unicode__(self):
         return '%s %s' % (self.__class__.__name__, self.name)
@@ -139,7 +139,7 @@ class AbstractBasaltPosition(geocamTrackModels.AltitudeResourcePosition, Broadca
     @property
     def displayName(self):
         if self.track:
-            return self.track.resource_name
+            return self.track.vehicle_name
         return None
 
     class Meta:
@@ -240,16 +240,16 @@ class BasaltFlight(AbstractFlight):
         self.save()
         return self.videoSource
 
-    def getResource(self):
-        resource=LazyGetModelByName(settings.GEOCAM_TRACK_RESOURCE_MODEL).get().objects.get(vehicle=self.vehicle)
-        return resource 
+    def getVehicle(self):
+        vehicle=LazyGetModelByName(settings.XGDS_CORE_VEHICLE_MODEL).get().objects.get(vehicle=self.vehicle)
+        return vehicle
 
     def startTracking(self):
-        resource=self.getResource()
+        vehicle=self.getVehicle()
         
         protocol = None
         try:
-            protocol = Constant.objects.get(name=resource.name + "_TRACKING_PROTO")
+            protocol = Constant.objects.get(name=vehicle.name + "_TRACKING_PROTO")
         except:
             # if there is no protocol, there should be no track.
             return
@@ -265,10 +265,10 @@ class BasaltFlight(AbstractFlight):
                     timezone=str(self.plans[0].plan.jsonPlan.site.alternateCrs.properties.timezone)
                     self.timezone = timezone
                 track = TRACK_MODEL.get()(name=self.name,
-                                          resource=resource,
+                                          vehicle=vehicle,
                                           timezone=timezone,
-                                          iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=resource.name),
-                                          lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=resource.name),
+                                          iconStyle=geocamTrackModels.IconStyle.objects.get(uuid=vehicle.name),
+                                          lineStyle=geocamTrackModels.LineStyle.objects.get(uuid=vehicle.name),
                                           dataType=DataType.objects.get(name="RawGPSLocation"))
                 track.save()
                 self.track = track
@@ -281,9 +281,9 @@ class BasaltFlight(AbstractFlight):
         if settings.PYRAPTORD_SERVICE is True and protocol:
             pyraptord = getPyraptordClient()
             serviceName = self.vehicle.name + "TrackListener"
-            ipAddress = Constant.objects.get(name=resource.name + "_TRACKING_IP")
+            ipAddress = Constant.objects.get(name=vehicle.name + "_TRACKING_IP")
             scriptPath = os.path.join(settings.PROJ_ROOT, 'apps', 'basaltApp', 'scripts', 'evaTrackListener.py')
-            command = "%s -o %s -p %d -n %s --proto=%s -t %s" % (scriptPath, ipAddress.value, resource.port, self.vehicle.name[-1:], protocol.value, self.name)
+            command = "%s -o %s -p %d -n %s --proto=%s -t %s" % (scriptPath, ipAddress.value, vehicle.port, self.vehicle.name[-1:], protocol.value, self.name)
             stopPyraptordServiceIfRunning(pyraptord, serviceName)
             time.sleep(2)
             pyraptord.updateServiceConfig(serviceName,
@@ -492,7 +492,7 @@ class Replicate(AbstractEnumModel):
 
 class BasaltSample(xgds_sample_models.AbstractSample):
     # set foreign key fields required by parent model to correct types for this site
-    resource = models.ForeignKey(BasaltResource, null=True, blank=True) #, default=BasaltResource.objects.get(name=settings.XGDS_SAMPLE_DEFAULT_COLLECTOR))
+    vehicle = DEFAULT_VEHICLE_FIELD()
     track_position = models.ForeignKey(PastPosition, null=True, blank=True)
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="sample_user_set" )
     number = models.IntegerField(null=True, verbose_name='Two digit sample location #', db_index=True)
@@ -527,7 +527,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'sample_type',
                 'description',
                 'region',
-                'resource',
+                'vehicle',
                 'collector',
                 ]
     
@@ -544,7 +544,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
                 'collector',
                 'marker_id',
                 'description',
-                'resource',
+                'vehicle',
                 'flight',
                 'collection_timezone',
                 'min_collection_time',
@@ -587,9 +587,9 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return None 
     
     @property
-    def resource_name(self):
-        if self.resource:
-            return self.resource.name
+    def vehicle_name(self):
+        if self.vehicle:
+            return self.vehicle.name
         return None
     
     @classmethod
@@ -620,7 +620,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         return region + year + sampleType + '-ST' +  stationNum + '-' + number + replicate
     
     def finish_initialization(self, request):
-        self.flight = getFlight(self.collection_time, self.resource.vehicle)
+        self.flight = getFlight(self.collection_time, self.vehicle)
         
     def updateSampleFromName(self, name):
         assert name
@@ -651,12 +651,12 @@ class BasaltSample(xgds_sample_models.AbstractSample):
         self.name = name
         self.save()
     
-    def setExtrasDefault(self, defaultResource):
-        if not self.resource:
-            if defaultResource: 
-                self.resource = defaultResource
+    def setExtrasDefault(self, defaultVehicle):
+        if not self.vehicle:
+            if defaultVehicle: 
+                self.vehicle = defaultVehicle
         if not self.flight:
-            foundActiveFlights = ACTIVE_FLIGHT_MODEL.get().objects.filter(flight__vehicle = defaultResource.vehicle)
+            foundActiveFlights = ACTIVE_FLIGHT_MODEL.get().objects.filter(flight__vehicle = defaultVehicle.vehicle)
             if foundActiveFlights: 
                 defaultFlight = foundActiveFlights[0].flight
                 self.flight = defaultFlight
@@ -673,7 +673,7 @@ class BasaltSample(xgds_sample_models.AbstractSample):
 
 class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin, NoteMixin):
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
-    resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+    vehicle = DEFAULT_VEHICLE_FIELD()
     notes = BASALT_NOTES_GENERIC_RELATION()
 
     @classmethod
@@ -684,8 +684,8 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
     
     @property
     def ev_name(self):
-        if self.resource:
-            return self.resource.vehicle.name
+        if self.vehicle:
+            return self.vehicle.name
         return None
 
     @property
@@ -712,7 +712,7 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
     
     @classmethod
     def getSearchFormFields(cls):
-        return ['resource',
+        return ['vehicle',
                 'flight',
                 'name',
                 'description',
@@ -723,7 +723,7 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
     
     @classmethod
     def getSearchFieldOrder(cls):
-        return ['resource',
+        return ['vehicle',
                 'flight',
                 'name',
                 'description',
@@ -740,14 +740,14 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
 #             result['flight_name'] = self.flight.name
 #         else:
 #             result['flight_name'] = ''
-#         if self.resource:
-#             result['ev_name'] = self.resource.vehicle.name
+#         if self.vehicle:
+#             result['ev_name'] = self.vehicle.name
 #         else:
 #             result['ev_name'] = ''
 #         return result
 
     def __unicode__(self):
-        return "%s: %s, %s, %s, %s (portable), %s (mfg)" % (self.flight, self.resource, 
+        return "%s: %s, %s, %s, %s (portable), %s (mfg)" % (self.flight, self.vehicle,
                                        self.acquisition_time, self.instrument.shortName,
                                        self.portable_mime_type, self.manufacturer_mime_type)
     
@@ -891,7 +891,7 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
 
     @classmethod
     def getSearchFormFields(cls):
-        return ['resource',
+        return ['vehicle',
                 'flight',
                 'name',
                 'description',
@@ -901,7 +901,7 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
     
     @classmethod
     def getSearchFieldOrder(cls):
-        return ['resource',
+        return ['vehicle',
                 'flight',
                 'name',
                 'description',
@@ -973,13 +973,13 @@ class AsdSample(models.Model):
 
 class BasaltUserSession(AbstractUserSession):
     location = models.ForeignKey(Location)
-    resource = models.ForeignKey(Vehicle)
-    
+    vehicle = DEFAULT_VEHICLE_FIELD()
+
     @classmethod
     def getFormFields(cls):
         return ['role',
                 'location',
-                'resource']
+                'vehicle']
     
 
 class BasaltTaggedNote(AbstractTaggedNote):
@@ -1055,11 +1055,11 @@ class BasaltNote(AbstractLocatedNote):
     def getPosition(self):
         # IMPORTANT this should not be used across multitudes of notes, it is designed to be used during construction.
         if not self.position and self.location_found == None:
-            resource = None
+            vehicle = None
             if self.flight:
                 if self.flight.vehicle:
-                    resource = self.flight.vehicle.basaltresource
-            self.position = getClosestPosition(timestamp=self.event_time, resource=resource)
+                    vehicle = self.flight.vehicle
+            self.position = getClosestPosition(timestamp=self.event_time, vehicle=vehicle)
             if self.position:
                 self.location_found = True
             else:
@@ -1098,7 +1098,7 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     track_position = models.ForeignKey(PastPosition, null=True, blank=True )
     exif_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_exif_set" )
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
-    resource = models.ForeignKey(BasaltResource, null=True, blank=True)
+    vehicle = DEFAULT_VEHICLE_FIELD()
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     notes = BASALT_NOTES_GENERIC_RELATION()
 
@@ -1114,12 +1114,12 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
                 'description',
                 'author',
                 'camera',
-                'resource',
+                'vehicle',
                 ]
     
     @classmethod
     def getSearchFieldOrder(cls):
-        return ['resource',
+        return ['vehicle',
                 'flight__group',
                 'author',
                 'name',
@@ -1136,16 +1136,10 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
         else:
             return None
 
-    @property
-    def resource_name(self):
-        if self.resource:
-            return self.resource.name
-        return None
-
     def finish_initialization(self, request):
         vehicle = None
-        if self.resource:
-            vehicle = self.resource.vehicle
+        if self.vehicle:
+            vehicle = self.vehicle
             self.flight = getFlight(self.acquisition_time, vehicle)
         
 
@@ -1159,11 +1153,14 @@ class BasaltSingleImage(xgds_image_models.AbstractSingleImage):
 class TextAnnotation(xgds_image_models.AbstractTextAnnotation):
     image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
 
+
 class EllipseAnnotation(xgds_image_models.AbstractEllipseAnnotation):
     image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
 
+
 class RectangleAnnotation(xgds_image_models.AbstractRectangleAnnotation):
     image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
+
 
 class ArrowAnnotation(xgds_image_models.AbstractArrowAnnotation):
     image = models.ForeignKey(BasaltImageSet, related_name='%(app_label)s_%(class)s_image')  
@@ -1186,8 +1183,8 @@ class ActivityStatus(AbstractEnumModel):
 
 
 class BasaltCondition(AbstractCondition):
-    vehicle = models.ForeignKey(settings.XGDS_CORE_VEHICLE_MODEL, null=True, blank=True)
-    source_group_name = models.CharField(null=True, blank=True, max_length=64) 
+    vehicle = DEFAULT_VEHICLE_FIELD()
+    source_group_name = models.CharField(null=True, blank=True, max_length=64)
     flight = models.ForeignKey(BasaltFlight, null=True, blank=True)
     
     def getRedisSSEChannel(self):

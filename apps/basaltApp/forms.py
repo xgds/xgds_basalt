@@ -100,7 +100,7 @@ class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
                                        input_formats=date_formats,
                                        required=False,
                                        )
-    field_order = ['timezone', 'resource', 'dataCollectionTime', 'portableDataFile', 'manufacturerDataFile', 'elementResultsCsvFile',
+    field_order = ['timezone', 'vehicle', 'dataCollectionTime', 'portableDataFile', 'manufacturerDataFile', 'elementResultsCsvFile',
                    'lat', 'lon', 'alt', 'name', 'description', 'minerals']
     
     def editingSetup(self, dataProduct):
@@ -163,7 +163,7 @@ class SearchBasaltNoteForm(SearchNoteForm):
                                            label=settings.XGDS_CORE_FLIGHT_MONIKER,
                                            required=False,
                                            widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
-    flight__vehicle = forms.ModelChoiceField(Vehicle.objects.all(), label='Resource', required=False)
+    flight__vehicle = forms.ModelChoiceField(Vehicle.objects.all(), label=settings.XGDS_CORE_VEHICLE_MONIKER, required=False)
     
     
 class SearchBasaltSampleForm(SearchSampleForm):

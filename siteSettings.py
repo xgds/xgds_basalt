@@ -58,12 +58,12 @@ INSTALLED_APPS = ['basaltApp',
                   'xgds_image',
                   'xgds_video',
                   'xgds_plot',
-                  'xgds_core',
                   'xgds_status_board',
                   'pextant',
                   'deepzoom',
 
                   'geocamTrack',
+                  'xgds_core',
                   'geocamPycroraptor2',
                   'geocamUtil',
                   'pipeline',
@@ -369,8 +369,8 @@ XGDS_PLANNER_SCHEMAS = {
     }
 }
 
-GEOCAM_TRACK_RESOURCE_MODEL = 'basaltApp.BasaltResource'
-GEOCAM_TRACK_RESOURCE_VERBOSE_NAME = 'Asset'
+XGDS_CORE_VEHICLE_MODEL = 'basaltApp.BasaltVehicle'
+XGDS_CORE_VEHICLE_MONIKER = 'Asset'
 GEOCAM_TRACK_TRACK_MODEL = 'basaltApp.BasaltTrack'
 GEOCAM_TRACK_TRACK_MONIKIER = 'Actual_Traverse'
 GEOCAM_TRACK_POSITION_MODEL = 'basaltApp.CurrentPosition'
@@ -542,10 +542,10 @@ except:
     pass
 XGDS_MAP_SERVER_JS_MAP['Actual_Traverse'] = {'ol': 'geocamTrack/js/olActual_TraverseMap.js',
                                                        'model': GEOCAM_TRACK_TRACK_MODEL,
-                                                       'columns': ['name', 'resource_name', 'type', 'color', 'alpha',  'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
+                                                       'columns': ['name', 'vehicle_name', 'type', 'color', 'alpha',  'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
                                                        'hiddenColumns': ['type', 'color', 'alpha', 'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
                                                        'columnTitles': ['Name', 'Resource',''],
-                                                       'searchableColumns': ['name', 'resource_name'],
+                                                       'searchableColumns': ['name', 'vehicle_name'],
                                                        'search_form_class': 'basaltApp.forms.SearchBasaltTrackForm'
                                                        }
 try:
@@ -566,7 +566,7 @@ XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    'columns': ['checkbox', 'acquisition_time', 'acquisition_timezone', 'author_name', 'name', 'description', 'thumbnail_image_url',  'pk', 'view_url',
                                                'camera_name', 'raw_image_url', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'head','flight_name', 'deepzoom_file_url',
                                                'rotation_degrees', 'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom','DT_RowId'],
-                                   'hiddenColumns': ['pk', 'view_url', 'camera_name', 'raw_image_url', 'app_label',  'resource_name', 'model_type','type',
+                                   'hiddenColumns': ['pk', 'view_url', 'camera_name', 'raw_image_url', 'app_label',  'vehicle_name', 'model_type','type',
                                                      'lat','lon','alt','head','flight_name', 'deepzoom_file_url', 'rotation_degrees', 
                                                      'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom', 'DT_RowId'],
                                    'unsortableColumns': ['thumbnail_image_url'],
@@ -613,7 +613,7 @@ XGDS_MAP_SERVER_JS_MAP['Note'] = {'ol': 'xgds_notes2/js/olNoteMap.js',
 XGDS_MAP_SERVER_JS_MAP[XGDS_SAMPLE_SAMPLE_KEY] = {'ol': 'xgds_sample/js/olSampleMap.js',
                                                   'model': XGDS_SAMPLE_SAMPLE_MODEL,
                                                   'searchableColumns': ['name','description','flight_name'],
-                                                  'columns': ['checkbox', 'collection_time', 'collection_timezone', 'name', 'sample_type_name', 'label_number', 'collector_name', 'resource_name', 'thumbnail_image_url', 'region_name', 'pk', 'lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
+                                                  'columns': ['checkbox', 'collection_time', 'collection_timezone', 'name', 'sample_type_name', 'label_number', 'collector_name', 'vehicle_name', 'thumbnail_image_url', 'region_name', 'pk', 'lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
                                                   'hiddenColumns': ['thumbnail_image_url', 'region_name', 'pk','lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
                                                   'columnTitles': ['Time', 'TZ', 'Name', 'Type', 'Label', 'Collector', 'Resource'],
                                                   'viewHandlebars': 'basaltApp/templates/xgds_sample/sample-view.handlebars',

@@ -56,7 +56,7 @@ RAW_DATA_TYPE = DataType.objects.get(id=1)  # hard-coded elsewhere
 BOAT_FLIGHT, _ = NewFlight.objects.get_or_create(name='boat',
                                                  defaults={'uuid': uuid4()})
 BOAT_TRACK, _ = Track.objects.get_or_create(name='boat',
-                                            defaults={'resource': BOAT_FLIGHT,
+                                            defaults={'vehicle': BOAT_FLIGHT,
                                                       'iconStyle': DEFAULT_ICON_STYLE,
                                                       'lineStyle': DEFAULT_LINE_STYLE,
                                                       'dataType': RAW_DATA_TYPE})
@@ -135,7 +135,7 @@ class TracLinkTelemetryCleanup(object):
                 raise KeyError('Received TracLink position for the beacon with targetId %s (named "%s"). Please ensure there is an active flight using that beacon in the plrpExplorer NewFlight table.' % (targetId, beacon.name))
 
             flight = activeFlight.flight
-            tracks = Track.objects.filter(resource=flight)
+            tracks = Track.objects.filter(vehicle=flight.vehicle)
             assert len(tracks) in (0, 1)
             if tracks:
                 # we already have a valid track, use that

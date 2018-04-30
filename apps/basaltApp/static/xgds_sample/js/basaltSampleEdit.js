@@ -29,8 +29,8 @@ $.extend(xgds_sample,{
 			return "id_sample_type"; 
 		} else if (jsonKey == "flight_name") {
 			return "id_flight";
-		} else if (jsonKey == "resource_name") {
-			return "id_resource";
+		} else if (jsonKey == "vehicle_name") {
+			return "id_vehicle";
 		} else {
 			return "id_" + jsonKey;
 		}

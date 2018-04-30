@@ -23,7 +23,7 @@ class BasaltInstrumentDataProductAdmin(admin.ModelAdmin):
 class BasaltImageSetAdmin(admin.ModelAdmin):
     raw_id_fields = ("track_position", "exif_position", "user_position")
 
-admin.site.register(BasaltResource)
+admin.site.register(BasaltVehicle)
 admin.site.register(CurrentPosition)
 admin.site.register(PastPosition)
 admin.site.register(EV)

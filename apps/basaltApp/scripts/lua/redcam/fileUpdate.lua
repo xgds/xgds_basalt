@@ -88,7 +88,7 @@ local function uploadFile(dirPath, fileName, uploadUrl, snapshotFile)
     local body = '--' .. boundary..'\r\n'
         ..'Content-Disposition: form-data; name="username"\r\n\r\n'..'ev1'
         .. '\r\n--' .. boundary .. '\r\n'
-        ..'Content-Disposition: form-data; name="resource"\r\n\r\n'..'1'
+        ..'Content-Disposition: form-data; name="vehicle"\r\n\r\n'..'1'
         .. '\r\n--' .. boundary .. '\r\n'
         ..'Content-Disposition: form-data; name="timezone"\r\n\r\n'
         .. 'US/Hawaii'

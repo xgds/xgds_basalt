@@ -81,57 +81,33 @@
     },
     {
         "pk": 1,
-        "model": "xgds_core.vehicle",
-        "fields": {
-            "name": "EV1",
-            "type": "EV"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "xgds_core.vehicle",
-        "fields": {
-            "name": "EV2",
-            "type": "EV"
-        }
-    },
-    {
-        "pk": 3,
-        "model": "xgds_core.vehicle",
-        "fields": {
-            "name": "SA",
-            "type": "SA"
-        }
-    },
-    {
-        "pk": 1,
-        "model": "basaltApp.BasaltResource",
+        "model": "basaltApp.BasaltVehicle",
         "fields": {
             "name": "EV1",
             "resourceId": 1,
-            "vehicle": 1,
+            "type": "EV",
             "primary": true,
             "port": 10001
         }
     },
     {
         "pk": 2,
-        "model": "basaltApp.BasaltResource",
+        "model": "basaltApp.BasaltVehicle",
         "fields": {
             "name": "EV2",
             "resourceId": 2,
-            "vehicle": 2,
+            "type": "EV",
             "primary": true,
             "port": 10001
         }
     },
     {
         "pk": 3,
-        "model": "basaltApp.BasaltResource",
+        "model": "basaltApp.BasaltVehicle",
         "fields": {
             "name": "SA",
             "resourceId": 3,
-            "vehicle": 3,
+            "type": "SA",
             "primary": false,
             "port": 10001
         }
@@ -381,7 +357,7 @@
                 "creator": "root",
                 "name": " EVAs (Active)",
                 "description": "Will contain all active flight data",
-                "childNodesUrl": "/xgds_planner2/activeFlightsTreeNodes",
+                "childNodesUrl": "/xgds_core/activeFlightsTreeNodes",
                 "parent": "mg1"
         }
     },
@@ -392,7 +368,7 @@
                 "creator": "root",
                 "name": " EVAs (Completed)",
                 "description": "Will contain all flight data.  Do not select this node; expand and select its children.",
-                "childNodesUrl": "/xgds_planner2/completedFlightsTreeNodes",
+                "childNodesUrl": "/xgds_core/completedFlightsTreeNodes",
                 "parent": "mg1"
         }
     },
