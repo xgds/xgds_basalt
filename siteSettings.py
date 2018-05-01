@@ -460,67 +460,6 @@ XGDS_DATA_IMPORTS["pXRF"]= '../../basaltApp/pXRFDataImport/'
 
 XGDS_IMAGE_DEFAULT_CREATE_DEEPZOOM = True
 
-XGDS_DATA_MASKED_FIELDS = getOrCreateDict('XGDS_DATA_MASKED_FIELDS')
-XGDS_DATA_MASKED_FIELDS['basaltApp'] = {'BasaltImageSet': ['exif_position',
-                                                          'track_position',
-                                                          'user_position', 
-                                                          'modification_time', 
-                                                          'acquisition_timezone',
-                                                          'resource',
-                                                          'deleted',
-                                                          'flight',
-                                                          'shortName',
-                                                          'create_deepzoom',
-                                                          'associated_deepzoom',
-                                                          'rotation_degrees',
-                                                          'creation_time',
-                                                          ],
-                                        'BasaltSample': ['track_position',
-                                                         'user_position', 
-                                                         'creator',
-                                                         'modifier',
-                                                         'creation_time',
-                                                         'collection_timezone',
-                                                         'modification_time', 
-                                                         'year'
-                                                          ],
-                                        'AsdDataProduct': ['manufacturer_data_file',
-                                                           'manufacturer_mime_type',
-                                                           'portable_data_file',
-                                                           'portable_mime_type',
-                                                           'portable_file_format_name',
-                                                           'creation_time',
-                                                           'location'
-                                                           ],
-                                        'PxrfDataProduct': ['manufacturer_data_file',
-                                                            'manufacturer_mime_type',
-                                                            'portable_data_file',
-                                                            'portable_mime_type',
-                                                            'portable_file_format_name',
-                                                            'creation_time',
-                                                            'location'
-                                                            ],
-                                        'FtirDataProduct': ['manufacturer_data_file',
-                                                            'manufacturer_mime_type',
-                                                            'portable_data_file',
-                                                            'portable_mime_type',
-                                                            'portable_file_format_name',
-                                                            'creation_time',
-                                                            'location'
-                                                            ],
-                                        'BasaltTrack': ['uuid',
-                                                        'iconStyle',
-                                                        'lineStyle',
-                                                        'extras',
-                                                        'dataType'],
-                                        'PastPosition':['precisionMeters',
-                                                        'serverTimestamp'],
-                                        }
-
-XGDS_DATA_EXPAND_RELATED = getOrCreateDict('XGDS_DATA_EXPAND_RELATED')
-XGDS_DATA_EXPAND_RELATED['basaltApp'] = {'BasaltSample': [('region', 'zone', 'Zone')]}
-
-
 XGDS_VIDEO_GET_ACTIVE_EPISODE = 'basaltApp.views.getActiveEpisode'
 XGDS_VIDEO_GET_EPISODE_FROM_NAME = 'basaltApp.views.getEpisodeFromName'
 XGDS_VIDEO_GET_TIMEZONE_FROM_NAME = 'basaltApp.views.getTimezoneFromFlightName'
@@ -544,7 +483,7 @@ XGDS_MAP_SERVER_JS_MAP['Actual_Traverse'] = {'ol': 'geocamTrack/js/olActual_Trav
                                                        'model': GEOCAM_TRACK_TRACK_MODEL,
                                                        'columns': ['name', 'vehicle_name', 'type', 'color', 'alpha',  'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
                                                        'hiddenColumns': ['type', 'color', 'alpha', 'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
-                                                       'columnTitles': ['Name', 'Resource',''],
+                                                       'columnTitles': ['Name', 'Asset',''],
                                                        'searchableColumns': ['name', 'vehicle_name'],
                                                        'search_form_class': 'basaltApp.forms.SearchBasaltTrackForm'
                                                        }
@@ -615,7 +554,7 @@ XGDS_MAP_SERVER_JS_MAP[XGDS_SAMPLE_SAMPLE_KEY] = {'ol': 'xgds_sample/js/olSample
                                                   'searchableColumns': ['name','description','flight_name'],
                                                   'columns': ['checkbox', 'collection_time', 'collection_timezone', 'name', 'sample_type_name', 'label_number', 'collector_name', 'vehicle_name', 'thumbnail_image_url', 'region_name', 'pk', 'lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
                                                   'hiddenColumns': ['thumbnail_image_url', 'region_name', 'pk','lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
-                                                  'columnTitles': ['Time', 'TZ', 'Name', 'Type', 'Label', 'Collector', 'Resource'],
+                                                  'columnTitles': ['Time', 'TZ', 'Name', 'Type', 'Label', 'Collector', 'Asset'],
                                                   'viewHandlebars': 'basaltApp/templates/xgds_sample/sample-view.handlebars',
                                                   'event_time_field': 'collection_time',
                                                   'event_timezone_field': 'collection_timezone',
