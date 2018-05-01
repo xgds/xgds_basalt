@@ -209,7 +209,7 @@ class BasaltFlight(AbstractFlight):
 
     delaySeconds = models.IntegerField(default=0)
     track = models.OneToOneField(BasaltTrack, null=True, blank=True)
-    
+
     videoSource = models.ForeignKey(settings.XGDS_VIDEO_SOURCE_MODEL, null=True, blank=True)
 
     def thumbnail_time_url(self, event_time):
@@ -226,15 +226,13 @@ class BasaltFlight(AbstractFlight):
     
     def view_url(self):
         return reverse('xgds_video_recorded', kwargs={'flightName':self.name})
-    
 
     def hasVideo(self):
         if self.group.videoEpisode:
             foundSegments = self.group.videoEpisode.videosegment_set.filter(source_id = self.getVideoSource().id)
             return foundSegments.exists()
         return False
-    
-    
+
     def getVideoSource(self):
         if self.videoSource:
             return self.videoSource
@@ -392,7 +390,32 @@ class BasaltFlight(AbstractFlight):
      
 
     def getTreeJsonChildren(self):
-        children = super(BasaltFlight, self).getTreeJsonChildren()
+        children = []
+        if self.track:
+            children.append({"title": settings.GEOCAM_TRACK_TRACK_MONIKIER,
+                             "selected": False,
+                             "tooltip": "Tracks for " + self.name,
+                             "key": self.uuid + "_tracks",
+                             "data": {
+                                 "json": reverse('geocamTrack_mapJsonTrack', kwargs={'uuid': str(self.track.uuid)}),
+                                 "kmlFile": reverse('geocamTrack_trackKml', kwargs={'trackName': self.track.name}),
+                                 "sseUrl": "",
+                                 "type": 'MapLink',
+                             }
+                             })
+        if self.plans:
+            myplan = self.plans[0].plan
+            children.append({"title": settings.XGDS_PLANNER_PLAN_MONIKER,
+                             "selected": False,
+                             "tooltip": "Plan for " + self.name,
+                             "key": self.uuid + "_plan",
+                             "data": {"json": reverse('planner2_mapJsonPlan', kwargs={'uuid': str(myplan.uuid)}),
+                                      "kmlFile": reverse('planner2_planExport', kwargs={'uuid': str(myplan.uuid),
+                                                                                        'name': myplan.name + '.kml'}),
+                                      "sseUrl": "",
+                                      "type": 'MapLink',
+                                      }
+                             })
         if self.basaltapp_basaltnote_related.exists():
             children.append({"title": "Notes", 
                              "selected": False, 
