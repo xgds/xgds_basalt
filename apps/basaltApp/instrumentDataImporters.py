@@ -88,7 +88,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                     'instrument':instrument,
                     'track_position':sampleLocation,
                     'flight':flight,
-                    'vehicle':vehicle,
+                    #'vehicle':vehicle,
                     'creator':user,
                     'collector': collector,
                     'name':name,
@@ -305,22 +305,22 @@ def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp
             user = User.objects.get(username='asd')
 
         dataProduct = AsdDataProduct(
-            portable_file_format_name = "SPC",
-            portable_mime_type = "application/octet-stream",
-            acquisition_time = utcStamp,
-            acquisition_timezone = timezone.zone,
-            creation_time = datetime.datetime.now(pytz.utc),
-            manufacturer_data_file = manufacturerDataFile,
-            manufacturer_mime_type = "application/octet-stream",
-            instrument = instrument,
-            track_position = sampleLocation,
-            flight = flight,
-            vehicle = vehicle,
+            portable_file_format_name="SPC",
+            portable_mime_type="application/octet-stream",
+            acquisition_time=utcStamp,
+            acquisition_timezone=timezone.zone,
+            creation_time=datetime.datetime.now(pytz.utc),
+            manufacturer_data_file=manufacturerDataFile,
+            manufacturer_mime_type="application/octet-stream",
+            instrument=instrument,
+            track_position=sampleLocation,
+            flight=flight,
+            #vehicle=vehicle,
             creator=user,
             collector=collector,
-            name = name,
-            description = description,
-            minerals = minerals,
+            name=name,
+            description=description,
+            minerals=minerals,
             pk=object_id
         )
         
@@ -373,6 +373,7 @@ def readAsciiFtirData(aspFile):
                     for i in range(pointCount)]
     return spectrumData
 
+
 def readSpcFtirData(spcFile):
     instrumentData = spc.File(spcFile)
     # Take slice b/c data has trailing tab
@@ -381,6 +382,7 @@ def readSpcFtirData(spcFile):
     # First line is headers, so we drop it
     dataTable = dataTable[1:]
     return dataTable
+
 
 def loadPortableFtirData(portableDataFile, dataProduct):
     if portableDataFile:
@@ -399,6 +401,7 @@ def loadPortableFtirData(portableDataFile, dataProduct):
         dataProduct.portable_file_format_name = portableFileFormat
         dataProduct.save()
 
+
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
                      utcStamp, timezone, vehicle, name, description, minerals,
                      user=None, latitude=None, longitude=None, altitude=None,
@@ -411,21 +414,21 @@ def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
             user = User.objects.get(username='ftir')
 
         dataProduct = FtirDataProduct(
-            portable_mime_type = "application/octet-stream",
-            acquisition_time = utcStamp,
-            acquisition_timezone = timezone.zone,
-            creation_time = datetime.datetime.now(pytz.utc),
-            manufacturer_data_file = manufacturerDataFile,
-            manufacturer_mime_type = "application/octet-stream",
-            instrument = instrument,
-            track_position = sampleLocation,
-            flight = flight,
-            vehicle = vehicle,
+            portable_mime_type="application/octet-stream",
+            acquisition_time=utcStamp,
+            acquisition_timezone=timezone.zone,
+            creation_time=datetime.datetime.now(pytz.utc),
+            manufacturer_data_file=manufacturerDataFile,
+            manufacturer_mime_type="application/octet-stream",
+            instrument=instrument,
+            track_position=sampleLocation,
+            flight=flight,
+            #vehicle=vehicle,
             creator=user,
             collector=collector,
-            name = name,
-            description = description,
-            minerals = minerals,
+            name=name,
+            description=description,
+            minerals=minerals,
             pk=object_id
         )
         dataProduct.save()
