@@ -504,7 +504,7 @@ XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    'searchableColumns': ['name','description','flight_name', 'author_name'],
                                    'columns': ['checkbox', 'acquisition_time', 'acquisition_timezone', 'author_name', 'name', 'description', 'thumbnail_image_url',  'pk', 'view_url',
                                                'camera_name', 'raw_image_url', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'head','flight_name', 'deepzoom_file_url',
-                                               'rotation_degrees', 'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom','DT_RowId'],
+                                               'rotation_degrees', 'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom','vehicle_name','DT_RowId'],
                                    'hiddenColumns': ['pk', 'view_url', 'camera_name', 'raw_image_url', 'app_label',  'vehicle_name', 'model_type','type',
                                                      'lat','lon','alt','head','flight_name', 'deepzoom_file_url', 'rotation_degrees', 
                                                      'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom', 'DT_RowId'],
@@ -559,7 +559,7 @@ XGDS_MAP_SERVER_JS_MAP[XGDS_SAMPLE_SAMPLE_KEY] = {'ol': 'xgds_sample/js/olSample
                                                   'event_time_field': 'collection_time',
                                                   'event_timezone_field': 'collection_timezone',
                                                   'search_form_class': 'basaltApp.forms.SearchBasaltSampleForm',
-                                                  } 
+                                                  }
 XGDS_MAP_SERVER_JS_MAP['FTIR'] = {'ol': 'xgds_instrument/js/olFtirDataProduct.js',
                                   'model': 'basaltApp.FtirDataProduct',
                                   'columns': ['checkbox', 'acquisition_time', 'acquisition_timezone', 'collector_name', 'name', 'description', 'minerals', 'pk', 'view_url', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'flight_name', 'instrument_name','manufacturer_data_file_url','portable_data_file_url','jsonDataUrl','csvDataUrl', 'ev_name', 'DT_RowId'],

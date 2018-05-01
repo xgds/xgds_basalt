@@ -83,6 +83,7 @@ class BasaltInstrumentDataForm(ImportInstrumentDataForm):
     description = forms.CharField(widget=forms.Textarea, label="Description", required=False)
     minerals = forms.CharField(widget=forms.Textarea, label="Minerals", required=False)
 
+
 class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
     date_formats = list(forms.DateTimeField.input_formats) + [
         '%Y/%m/%d %H:%M:%S',
@@ -114,6 +115,7 @@ class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
         elif key == 'elementResultsCsvFile':
             pxrfParseElementResults(self.cleaned_data[key], dataProduct)
 
+
 class SearchPXRFDataForm(SearchInstrumentDataForm):
      
     field_order = PxrfDataProduct.getSearchFieldOrder()
@@ -121,7 +123,8 @@ class SearchPXRFDataForm(SearchInstrumentDataForm):
     class Meta:
         model = PxrfDataProduct
         fields = PxrfDataProduct.getSearchFormFields()
-        
+
+
 class SearchASDDataForm(SearchInstrumentDataForm):
     
     field_order = AsdDataProduct.getSearchFieldOrder()
@@ -163,8 +166,7 @@ class SearchBasaltNoteForm(SearchNoteForm):
                                            label=settings.XGDS_CORE_FLIGHT_MONIKER,
                                            required=False,
                                            widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
-    flight__vehicle = forms.ModelChoiceField(Vehicle.objects.all(), label=settings.XGDS_CORE_VEHICLE_MONIKER, required=False)
-    
+
     
 class SearchBasaltSampleForm(SearchSampleForm):
     number = forms.IntegerField(required=False)

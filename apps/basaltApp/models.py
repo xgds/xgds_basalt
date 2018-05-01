@@ -120,7 +120,7 @@ class BasaltTrack(geocamTrackModels.AbstractTrack):
     @classmethod
     def getSearchFormFields(cls):
         return ['name',
-                # 'vehicle',
+                'flight__vehicle',
                 'timezone']
 
     def __unicode__(self):
@@ -533,7 +533,7 @@ class BasaltSample(xgds_sample_models.AbstractSample, HasFlight):
                 'sample_type',
                 'description',
                 'region',
-                # 'vehicle',
+                'flight__vehicle',
                 'collector',
                 ]
     
@@ -550,7 +550,7 @@ class BasaltSample(xgds_sample_models.AbstractSample, HasFlight):
                 'collector',
                 'marker_id',
                 'description',
-                # 'vehicle',
+                'flight__vehicle',
                 'flight',
                 'collection_timezone',
                 'min_collection_time',
@@ -680,13 +680,6 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
         return None
 
     @property
-    def flight_name(self):
-        if self.flight:
-            return self.flight.name
-        else:
-            return None
-
-    @property
     def samples(self):
         return []
 
@@ -703,7 +696,7 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
     
     @classmethod
     def getSearchFormFields(cls):
-        return [#'vehicle',
+        return ['flight__vehicle',
                 'flight',
                 'name',
                 'description',
@@ -714,7 +707,7 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
     
     @classmethod
     def getSearchFieldOrder(cls):
-        return [#'vehicle',
+        return ['flight__vehicle',
                 'flight',
                 'name',
                 'description',
@@ -724,18 +717,6 @@ class BasaltInstrumentDataProduct(AbstractInstrumentDataProduct, NoteLinksMixin,
                 'acquisition_timezone',
                 'min_acquisition_time',
                 'max_acquisition_time']
-    
-#     def toMapDict(self):
-#         result = AbstractInstrumentDataProduct.toMapDict(self)
-#         if self.flight:
-#             result['flight_name'] = self.flight.name
-#         else:
-#             result['flight_name'] = ''
-#         if self.vehicle:
-#             result['ev_name'] = self.vehicle.name
-#         else:
-#             result['ev_name'] = ''
-#         return result
 
     def __unicode__(self):
         return "%s: %s, %s, %s, %s (portable), %s (mfg)" % (self.flight, self.vehicle,
@@ -862,8 +843,7 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
                 self.elementPercentsTotal += pe.percent
             self.save()
         return round(self.elementPercentsTotal, 2)
-            
-            
+
     @property
     def pretty_fileNumber(self):
         if self.fileNumber >= 0:
@@ -882,7 +862,7 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
 
     @classmethod
     def getSearchFormFields(cls):
-        return [#'vehicle',
+        return ['flight__vehicle',
                 'flight',
                 'name',
                 'description',
@@ -892,7 +872,7 @@ class PxrfDataProduct(BasaltInstrumentDataProduct):
     
     @classmethod
     def getSearchFieldOrder(cls):
-        return [#'vehicle',
+        return ['flight__vehicle',
                 'flight',
                 'name',
                 'description',
@@ -998,20 +978,6 @@ class BasaltNote(AbstractLocatedNote):
         if self.flight:
             return self.flight.vehicle.name
         return 'sse'
-
-    @property
-    def flight_name(self):
-        if self.flight:
-            return self.flight.name
-        else:
-            return None
-
-    @property  
-    def flight_group_name(self):
-        if self.flight:
-            return self.flight.group.name
-        else:
-            return None
     
     @classmethod
     def buildTagsQuery(cls, search_value):
@@ -1030,18 +996,6 @@ class BasaltNote(AbstractLocatedNote):
             pass
         return self.event_time
 
-#     def toMapDict(self):
-#         """
-#         Return a reduced dictionary that will be turned to JSON for rendering in a map
-#         """
-#         result = AbstractLocatedNote.toMapDict(self)
-#         result['type'] = 'Note'
-#         if self.flight:
-#             result['flight'] = self.flight.name
-#         else:
-#             result['flight'] = ''
-#         return result
-    
     def getPosition(self):
         # IMPORTANT this should not be used across multitudes of notes, it is designed to be used during construction.
         if not self.position and self.location_found == None:
@@ -1064,7 +1018,8 @@ class BasaltNote(AbstractLocatedNote):
                 'event_timezone',
                 'author',
                 'role',
-                'location'
+                'location',
+                'flight__vehicle'
                 ]
 
     @classmethod
@@ -1090,12 +1045,6 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
     user_position = models.ForeignKey(PastPosition, null=True, blank=True, related_name="%(app_label)s_%(class)s_image_user_set" )
     flight = DEFAULT_FLIGHT_FIELD()
     notes = BASALT_NOTES_GENERIC_RELATION()
-
-    @classmethod
-    def getSearchableFields(self):
-        result = super(BasaltImageSet, self).getSearchableFields()
-        result.append('flight__name')
-        return result
     
     @classmethod
     def getSearchFormFields(cls):
@@ -1103,12 +1052,12 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
                 'description',
                 'author',
                 'camera',
-                #'vehicle',
+                'flight__vehicle',
                 ]
     
     @classmethod
     def getSearchFieldOrder(cls):
-        return [#'vehicle',
+        return ['flight__vehicle',
                 'flight__group',
                 'author',
                 'name',
@@ -1117,13 +1066,6 @@ class BasaltImageSet(xgds_image_models.AbstractImageSet):
                 'acquisition_timezone',
                 'min_acquisition_time',
                 'max_acquisition_time']
-
-    @property
-    def flight_name(self):
-        if self.flight:
-            return self.flight.name
-        else:
-            return None
 
     def finish_initialization(self, request):
         pass
