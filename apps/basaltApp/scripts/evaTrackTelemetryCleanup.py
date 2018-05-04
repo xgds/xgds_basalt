@@ -50,7 +50,7 @@ from geocamUtil.datetimeJsonEncoder import DatetimeJsonEncoder
 
 
 from basaltApp.models import (BasaltActiveFlight,
-                              BasaltResource,
+                              BasaltVehicle,
                               CurrentPosition,
                               BasaltTrack,
                               PastPosition,
@@ -316,10 +316,10 @@ class GpsTelemetryCleanup(object):
         else:
             # check db for a track matching this resourceId
             try:
-                basaltResource = BasaltResource.objects.get(resourceId=resourceId)
+                basaltVehicle = BasaltVehicle.objects.get(resourceId=resourceId)
             except ObjectDoesNotExist:
                 logging.warning('%s', traceback.format_exc())
-                raise KeyError('Received GPS position for the EV with id %s. Please ensure there is a vehicle with that id in the BasaltResource table.' % resourceId)
+                raise KeyError('Received GPS position for the EV with resourceId %s. Please ensure there is a vehicle with that id in the BasaltVehicle table.' % resourceId)
 
             # Check for track name.  We use explicit name if specified, otherwise
             # we check for an active flight and finally use the resourceId
@@ -327,11 +327,11 @@ class GpsTelemetryCleanup(object):
                 logging.info("Using track name from listener: %s" % trackName)
             if len(trackName) == 0:  # I.e. we were not given a name for track already
                 try:
-                    activeFlight = BasaltActiveFlight.objects.get(flight__vehicle__basaltresource=basaltResource)
+                    activeFlight = BasaltActiveFlight.objects.get(flight__vehicle=basaltVehicle)
                     trackName = activeFlight.flight.name
                     logging.info("Using track name from BasaltActiveFlight: %s" % trackName)
                 except ObjectDoesNotExist:
-                    trackName = basaltResource.name
+                    trackName = basaltVehicle.name
                     logging.info("Using track name from EV arg: %s" % trackName)
                 
             tracks = BasaltTrack.objects.filter(name=trackName)
@@ -342,7 +342,7 @@ class GpsTelemetryCleanup(object):
             else:
                 # must start a new track
                 track = BasaltTrack(name=trackName,
-                              resource=basaltResource,
+                              vehicle=basaltVehicle,
                               iconStyle=DEFAULT_ICON_STYLE,
                               lineStyle=DEFAULT_LINE_STYLE,
                               dataType=RAW_DATA_TYPE)

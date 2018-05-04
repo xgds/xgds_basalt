@@ -29,7 +29,7 @@ import spc  # library for reading SPC format spectra
 from django.conf import settings
 from geocamUtil.TimeUtil import timeZoneToUtc
 from geocamTrack.utils import getClosestPosition
-from xgds_planner2.utils import getFlight
+from xgds_core.flightUtils import getFlight
 from basaltApp.models import FtirDataProduct, AsdDataProduct, Element, PxrfDataProduct, PxrfSample, PxrfElement, FtirSample, ScienceInstrument, BasaltTrack, AsdSample
 from xgds_instrument.views import editInstrumentDataPosition
 
@@ -37,17 +37,18 @@ FTIR = "ftir"
 ASD = "asd"
 PXRF = "pxrf"
 
-def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
+
+def lookupFlightInfo(utcStamp, timezone, vehicle, defaultTrackName):
     #
     # Get flight and track info and find location of sample if available
     #
     flight = None
     try:
-        flight = getFlight(utcStamp, resource.vehicle)
+        flight = getFlight(utcStamp, vehicle.vehicle)
         if flight:
             trackName = flight.name
-        elif resource:
-            trackName = resource.name
+        elif vehicle:
+            trackName = vehicle.name
         else:
             trackName = defaultTrackName
         track = BasaltTrack.getTrackByName(trackName)
@@ -56,22 +57,22 @@ def lookupFlightInfo(utcStamp, timezone, resource, defaultTrackName):
                 track = BasaltTrack(name=defaultTrackName)
             else:
                 track = BasaltTrack(name=defaultTrackName,
-                                    resource=resource,
+                                    vehicle=vehicle,
                                     timezone=timezone)
-        sampleLocation = getClosestPosition(track=track, 
+        sampleLocation = getClosestPosition(track=track,
                                             timestamp=utcStamp,
-                                            resource=resource)
+                                            vehicle=vehicle)
     except:
         sampleLocation = None
     return (flight, sampleLocation)
 
 
 def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, elementResultsCsvFile,
-                     utcStamp, timezone, resource, name, description, minerals=None, user=None,
+                     utcStamp, timezone, vehicle, name, description, minerals=None, user=None,
                      latitude=None, longitude=None, altitude=None, collector=None, object_id=None):
     try:
         instrument = ScienceInstrument.getInstrument(PXRF)
-        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, PXRF)
+        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, vehicle, PXRF)
         
         if not user:
             user = User.objects.get(username='pxrf')
@@ -87,7 +88,7 @@ def pxrfDataImporter(instrument, portableDataFile, manufacturerDataFile, element
                     'instrument':instrument,
                     'track_position':sampleLocation,
                     'flight':flight,
-                    'resource':resource,
+                    #'vehicle':vehicle,
                     'creator':user,
                     'collector': collector,
                     'name':name,
@@ -266,7 +267,7 @@ def pxrfProcessElementResultsRow(firstrow, lastrow, dataProduct=None, timezone=s
                         pass
         dataProduct.elementPercentsTotal = percentTotal
         if newDataProduct:
-            (flight, sampleLocation) = lookupFlightInfo(dataProduct.acquisition_time, timezone, dataProduct.resource, PXRF)
+            (flight, sampleLocation) = lookupFlightInfo(dataProduct.acquisition_time, timezone, dataProduct.vehicle, PXRF)
             dataProduct.flight = flight
             dataProduct.track_position = sampleLocation
         dataProduct.save()
@@ -293,33 +294,33 @@ def pxrfParseElementResults(elementResultsCsvFile, dataProduct, timezone):
         
             
 def asdDataImporter(instrument, portableDataFile, manufacturerDataFile, utcStamp, 
-                    timezone, resource, name, description, minerals, user=None,
+                    timezone, vehicle, name, description, minerals, user=None,
                     latitude=None, longitude=None, altitude=None, collector=None, object_id=None):
     try:
         instrument = ScienceInstrument.getInstrument(ASD)
     
-        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, ASD)
+        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, vehicle, ASD)
         
         if not user:
             user = User.objects.get(username='asd')
 
         dataProduct = AsdDataProduct(
-            portable_file_format_name = "SPC",
-            portable_mime_type = "application/octet-stream",
-            acquisition_time = utcStamp,
-            acquisition_timezone = timezone.zone,
-            creation_time = datetime.datetime.now(pytz.utc),
-            manufacturer_data_file = manufacturerDataFile,
-            manufacturer_mime_type = "application/octet-stream",
-            instrument = instrument,
-            track_position = sampleLocation,
-            flight = flight,
-            resource = resource,
+            portable_file_format_name="SPC",
+            portable_mime_type="application/octet-stream",
+            acquisition_time=utcStamp,
+            acquisition_timezone=timezone.zone,
+            creation_time=datetime.datetime.now(pytz.utc),
+            manufacturer_data_file=manufacturerDataFile,
+            manufacturer_mime_type="application/octet-stream",
+            instrument=instrument,
+            track_position=sampleLocation,
+            flight=flight,
+            #vehicle=vehicle,
             creator=user,
             collector=collector,
-            name = name,
-            description = description,
-            minerals = minerals,
+            name=name,
+            description=description,
+            minerals=minerals,
             pk=object_id
         )
         
@@ -372,6 +373,7 @@ def readAsciiFtirData(aspFile):
                     for i in range(pointCount)]
     return spectrumData
 
+
 def readSpcFtirData(spcFile):
     instrumentData = spc.File(spcFile)
     # Take slice b/c data has trailing tab
@@ -380,6 +382,7 @@ def readSpcFtirData(spcFile):
     # First line is headers, so we drop it
     dataTable = dataTable[1:]
     return dataTable
+
 
 def loadPortableFtirData(portableDataFile, dataProduct):
     if portableDataFile:
@@ -398,33 +401,34 @@ def loadPortableFtirData(portableDataFile, dataProduct):
         dataProduct.portable_file_format_name = portableFileFormat
         dataProduct.save()
 
+
 def ftirDataImporter(instrument, portableDataFile, manufacturerDataFile,
-                     utcStamp, timezone, resource, name, description, minerals,
+                     utcStamp, timezone, vehicle, name, description, minerals,
                      user=None, latitude=None, longitude=None, altitude=None,
                      collector=None, object_id=None):
     try:
         instrument = ScienceInstrument.getInstrument(FTIR)
-        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, resource, FTIR)
+        (flight, sampleLocation) = lookupFlightInfo(utcStamp, timezone, vehicle, FTIR)
         
         if not user:
             user = User.objects.get(username='ftir')
 
         dataProduct = FtirDataProduct(
-            portable_mime_type = "application/octet-stream",
-            acquisition_time = utcStamp,
-            acquisition_timezone = timezone.zone,
-            creation_time = datetime.datetime.now(pytz.utc),
-            manufacturer_data_file = manufacturerDataFile,
-            manufacturer_mime_type = "application/octet-stream",
-            instrument = instrument,
-            track_position = sampleLocation,
-            flight = flight,
-            resource = resource,
+            portable_mime_type="application/octet-stream",
+            acquisition_time=utcStamp,
+            acquisition_timezone=timezone.zone,
+            creation_time=datetime.datetime.now(pytz.utc),
+            manufacturer_data_file=manufacturerDataFile,
+            manufacturer_mime_type="application/octet-stream",
+            instrument=instrument,
+            track_position=sampleLocation,
+            flight=flight,
+            #vehicle=vehicle,
             creator=user,
             collector=collector,
-            name = name,
-            description = description,
-            minerals = minerals,
+            name=name,
+            description=description,
+            minerals=minerals,
             pk=object_id
         )
         dataProduct.save()

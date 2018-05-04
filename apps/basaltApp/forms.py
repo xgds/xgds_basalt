@@ -34,14 +34,13 @@ from xgds_instrument.models import ScienceInstrument
 from xgds_sample.forms import SearchSampleForm
 from xgds_image.forms import SearchImageSetForm
 from xgds_notes2.forms import SearchNoteForm
-from xgds_planner2.models import Vehicle
-from xgds_core.models import XgdsUser
+from xgds_core.models import XgdsUser, Vehicle
 
 from models import EV, PxrfDataProduct, AsdDataProduct, FtirDataProduct
 
 from basaltApp.instrumentDataImporters import pxrfLoadPortableSampleData, pxrfParseElementResults
 
-GROUP_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_PLANNER_GROUP_FLIGHT_MODEL)
+GROUP_FLIGHT_MODEL = LazyGetModelByName(settings.XGDS_CORE_GROUP_FLIGHT_MODEL)
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -84,6 +83,7 @@ class BasaltInstrumentDataForm(ImportInstrumentDataForm):
     description = forms.CharField(widget=forms.Textarea, label="Description", required=False)
     minerals = forms.CharField(widget=forms.Textarea, label="Minerals", required=False)
 
+
 class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
     date_formats = list(forms.DateTimeField.input_formats) + [
         '%Y/%m/%d %H:%M:%S',
@@ -101,7 +101,7 @@ class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
                                        input_formats=date_formats,
                                        required=False,
                                        )
-    field_order = ['timezone', 'resource', 'dataCollectionTime', 'portableDataFile', 'manufacturerDataFile', 'elementResultsCsvFile',
+    field_order = ['timezone', 'vehicle', 'dataCollectionTime', 'portableDataFile', 'manufacturerDataFile', 'elementResultsCsvFile',
                    'lat', 'lon', 'alt', 'name', 'description', 'minerals']
     
     def editingSetup(self, dataProduct):
@@ -115,6 +115,7 @@ class PxrfInstrumentDataForm(BasaltInstrumentDataForm):
         elif key == 'elementResultsCsvFile':
             pxrfParseElementResults(self.cleaned_data[key], dataProduct)
 
+
 class SearchPXRFDataForm(SearchInstrumentDataForm):
      
     field_order = PxrfDataProduct.getSearchFieldOrder()
@@ -122,7 +123,8 @@ class SearchPXRFDataForm(SearchInstrumentDataForm):
     class Meta:
         model = PxrfDataProduct
         fields = PxrfDataProduct.getSearchFormFields()
-        
+
+
 class SearchASDDataForm(SearchInstrumentDataForm):
     
     field_order = AsdDataProduct.getSearchFieldOrder()
@@ -154,18 +156,17 @@ class SearchFTIRDataForm(SearchInstrumentDataForm):
 
 class SearchBasaltImageSetForm(SearchImageSetForm):
     flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), 
-                                           label=settings.XGDS_PLANNER_FLIGHT_MONIKER,
+                                           label=settings.XGDS_CORE_FLIGHT_MONIKER,
                                            required=False,
                                            widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
 
 
 class SearchBasaltNoteForm(SearchNoteForm):
     flight__group = forms.ModelChoiceField(GROUP_FLIGHT_MODEL.get().objects.all(), 
-                                           label=settings.XGDS_PLANNER_FLIGHT_MONIKER,
+                                           label=settings.XGDS_CORE_FLIGHT_MONIKER,
                                            required=False,
                                            widget=autocomplete.ModelSelect2(url='/xgds_core/complete/basaltApp.BasaltGroupFlight.json/'))
-    flight__vehicle = forms.ModelChoiceField(Vehicle.objects.all(), label='Resource', required=False)
-    
+
     
 class SearchBasaltSampleForm(SearchSampleForm):
     number = forms.IntegerField(required=False)

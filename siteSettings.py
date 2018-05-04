@@ -58,12 +58,12 @@ INSTALLED_APPS = ['basaltApp',
                   'xgds_image',
                   'xgds_video',
                   'xgds_plot',
-                  'xgds_core',
                   'xgds_status_board',
                   'pextant',
                   'deepzoom',
 
                   'geocamTrack',
+                  'xgds_core',
                   'geocamPycroraptor2',
                   'geocamUtil',
                   'pipeline',
@@ -369,8 +369,8 @@ XGDS_PLANNER_SCHEMAS = {
     }
 }
 
-GEOCAM_TRACK_RESOURCE_MODEL = 'basaltApp.BasaltResource'
-GEOCAM_TRACK_RESOURCE_VERBOSE_NAME = 'Asset'
+XGDS_CORE_VEHICLE_MODEL = 'basaltApp.BasaltVehicle'
+XGDS_CORE_VEHICLE_MONIKER = 'Asset'
 GEOCAM_TRACK_TRACK_MODEL = 'basaltApp.BasaltTrack'
 GEOCAM_TRACK_TRACK_MONIKIER = 'Actual_Traverse'
 GEOCAM_TRACK_POSITION_MODEL = 'basaltApp.CurrentPosition'
@@ -387,16 +387,16 @@ COMPASS_CORRECTION =  10
 
 XGDS_SAMPLE_SAMPLE_MODEL = 'basaltApp.BasaltSample'
 
-XGDS_PLANNER_FLIGHT_MONIKER = "EVA"
-XGDS_PLANNER_GROUP_FLIGHT_MONIKER = "EVA"
+XGDS_CORE_FLIGHT_MONIKER = "EVA"
+XGDS_CORE_GROUP_FLIGHT_MONIKER = "EVA"
 XGDS_PLANNER_PLAN_MONIKER = "Planned Traverse"
 XGDS_PLANNER_STATION_MONIKER = "Waypoint"
 XGDS_PLANNER_STATION_MONIKER_PLURAL = "Waypoints"
 XGDS_PLANNER_COMMAND_MONIKER = "Activity"
 XGDS_PLANNER_COMMAND_MONIKER_PLURAL = "Activities"
-XGDS_PLANNER_FLIGHT_MODEL = "basaltApp.BasaltFlight"
-XGDS_PLANNER_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
-XGDS_PLANNER_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
+XGDS_CORE_FLIGHT_MODEL = "basaltApp.BasaltFlight"
+XGDS_CORE_GROUP_FLIGHT_MODEL = "basaltApp.BasaltGroupFlight"
+XGDS_CORE_ACTIVE_FLIGHT_MODEL = "basaltApp.BasaltActiveFlight"
 
 #XGDS_PLANNER_DEFAULT_SITE = ('HIL', 'Hawaii Lava Flows') #'Hawaii Lava Flows'
 XGDS_PLANNER_DEFAULT_SITE = ('KIL', 'Kilauea')
@@ -460,67 +460,6 @@ XGDS_DATA_IMPORTS["pXRF"]= '../../basaltApp/pXRFDataImport/'
 
 XGDS_IMAGE_DEFAULT_CREATE_DEEPZOOM = True
 
-XGDS_DATA_MASKED_FIELDS = getOrCreateDict('XGDS_DATA_MASKED_FIELDS')
-XGDS_DATA_MASKED_FIELDS['basaltApp'] = {'BasaltImageSet': ['exif_position',
-                                                          'track_position',
-                                                          'user_position', 
-                                                          'modification_time', 
-                                                          'acquisition_timezone',
-                                                          'resource',
-                                                          'deleted',
-                                                          'flight',
-                                                          'shortName',
-                                                          'create_deepzoom',
-                                                          'associated_deepzoom',
-                                                          'rotation_degrees',
-                                                          'creation_time',
-                                                          ],
-                                        'BasaltSample': ['track_position',
-                                                         'user_position', 
-                                                         'creator',
-                                                         'modifier',
-                                                         'creation_time',
-                                                         'collection_timezone',
-                                                         'modification_time', 
-                                                         'year'
-                                                          ],
-                                        'AsdDataProduct': ['manufacturer_data_file',
-                                                           'manufacturer_mime_type',
-                                                           'portable_data_file',
-                                                           'portable_mime_type',
-                                                           'portable_file_format_name',
-                                                           'creation_time',
-                                                           'location'
-                                                           ],
-                                        'PxrfDataProduct': ['manufacturer_data_file',
-                                                            'manufacturer_mime_type',
-                                                            'portable_data_file',
-                                                            'portable_mime_type',
-                                                            'portable_file_format_name',
-                                                            'creation_time',
-                                                            'location'
-                                                            ],
-                                        'FtirDataProduct': ['manufacturer_data_file',
-                                                            'manufacturer_mime_type',
-                                                            'portable_data_file',
-                                                            'portable_mime_type',
-                                                            'portable_file_format_name',
-                                                            'creation_time',
-                                                            'location'
-                                                            ],
-                                        'BasaltTrack': ['uuid',
-                                                        'iconStyle',
-                                                        'lineStyle',
-                                                        'extras',
-                                                        'dataType'],
-                                        'PastPosition':['precisionMeters',
-                                                        'serverTimestamp'],
-                                        }
-
-XGDS_DATA_EXPAND_RELATED = getOrCreateDict('XGDS_DATA_EXPAND_RELATED')
-XGDS_DATA_EXPAND_RELATED['basaltApp'] = {'BasaltSample': [('region', 'zone', 'Zone')]}
-
-
 XGDS_VIDEO_GET_ACTIVE_EPISODE = 'basaltApp.views.getActiveEpisode'
 XGDS_VIDEO_GET_EPISODE_FROM_NAME = 'basaltApp.views.getEpisodeFromName'
 XGDS_VIDEO_GET_TIMEZONE_FROM_NAME = 'basaltApp.views.getTimezoneFromFlightName'
@@ -542,10 +481,10 @@ except:
     pass
 XGDS_MAP_SERVER_JS_MAP['Actual_Traverse'] = {'ol': 'geocamTrack/js/olActual_TraverseMap.js',
                                                        'model': GEOCAM_TRACK_TRACK_MODEL,
-                                                       'columns': ['name', 'resource_name', 'type', 'color', 'alpha',  'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
+                                                       'columns': ['name', 'vehicle_name', 'type', 'color', 'alpha',  'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
                                                        'hiddenColumns': ['type', 'color', 'alpha', 'pk', 'app_label', 'model_type', 'times', 'coords', 'lat', 'DT_RowId'],
-                                                       'columnTitles': ['Name', 'Resource',''],
-                                                       'searchableColumns': ['name', 'resource_name'],
+                                                       'columnTitles': ['Name', 'Asset',''],
+                                                       'searchableColumns': ['name', 'vehicle_name'],
                                                        'search_form_class': 'basaltApp.forms.SearchBasaltTrackForm'
                                                        }
 try:
@@ -565,8 +504,8 @@ XGDS_MAP_SERVER_JS_MAP['Photo'] = {'ol': 'xgds_image/js/olImageMap.js',
                                    'searchableColumns': ['name','description','flight_name', 'author_name'],
                                    'columns': ['checkbox', 'acquisition_time', 'acquisition_timezone', 'author_name', 'name', 'description', 'thumbnail_image_url',  'pk', 'view_url',
                                                'camera_name', 'raw_image_url', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'head','flight_name', 'deepzoom_file_url',
-                                               'rotation_degrees', 'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom','DT_RowId'],
-                                   'hiddenColumns': ['pk', 'view_url', 'camera_name', 'raw_image_url', 'app_label',  'resource_name', 'model_type','type',
+                                               'rotation_degrees', 'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom','vehicle_name','DT_RowId'],
+                                   'hiddenColumns': ['pk', 'view_url', 'camera_name', 'raw_image_url', 'app_label',  'vehicle_name', 'model_type','type',
                                                      'lat','lon','alt','head','flight_name', 'deepzoom_file_url', 'rotation_degrees', 
                                                      'originalImageResolutionString', 'originalImageFileSizeMB', 'create_deepzoom', 'DT_RowId'],
                                    'unsortableColumns': ['thumbnail_image_url'],
@@ -613,14 +552,14 @@ XGDS_MAP_SERVER_JS_MAP['Note'] = {'ol': 'xgds_notes2/js/olNoteMap.js',
 XGDS_MAP_SERVER_JS_MAP[XGDS_SAMPLE_SAMPLE_KEY] = {'ol': 'xgds_sample/js/olSampleMap.js',
                                                   'model': XGDS_SAMPLE_SAMPLE_MODEL,
                                                   'searchableColumns': ['name','description','flight_name'],
-                                                  'columns': ['checkbox', 'collection_time', 'collection_timezone', 'name', 'sample_type_name', 'label_number', 'collector_name', 'resource_name', 'thumbnail_image_url', 'region_name', 'pk', 'lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
+                                                  'columns': ['checkbox', 'collection_time', 'collection_timezone', 'name', 'sample_type_name', 'label_number', 'collector_name', 'vehicle_name', 'thumbnail_image_url', 'region_name', 'pk', 'lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
                                                   'hiddenColumns': ['thumbnail_image_url', 'region_name', 'pk','lat', 'lon', 'alt', 'flight_name', 'app_label', 'model_type', 'type', 'year','number', 'description', 'replicate_name', 'marker_id', 'station_number', 'flir_temperature', 'DT_RowId'],
-                                                  'columnTitles': ['Time', 'TZ', 'Name', 'Type', 'Label', 'Collector', 'Resource'],
+                                                  'columnTitles': ['Time', 'TZ', 'Name', 'Type', 'Label', 'Collector', 'Asset'],
                                                   'viewHandlebars': 'basaltApp/templates/xgds_sample/sample-view.handlebars',
                                                   'event_time_field': 'collection_time',
                                                   'event_timezone_field': 'collection_timezone',
                                                   'search_form_class': 'basaltApp.forms.SearchBasaltSampleForm',
-                                                  } 
+                                                  }
 XGDS_MAP_SERVER_JS_MAP['FTIR'] = {'ol': 'xgds_instrument/js/olFtirDataProduct.js',
                                   'model': 'basaltApp.FtirDataProduct',
                                   'columns': ['checkbox', 'acquisition_time', 'acquisition_timezone', 'collector_name', 'name', 'description', 'minerals', 'pk', 'view_url', 'app_label', 'model_type', 'type', 'lat', 'lon', 'alt', 'flight_name', 'instrument_name','manufacturer_data_file_url','portable_data_file_url','jsonDataUrl','csvDataUrl', 'ev_name', 'DT_RowId'],

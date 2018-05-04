@@ -17,7 +17,7 @@ missingFlightList = []
 for sample in samples:
     if sample.flight is None:
         print "**** Processing: %s ****" % sample.name
-        vehicle = Vehicle.objects.get(name=sample.resource.name)
+        vehicle = Vehicle.objects.get(name=sample.vehicle.name)
         flight = BasaltFlight.objects.filter(start_time__lte = sample.collection_time).filter(end_time__gte = sample.collection_time).filter(vehicle=vehicle)
         if flight.count() == 0:
             print "  No flight found!  Hopefully this was out of sim sample"

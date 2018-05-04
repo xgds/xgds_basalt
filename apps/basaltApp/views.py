@@ -37,14 +37,14 @@ from forms import EVForm, BasaltInstrumentDataForm, PxrfInstrumentDataForm, Sear
 from models import *
 import pextantHarness
 from geocamUtil.loader import LazyGetModelByName, getFormByName, getModelByName, getClassByName
-from xgds_core.models import Constant
+from xgds_core.models import Constant, Vehicle
 from xgds_core.views import addRelay, getConditionActiveJSON
 from xgds_core.util import addPort, deletePostKey
 
 from xgds_notes2 import views as xgds_notes2_views
-from xgds_planner2.utils import getFlight
-from xgds_planner2.views import getActiveFlights, getTodaysGroupFlights, getActiveFlightFlights, getTodaysPlans, getTodaysPlanFiles
-from xgds_planner2.models import Vehicle
+from xgds_core.flightUtils import getFlight
+from xgds_core.views import getActiveFlights, getTodaysGroupFlights, getActiveFlightFlights
+from xgds_planner2.views import getTodaysPlans, getTodaysPlanFiles
 from xgds_map_server.views import viewMultiLast, getMappedObjectsJson
 from xgds_video.util import getSegmentPath
 from xgds_video.util import getDelaySeconds as getVideoDelaySeconds
@@ -163,16 +163,16 @@ def populateNoteData(request, form):
         data.pop('flight_id')
         data['flight'] = flight
         try:
-            data.pop('resource')
+            data.pop('vehicle')
         except:
             pass
     
     # look up the flight
-    elif 'resource' in data:
-        resource = None
-        resource = data['resource']
-        data.pop('resource')
-        flight = getFlight(data['event_time'], resource)
+    elif 'vehicle' in data:
+        vehicle = None
+        vehicle = data['vehicle']
+        data.pop('vehicle')
+        flight = getFlight(data['event_time'], vehicle)
         if flight:
             data['flight'] = flight 
     
@@ -374,7 +374,7 @@ def saveNewInstrumentData(request, instrumentName, jsonResult=False):
                                manufacturerDataFile=request.FILES.get("manufacturerDataFile", None),
                                utcStamp=form.cleaned_data["dataCollectionTime"], 
                                timezone=form.getTimezone(), 
-                               resource=form.getResource(),
+                               vehicle=form.getVehicle(),
                                name=form.cleaned_data['name'],
                                description=form.cleaned_data['description'],
                                minerals=form.cleaned_data['minerals'],
@@ -478,8 +478,8 @@ def buildPxrfRelayDict(pxrf):
     result['instrument_id'] = pxrf.instrument.pk
     del result['instrument']
     
-    result['resource_id'] = pxrf.resource.pk
-    del result['resource']
+    result['vehicle_id'] = pxrf.vehicle.pk
+    del result['vehicle']
     
     if pxrf.flight:
         result['flight_id'] = pxrf.flight.pk
@@ -506,7 +506,7 @@ def relaySavePxrfData(request):
         newPxrf.manufacturer_data_file = mdf
         
         try:
-            (flight, foundlocation) = lookupFlightInfo(newPxrf.acquisition_time, timezone, newPxrf.resource, 'pxrf')
+            (flight, foundlocation) = lookupFlightInfo(newPxrf.acquisition_time, timezone, newPxrf.vehicle, 'pxrf')
             newPxrf.flight = flight
             newPxrf.track_position = foundlocation
         except:
@@ -539,7 +539,7 @@ def buildPxrfMetadata(request):
                 'manufacturer_mime_type':"application/octet-stream",
                 'instrument':ScienceInstrument.getInstrument('pXRF'),
                 'creator':user,
-                'resource_id':request.POST.get('resource',1),
+                'vehicle_id':request.POST.get('vehicle',1),
                 'name':request.POST.get('name',None),
                 }
     return metadata
@@ -613,7 +613,7 @@ def saveNewPxrfData(request, jsonResult=False):
                                elementResultsCsvFile=request.FILES.get("elementResultsCsvFile", None),
                                utcStamp=form.cleaned_data["dataCollectionTime"], 
                                timezone=form.getTimezone(), 
-                               resource=form.getResource(),
+                               vehicle=form.getVehicle(),
                                name=form.cleaned_data['name'],
                                description=form.cleaned_data['description'],
                                minerals=form.cleaned_data['minerals'],
@@ -688,10 +688,10 @@ def saveUpdatedInstrumentData(request, instrument_name, pk):
 #         dataProduct.name = postDict['name'] 
 #         dataProduct.description = postDict['description']
 #         dataProduct.minerals = postDict['minerals']
-#         resourceId = postDict['resource']
-#         if resourceId:
-#             resource = BasaltResource.objects.get(id=resourceId)
-#             dataProduct.resource = resource
+#         vehicleId = postDict['vehicle']
+#         if vehicleId:
+#             vehicle = BasaltResource.objects.get(id=vehicleId)
+#             dataProduct.vehicle = vehicle
         
         dataProduct.acquisition_time = form.cleaned_data['dataCollectionTime']
         
