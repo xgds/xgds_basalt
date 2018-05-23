@@ -46,3 +46,6 @@
 [submodule "submodules/django_npm_apps"]
 	path = submodules/django_npm_apps
 	url = https://github.com/xgds/django_npm_apps.git
+[submodule "submodules/xgds_timeseries"]
+	path = submodules/xgds_timeseries
+	url = https://github.com/xgds/xgds_timeseries.git
