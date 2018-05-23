@@ -63,6 +63,7 @@ INSTALLED_APPS = ['basaltApp',
                   'deepzoom',
 
                   'geocamTrack',
+                  'xgds_timeseries',
                   'xgds_core',
                   'geocamPycroraptor2',
                   'geocamUtil',
@@ -215,6 +216,7 @@ TEMPLATES = [
             os.path.join(PROJ_ROOT, 'apps/basaltApp/templates'),
             os.path.join(PROJ_ROOT, 'apps/basaltApp/templates/basaltApp'),
             os.path.join(PROJ_ROOT, 'apps/basaltApp/templates/registration'),
+            STATIC_ROOT,
 
             # Templates for utility scripts
             os.path.join(PROJ_ROOT, 'bin/templates'),

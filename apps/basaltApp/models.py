@@ -255,7 +255,7 @@ class BasaltFlight(AbstractFlight):
             return
 
         #Create the track if it does not exist
-        if not self.track:
+        if not getattr(self, 'track'):
             TRACK_MODEL = LazyGetModelByName(settings.GEOCAM_TRACK_TRACK_MODEL)
             try:
                 track = TRACK_MODEL.get().objects.get(name=self.name)
