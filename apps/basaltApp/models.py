@@ -392,7 +392,7 @@ class BasaltFlight(AbstractFlight):
     def getTreeJsonChildren(self):
         children = []
         if self.track:
-            children.append({"title": settings.GEOCAM_TRACK_TRACK_MONIKIER,
+            children.append({"title": settings.GEOCAM_TRACK_TRACK_MONIKER,
                              "selected": False,
                              "tooltip": "Tracks for " + self.name,
                              "key": self.uuid + "_tracks",

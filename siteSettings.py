@@ -72,7 +72,7 @@ INSTALLED_APPS = ['basaltApp',
                   'resumable',
                   'django_markwhat',
                   'djangobower',
-
+                  'jsonify',
                   'dal',
                   'dal_select2',
                   'rest_framework.authtoken',
@@ -374,7 +374,7 @@ XGDS_PLANNER_SCHEMAS = {
 XGDS_CORE_VEHICLE_MODEL = 'basaltApp.BasaltVehicle'
 XGDS_CORE_VEHICLE_MONIKER = 'Asset'
 GEOCAM_TRACK_TRACK_MODEL = 'basaltApp.BasaltTrack'
-GEOCAM_TRACK_TRACK_MONIKIER = 'Actual_Traverse'
+GEOCAM_TRACK_TRACK_MONIKER = 'Actual_Traverse'
 GEOCAM_TRACK_POSITION_MODEL = 'basaltApp.CurrentPosition'
 GEOCAM_TRACK_PAST_POSITION_MODEL = 'basaltApp.PastPosition'
 GEOCAM_TRACK_INTERPOLATE_MAX_SECONDS = 120
